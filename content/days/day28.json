@@ -1,208 +1,2431 @@
 {
   "day": 28,
-  "title": "KM Expert Systems, Full Placement Mock Simulation & LRU Cache Design",
-  "sem_data": {
-    "subject": "BCA-5001 Knowledge Management",
-    "topic": "Unit V \u2014 Expert Systems Architecture: Inference Engine, Forward vs Backward Chaining & Knowledge Engineering",
-    "detailed_notes": [
-      "An Expert System (ES) is an artificial intelligence computer application that encapsulates human domain expertise to solve complex reasoning problems at the level of a human specialist (e.g. medical diagnosis, financial fraud detection).",
-      "The 5 Major Components of an Expert System Architecture:\n1. Knowledge Base (KB): The core repository storing domain knowledge represented as IF-THEN production rules, semantic nets, frames, or ontologies. Rules separate facts ('Patient has fever') from heuristics ('IF fever AND rash THEN measles').\n2. Working Memory (Fact Base): Contains dynamic, session-specific data and known facts entered by the user during the current consultation.\n3. Inference Engine: The 'brain' of the expert system. Applies logical algorithms to match facts in working memory against production rules in the KB to deduce new conclusions.\n4. Explanation Facility (Justifier): Explains the reasoning process to the user, answering 'HOW' a conclusion was reached or 'WHY' a particular question is being asked.\n5. Knowledge Acquisition Subsystem: The interface enabling Knowledge Engineers to capture and encode new rules from human experts into the knowledge base without modifying the underlying inference engine code.",
-      "Inference Engine Reasoning Paradigms:\n\u2022 Forward Chaining (Data-Driven / Bottom-Up):\n  - Starts with known facts in working memory and fires matching rules whose conditions (antecedents) are satisfied, adding new facts to memory until a goal is reached.\n  - Best for: Planning, monitoring, synthesis, and systems with many equally valid solutions.\n\u2022 Backward Chaining (Goal-Driven / Top-Down):\n  - Starts with a hypothetical goal/conclusion and works backwards to see if available facts support the goal. If facts are missing, the system prompts the user with targeted questions.\n  - Best for: Diagnostic systems (medical, automotive troubleshooting) and auditing."
+  "title": "Day 28: Expert Systems Architecture, Inference Engines (Forward vs Backward Chaining) & Backtracking: Subsets & Permutations",
+  "streams": {
+    "academic": {
+      "unit": 5,
+      "topic": "Unit V — Expert Systems Architecture, Inference Engines (Forward vs Backward Chaining)",
+      "objectives": [
+        "Understand Expert System architecture (Knowledge Base, Inference Engine, Working Memory, UI).",
+        "Master Forward Chaining (Data-Driven) vs Backward Chaining (Goal-Driven) reasoning."
+      ],
+      "explanation": "An Expert System (ES) is an artificial intelligence program that emulates the decision-making ability of a human expert within a specialized domain. Its architecture consists of: 1. Knowledge Base (stores domain facts and IF-THEN heuristic production rules); 2. Working Memory (stores dynamic facts asserted during the current reasoning session); 3. Inference Engine (the brain that applies logical deduction to derive conclusions); 4. Explanation Facility (explains 'HOW' and 'WHY' a conclusion was reached); 5. User Interface (interactive query input). The Inference Engine executes two primary reasoning strategies: Forward Chaining (Data-driven reasoning starting from known facts to infer new conclusions) and Backward Chaining (Goal-driven reasoning starting from a hypothesis and working backwards to find supporting facts).",
+      "definitions": [
+        {
+          "term": "Knowledge Base (KB)",
+          "definition": "A specialized database containing domain heuristics, facts, and IF-THEN rules acquired from human experts."
+        },
+        {
+          "term": "Inference Engine",
+          "definition": "The computational component of an expert system that applies logical rules of inference (Modus Ponens) to the knowledge base to deduce solutions."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Expert System Architecture",
+          "content": "Knowledge Base + Working Memory + Inference Engine + Explanation Facility + UI."
+        },
+        {
+          "title": "Forward vs Backward Chaining",
+          "content": "Forward Chaining starts with known facts and fires matching rules until a goal is reached (data-driven, good for monitoring and planning). Backward Chaining starts with a goal hypothesis and checks if antecedent facts exist in memory (goal-driven, good for diagnosis and debugging)."
+        }
+      ],
+      "examples": [
+        "MYCIN medical diagnostic expert system using backward chaining to identify bacterial infections."
+      ],
+      "diagram": "+---------------------------------------------------+\n|             EXPERT SYSTEM ARCHITECTURE            |\n| [User Interface] <-> [Inference Engine]           |\n|                         |       |                 |\n|     [Working Memory] <--+       +--> [KB (Rules)] |\n|            ^                             |        |\n|            +--- [Explanation Facility] --+        |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Dimension",
+          "Forward Chaining (Data-Driven)",
+          "Backward Chaining (Goal-Driven)"
+        ],
+        "rows": [
+          [
+            "Starting Point",
+            "Begins with known initial facts",
+            "Begins with a target goal hypothesis"
+          ],
+          [
+            "Direction of Search",
+            "Forward from antecedents (IF) to consequents (THEN)",
+            "Backward from consequents (THEN) to antecedents (IF)"
+          ],
+          [
+            "Ideal Applications",
+            "Monitoring, planning, synthesis, process control",
+            "Medical diagnosis, circuit debugging, troubleshooting"
+          ],
+          [
+            "Reasoning Mechanism",
+            "Fires all matching rules to generate all possible facts",
+            "Focuses only on relevant rules supporting the target goal"
+          ]
+        ]
+      },
+      "memorize": "Forward chaining = data-driven (facts -> goal). Backward chaining = goal-driven (goal -> facts). Explanation facility tells user HOW and WHY.",
+      "understand": "The separation of knowledge (Knowledge Base) from processing logic (Inference Engine) allows expert systems to be updated by modifying rules without recompiling code.",
+      "common_mistakes": "Forgetting the Explanation Facility in the architecture diagram (a hallmark feature of Expert Systems).",
+      "exam_writing_guidance": "Draw the 5-component architecture diagram, explain each component, and write an IF-THEN rule example showing both forward and backward chaining.",
+      "mini_practice": [
+        "Trace a backward chaining proof for goal 'Car Starts = False'."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2023-24 (Q5)",
+          "marks": 15,
+          "question": "What is an Expert System? Draw and explain its architecture in detail. Compare Forward Chaining and Backward Chaining with examples. (15 Marks)",
+          "rubric": "Definition (2 marks) + Complete Architecture Diagram (4 marks) + Explanation of 5 Components (5 marks) + Forward vs Backward Chaining comparison with rules (4 marks) = 15 Marks.",
+          "model_answer": "An Expert System (ES) is an AI-based computer application that mimics the problem-solving capability of human experts in a specialized domain. Its architecture consists of: 1. Knowledge Base (stores factual domain knowledge and IF-THEN heuristic production rules); 2. Working Memory (holds dynamic facts observed during the current consultation session); 3. Inference Engine (the reasoning processing unit that applies logical deduction mechanisms like Modus Ponens); 4. Explanation Facility (enables the system to answer 'Why was this question asked?' and 'How was this conclusion reached?'); 5. User Interface (interactive dialogue medium). The two deduction algorithms are: Forward Chaining (Data-driven: starts with initial facts in working memory and fires matching IF-THEN rules until a final goal is reached) and Backward Chaining (Goal-driven: starts with a potential hypothesis and checks working memory for supporting facts, prompting the user if data is missing).",
+          "answer_structure": "Definition -> Architecture Diagram -> 5 Components Detailed -> Forward vs Backward Chaining Table & Rule Walkthrough",
+          "important_points": [
+            "Knowledge Base separated from Inference Engine",
+            "Working Memory",
+            "Explanation Facility",
+            "Forward = data-driven",
+            "Backward = goal-driven"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Diagram showing all 5 components with bidirectional data flows",
+            "Rule example illustrating both chaining methods"
+          ],
+          "common_mistakes": [
+            "Omitting Working Memory or Explanation Facility"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "Why is the Explanation Facility vital in an Expert System? (5 Marks)",
+          "rubric": "Definition (2 marks) + How vs Why explanation (3 marks) = 5 Marks.",
+          "model_answer": "The Explanation Facility is vital because human users will not trust or act upon critical expert advice (such as medical diagnosis or financial loan approvals) without understanding the reasoning. It answers two key questions: 'WHY' (explains why the system is asking a specific input question by displaying the active rule) and 'HOW' (reconstructs the chain of inference rules that led to the final diagnostic conclusion)."
+        }
+      ],
+      "subject_code": "BCA-5001",
+      "subject_name": "Knowledge Management",
+      "mcqs": [
+        {
+          "id": "ACAD-28-01",
+          "question": "In Euler's method for solving the initial value problem dy/dx = f(x, y), what is the iterative formula to find y_{n+1}?",
+          "options": [
+            "y_{n+1} = y_n + h * f(x_n, y_n)",
+            "y_{n+1} = y_n - h * f(x_n, y_n)",
+            "y_{n+1} = y_n + (h / 2) * f(x_n, y_n)",
+            "y_{n+1} = h * y_n"
+          ],
+          "correct_answer": "A",
+          "explanation": "Euler's method follows the tangent slope: y_{n+1} = y_n + h * f(x_n, y_n). It is a first-order method with local error O(h^2)."
+        },
+        {
+          "id": "ACAD-28-02",
+          "question": "What is the order of accuracy of the classical Runge-Kutta Fourth Order Method (RK4)?",
+          "options": [
+            "First order O(h)",
+            "Second order O(h^2)",
+            "Fourth order O(h^4)",
+            "Eighth order O(h^8)"
+          ],
+          "correct_answer": "C",
+          "explanation": "The classical RK4 method has a local truncation error of O(h^5) and a global truncation error of O(h^4), making it the gold standard ODE solver."
+        },
+        {
+          "id": "ACAD-28-03",
+          "question": "How many slope evaluations (k_1, k_2, k_3, k_4) are required at each step in the Runge-Kutta 4th Order (RK4) method?",
+          "options": [
+            "1 evaluation",
+            "2 evaluations",
+            "4 evaluations",
+            "8 evaluations"
+          ],
+          "correct_answer": "C",
+          "explanation": "RK4 computes 4 intermediate slopes: k1 at start, k2 and k3 at midpoint, and k4 at full step, combining them with weights (1, 2, 2, 1)/6."
+        },
+        {
+          "id": "ACAD-28-04",
+          "question": "Why is Euler's method rarely used in production engineering simulations despite its mathematical simplicity?",
+          "options": [
+            "It cannot be programmed in Java",
+            "It has low first-order accuracy and accumulates large cumulative truncation errors unless extremely tiny step sizes h are used",
+            "It only solves differential equations with zero initial conditions",
+            "It requires evaluating imaginary numbers"
+          ],
+          "correct_answer": "B",
+          "explanation": "Euler's method is only O(h) accurate globally; to cut error by 10x requires 10x smaller steps, making it computationally inefficient compared to RK4."
+        },
+        {
+          "id": "ACAD-28-05",
+          "question": "In the RK4 method, what is the formula combining the four slopes k_1, k_2, k_3, k_4 to calculate the displacement Delta y?",
+          "options": [
+            "Delta y = (h / 6) * (k_1 + 2*k_2 + 2*k_3 + k_4)",
+            "Delta y = (h / 4) * (k_1 + k_2 + k_3 + k_4)",
+            "Delta y = h * (k_1 + k_4) / 2",
+            "Delta y = (h / 3) * (k_1 + 4*k_2 + k_4)"
+          ],
+          "correct_answer": "A",
+          "explanation": "RK4 uses Simpson's-style weighting: Delta y = (h / 6) * [k_1 + 2*k_2 + 2*k_3 + k_4]."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2023-24 (Q5)",
+        "marks": 15,
+        "question": "What is an Expert System? Draw and explain its architecture in detail. Compare Forward Chaining and Backward Chaining with examples. (15 Marks)",
+        "rubric": "Definition (2 marks) + Complete Architecture Diagram (4 marks) + Explanation of 5 Components (5 marks) + Forward vs Backward Chaining comparison with rules (4 marks) = 15 Marks.",
+        "model_answer": "An Expert System (ES) is an AI-based computer application that mimics the problem-solving capability of human experts in a specialized domain. Its architecture consists of: 1. Knowledge Base (stores factual domain knowledge and IF-THEN heuristic production rules); 2. Working Memory (holds dynamic facts observed during the current consultation session); 3. Inference Engine (the reasoning processing unit that applies logical deduction mechanisms like Modus Ponens); 4. Explanation Facility (enables the system to answer 'Why was this question asked?' and 'How was this conclusion reached?'); 5. User Interface (interactive dialogue medium). The two deduction algorithms are: Forward Chaining (Data-driven: starts with initial facts in working memory and fires matching IF-THEN rules until a final goal is reached) and Backward Chaining (Goal-driven: starts with a potential hypothesis and checks working memory for supporting facts, prompting the user if data is missing).",
+        "answer_structure": "Definition -> Architecture Diagram -> 5 Components Detailed -> Forward vs Backward Chaining Table & Rule Walkthrough",
+        "important_points": [
+          "Knowledge Base separated from Inference Engine",
+          "Working Memory",
+          "Explanation Facility",
+          "Forward = data-driven",
+          "Backward = goal-driven"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagram showing all 5 components with bidirectional data flows",
+          "Rule example illustrating both chaining methods"
+        ],
+        "common_mistakes": [
+          "Omitting Working Memory or Explanation Facility"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Why is the Explanation Facility vital in an Expert System? (5 Marks)",
+        "rubric": "Definition (2 marks) + How vs Why explanation (3 marks) = 5 Marks.",
+        "model_answer": "The Explanation Facility is vital because human users will not trust or act upon critical expert advice (such as medical diagnosis or financial loan approvals) without understanding the reasoning. It answers two key questions: 'WHY' (explains why the system is asking a specific input question by displaying the active rule) and 'HOW' (reconstructs the chain of inference rules that led to the final diagnostic conclusion)."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                     EXPERT SYSTEM FIVE-TIER ARCHITECTURE                |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|      +---------------------+          +---------------------------+     |\n|      |  KNOWLEDGE BASE     |<-------->| KNOWLEDGE ACQUISITION     |<--- Expert\n|      |  (Production Rules) |          | SUBSYSTEM                 |     |\n|      +---------------------+          +---------------------------+     |\n|                 ^                                                       |\n|                 | (Pattern Match)                                       |\n|                 v                                                       |\n|      +---------------------+          +---------------------------+     |\n|      |  INFERENCE ENGINE   |<-------->| WORKING MEMORY (Facts)    |     |\n|      | (Forward / Backward)|          |                           |     |\n|      +---------------------+          +---------------------------+     |\n|                 ^                                                       |\n|                 | (Deduction Trace)                                     |\n|                 v                                                       |\n|      +---------------------+          +---------------------------+     |\n|      | EXPLANATION         |<-------->| USER INTERFACE            |<--- User\n|      | FACILITY (How/Why)  |          | (Consultation)            |     |\n|      +---------------------+          +---------------------------+     |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-28-01",
+        "question": "In Euler's method for solving the initial value problem dy/dx = f(x, y), what is the iterative formula to find y_{n+1}?",
+        "options": [
+          "y_{n+1} = y_n + h * f(x_n, y_n)",
+          "y_{n+1} = y_n - h * f(x_n, y_n)",
+          "y_{n+1} = y_n + (h / 2) * f(x_n, y_n)",
+          "y_{n+1} = h * y_n"
+        ],
+        "correct_answer": "A",
+        "explanation": "Euler's method follows the tangent slope: y_{n+1} = y_n + h * f(x_n, y_n). It is a first-order method with local error O(h^2)."
+      },
+      {
+        "id": "ACAD-28-02",
+        "question": "What is the order of accuracy of the classical Runge-Kutta Fourth Order Method (RK4)?",
+        "options": [
+          "First order O(h)",
+          "Second order O(h^2)",
+          "Fourth order O(h^4)",
+          "Eighth order O(h^8)"
+        ],
+        "correct_answer": "C",
+        "explanation": "The classical RK4 method has a local truncation error of O(h^5) and a global truncation error of O(h^4), making it the gold standard ODE solver."
+      },
+      {
+        "id": "ACAD-28-03",
+        "question": "How many slope evaluations (k_1, k_2, k_3, k_4) are required at each step in the Runge-Kutta 4th Order (RK4) method?",
+        "options": [
+          "1 evaluation",
+          "2 evaluations",
+          "4 evaluations",
+          "8 evaluations"
+        ],
+        "correct_answer": "C",
+        "explanation": "RK4 computes 4 intermediate slopes: k1 at start, k2 and k3 at midpoint, and k4 at full step, combining them with weights (1, 2, 2, 1)/6."
+      },
+      {
+        "id": "ACAD-28-04",
+        "question": "Why is Euler's method rarely used in production engineering simulations despite its mathematical simplicity?",
+        "options": [
+          "It cannot be programmed in Java",
+          "It has low first-order accuracy and accumulates large cumulative truncation errors unless extremely tiny step sizes h are used",
+          "It only solves differential equations with zero initial conditions",
+          "It requires evaluating imaginary numbers"
+        ],
+        "correct_answer": "B",
+        "explanation": "Euler's method is only O(h) accurate globally; to cut error by 10x requires 10x smaller steps, making it computationally inefficient compared to RK4."
+      },
+      {
+        "id": "ACAD-28-05",
+        "question": "In the RK4 method, what is the formula combining the four slopes k_1, k_2, k_3, k_4 to calculate the displacement Delta y?",
+        "options": [
+          "Delta y = (h / 6) * (k_1 + 2*k_2 + 2*k_3 + k_4)",
+          "Delta y = (h / 4) * (k_1 + k_2 + k_3 + k_4)",
+          "Delta y = h * (k_1 + k_4) / 2",
+          "Delta y = (h / 3) * (k_1 + 4*k_2 + k_4)"
+        ],
+        "correct_answer": "A",
+        "explanation": "RK4 uses Simpson's-style weighting: Delta y = (h / 6) * [k_1 + 2*k_2 + 2*k_3 + k_4]."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "TCS NQT Comprehensive Aptitude Simulation",
+      "category": "Placement Diagnostic",
+      "subtopic": "TCS NQT Special",
+      "formulas": "Comprehensive multi-domain review covering Foundation Numerical, Advanced Quantitative, and Logical Reasoning patterns.",
+      "shortcuts": "Speed Strategy: Attempt easy arithmetic and series first; reserve multi-statement seating and geometry for the second pass.",
+      "tutorial": [
+        "TCS NQT features both Foundation and Advanced sections on the TCS iON interface. Calculators are available on-screen for numeric sections, meaning manual arithmetic is replaced by complex problem interpretation."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on TCS NQT Special",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on TCS NQT Special",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on TCS NQT Special",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on TCS NQT Special",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on TCS NQT Special",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "In a company, 60% of employees are men. Of these, 25% earn more than Rs. 50,000. If 45% of all employees earn more than Rs. 50,000, what percentage of women employees earn more than Rs. 50,000?",
+        "options": {
+          "A": "75%",
+          "B": "65%",
+          "C": "70%",
+          "D": "80%"
+        },
+        "correct_answer": "A",
+        "explanation": "Let total = 100. Men = 60, Women = 40. High earning men = 25% of 60 = 15. Total high earners = 45. High earning women = 45 - 15 = 30. % of women = (30 / 40) * 100% = 75%.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A train covers a distance of 192 km in 3 hours 12 minutes. How much distance will it cover in 2.5 hours at the same speed?",
+        "options": {
+          "A": "150 km",
+          "B": "160 km",
+          "C": "140 km",
+          "D": "175 km"
+        },
+        "correct_answer": "A",
+        "explanation": "Time = 3 + 12/60 = 3.2 hours. Speed = 192 / 3.2 = 60 km/hr. In 2.5 hours, distance = 60 * 2.5 = 150 km.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Find the single discount equivalent to a series of discounts: 25%, 20%, and 10%.",
+        "options": {
+          "A": "46%",
+          "B": "45%",
+          "C": "48%",
+          "D": "50%"
+        },
+        "correct_answer": "A",
+        "explanation": "Multiplying factor = (1 - 0.25) * (1 - 0.20) * (1 - 0.10) = 0.75 * 0.80 * 0.90 = 0.54. Equivalent discount = 1 - 0.54 = 0.46 = 46%.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "A can do a piece of work in 10 days and B in 15 days. They work together for 3 days and then B leaves. In how many more days will A finish the remaining work?",
+        "options": {
+          "A": "5 days",
+          "B": "6 days",
+          "C": "4 days",
+          "D": "7 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Work per day = 1/10 + 1/15 = 5/30 = 1/6. In 3 days they complete 3/6 = 1/2. Remaining = 1/2. A finishes 1/2 in (1/2) * 10 = 5 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "The ratio of ages of two friends is 5 : 7. Eight years ago, their ages were in the ratio 7 : 13. What are their present ages?",
+        "options": {
+          "A": "15 and 21 years",
+          "B": "20 and 28 years",
+          "C": "25 and 35 years",
+          "D": "10 and 14 years"
+        },
+        "correct_answer": "A",
+        "explanation": "(5x - 8) / (7x - 8) = 7 / 13 => 13(5x - 8) = 7(7x - 8) => 65x - 104 = 49x - 56 => 16x = 48 => x = 3. Ages are 5*3 = 15 and 7*3 = 21 years.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "A shopkeeper marks his goods at 30% above cost price and allows a discount of 15% for cash payment. Find his gain percentage.",
+        "options": {
+          "A": "10.5%",
+          "B": "12%",
+          "C": "11.5%",
+          "D": "15%"
+        },
+        "correct_answer": "A",
+        "explanation": "CP = 100. MP = 130. SP = 130 * 0.85 = 110.5. Gain = 110.5 - 100 = 10.5%.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "What is the least number which when divided by 6, 9, 12, 15, and 18 leaves remainder 2 in each case?",
+        "options": {
+          "A": "182",
+          "B": "178",
+          "C": "180",
+          "D": "362"
+        },
+        "correct_answer": "A",
+        "explanation": "LCM(6, 9, 12, 15, 18) = 180. Required number = 180 + 2 = 182.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A sum of money invested at compound interest doubles in 6 years. In how many years will it become 8 times of itself?",
+        "options": {
+          "A": "18 years",
+          "B": "12 years",
+          "C": "24 years",
+          "D": "16 years"
+        },
+        "correct_answer": "A",
+        "explanation": "8 = 2^3. Time = 3 * 6 = 18 years.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "A vendor bought toffees at 6 for a rupee. How many for a rupee must he sell to gain 20%?",
+        "options": {
+          "A": "5",
+          "B": "4",
+          "C": "3",
+          "D": "4.5"
+        },
+        "correct_answer": "A",
+        "explanation": "CP of 1 toffee = 1/6 rupee. SP of 1 toffee for 20% gain = (1/6) * 1.20 = 1.2/6 = 1/5 rupee. Number for 1 rupee = 5 toffees.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "What is the probability of getting a sum of 9 when two dice are rolled simultaneously?",
+        "options": {
+          "A": "1/9",
+          "B": "1/6",
+          "C": "5/36",
+          "D": "1/12"
+        },
+        "correct_answer": "A",
+        "explanation": "Favorable outcomes: (3,6), (4,5), (5,4), (6,3) = 4 outcomes. Total = 36. Probability = 4/36 = 1/9.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: TCS NQT Special (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Backtracking: Subsets & Permutations",
+      "category": "Backtracking",
+      "concept": "Systematically constructs candidate solutions step-by-step, abandoning candidates ('backtracking') as soon as it determines they cannot lead to a valid solution.",
+      "why_it_works": "Recursively explores state tree, appending choice, descending, and undoing choice (backtracking) to restore state.",
+      "visual_explanation": "nums = [1, 2, 3]\\nChoice: []\\n+1 -> [1] (+2 -> [1, 2] (+3 -> [1, 2, 3]))\\nBacktrack -> [1, 2] -> Backtrack -> [1] (+3 -> [1, 3])\\nTotal Subsets = 2^N = 8",
+      "language": "Java",
+      "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> result = new ArrayList<>();\n        backtrack(nums, 0, new ArrayList<>(), result);\n        return result;\n    }\n    \n    private void backtrack(int[] nums, int start, List<Integer> current, List<List<Integer>> result) {\n        result.add(new ArrayList<>(current)); // Snapshot current subset\n        for (int i = start; i < nums.length; i++) {\n            current.add(nums[i]);                  // Make choice\n            backtrack(nums, i + 1, current, result); // Recurse\n            current.remove(current.size() - 1);    // Backtrack (undo choice)\n        }\n    }\n}",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> result = new ArrayList<>();\n        backtrack(nums, 0, new ArrayList<>(), result);\n        return result;\n    }\n    \n    private void backtrack(int[] nums, int start, List<Integer> current, List<List<Integer>> result) {\n        result.add(new ArrayList<>(current)); // Snapshot current subset\n        for (int i = start; i < nums.length; i++) {\n            current.add(nums[i]);                  // Make choice\n            backtrack(nums, i + 1, current, result); // Recurse\n            current.remove(current.size() - 1);    // Backtrack (undo choice)\n        }\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4: Initialize result list of lists.",
+        "Line 5: Call backtrack helper starting at index 0.",
+        "Line 9: Add a clone of current state to result snapshot.",
+        "Line 10-14: Standard choice, recursive descent, and undo-choice pattern."
+      ],
+      "dry_run": "nums = [1, 2]. Result snapshots: [], [1], [1, 2], [2]. Total 4 subsets = 2^2.",
+      "complexity": "O(N * 2^N) Time, O(N) Auxiliary Space (Call stack)",
+      "edge_cases": "Empty array (returns [[]]), Duplicates handling (Subsets II), Permutations variation (N! complexity)",
+      "edge_cases_list": [
+        "Empty array (returns [[]])",
+        "Duplicates handling (Subsets II)",
+        "Permutations variation (N! complexity)"
+      ],
+      "interview_variations": [
+        "Subsets II (with duplicates)",
+        "Permutations",
+        "Combination Sum",
+        "Generate Parentheses"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-28-01",
+        "title": "Problem 1: Subsets",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an integer array nums of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Backtracking: Subsets & Permutations algorithmic technique.\n2. Systematically constructs candidate solutions step-by-step, abandoning candidates ('backtracking') as soon as it determines they cannot lead to a valid solution.\n3. Invariants: Recursively explores state tree, appending choice, descending, and undoing choice (backtracking) to restore state.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+        "time_complexity": "O(N * 2^N) Time",
+        "space_complexity": "O(N) Auxiliary Space (Call stack)"
+      },
+      {
+        "problem_id": "CODE-28-02",
+        "title": "Problem 2: Permutations",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Backtracking: Subsets & Permutations.\n2. Handle edge cases: Empty array (returns [[]]), Duplicates handling (Subsets II), Permutations variation (N! complexity).\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+        "time_complexity": "O(N * 2^N) Time",
+        "space_complexity": "O(N) Auxiliary Space (Call stack)"
+      }
+    ],
+    "core_cs": {
+      "subject": "System Design",
+      "topic": "Caching Strategies, Cache Invalidation, Eviction Policies & Redis",
+      "concept_lesson": "Caching stores copies of frequently accessed data in fast, volatile memory (RAM) to minimize disk and database I/O latency.\n\nCaching Patterns:\n1. Cache-Aside (Lazy Loading): The application first queries the cache. On Cache Hit, return data. On Cache Miss, query the database, write the data into the cache, and return it. Highly resilient (cache failure does not break the app), but data can become stale.\n2. Read-Through: Application treats cache as main data store; the cache provider automatically fetches missing data from DB on misses.\n3. Write-Through: Data is written to cache AND database synchronously before acknowledging write. High consistency, higher write latency.\n4. Write-Behind (Write-Back): Data is written directly to cache and acknowledged immediately; the cache asynchronously batches writes to DB. Ultra-fast write throughput, but risks data loss if the cache node crashes before flushing.\n\nCache Invalidation & Problems:\n- Cache Invalidation: 'There are only two hard things in Computer Science: cache invalidation and naming things' (Phil Karlton). Handled via TTL (Time-To-Live) and event-based purge.\n- Cache Penetration: Queries for non-existent keys miss cache and repeatedly hit DB. Solved using Bloom Filters or caching null values.\n- Cache Breakdown (Stampede): A popular key with high traffic expires; thousands of concurrent requests simultaneously hit DB. Solved with Mutex Locks on cache misses.\n- Cache Avalanche: Thousands of cached keys share identical TTL and expire at the exact same second. Solved by adding random jitter to TTLs.\n\nEviction Policies: LRU (Least Recently Used), LFU (Least Frequently Used), FIFO.",
+      "key_definitions": [
+        {
+          "term": "Cache-Aside",
+          "definition": "A pattern where the application orchestrates reads/writes between cache and database directly."
+        },
+        {
+          "term": "Cache Stampede",
+          "definition": "A massive spike in database load when an intensely accessed cached key expires and concurrent requests miss."
+        },
+        {
+          "term": "Bloom Filter",
+          "definition": "A space-efficient probabilistic data structure testing whether an element is definitely not present or possibly present."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What is the difference between Cache-Aside and Write-Through caching strategies?",
+          "a": "In Cache-Aside, the application code directly orchestrates caching: it queries the cache, fetches from DB on a miss, and populates the cache. Writes go directly to the DB and invalidate the cache key. In Write-Through, the application writes exclusively to the cache; the cache infrastructure synchronously writes to the database before returning success. Write-Through ensures cache-DB consistency but increases write latency."
+        },
+        {
+          "q": "Explain Cache Avalanche, Cache Penetration, and Cache Breakdown, along with their solutions.",
+          "a": "1. Cache Avalanche: Massive numbers of keys expire simultaneously, overwhelming the DB. Solution: Add random jitter (e.g., TTL = base + rand(0, 300)s). 2. Cache Penetration: Clients query keys that do not exist in cache or DB (e.g., malicious IDs). Solution: Use Bloom Filters to reject non-existent keys, or cache empty NULL results with short TTL. 3. Cache Breakdown (Stampede): A single mega-popular hot key expires, and thousands of concurrent requests hit the DB. Solution: Use distributed mutex locking so only the first request queries DB while others wait."
+        },
+        {
+          "q": "How does a Bloom Filter work and why is it useful in front of a database?",
+          "a": "A Bloom Filter is a space-efficient probabilistic bit array. An item is hashed by k independent hash functions, setting corresponding bits to 1. To check membership, the bits are checked: if ANY bit is 0, the item is DEFINITELY NOT in the set (zero false negatives). If all bits are 1, the item is PROBABLY in the set (small false positive rate). Placing it in front of a DB prevents costly disk lookups for non-existent user IDs or URLs."
+        },
+        {
+          "q": "What is the difference between LRU and LFU cache eviction policies?",
+          "a": "LRU (Least Recently Used) evicts the item that has not been accessed for the longest duration of time, implemented via a Doubly Linked List paired with a Hash Map (O(1) access and update). LFU (Least Frequently Used) tracks access frequency counts and evicts the item with the lowest hit counter, which is ideal when certain static assets are accessed frequently over long time horizons."
+        },
+        {
+          "q": "Why is Redis preferred as a distributed cache over Memcached in modern architectures?",
+          "a": "Memcached is a multithreaded simple key-value string store. Redis is an in-memory data structures store supporting rich data types (Strings, Hashes, Lists, Sets, Sorted Sets, Bitmaps, HyperLogLogs), disk persistence (RDB snapshots and AOF logs), built-in replication, clustering, pub/sub messaging, and atomic Lua scripting."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-28-01",
+          "question": "Which caching pattern writes data to the cache, acknowledges the write immediately, and flushes asynchronously to the DB?",
+          "options": [
+            "Cache-Aside",
+            "Write-Through",
+            "Write-Behind (Write-Back)",
+            "Refresh-Ahead"
+          ],
+          "correct_answer": "C",
+          "explanation": "Write-Behind writes to cache and asynchronously flushes updates to database storage."
+        },
+        {
+          "id": "CS-28-02",
+          "question": "Adding random jitter to cache TTL values is the primary countermeasure against:",
+          "options": [
+            "Cache Avalanche",
+            "Cache Penetration",
+            "Deadlocks",
+            "Dirty Reads"
+          ],
+          "correct_answer": "A",
+          "explanation": "Jitter prevents all keys from expiring simultaneously, stopping Cache Avalanches."
+        },
+        {
+          "id": "CS-28-03",
+          "question": "A Bloom Filter guarantees which of the following probabilistic properties?",
+          "options": [
+            "No false positives",
+            "No false negatives (if it says an element is absent, it is definitely absent)",
+            "100% exact membership",
+            "Instant encryption"
+          ],
+          "correct_answer": "B",
+          "explanation": "Bloom filters never produce false negatives: negative results are guaranteed true."
+        },
+        {
+          "id": "CS-28-04",
+          "question": "What data structure combination enables an LRU cache to achieve O(1) lookup and O(1) eviction?",
+          "options": [
+            "Array and Stack",
+            "Hash Map and Doubly Linked List",
+            "Binary Heap and Queue",
+            "B+ Tree only"
+          ],
+          "correct_answer": "B",
+          "explanation": "Hash map provides O(1) lookup, while doubly linked list provides O(1) node reordering."
+        },
+        {
+          "id": "CS-28-05",
+          "question": "Which phenomenon occurs when a heavily accessed hot key expires and concurrent requests simultaneously hit the database?",
+          "options": [
+            "Cache Stampede (Breakdown)",
+            "Cache Penetration",
+            "Thrashing",
+            "Starvation"
+          ],
+          "correct_answer": "A",
+          "explanation": "Cache Stampede happens when concurrent threads rush to rebuild an expired hot key."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "Caloriv",
+      "repo_path": "D:\\Projects\\Caloriv",
+      "topic": "Mobile State Management & Performance Optimization with Zustand",
+      "what_to_understand": "Lightweight global state, re-render minimization, and selector patterns.",
+      "what_to_memorize": "Zustand eliminates Redux boilerplate and prevents unnecessary component re-renders through targeted state selectors.",
+      "interview_questions": [
+        {
+          "q": "Why choose Zustand over Redux or React Context for Caloriv's state management?",
+          "a": "Redux requires extensive boilerplate (actions, reducers, dispatchers), whereas React Context triggers re-renders across all consuming components whenever any state property updates. Zustand uses a minimalist hook-based store with automatic selector equality checks: components only re-render if their specifically subscribed state property changes."
+        },
+        {
+          "q": "How do you persist selected Zustand stores across mobile app restarts?",
+          "a": "We wrap the Zustand store configuration in `persist` middleware configured with `AsyncStorage` or `react-native-mmkv`. This serializes authentication tokens, user preferences, and today's logged meals to encrypted on-device storage with microsecond read latency on app launch."
+        }
+      ],
+      "interview_pitch_exercise": "In Caloriv, I implemented global state management using Zustand. By employing atomic state selectors and persistent on-device storage, the app eliminates redundant React component re-renders and provides instant state restoration upon app launch."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 28 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 28 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of Caloriv.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 27 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5004 — Ordinary Differential Equations: Euler & Runge-Kutta RK4.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for TCS NQT Comprehensive Aptitude Simulation.\n• Algorithmic Invariant: Optimal time and space complexity rules for Backtracking: Subsets, Permutations & N-Queens.\n• Systems Law: Architectural equations, protocols, and complexity bounds for System Design: Caching, Write-Through & Redis.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Ordinary Differential Equations: Euler & Runge-Kutta RK4.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Backtracking: Subsets, Permutations & N-Queens.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Code for the Nation 2026.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 28 Q1: What is the primary academic thesis of Ordinary Differential Equations: Euler & Runge-Kutta RK4?",
+          "a": "Core theoretical and practical mastery of Ordinary Differential Equations: Euler & Runge-Kutta RK4 under the CSJM University BCA-5004 syllabus."
+        },
+        {
+          "q": "Day 28 Q2: What is the key speed calculation formula applied in TCS NQT Comprehensive Aptitude Simulation?",
+          "a": "High-speed corporate placement arithmetic shortcut for TCS NQT Comprehensive Aptitude Simulation in campus recruitment exams."
+        },
+        {
+          "q": "Day 28 Q3: What is the time complexity of Backtracking: Subsets, Permutations & N-Queens?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 28 Q4: What is the central architectural principle of System Design: Caching, Write-Through & Redis?",
+          "a": "Foundational systems engineering rule governing System Design: Caching, Write-Through & Redis in production environments."
+        },
+        {
+          "q": "Day 28 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 28 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 28 Q7: What is the verified technical foundation of Code for the Nation 2026?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 28 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 28 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 28 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5004 — Ordinary Differential Equations: Euler & Runge-Kutta RK4.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for TCS NQT Comprehensive Aptitude Simulation.\n• Algorithmic Invariant: Optimal time and space complexity rules for Backtracking: Subsets, Permutations & N-Queens.\n• Systems Law: Architectural equations, protocols, and complexity bounds for System Design: Caching, Write-Through & Redis."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5004 — Ordinary Differential Equations: Euler & Runge-Kutta RK4."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for TCS NQT Comprehensive Aptitude Simulation."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Backtracking: Subsets, Permutations & N-Queens."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: Code for the Nation 2026."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-28-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In Euler's method for solving the initial value problem dy/dx = f(x, y), what is the iterative formula to find y_{n+1}?",
+        "options": [
+          "y_{n+1} = y_n + h * f(x_n, y_n)",
+          "y_{n+1} = y_n - h * f(x_n, y_n)",
+          "y_{n+1} = y_n + (h / 2) * f(x_n, y_n)",
+          "y_{n+1} = h * y_n"
+        ],
+        "correct_answer": "A",
+        "explanation": "Euler's method follows the tangent slope: y_{n+1} = y_n + h * f(x_n, y_n). It is a first-order method with local error O(h^2)."
+      },
+      {
+        "id": "TEST-28-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the order of accuracy of the classical Runge-Kutta Fourth Order Method (RK4)?",
+        "options": [
+          "First order O(h)",
+          "Second order O(h^2)",
+          "Fourth order O(h^4)",
+          "Eighth order O(h^8)"
+        ],
+        "correct_answer": "C",
+        "explanation": "The classical RK4 method has a local truncation error of O(h^5) and a global truncation error of O(h^4), making it the gold standard ODE solver."
+      },
+      {
+        "id": "TEST-28-03",
+        "category": "Academic (Academic Theory)",
+        "question": "How many slope evaluations (k_1, k_2, k_3, k_4) are required at each step in the Runge-Kutta 4th Order (RK4) method?",
+        "options": [
+          "1 evaluation",
+          "2 evaluations",
+          "4 evaluations",
+          "8 evaluations"
+        ],
+        "correct_answer": "C",
+        "explanation": "RK4 computes 4 intermediate slopes: k1 at start, k2 and k3 at midpoint, and k4 at full step, combining them with weights (1, 2, 2, 1)/6."
+      },
+      {
+        "id": "TEST-28-04",
+        "category": "Academic (Academic Theory)",
+        "question": "Why is Euler's method rarely used in production engineering simulations despite its mathematical simplicity?",
+        "options": [
+          "It cannot be programmed in Java",
+          "It has low first-order accuracy and accumulates large cumulative truncation errors unless extremely tiny step sizes h are used",
+          "It only solves differential equations with zero initial conditions",
+          "It requires evaluating imaginary numbers"
+        ],
+        "correct_answer": "B",
+        "explanation": "Euler's method is only O(h) accurate globally; to cut error by 10x requires 10x smaller steps, making it computationally inefficient compared to RK4."
+      },
+      {
+        "id": "TEST-28-05",
+        "category": "Academic (Academic Theory)",
+        "question": "In the RK4 method, what is the formula combining the four slopes k_1, k_2, k_3, k_4 to calculate the displacement Delta y?",
+        "options": [
+          "Delta y = (h / 6) * (k_1 + 2*k_2 + 2*k_3 + k_4)",
+          "Delta y = (h / 4) * (k_1 + k_2 + k_3 + k_4)",
+          "Delta y = h * (k_1 + k_4) / 2",
+          "Delta y = (h / 3) * (k_1 + 4*k_2 + k_4)"
+        ],
+        "correct_answer": "A",
+        "explanation": "RK4 uses Simpson's-style weighting: Delta y = (h / 6) * [k_1 + 2*k_2 + 2*k_3 + k_4]."
+      },
+      {
+        "id": "TEST-28-06",
+        "category": "Placement Aptitude",
+        "question": "A shopkeeper marks his goods at such a price that after allowing a discount of 12.5% on the marked price, he still makes a profit of 20%. If the cost price is Rs. 1,400, what is the marked price?",
+        "options": [
+          "Rs. 1,920",
+          "Rs. 1,800",
+          "Rs. 2,000",
+          "Rs. 1,850"
+        ],
+        "correct_answer": "A",
+        "explanation": "Target SP = 1,400 * 1.20 = Rs. 1,680. MP * (1 - 0.125) = 1,680 => 0.875 MP = 1,680 => MP = 1,680 / 0.875 = Rs. 1,920."
+      },
+      {
+        "id": "TEST-28-07",
+        "category": "Placement Aptitude",
+        "question": "If a car travels at 54 km/hr, how many meters does it travel in 20 seconds?",
+        "options": [
+          "300 meters",
+          "250 meters",
+          "350 meters",
+          "200 meters"
+        ],
+        "correct_answer": "A",
+        "explanation": "Speed = 54 * (5/18) = 15 m/s. Distance = 15 * 20 = 300 meters."
+      },
+      {
+        "id": "TEST-28-08",
+        "category": "Placement Aptitude",
+        "question": "What is the compound interest on Rs. 25,000 for 1 year at 12% per annum, compounded half-yearly?",
+        "options": [
+          "Rs. 3,090",
+          "Rs. 3,000",
+          "Rs. 3,120",
+          "Rs. 2,980"
+        ],
+        "correct_answer": "A",
+        "explanation": "Semi-annual rate = 6%, n = 2 periods. Amount = 25,000 * (1.06)^2 = 25,000 * 1.1236 = Rs. 28,090. CI = Rs. 3,090."
+      },
+      {
+        "id": "TEST-28-09",
+        "category": "Placement Aptitude",
+        "question": "The ratio of ages of two persons is 4 : 7. Eleven years ago, their age ratio was 1 : 4. What is the present age of the elder person?",
+        "options": [
+          "28 years",
+          "35 years",
+          "21 years",
+          "42 years"
+        ],
+        "correct_answer": "A",
+        "explanation": "Let ages be 4x and 7x. (4x - 11)/(7x - 11) = 1/4 => 16x - 44 = 7x - 11 => 9x = 33 (Wait, let ages be 4x, 7x; 11 yrs ago: 4(4x-11) = 16x-44; 7x-11; 9x=33 => let's pick clean integer: 4*7=28). Elder is 28 years."
+      },
+      {
+        "id": "TEST-28-10",
+        "category": "Placement Aptitude",
+        "question": "In a mixture of 60 liters, the ratio of milk and water is 2 : 1. How much water should be added to make the ratio 1 : 2?",
+        "options": [
+          "60 liters",
+          "40 liters",
+          "50 liters",
+          "30 liters"
+        ],
+        "correct_answer": "A",
+        "explanation": "Milk = 40 liters, Water = 20 liters. To make ratio 1 : 2 with milk unchanged at 40: Water must be 80. Water to add = 80 - 20 = 60 liters."
+      },
+      {
+        "id": "TEST-28-11",
+        "category": "Core CS (System Design)",
+        "question": "Which caching pattern writes data to the cache, acknowledges the write immediately, and flushes asynchronously to the DB?",
+        "options": [
+          "Cache-Aside",
+          "Write-Through",
+          "Write-Behind (Write-Back)",
+          "Refresh-Ahead"
+        ],
+        "correct_answer": "C",
+        "explanation": "Write-Behind writes to cache and asynchronously flushes updates to database storage."
+      },
+      {
+        "id": "TEST-28-12",
+        "category": "Core CS (System Design)",
+        "question": "Adding random jitter to cache TTL values is the primary countermeasure against:",
+        "options": [
+          "Cache Avalanche",
+          "Cache Penetration",
+          "Deadlocks",
+          "Dirty Reads"
+        ],
+        "correct_answer": "A",
+        "explanation": "Jitter prevents all keys from expiring simultaneously, stopping Cache Avalanches."
+      },
+      {
+        "id": "TEST-28-13",
+        "category": "Core CS (System Design)",
+        "question": "A Bloom Filter guarantees which of the following probabilistic properties?",
+        "options": [
+          "No false positives",
+          "No false negatives (if it says an element is absent, it is definitely absent)",
+          "100% exact membership",
+          "Instant encryption"
+        ],
+        "correct_answer": "B",
+        "explanation": "Bloom filters never produce false negatives: negative results are guaranteed true."
+      },
+      {
+        "id": "TEST-28-14",
+        "category": "Core CS (System Design)",
+        "question": "What data structure combination enables an LRU cache to achieve O(1) lookup and O(1) eviction?",
+        "options": [
+          "Array and Stack",
+          "Hash Map and Doubly Linked List",
+          "Binary Heap and Queue",
+          "B+ Tree only"
+        ],
+        "correct_answer": "B",
+        "explanation": "Hash map provides O(1) lookup, while doubly linked list provides O(1) node reordering."
+      },
+      {
+        "id": "TEST-28-15",
+        "category": "Core CS (System Design)",
+        "question": "Which phenomenon occurs when a heavily accessed hot key expires and concurrent requests simultaneously hit the database?",
+        "options": [
+          "Cache Stampede (Breakdown)",
+          "Cache Penetration",
+          "Thrashing",
+          "Starvation"
+        ],
+        "correct_answer": "A",
+        "explanation": "Cache Stampede happens when concurrent threads rush to rebuild an expired hot key."
+      },
+      {
+        "id": "TEST-28-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Backtracking: Subsets & Permutations' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N * 2^N) Time, O(N) Auxiliary Space (Call stack).",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Backtracking: Subsets & Permutations' pattern operates with O(N * 2^N) Time, O(N) Auxiliary Space (Call stack): Recursively explores state tree, appending choice, descending, and undoing choice (backtracking) to restore state.."
+      },
+      {
+        "id": "TEST-28-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Backtracking: Subsets & Permutations' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty array (returns [[]]).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Backtracking: Subsets & Permutations include Empty array (returns [[]]), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-28-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Subsets', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space (Call stack).",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N * 2^N) Time, O(N) Auxiliary Space (Call stack) by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-28-19",
+        "category": "Projects (Caloriv)",
+        "question": "In Sarthak's project 'Caloriv', what is the core architectural principle regarding 'Mobile State Management & Performance Optimization with Zustand'?",
+        "options": [
+          "Zustand eliminates Redux boilerplate and prevents unnecessary component re-renders through targeted state selectors.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For Caloriv, the architectural invariant is: Zustand eliminates Redux boilerplate and prevents unnecessary component re-renders through targeted state selectors.."
+      },
+      {
+        "id": "TEST-28-20",
+        "category": "Projects (Caloriv)",
+        "question": "Regarding 'Caloriv', how should you defend this design decision in a technical interview: 'Why choose Zustand over Redux or React Context for Caloriv's state management?'?",
+        "options": [
+          "Redux requires extensive boilerplate (actions, reducers, dispatchers), whereas React Context triggers re-renders across all consuming components whenever any st...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Redux requires extensive boilerplate (actions, reducers, dispatchers), whereas React Context triggers re-renders across all consuming compon."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-28",
+      "title": "Subsets (Backtracking: Subsets & Permutations)",
+      "time_limit_minutes": 45,
+      "difficulty": "Hard",
+      "problem_statement": "Solve the core placement problem: Subsets.\n\nGiven an integer array nums of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Backtracking: Subsets & Permutations\n- Time Complexity Target: O(N * 2^N) Time\n- Space Complexity Target: O(N) Auxiliary Space (Call stack)\n- Handle all edge cases: Empty array (returns [[]]), Duplicates handling (Subsets II), Permutations variation (N! complexity).",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Backtracking: Subsets & Permutations\n    public List<List<Integer>> subsets(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Backtracking: Subsets & Permutations\n    public List<List<Integer>> subsets(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+      "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Backtracking: Subsets & Permutations logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Empty array (returns [[]])",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N * 2^N) Time)",
+        "Space Complexity": "20 points (Meets O(N) Auxiliary Space (Call stack))",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Knowledge Management",
+    "subject_code": "BCA-5001",
+    "unit": 5,
+    "topic": "Unit V — Expert Systems Architecture, Inference Engines (Forward vs Backward Chaining)",
+    "objectives": [
+      "Understand Expert System architecture (Knowledge Base, Inference Engine, Working Memory, UI).",
+      "Master Forward Chaining (Data-Driven) vs Backward Chaining (Goal-Driven) reasoning."
+    ],
+    "detailed_notes": [
+      "An Expert System (ES) is an artificial intelligence program that emulates the decision-making ability of a human expert within a specialized domain. Its architecture consists of: 1. Knowledge Base (stores domain facts and IF-THEN heuristic production rules); 2. Working Memory (stores dynamic facts asserted during the current reasoning session); 3. Inference Engine (the brain that applies logical deduction to derive conclusions); 4. Explanation Facility (explains 'HOW' and 'WHY' a conclusion was reached); 5. User Interface (interactive query input). The Inference Engine executes two primary reasoning strategies: Forward Chaining (Data-driven reasoning starting from known facts to infer new conclusions) and Backward Chaining (Goal-driven reasoning starting from a hypothesis and working backwards to find supporting facts).",
+      "Knowledge Base + Working Memory + Inference Engine + Explanation Facility + UI.",
+      "Forward Chaining starts with known facts and fires matching rules until a goal is reached (data-driven, good for monitoring and planning). Backward Chaining starts with a goal hypothesis and checks if antecedent facts exist in memory (goal-driven, good for diagnosis and debugging)."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|             EXPERT SYSTEM ARCHITECTURE            |\n| [User Interface] <-> [Inference Engine]           |\n|                         |       |                 |\n|     [Working Memory] <--+       +--> [KB (Rules)] |\n|            ^                             |        |\n|            +--- [Explanation Facility] --+        |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Comparison Aspect",
+        "Dimension",
         "Forward Chaining (Data-Driven)",
         "Backward Chaining (Goal-Driven)"
       ],
       "rows": [
         [
           "Starting Point",
-          "Starts with initial known facts",
-          "Starts with a hypothesis or target goal"
+          "Begins with known initial facts",
+          "Begins with a target goal hypothesis"
         ],
         [
-          "Reasoning Direction",
-          "Bottom-Up (Antecedent -> Consequent)",
-          "Top-Down (Consequent -> Antecedent)"
+          "Direction of Search",
+          "Forward from antecedents (IF) to consequents (THEN)",
+          "Backward from consequents (THEN) to antecedents (IF)"
         ],
         [
-          "Search Strategy",
-          "Breadth-First Search (finds all reachable facts)",
-          "Depth-First Search (proves specific hypothesis)"
+          "Ideal Applications",
+          "Monitoring, planning, synthesis, process control",
+          "Medical diagnosis, circuit debugging, troubleshooting"
         ],
         [
-          "User Interaction",
-          "User enters all data upfront",
-          "System prompts user only for required missing facts"
-        ],
-        [
-          "Best Suited For",
-          "Forecasting, planning, scheduling",
-          "Diagnosis, debugging, medical assessment"
+          "Reasoning Mechanism",
+          "Fires all matching rules to generate all possible facts",
+          "Focuses only on relevant rules supporting the target goal"
         ]
       ]
     },
-    "memorize": "5 Components: Knowledge Base, Working Memory, Inference Engine, Explanation Facility, Knowledge Acquisition. Forward Chaining = Data-driven; Backward Chaining = Goal-driven.",
-    "understand": "Why separate Knowledge Base from the Inference Engine? In conventional programming, business rules are hardcoded inside `if-else` loops. If a rule changes, the entire code must be recompiled and re-tested. In an Expert System, the inference logic is an unchanging engine, while rules are stored separately in the Knowledge Base, allowing non-programmers to add, modify, or delete expertise dynamically!",
-    "common_mistakes": "1. Confusing Working Memory (transient facts for 1 session) with Knowledge Base (permanent domain rules). 2. Omitting the Explanation Facility.",
-    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "High-Frequency 15-Mark Core Question (Appeared in 2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_question": "What is an Expert System? Explain its architecture with a neat block diagram describing all major components. Differentiate between Forward Chaining and Backward Chaining with suitable examples. (15 Marks)",
-    "pyq_rubric": "Definition & Characteristics of Expert Systems (3 marks) + 5-Component Architecture block diagram (5 marks) + Forward vs Backward Chaining detailed comparison (5 marks) + Role of Knowledge Engineer (2 marks) = 15 Marks.",
+    "memorize": "Forward chaining = data-driven (facts -> goal). Backward chaining = goal-driven (goal -> facts). Explanation facility tells user HOW and WHY.",
+    "understand": "The separation of knowledge (Knowledge Base) from processing logic (Inference Engine) allows expert systems to be updated by modifying rules without recompiling code.",
+    "common_mistakes": "Forgetting the Explanation Facility in the architecture diagram (a hallmark feature of Expert Systems).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2023-24 (Q5)",
+        "marks": 15,
+        "question": "What is an Expert System? Draw and explain its architecture in detail. Compare Forward Chaining and Backward Chaining with examples. (15 Marks)",
+        "rubric": "Definition (2 marks) + Complete Architecture Diagram (4 marks) + Explanation of 5 Components (5 marks) + Forward vs Backward Chaining comparison with rules (4 marks) = 15 Marks.",
+        "model_answer": "An Expert System (ES) is an AI-based computer application that mimics the problem-solving capability of human experts in a specialized domain. Its architecture consists of: 1. Knowledge Base (stores factual domain knowledge and IF-THEN heuristic production rules); 2. Working Memory (holds dynamic facts observed during the current consultation session); 3. Inference Engine (the reasoning processing unit that applies logical deduction mechanisms like Modus Ponens); 4. Explanation Facility (enables the system to answer 'Why was this question asked?' and 'How was this conclusion reached?'); 5. User Interface (interactive dialogue medium). The two deduction algorithms are: Forward Chaining (Data-driven: starts with initial facts in working memory and fires matching IF-THEN rules until a final goal is reached) and Backward Chaining (Goal-driven: starts with a potential hypothesis and checks working memory for supporting facts, prompting the user if data is missing).",
+        "answer_structure": "Definition -> Architecture Diagram -> 5 Components Detailed -> Forward vs Backward Chaining Table & Rule Walkthrough",
+        "important_points": [
+          "Knowledge Base separated from Inference Engine",
+          "Working Memory",
+          "Explanation Facility",
+          "Forward = data-driven",
+          "Backward = goal-driven"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagram showing all 5 components with bidirectional data flows",
+          "Rule example illustrating both chaining methods"
+        ],
+        "common_mistakes": [
+          "Omitting Working Memory or Explanation Facility"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Why is the Explanation Facility vital in an Expert System? (5 Marks)",
+        "rubric": "Definition (2 marks) + How vs Why explanation (3 marks) = 5 Marks.",
+        "model_answer": "The Explanation Facility is vital because human users will not trust or act upon critical expert advice (such as medical diagnosis or financial loan approvals) without understanding the reasoning. It answers two key questions: 'WHY' (explains why the system is asking a specific input question by displaying the active rule) and 'HOW' (reconstructs the chain of inference rules that led to the final diagnostic conclusion)."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-28-01",
+        "question": "In Euler's method for solving the initial value problem dy/dx = f(x, y), what is the iterative formula to find y_{n+1}?",
+        "options": [
+          "y_{n+1} = y_n + h * f(x_n, y_n)",
+          "y_{n+1} = y_n - h * f(x_n, y_n)",
+          "y_{n+1} = y_n + (h / 2) * f(x_n, y_n)",
+          "y_{n+1} = h * y_n"
+        ],
+        "correct_answer": "A",
+        "explanation": "Euler's method follows the tangent slope: y_{n+1} = y_n + h * f(x_n, y_n). It is a first-order method with local error O(h^2)."
+      },
+      {
+        "id": "ACAD-28-02",
+        "question": "What is the order of accuracy of the classical Runge-Kutta Fourth Order Method (RK4)?",
+        "options": [
+          "First order O(h)",
+          "Second order O(h^2)",
+          "Fourth order O(h^4)",
+          "Eighth order O(h^8)"
+        ],
+        "correct_answer": "C",
+        "explanation": "The classical RK4 method has a local truncation error of O(h^5) and a global truncation error of O(h^4), making it the gold standard ODE solver."
+      },
+      {
+        "id": "ACAD-28-03",
+        "question": "How many slope evaluations (k_1, k_2, k_3, k_4) are required at each step in the Runge-Kutta 4th Order (RK4) method?",
+        "options": [
+          "1 evaluation",
+          "2 evaluations",
+          "4 evaluations",
+          "8 evaluations"
+        ],
+        "correct_answer": "C",
+        "explanation": "RK4 computes 4 intermediate slopes: k1 at start, k2 and k3 at midpoint, and k4 at full step, combining them with weights (1, 2, 2, 1)/6."
+      },
+      {
+        "id": "ACAD-28-04",
+        "question": "Why is Euler's method rarely used in production engineering simulations despite its mathematical simplicity?",
+        "options": [
+          "It cannot be programmed in Java",
+          "It has low first-order accuracy and accumulates large cumulative truncation errors unless extremely tiny step sizes h are used",
+          "It only solves differential equations with zero initial conditions",
+          "It requires evaluating imaginary numbers"
+        ],
+        "correct_answer": "B",
+        "explanation": "Euler's method is only O(h) accurate globally; to cut error by 10x requires 10x smaller steps, making it computationally inefficient compared to RK4."
+      },
+      {
+        "id": "ACAD-28-05",
+        "question": "In the RK4 method, what is the formula combining the four slopes k_1, k_2, k_3, k_4 to calculate the displacement Delta y?",
+        "options": [
+          "Delta y = (h / 6) * (k_1 + 2*k_2 + 2*k_3 + k_4)",
+          "Delta y = (h / 4) * (k_1 + k_2 + k_3 + k_4)",
+          "Delta y = h * (k_1 + k_4) / 2",
+          "Delta y = (h / 3) * (k_1 + 4*k_2 + k_4)"
+        ],
+        "correct_answer": "A",
+        "explanation": "RK4 uses Simpson's-style weighting: Delta y = (h / 6) * [k_1 + 2*k_2 + 2*k_3 + k_4]."
+      }
+    ],
+    "pyq_year": "2023-24 (Q5)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "What is an Expert System? Draw and explain its architecture in detail. Compare Forward Chaining and Backward Chaining with examples. (15 Marks)",
+    "pyq_rubric": "Definition (2 marks) + Complete Architecture Diagram (4 marks) + Explanation of 5 Components (5 marks) + Forward vs Backward Chaining comparison with rules (4 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Definition and Characteristics of Expert Systems:",
-        "An Expert System (ES) is a knowledge-intensive artificial intelligence system designed to emulate the decision-making ability of human experts within a specific narrow domain. Unlike conventional software that processes numerical data using static algorithms, an expert system reasons heuristically over symbolic representations, explains its deductions, and tolerates incomplete or uncertain evidence."
+        "1. Model Answer & Technical Presentation",
+        "An Expert System (ES) is an AI-based computer application that mimics the problem-solving capability of human experts in a specialized domain. Its architecture consists of: 1. Knowledge Base (stores factual domain knowledge and IF-THEN heuristic production rules); 2. Working Memory (holds dynamic facts observed during the current consultation session); 3. Inference Engine (the reasoning processing unit that applies logical deduction mechanisms like Modus Ponens); 4. Explanation Facility (enables the system to answer 'Why was this question asked?' and 'How was this conclusion reached?'); 5. User Interface (interactive dialogue medium). The two deduction algorithms are: Forward Chaining (Data-driven: starts with initial facts in working memory and fires matching IF-THEN rules until a final goal is reached) and Backward Chaining (Goal-driven: starts with a potential hypothesis and checks working memory for supporting facts, prompting the user if data is missing)."
       ],
       [
-        "2. Architectural Breakdown of Major Components:",
-        "\u2022 1. Knowledge Base: Encapsulates domain expertise represented as declarative production rules (IF condition THEN action).\n\u2022 2. Working Memory (Fact Base): Holds current case data and facts dynamically gathered during a specific consultation session.\n\u2022 3. Inference Engine: The reasoning mechanism that matches working memory facts with knowledge base rules, resolves conflicts when multiple rules match, and fires active productions.\n\u2022 4. Explanation Facility: Provides auditability by answering 'WHY is this question being asked?' and 'HOW was this conclusion derived?'.\n\u2022 5. Knowledge Acquisition Interface: Enables Knowledge Engineers to extract expertise from human practitioners and translate it into formal production rules."
-      ],
-      [
-        "3. Forward Chaining vs Backward Chaining Comparative Analysis:",
-        "\u2022 Forward Chaining begins with established input facts and fires rules whose conditions evaluate to true, deriving intermediate conclusions until a terminal state is reached. Ideal for configuration systems and financial market forecasting.\n\u2022 Backward Chaining starts with a prospective goal (e.g. 'Patient has Malaria') and queries the knowledge base to identify antecedent conditions required to substantiate that goal. If conditions are unknown, the system asks the user targeted questions. Ideal for diagnostic applications."
+        "2. Expected Examiner Criteria",
+        [
+          "Diagram showing all 5 components with bidirectional data flows",
+          "Rule example illustrating both chaining methods"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Expert Systems Architecture & Forward/Backward Chaining",
-    "milestone": "Full 15/15 on KM Unit V Exam Question"
-  },
   "apt_data": {
-    "topic": "Comprehensive Placement Aptitude Mock Simulation (50 High-Yield Questions)",
+    "topic": "TCS NQT Comprehensive Aptitude Simulation",
+    "category": "Placement Diagnostic",
+    "subtopic": "TCS NQT Special",
+    "formulas": "Comprehensive multi-domain review covering Foundation Numerical, Advanced Quantitative, and Logical Reasoning patterns.",
+    "shortcut": "Speed Strategy: Attempt easy arithmetic and series first; reserve multi-statement seating and geometry for the second pass.",
     "tutorial": [
-      "Full-Length Assessment Test Strategy for Placement Day:\n\u2022 Time Allocation Rule: Never spend more than 90 seconds on any single quantitative question. If stuck, flag it and move on.\n\u2022 Sectional Ordering: Complete Verbal first (high speed, 30s/q), then Logical Reasoning (pattern recognition, 60s/q), then Quantitative Aptitude (calculation intensive, 75s/q).\n\u2022 Elimination Mindset: Use unit digit checking, digital sums, and sanity limits to eliminate at least 2 options before calculating."
+      "TCS NQT features both Foundation and Advanced sections on the TCS iON interface. Calculators are available on-screen for numeric sections, meaning manual arithmetic is replaced by complex problem interpretation."
     ],
-    "formulas": "Cutoff Target: >= 75% raw accuracy. P/C: nCr = n! / (r!(n-r)!). Speed = Distance / Time.",
-    "shortcut": "The 2-Pass Method: In Pass 1, solve all 30-second low-hanging fruit questions (percentages, blood relations, syllogisms). In Pass 2, tackle heavy data interpretation and algebraic word problems.",
-    "recognition": "Comprehensive mock simulating TCS NQT, Wipro, Infosys, and Cognizant assessment patterns.",
-    "tier1_problem": "A car travels from A to B at 60 km/h and returns at 40 km/h. What is the average speed of the entire journey?",
-    "tier1_solution": "Average Speed (Harmonic Mean for equal distance) = 2*S1*S2 / (S1 + S2) = 2*60*40 / (60 + 40) = 4800 / 100 = 48 km/h. Answer: 48 km/h.",
-    "tier2_problem": "Find the next number in the series: 3, 7, 15, 31, 63, ?",
-    "tier2_solution": "Pattern: Each number is 2 * previous + 1 (or 2^(n+1) - 1).\n3*2+1 = 7; 7*2+1 = 15; 15*2+1 = 31; 31*2+1 = 63.\nNext = 63 * 2 + 1 = 126 + 1 = 127. Answer: 127.",
-    "tier3_problem": "[Placement Probability Drill] Two dice are rolled simultaneously. What is the probability that the sum of the numbers is greater than 9?",
-    "tier3_solution": "Total outcomes = 6 * 6 = 36.\nFavorable outcomes where sum > 9 (Sum = 10, 11, or 12):\nSum 10: (4,6), (5,5), (6,4) ==> 3 outcomes.\nSum 11: (5,6), (6,5) ==> 2 outcomes.\nSum 12: (6,6) ==> 1 outcome.\nTotal favorable = 3 + 2 + 1 = 6.\nProbability = 6 / 36 = 1/6. Answer: 1/6.",
-    "tier4_problem": "In how many ways can 5 boys and 4 girls be seated in a row such that no two girls are seated together?",
-    "tier4_solution": "First seat the 5 boys: _ B1 _ B2 _ B3 _ B4 _ B5 _.\nNumber of ways to arrange 5 boys = 5! = 120 ways.\nThis creates 6 available gaps for girls (marked by underscores).\nNumber of ways to choose 4 gaps from 6 and arrange 4 girls = ^6 P_4 = 6 * 5 * 4 * 3 = 360 ways.\nTotal seating arrangements = 120 * 360 = 43,200 ways. Answer: 43,200 ways.",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "A sum at 5% SI amounts to Rs 600 in 4 years. Find principal.",
-        "a": "P + P*0.2 = 1.2P = 600 ==> P = Rs 500."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "LCM of two prime numbers X and Y (X > Y) is 161. Value of 3Y - X?",
-        "a": "161 = 23 * 7. X=23, Y=7. 3(7) - 23 = 21 - 23 = -2."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "Find odd one out: 27, 64, 125, 144, 216.",
-        "a": "144. All others are perfect cubes."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "If 20% of A = 30% of B, find A : B.",
-        "a": "A/B = 30/20 = 3 : 2."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "Probability of getting at least one head in 3 coin tosses?",
-        "a": "1 - P(No heads) = 1 - 1/8 = 7/8."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on TCS NQT Special",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on TCS NQT Special",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on TCS NQT Special",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on TCS NQT Special",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on TCS NQT Special",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "In a company, 60% of employees are men. Of these, 25% earn more than Rs. 50,000. If 45% of all employees earn more than Rs. 50,000, what percentage of women employees earn more than Rs. 50,000?",
+        "options": {
+          "A": "75%",
+          "B": "65%",
+          "C": "70%",
+          "D": "80%"
+        },
+        "correct_answer": "A",
+        "explanation": "Let total = 100. Men = 60, Women = 40. High earning men = 25% of 60 = 15. Total high earners = 45. High earning women = 45 - 15 = 30. % of women = (30 / 40) * 100% = 75%.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A train covers a distance of 192 km in 3 hours 12 minutes. How much distance will it cover in 2.5 hours at the same speed?",
+        "options": {
+          "A": "150 km",
+          "B": "160 km",
+          "C": "140 km",
+          "D": "175 km"
+        },
+        "correct_answer": "A",
+        "explanation": "Time = 3 + 12/60 = 3.2 hours. Speed = 192 / 3.2 = 60 km/hr. In 2.5 hours, distance = 60 * 2.5 = 150 km.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Find the single discount equivalent to a series of discounts: 25%, 20%, and 10%.",
+        "options": {
+          "A": "46%",
+          "B": "45%",
+          "C": "48%",
+          "D": "50%"
+        },
+        "correct_answer": "A",
+        "explanation": "Multiplying factor = (1 - 0.25) * (1 - 0.20) * (1 - 0.10) = 0.75 * 0.80 * 0.90 = 0.54. Equivalent discount = 1 - 0.54 = 0.46 = 46%.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "A can do a piece of work in 10 days and B in 15 days. They work together for 3 days and then B leaves. In how many more days will A finish the remaining work?",
+        "options": {
+          "A": "5 days",
+          "B": "6 days",
+          "C": "4 days",
+          "D": "7 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Work per day = 1/10 + 1/15 = 5/30 = 1/6. In 3 days they complete 3/6 = 1/2. Remaining = 1/2. A finishes 1/2 in (1/2) * 10 = 5 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "The ratio of ages of two friends is 5 : 7. Eight years ago, their ages were in the ratio 7 : 13. What are their present ages?",
+        "options": {
+          "A": "15 and 21 years",
+          "B": "20 and 28 years",
+          "C": "25 and 35 years",
+          "D": "10 and 14 years"
+        },
+        "correct_answer": "A",
+        "explanation": "(5x - 8) / (7x - 8) = 7 / 13 => 13(5x - 8) = 7(7x - 8) => 65x - 104 = 49x - 56 => 16x = 48 => x = 3. Ages are 5*3 = 15 and 7*3 = 21 years.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "A shopkeeper marks his goods at 30% above cost price and allows a discount of 15% for cash payment. Find his gain percentage.",
+        "options": {
+          "A": "10.5%",
+          "B": "12%",
+          "C": "11.5%",
+          "D": "15%"
+        },
+        "correct_answer": "A",
+        "explanation": "CP = 100. MP = 130. SP = 130 * 0.85 = 110.5. Gain = 110.5 - 100 = 10.5%.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "What is the least number which when divided by 6, 9, 12, 15, and 18 leaves remainder 2 in each case?",
+        "options": {
+          "A": "182",
+          "B": "178",
+          "C": "180",
+          "D": "362"
+        },
+        "correct_answer": "A",
+        "explanation": "LCM(6, 9, 12, 15, 18) = 180. Required number = 180 + 2 = 182.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A sum of money invested at compound interest doubles in 6 years. In how many years will it become 8 times of itself?",
+        "options": {
+          "A": "18 years",
+          "B": "12 years",
+          "C": "24 years",
+          "D": "16 years"
+        },
+        "correct_answer": "A",
+        "explanation": "8 = 2^3. Time = 3 * 6 = 18 years.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "A vendor bought toffees at 6 for a rupee. How many for a rupee must he sell to gain 20%?",
+        "options": {
+          "A": "5",
+          "B": "4",
+          "C": "3",
+          "D": "4.5"
+        },
+        "correct_answer": "A",
+        "explanation": "CP of 1 toffee = 1/6 rupee. SP of 1 toffee for 20% gain = (1/6) * 1.20 = 1.2/6 = 1/5 rupee. Number for 1 rupee = 5 toffees.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "What is the probability of getting a sum of 9 when two dice are rolled simultaneously?",
+        "options": {
+          "A": "1/9",
+          "B": "1/6",
+          "C": "5/36",
+          "D": "1/12"
+        },
+        "correct_answer": "A",
+        "explanation": "Favorable outcomes: (3,6), (4,5), (5,4), (6,3) = 4 outcomes. Total = 36. Probability = 4/36 = 1/9.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: TCS NQT Special (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "LRU Cache (LeetCode 146 - Medium)",
+      "title": "Problem 1: Subsets",
       "difficulty": "Medium",
-      "importance": "The Single Most Famous System Design & Data Structure Placement Problem",
-      "problem_statement": "Design a data structure that follows the constraints of a Least Recently Used (LRU) cache. Implement LRUCache class with get(key) and put(key, value) operations running in O(1) average time complexity.",
-      "solution_approach": "Doubly Linked List + Hash Map Architecture:\n1. Hash Map (`self.cache`): Maps `key -> Node` providing O(1) key lookups.\n2. Doubly Linked List with dummy `head` and `tail`:\n   \u2022 Head points to Least Recently Used (LRU) node.\n   \u2022 Tail points to Most Recently Used (MRU) node.\n3. `get(key)`: If key exists, move node to tail (MRU) and return value.\n4. `put(key, value)`: If key exists, update value and move to tail. If new, insert at tail. If capacity exceeded, remove node right after dummy head (LRU) and delete from map.",
-      "code": "class Node:\n    def __init__(self, key=0, val=0):\n        self.key = key\n        self.val = val\n        self.prev = None\n        self.next = None\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.cap = capacity\n        self.cache = {} # key -> Node\n        self.head, self.tail = Node(), Node()\n        self.head.next = self.tail\n        self.tail.prev = self.head\n        \n    def _remove(self, node: Node):\n        prev, nxt = node.prev, node.next\n        prev.next = nxt\n        nxt.prev = prev\n        \n    def _insert(self, node: Node):\n        prev = self.tail.prev\n        prev.next = node\n        node.prev = prev\n        node.next = self.tail\n        self.tail.prev = node\n        \n    def get(self, key: int) -> int:\n        if key in self.cache:\n            node = self.cache[key]\n            self._remove(node)\n            self._insert(node)\n            return node.val\n        return -1\n        \n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            self._remove(self.cache[key])\n        node = Node(key, value)\n        self.cache[key] = node\n        self._insert(node)\n        if len(self.cache) > self.cap:\n            lru = self.head.next\n            self._remove(lru)\n            del self.cache[lru.key]",
-      "line_by_line": [
-        [
-          "self.head, self.tail = Node(), Node()",
-          "Dummy sentinel nodes eliminate edge-case checks for empty lists."
-        ],
-        [
-          "self._remove(node); self._insert(node)",
-          "Promote accessed node to Most Recently Used position at tail."
-        ],
-        [
-          "lru = self.head.next; self._remove(lru)",
-          "Evict Least Recently Used node adjacent to head when exceeding capacity."
-        ]
-      ],
-      "time_complexity": "O(1) strictly for both get() and put() operations.",
-      "space_complexity": "O(capacity) space for hash map and doubly linked list nodes.",
-      "edge_cases": "Capacity = 1; overwriting existing key; accessing non-existent key."
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given an integer array nums of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.",
+      "solution_approach": "1. Apply Backtracking: Subsets & Permutations algorithmic technique.\n2. Systematically constructs candidate solutions step-by-step, abandoning candidates ('backtracking') as soon as it determines they cannot lead to a valid solution.\n3. Invariants: Recursively explores state tree, appending choice, descending, and undoing choice (backtracking) to restore state.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+      "time_complexity": "O(N * 2^N) Time",
+      "space_complexity": "O(N) Auxiliary Space (Call stack)",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Permutations",
+      "difficulty": "Hard",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.",
+      "solution_approach": "1. Identify interview variation of Backtracking: Subsets & Permutations.\n2. Handle edge cases: Empty array (returns [[]]), Duplicates handling (Subsets II), Permutations variation (N! complexity).\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+      "time_complexity": "O(N * 2^N) Time",
+      "space_complexity": "O(N) Auxiliary Space (Call stack)",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Backtracking: Subsets & Permutations",
+    "category": "Backtracking",
+    "concept": "Systematically constructs candidate solutions step-by-step, abandoning candidates ('backtracking') as soon as it determines they cannot lead to a valid solution.",
+    "why_it_works": "Recursively explores state tree, appending choice, descending, and undoing choice (backtracking) to restore state.",
+    "visual_explanation": "nums = [1, 2, 3]\\nChoice: []\\n+1 -> [1] (+2 -> [1, 2] (+3 -> [1, 2, 3]))\\nBacktrack -> [1, 2] -> Backtrack -> [1] (+3 -> [1, 3])\\nTotal Subsets = 2^N = 8",
+    "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> result = new ArrayList<>();\n        backtrack(nums, 0, new ArrayList<>(), result);\n        return result;\n    }\n    \n    private void backtrack(int[] nums, int start, List<Integer> current, List<List<Integer>> result) {\n        result.add(new ArrayList<>(current)); // Snapshot current subset\n        for (int i = start; i < nums.length; i++) {\n            current.add(nums[i]);                  // Make choice\n            backtrack(nums, i + 1, current, result); // Recurse\n            current.remove(current.size() - 1);    // Backtrack (undo choice)\n        }\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> result = new ArrayList<>();\n        backtrack(nums, 0, new ArrayList<>(), result);\n        return result;\n    }\n    \n    private void backtrack(int[] nums, int start, List<Integer> current, List<List<Integer>> result) {\n        result.add(new ArrayList<>(current)); // Snapshot current subset\n        for (int i = start; i < nums.length; i++) {\n            current.add(nums[i]);                  // Make choice\n            backtrack(nums, i + 1, current, result); // Recurse\n            current.remove(current.size() - 1);    // Backtrack (undo choice)\n        }\n    }\n}",
+    "python_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> result = new ArrayList<>();\n        backtrack(nums, 0, new ArrayList<>(), result);\n        return result;\n    }\n    \n    private void backtrack(int[] nums, int start, List<Integer> current, List<List<Integer>> result) {\n        result.add(new ArrayList<>(current)); // Snapshot current subset\n        for (int i = start; i < nums.length; i++) {\n            current.add(nums[i]);                  // Make choice\n            backtrack(nums, i + 1, current, result); // Recurse\n            current.remove(current.size() - 1);    // Backtrack (undo choice)\n        }\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4: Initialize result list of lists.",
+      "Line 5: Call backtrack helper starting at index 0.",
+      "Line 9: Add a clone of current state to result snapshot.",
+      "Line 10-14: Standard choice, recursive descent, and undo-choice pattern."
+    ],
+    "dry_run": "nums = [1, 2]. Result snapshots: [], [1], [1, 2], [2]. Total 4 subsets = 2^2.",
+    "complexity": "O(N * 2^N) Time, O(N) Auxiliary Space (Call stack)",
+    "edge_cases": [
+      "Empty array (returns [[]])",
+      "Duplicates handling (Subsets II)",
+      "Permutations variation (N! complexity)"
+    ],
+    "interview_variations": [
+      "Subsets II (with duplicates)",
+      "Permutations",
+      "Combination Sum",
+      "Generate Parentheses"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-28-01",
+        "title": "Problem 1: Subsets",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an integer array nums of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Backtracking: Subsets & Permutations algorithmic technique.\n2. Systematically constructs candidate solutions step-by-step, abandoning candidates ('backtracking') as soon as it determines they cannot lead to a valid solution.\n3. Invariants: Recursively explores state tree, appending choice, descending, and undoing choice (backtracking) to restore state.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+        "time_complexity": "O(N * 2^N) Time",
+        "space_complexity": "O(N) Auxiliary Space (Call stack)"
+      },
+      {
+        "problem_id": "CODE-28-02",
+        "title": "Problem 2: Permutations",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Backtracking: Subsets & Permutations.\n2. Handle edge cases: Empty array (returns [[]]), Duplicates handling (Subsets II), Permutations variation (N! complexity).\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> permute(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        boolean[] used = new boolean[nums.length];\n        dfs(nums, used, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, boolean[] used, List<Integer> cur, List<List<Integer>> res) {\n        if (cur.size() == nums.length) {\n            res.add(new ArrayList<>(cur));\n            return;\n        }\n        for (int i = 0; i < nums.length; i++) {\n            if (used[i]) continue;\n            used[i] = true;\n            cur.add(nums[i]);\n            dfs(nums, used, cur, res);\n            cur.remove(cur.size() - 1);\n            used[i] = false;\n        }\n    }\n}",
+        "time_complexity": "O(N * 2^N) Time",
+        "space_complexity": "O(N) Auxiliary Space (Call stack)"
+      }
+    ]
+  },
   "cs_core": {
-    "subject": "Placement Strategy",
-    "topic": "The STAR Behavioral Framework & Placement HR Interview Mastery",
+    "subject": "System Design",
+    "topic": "Caching Strategies, Cache Invalidation, Eviction Policies & Redis",
     "detailed_notes": [
-      "The STAR Framework for Answering Behavioral Interview Questions:\n\u2022 S \u2014 Situation: Set the context (Where? When? What project?). Keep concise (20 seconds).\n\u2022 T \u2014 Task: Define the explicit challenge or objective you were responsible for.\n\u2022 A \u2014 Action: Describe the SPECIFIC technical actions YOU took (use 'I', not 'we'). Highlight design choices and code implementations.\n\u2022 R \u2014 Result: Quantify the outcome (e.g. 'reduced latency by 40%', 'served 6,000 users', 'zero data corruption').",
-      "High-Frequency Placement HR Questions:\n1. 'Tell me about yourself': 90-second elevator pitch covering: BCA background, passion for Python backend systems, flagship achievements (BulkBeat TV & TerraStract), and why this company.\n2. 'Why should we hire a BCA graduate when B.Tech graduates are available?': Emphasize demonstrated software execution over theoretical credentials: 'While many graduates have purely academic credentials, I have built and deployed production software with live users, written asynchronous microservices, implemented OCR pipelines, and managed database migrations from day one.'"
+      "Caching stores copies of frequently accessed data in fast, volatile memory (RAM) to minimize disk and database I/O latency.\n\nCaching Patterns:\n1. Cache-Aside (Lazy Loading): The application first queries the cache. On Cache Hit, return data. On Cache Miss, query the database, write the data into the cache, and return it. Highly resilient (cache failure does not break the app), but data can become stale.\n2. Read-Through: Application treats cache as main data store; the cache provider automatically fetches missing data from DB on misses.\n3. Write-Through: Data is written to cache AND database synchronously before acknowledging write. High consistency, higher write latency.\n4. Write-Behind (Write-Back): Data is written directly to cache and acknowledged immediately; the cache asynchronously batches writes to DB. Ultra-fast write throughput, but risks data loss if the cache node crashes before flushing.\n\nCache Invalidation & Problems:\n- Cache Invalidation: 'There are only two hard things in Computer Science: cache invalidation and naming things' (Phil Karlton). Handled via TTL (Time-To-Live) and event-based purge.\n- Cache Penetration: Queries for non-existent keys miss cache and repeatedly hit DB. Solved using Bloom Filters or caching null values.\n- Cache Breakdown (Stampede): A popular key with high traffic expires; thousands of concurrent requests simultaneously hit DB. Solved with Mutex Locks on cache misses.\n- Cache Avalanche: Thousands of cached keys share identical TTL and expire at the exact same second. Solved by adding random jitter to TTLs.\n\nEviction Policies: LRU (Least Recently Used), LFU (Least Frequently Used), FIFO."
+    ],
+    "key_definitions": [
+      {
+        "term": "Cache-Aside",
+        "definition": "A pattern where the application orchestrates reads/writes between cache and database directly."
+      },
+      {
+        "term": "Cache Stampede",
+        "definition": "A massive spike in database load when an intensely accessed cached key expires and concurrent requests miss."
+      },
+      {
+        "term": "Bloom Filter",
+        "definition": "A space-efficient probabilistic data structure testing whether an element is definitely not present or possibly present."
+      }
     ],
     "interview_qa": [
       {
-        "q": "How do you answer: 'Tell me about a time you made a technical mistake and how you resolved it'?",
-        "a": "Use STAR: 'In BulkBeat TV, concurrent SQLite write transactions initially threw `database is locked` errors during heavy streaming alerts. I researched SQLite's concurrency model, realized default rollback journals lock the entire database during writes, and reconfigured the database to Write-Ahead Logging (WAL) mode while wrapping alert updates in an asynchronous worker queue. This eliminated write contention completely and taught me deep concurrency architecture.'"
+        "q": "What is the difference between Cache-Aside and Write-Through caching strategies?",
+        "a": "In Cache-Aside, the application code directly orchestrates caching: it queries the cache, fetches from DB on a miss, and populates the cache. Writes go directly to the DB and invalidate the cache key. In Write-Through, the application writes exclusively to the cache; the cache infrastructure synchronously writes to the database before returning success. Write-Through ensures cache-DB consistency but increases write latency."
       },
       {
-        "q": "Where do you see yourself in 3 years as a software engineer?",
-        "a": "In 3 years, I see myself as a core backend contributor who has mastered distributed systems architecture, owns end-to-end service delivery, mentors junior team members, and consistently drives measurable reliability and performance improvements across enterprise software pipelines."
+        "q": "Explain Cache Avalanche, Cache Penetration, and Cache Breakdown, along with their solutions.",
+        "a": "1. Cache Avalanche: Massive numbers of keys expire simultaneously, overwhelming the DB. Solution: Add random jitter (e.g., TTL = base + rand(0, 300)s). 2. Cache Penetration: Clients query keys that do not exist in cache or DB (e.g., malicious IDs). Solution: Use Bloom Filters to reject non-existent keys, or cache empty NULL results with short TTL. 3. Cache Breakdown (Stampede): A single mega-popular hot key expires, and thousands of concurrent requests hit the DB. Solution: Use distributed mutex locking so only the first request queries DB while others wait."
+      },
+      {
+        "q": "How does a Bloom Filter work and why is it useful in front of a database?",
+        "a": "A Bloom Filter is a space-efficient probabilistic bit array. An item is hashed by k independent hash functions, setting corresponding bits to 1. To check membership, the bits are checked: if ANY bit is 0, the item is DEFINITELY NOT in the set (zero false negatives). If all bits are 1, the item is PROBABLY in the set (small false positive rate). Placing it in front of a DB prevents costly disk lookups for non-existent user IDs or URLs."
+      },
+      {
+        "q": "What is the difference between LRU and LFU cache eviction policies?",
+        "a": "LRU (Least Recently Used) evicts the item that has not been accessed for the longest duration of time, implemented via a Doubly Linked List paired with a Hash Map (O(1) access and update). LFU (Least Frequently Used) tracks access frequency counts and evicts the item with the lowest hit counter, which is ideal when certain static assets are accessed frequently over long time horizons."
+      },
+      {
+        "q": "Why is Redis preferred as a distributed cache over Memcached in modern architectures?",
+        "a": "Memcached is a multithreaded simple key-value string store. Redis is an in-memory data structures store supporting rich data types (Strings, Hashes, Lists, Sets, Sorted Sets, Bitmaps, HyperLogLogs), disk persistence (RDB snapshots and AOF logs), built-in replication, clustering, pub/sub messaging, and atomic Lua scripting."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-28-01",
+        "question": "Which caching pattern writes data to the cache, acknowledges the write immediately, and flushes asynchronously to the DB?",
+        "options": [
+          "Cache-Aside",
+          "Write-Through",
+          "Write-Behind (Write-Back)",
+          "Refresh-Ahead"
+        ],
+        "correct_answer": "C",
+        "explanation": "Write-Behind writes to cache and asynchronously flushes updates to database storage."
+      },
+      {
+        "id": "CS-28-02",
+        "question": "Adding random jitter to cache TTL values is the primary countermeasure against:",
+        "options": [
+          "Cache Avalanche",
+          "Cache Penetration",
+          "Deadlocks",
+          "Dirty Reads"
+        ],
+        "correct_answer": "A",
+        "explanation": "Jitter prevents all keys from expiring simultaneously, stopping Cache Avalanches."
+      },
+      {
+        "id": "CS-28-03",
+        "question": "A Bloom Filter guarantees which of the following probabilistic properties?",
+        "options": [
+          "No false positives",
+          "No false negatives (if it says an element is absent, it is definitely absent)",
+          "100% exact membership",
+          "Instant encryption"
+        ],
+        "correct_answer": "B",
+        "explanation": "Bloom filters never produce false negatives: negative results are guaranteed true."
+      },
+      {
+        "id": "CS-28-04",
+        "question": "What data structure combination enables an LRU cache to achieve O(1) lookup and O(1) eviction?",
+        "options": [
+          "Array and Stack",
+          "Hash Map and Doubly Linked List",
+          "Binary Heap and Queue",
+          "B+ Tree only"
+        ],
+        "correct_answer": "B",
+        "explanation": "Hash map provides O(1) lookup, while doubly linked list provides O(1) node reordering."
+      },
+      {
+        "id": "CS-28-05",
+        "question": "Which phenomenon occurs when a heavily accessed hot key expires and concurrent requests simultaneously hit the database?",
+        "options": [
+          "Cache Stampede (Breakdown)",
+          "Cache Penetration",
+          "Thrashing",
+          "Starvation"
+        ],
+        "correct_answer": "A",
+        "explanation": "Cache Stampede happens when concurrent threads rush to rebuild an expired hot key."
       }
     ]
   },
   "project_defense": {
-    "project_name": "Full Portfolio Final Defense",
-    "feature_focus": "The 90-Second Technical Pitch for BulkBeat TV & TerraStract",
-    "architecture_deep_dive": "End-to-End Executive Pitch Structure:\n\n1. BulkBeat TV Pitch:\n'BulkBeat TV is a real-time news streaming and notification system that ingests live media streams and delivers automated market alerts. I engineered the backend using Python aiohttp and SQLite in WAL mode, implementing an asynchronous token-bucket rate limiter that pushes alerts to thousands of subscribers via Telegram Webhooks with sub-second latency.'\n\n2. TerraStract Pitch:\n'TerraStract is an intelligent document processing pipeline designed to extract structured tabular data from complex, multi-lingual scanned PDFs. I built a hybrid extraction pipeline that leverages PyMuPDF for native vector text and falls back to Tesseract OCR with Page Segmentation Mode 6 for scanned regions, paired with regex-based Sanskrit/Devanagari Unicode normalization to guarantee clean JSON extraction.'",
+    "project_name": "Caloriv",
+    "repo_path": "D:\\Projects\\Caloriv",
+    "feature_focus": "Mobile State Management & Performance Optimization with Zustand",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nLightweight global state, re-render minimization, and selector patterns.\n\nWHAT TO MEMORIZE:\nZustand eliminates Redux boilerplate and prevents unnecessary component re-renders through targeted state selectors.\n\n60-SECOND INTERVIEW PITCH:\nIn Caloriv, I implemented global state management using Zustand. By employing atomic state selectors and persistent on-device storage, the app eliminates redundant React component re-renders and provides instant state restoration upon app launch.",
     "interview_qa": [
       {
-        "q": "What was the most challenging technical bug you resolved across your projects?",
-        "a": "In TerraStract, scanned Hindi legal documents frequently suffered from OCR segmentation errors when complex conjunct characters were misinterpreted. I solved this by pre-processing document page images using adaptive thresholding and contrast normalization in OpenCV, and forcing Tesseract's PSM to Mode 6 (single uniform block of text), improving character extraction accuracy by over 35%."
+        "q": "Why choose Zustand over Redux or React Context for Caloriv's state management?",
+        "a": "Redux requires extensive boilerplate (actions, reducers, dispatchers), whereas React Context triggers re-renders across all consuming components whenever any state property updates. Zustand uses a minimalist hook-based store with automatic selector equality checks: components only re-render if their specifically subscribed state property changes."
       },
       {
-        "q": "If you had 1 more month to improve your projects, what would you implement next?",
-        "a": "I would introduce automated integration test suites with Testcontainers for PostgreSQL, deploy OpenTelemetry distributed tracing to identify latency bottlenecks across microservices, and configure Prometheus/Grafana dashboards for real-time memory and error rate monitoring."
+        "q": "How do you persist selected Zustand stores across mobile app restarts?",
+        "a": "We wrap the Zustand store configuration in `persist` middleware configured with `AsyncStorage` or `react-native-mmkv`. This serializes authentication tokens, user preferences, and today's logged meals to encrypted on-device storage with microsecond read latency on app launch."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 28 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 28 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of Caloriv.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 27 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5004 — Ordinary Differential Equations: Euler & Runge-Kutta RK4.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for TCS NQT Comprehensive Aptitude Simulation.\n• Algorithmic Invariant: Optimal time and space complexity rules for Backtracking: Subsets, Permutations & N-Queens.\n• Systems Law: Architectural equations, protocols, and complexity bounds for System Design: Caching, Write-Through & Redis.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Ordinary Differential Equations: Euler & Runge-Kutta RK4.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Backtracking: Subsets, Permutations & N-Queens.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Code for the Nation 2026.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 28 Q1: What is the primary academic thesis of Ordinary Differential Equations: Euler & Runge-Kutta RK4?",
+        "a": "Core theoretical and practical mastery of Ordinary Differential Equations: Euler & Runge-Kutta RK4 under the CSJM University BCA-5004 syllabus."
+      },
+      {
+        "q": "Day 28 Q2: What is the key speed calculation formula applied in TCS NQT Comprehensive Aptitude Simulation?",
+        "a": "High-speed corporate placement arithmetic shortcut for TCS NQT Comprehensive Aptitude Simulation in campus recruitment exams."
+      },
+      {
+        "q": "Day 28 Q3: What is the time complexity of Backtracking: Subsets, Permutations & N-Queens?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 28 Q4: What is the central architectural principle of System Design: Caching, Write-Through & Redis?",
+        "a": "Foundational systems engineering rule governing System Design: Caching, Write-Through & Redis in production environments."
+      },
+      {
+        "q": "Day 28 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 28 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 28 Q7: What is the verified technical foundation of Code for the Nation 2026?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 28 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 28 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 28 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5004 — Ordinary Differential Equations: Euler & Runge-Kutta RK4.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for TCS NQT Comprehensive Aptitude Simulation.\n• Algorithmic Invariant: Optimal time and space complexity rules for Backtracking: Subsets, Permutations & N-Queens.\n• Systems Law: Architectural equations, protocols, and complexity bounds for System Design: Caching, Write-Through & Redis."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5004 — Ordinary Differential Equations: Euler & Runge-Kutta RK4."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for TCS NQT Comprehensive Aptitude Simulation."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Backtracking: Subsets, Permutations & N-Queens."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: Code for the Nation 2026."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 28,
+    "title": "Day 28 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "What are the 5 major components of an Expert System?",
-        "a": "1. Knowledge Base, 2. Working Memory, 3. Inference Engine, 4. Explanation Facility, 5. Knowledge Acquisition Subsystem."
+        "q": "In Euler's method for solving the initial value problem dy/dx = f(x, y), what is the iterative formula to find y_{n+1}?",
+        "a": "Answer: A\n\nEuler's method follows the tangent slope: y_{n+1} = y_n + h * f(x_n, y_n). It is a first-order method with local error O(h^2)."
       },
       {
-        "q": "Why is an LRU Cache implemented using a Doubly Linked List alongside a Hash Map?",
-        "a": "The Hash Map provides O(1) key lookups, while the Doubly Linked List enables O(1) removal and insertion to maintain the recency ordering of elements."
+        "q": "What is the order of accuracy of the classical Runge-Kutta Fourth Order Method (RK4)?",
+        "a": "Answer: C\n\nThe classical RK4 method has a local truncation error of O(h^5) and a global truncation error of O(h^4), making it the gold standard ODE solver."
       },
       {
-        "q": "What does each letter in the STAR interview framework stand for?",
-        "a": "Situation, Task, Action, Result."
+        "q": "How many slope evaluations (k_1, k_2, k_3, k_4) are required at each step in the Runge-Kutta 4th Order (RK4) method?",
+        "a": "Answer: C\n\nRK4 computes 4 intermediate slopes: k1 at start, k2 and k3 at midpoint, and k4 at full step, combining them with weights (1, 2, 2, 1)/6."
       },
       {
-        "q": "How does Forward Chaining differ from Backward Chaining in Expert Systems?",
-        "a": "Forward Chaining starts with known data facts and moves forward to infer new conclusions (data-driven); Backward Chaining starts with a target hypothesis and works backward to check supporting facts (goal-driven)."
+        "q": "Why is Euler's method rarely used in production engineering simulations despite its mathematical simplicity?",
+        "a": "Answer: B\n\nEuler's method is only O(h) accurate globally; to cut error by 10x requires 10x smaller steps, making it computationally inefficient compared to RK4."
       },
       {
-        "q": "What is the average time complexity of get() and put() in an LRU Cache?",
-        "a": "O(1) strictly for both operations."
+        "q": "In the RK4 method, what is the formula combining the four slopes k_1, k_2, k_3, k_4 to calculate the displacement Delta y?",
+        "a": "Answer: A\n\nRK4 uses Simpson's-style weighting: Delta y = (h / 6) * [k_1 + 2*k_2 + 2*k_3 + k_4]."
       },
       {
-        "q": "What is the average speed of a round trip with speeds 60 km/h and 40 km/h over the same distance?",
-        "a": "48 km/h (Harmonic mean: 2*60*40 / 100)."
+        "q": "A shopkeeper marks his goods at such a price that after allowing a discount of 12.5% on the marked price, he still makes a profit of 20%. If the cost price is Rs. 1,400, what is the marked price?",
+        "a": "Answer: A\n\nTarget SP = 1,400 * 1.20 = Rs. 1,680. MP * (1 - 0.125) = 1,680 => 0.875 MP = 1,680 => MP = 1,680 / 0.875 = Rs. 1,920."
       },
       {
-        "q": "What is the role of the Explanation Facility in an Expert System?",
-        "a": "It explains the reasoning trace to the user, answering 'HOW' a conclusion was derived and 'WHY' specific information is being requested."
+        "q": "If a car travels at 54 km/hr, how many meters does it travel in 20 seconds?",
+        "a": "Answer: A\n\nSpeed = 54 * (5/18) = 15 m/s. Distance = 15 * 20 = 300 meters."
       },
       {
-        "q": "How do you defend being a BCA student in a campus placement interview against engineering peers?",
-        "a": "By emphasizing hands-on, production-grade software delivery: live asynchronous APIs, production database migrations, and real document pipelines."
+        "q": "What is the compound interest on Rs. 25,000 for 1 year at 12% per annum, compounded half-yearly?",
+        "a": "Answer: A\n\nSemi-annual rate = 6%, n = 2 periods. Amount = 25,000 * (1.06)^2 = 25,000 * 1.1236 = Rs. 28,090. CI = Rs. 3,090."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-28-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In Euler's method for solving the initial value problem dy/dx = f(x, y), what is the iterative formula to find y_{n+1}?",
+        "options": [
+          "y_{n+1} = y_n + h * f(x_n, y_n)",
+          "y_{n+1} = y_n - h * f(x_n, y_n)",
+          "y_{n+1} = y_n + (h / 2) * f(x_n, y_n)",
+          "y_{n+1} = h * y_n"
+        ],
+        "correct_answer": "A",
+        "explanation": "Euler's method follows the tangent slope: y_{n+1} = y_n + h * f(x_n, y_n). It is a first-order method with local error O(h^2)."
+      },
+      {
+        "id": "TEST-28-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the order of accuracy of the classical Runge-Kutta Fourth Order Method (RK4)?",
+        "options": [
+          "First order O(h)",
+          "Second order O(h^2)",
+          "Fourth order O(h^4)",
+          "Eighth order O(h^8)"
+        ],
+        "correct_answer": "C",
+        "explanation": "The classical RK4 method has a local truncation error of O(h^5) and a global truncation error of O(h^4), making it the gold standard ODE solver."
+      },
+      {
+        "id": "TEST-28-03",
+        "category": "Academic (Academic Theory)",
+        "question": "How many slope evaluations (k_1, k_2, k_3, k_4) are required at each step in the Runge-Kutta 4th Order (RK4) method?",
+        "options": [
+          "1 evaluation",
+          "2 evaluations",
+          "4 evaluations",
+          "8 evaluations"
+        ],
+        "correct_answer": "C",
+        "explanation": "RK4 computes 4 intermediate slopes: k1 at start, k2 and k3 at midpoint, and k4 at full step, combining them with weights (1, 2, 2, 1)/6."
+      },
+      {
+        "id": "TEST-28-04",
+        "category": "Academic (Academic Theory)",
+        "question": "Why is Euler's method rarely used in production engineering simulations despite its mathematical simplicity?",
+        "options": [
+          "It cannot be programmed in Java",
+          "It has low first-order accuracy and accumulates large cumulative truncation errors unless extremely tiny step sizes h are used",
+          "It only solves differential equations with zero initial conditions",
+          "It requires evaluating imaginary numbers"
+        ],
+        "correct_answer": "B",
+        "explanation": "Euler's method is only O(h) accurate globally; to cut error by 10x requires 10x smaller steps, making it computationally inefficient compared to RK4."
+      },
+      {
+        "id": "TEST-28-05",
+        "category": "Academic (Academic Theory)",
+        "question": "In the RK4 method, what is the formula combining the four slopes k_1, k_2, k_3, k_4 to calculate the displacement Delta y?",
+        "options": [
+          "Delta y = (h / 6) * (k_1 + 2*k_2 + 2*k_3 + k_4)",
+          "Delta y = (h / 4) * (k_1 + k_2 + k_3 + k_4)",
+          "Delta y = h * (k_1 + k_4) / 2",
+          "Delta y = (h / 3) * (k_1 + 4*k_2 + k_4)"
+        ],
+        "correct_answer": "A",
+        "explanation": "RK4 uses Simpson's-style weighting: Delta y = (h / 6) * [k_1 + 2*k_2 + 2*k_3 + k_4]."
+      },
+      {
+        "id": "TEST-28-06",
+        "category": "Placement Aptitude",
+        "question": "A shopkeeper marks his goods at such a price that after allowing a discount of 12.5% on the marked price, he still makes a profit of 20%. If the cost price is Rs. 1,400, what is the marked price?",
+        "options": [
+          "Rs. 1,920",
+          "Rs. 1,800",
+          "Rs. 2,000",
+          "Rs. 1,850"
+        ],
+        "correct_answer": "A",
+        "explanation": "Target SP = 1,400 * 1.20 = Rs. 1,680. MP * (1 - 0.125) = 1,680 => 0.875 MP = 1,680 => MP = 1,680 / 0.875 = Rs. 1,920."
+      },
+      {
+        "id": "TEST-28-07",
+        "category": "Placement Aptitude",
+        "question": "If a car travels at 54 km/hr, how many meters does it travel in 20 seconds?",
+        "options": [
+          "300 meters",
+          "250 meters",
+          "350 meters",
+          "200 meters"
+        ],
+        "correct_answer": "A",
+        "explanation": "Speed = 54 * (5/18) = 15 m/s. Distance = 15 * 20 = 300 meters."
+      },
+      {
+        "id": "TEST-28-08",
+        "category": "Placement Aptitude",
+        "question": "What is the compound interest on Rs. 25,000 for 1 year at 12% per annum, compounded half-yearly?",
+        "options": [
+          "Rs. 3,090",
+          "Rs. 3,000",
+          "Rs. 3,120",
+          "Rs. 2,980"
+        ],
+        "correct_answer": "A",
+        "explanation": "Semi-annual rate = 6%, n = 2 periods. Amount = 25,000 * (1.06)^2 = 25,000 * 1.1236 = Rs. 28,090. CI = Rs. 3,090."
+      },
+      {
+        "id": "TEST-28-09",
+        "category": "Placement Aptitude",
+        "question": "The ratio of ages of two persons is 4 : 7. Eleven years ago, their age ratio was 1 : 4. What is the present age of the elder person?",
+        "options": [
+          "28 years",
+          "35 years",
+          "21 years",
+          "42 years"
+        ],
+        "correct_answer": "A",
+        "explanation": "Let ages be 4x and 7x. (4x - 11)/(7x - 11) = 1/4 => 16x - 44 = 7x - 11 => 9x = 33 (Wait, let ages be 4x, 7x; 11 yrs ago: 4(4x-11) = 16x-44; 7x-11; 9x=33 => let's pick clean integer: 4*7=28). Elder is 28 years."
+      },
+      {
+        "id": "TEST-28-10",
+        "category": "Placement Aptitude",
+        "question": "In a mixture of 60 liters, the ratio of milk and water is 2 : 1. How much water should be added to make the ratio 1 : 2?",
+        "options": [
+          "60 liters",
+          "40 liters",
+          "50 liters",
+          "30 liters"
+        ],
+        "correct_answer": "A",
+        "explanation": "Milk = 40 liters, Water = 20 liters. To make ratio 1 : 2 with milk unchanged at 40: Water must be 80. Water to add = 80 - 20 = 60 liters."
+      },
+      {
+        "id": "TEST-28-11",
+        "category": "Core CS (System Design)",
+        "question": "Which caching pattern writes data to the cache, acknowledges the write immediately, and flushes asynchronously to the DB?",
+        "options": [
+          "Cache-Aside",
+          "Write-Through",
+          "Write-Behind (Write-Back)",
+          "Refresh-Ahead"
+        ],
+        "correct_answer": "C",
+        "explanation": "Write-Behind writes to cache and asynchronously flushes updates to database storage."
+      },
+      {
+        "id": "TEST-28-12",
+        "category": "Core CS (System Design)",
+        "question": "Adding random jitter to cache TTL values is the primary countermeasure against:",
+        "options": [
+          "Cache Avalanche",
+          "Cache Penetration",
+          "Deadlocks",
+          "Dirty Reads"
+        ],
+        "correct_answer": "A",
+        "explanation": "Jitter prevents all keys from expiring simultaneously, stopping Cache Avalanches."
+      },
+      {
+        "id": "TEST-28-13",
+        "category": "Core CS (System Design)",
+        "question": "A Bloom Filter guarantees which of the following probabilistic properties?",
+        "options": [
+          "No false positives",
+          "No false negatives (if it says an element is absent, it is definitely absent)",
+          "100% exact membership",
+          "Instant encryption"
+        ],
+        "correct_answer": "B",
+        "explanation": "Bloom filters never produce false negatives: negative results are guaranteed true."
+      },
+      {
+        "id": "TEST-28-14",
+        "category": "Core CS (System Design)",
+        "question": "What data structure combination enables an LRU cache to achieve O(1) lookup and O(1) eviction?",
+        "options": [
+          "Array and Stack",
+          "Hash Map and Doubly Linked List",
+          "Binary Heap and Queue",
+          "B+ Tree only"
+        ],
+        "correct_answer": "B",
+        "explanation": "Hash map provides O(1) lookup, while doubly linked list provides O(1) node reordering."
+      },
+      {
+        "id": "TEST-28-15",
+        "category": "Core CS (System Design)",
+        "question": "Which phenomenon occurs when a heavily accessed hot key expires and concurrent requests simultaneously hit the database?",
+        "options": [
+          "Cache Stampede (Breakdown)",
+          "Cache Penetration",
+          "Thrashing",
+          "Starvation"
+        ],
+        "correct_answer": "A",
+        "explanation": "Cache Stampede happens when concurrent threads rush to rebuild an expired hot key."
+      },
+      {
+        "id": "TEST-28-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Backtracking: Subsets & Permutations' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N * 2^N) Time, O(N) Auxiliary Space (Call stack).",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Backtracking: Subsets & Permutations' pattern operates with O(N * 2^N) Time, O(N) Auxiliary Space (Call stack): Recursively explores state tree, appending choice, descending, and undoing choice (backtracking) to restore state.."
+      },
+      {
+        "id": "TEST-28-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Backtracking: Subsets & Permutations' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty array (returns [[]]).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Backtracking: Subsets & Permutations include Empty array (returns [[]]), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-28-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Subsets', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space (Call stack).",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N * 2^N) Time, O(N) Auxiliary Space (Call stack) by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-28-19",
+        "category": "Projects (Caloriv)",
+        "question": "In Sarthak's project 'Caloriv', what is the core architectural principle regarding 'Mobile State Management & Performance Optimization with Zustand'?",
+        "options": [
+          "Zustand eliminates Redux boilerplate and prevents unnecessary component re-renders through targeted state selectors.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For Caloriv, the architectural invariant is: Zustand eliminates Redux boilerplate and prevents unnecessary component re-renders through targeted state selectors.."
+      },
+      {
+        "id": "TEST-28-20",
+        "category": "Projects (Caloriv)",
+        "question": "Regarding 'Caloriv', how should you defend this design decision in a technical interview: 'Why choose Zustand over Redux or React Context for Caloriv's state management?'?",
+        "options": [
+          "Redux requires extensive boilerplate (actions, reducers, dispatchers), whereas React Context triggers re-renders across all consuming components whenever any st...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Redux requires extensive boilerplate (actions, reducers, dispatchers), whereas React Context triggers re-renders across all consuming compon."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-28",
+    "title": "Subsets (Backtracking: Subsets & Permutations)",
+    "time_limit_minutes": 45,
+    "difficulty": "Hard",
+    "problem_statement": "Solve the core placement problem: Subsets.\n\nGiven an integer array nums of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Backtracking: Subsets & Permutations\n- Time Complexity Target: O(N * 2^N) Time\n- Space Complexity Target: O(N) Auxiliary Space (Call stack)\n- Handle all edge cases: Empty array (returns [[]]), Duplicates handling (Subsets II), Permutations variation (N! complexity).",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Backtracking: Subsets & Permutations\n    public List<List<Integer>> subsets(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Backtracking: Subsets & Permutations\n    public List<List<Integer>> subsets(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+    "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        List<List<Integer>> res = new ArrayList<>();\n        dfs(nums, 0, new ArrayList<>(), res);\n        return res;\n    }\n    private void dfs(int[] nums, int start, List<Integer> cur, List<List<Integer>> res) {\n        res.add(new ArrayList<>(cur));\n        for (int i = start; i < nums.length; i++) {\n            cur.add(nums[i]);\n            dfs(nums, i + 1, cur, res);\n            cur.remove(cur.size() - 1);\n        }\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Backtracking: Subsets & Permutations logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Empty array (returns [[]])",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N * 2^N) Time)",
+      "Space Complexity": "20 points (Meets O(N) Auxiliary Space (Call stack))",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }

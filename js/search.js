@@ -66,7 +66,7 @@ export class GlobalSearch {
       { type: 'Navigation', title: 'Semester 5 Textbook & Syllabi', subtitle: '5001, 5002, 5003, 5004', hash: '#semester', keywords: 'semester 5 subjects 5001 5002 5003 5004 syllabus' },
       { type: 'Navigation', title: 'University PYQ Explorer', subtitle: 'CSJM Papers (2021-2025)', hash: '#pyqs', keywords: 'pyq previous year questions exam papers' },
       { type: 'Navigation', title: 'Aptitude Interactive Engine', subtitle: 'Quant, Logical, Verbal & Company Patterns', hash: '#aptitude', keywords: 'aptitude quant math reasoning company' },
-      { type: 'Navigation', title: 'Coding Practice Hub', subtitle: '50+ Python DSA Solutions', hash: '#coding', keywords: 'coding dsa leetcode python algorithms' },
+      { type: 'Navigation', title: 'Coding Practice Hub', subtitle: '50+ Java DSA Solutions', hash: '#coding', keywords: 'coding dsa leetcode java algorithms' },
       { type: 'Navigation', title: 'Core Computer Science', subtitle: 'OS, DBMS, Networks, Python', hash: '#core-cs', keywords: 'core cs operating systems dbms sql networks' },
       { type: 'Navigation', title: 'Mock Interview Simulator', subtitle: 'Technical, HR & Project Defense', hash: '#interviews', keywords: 'interview mock hr star technical questions' },
       { type: 'Navigation', title: 'ATS Resume Center', subtitle: 'Python Backend & Software Dev Resumes', hash: '#resumes', keywords: 'resume cv ats backend developer' },

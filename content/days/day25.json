@@ -1,231 +1,2500 @@
 {
   "day": 25,
-  "title": "JSP Architecture & Implicit Objects, Critical Reasoning & Word Break DP",
-  "sem_data": {
-    "subject": "BCA-5002 Java Programming",
-    "topic": "Unit V \u2014 Java Server Pages (JSP): Architecture, 9 Implicit Objects & Lifecycle",
-    "detailed_notes": [
-      "Java Server Pages (JSP) is a server-side presentation technology that allows developers to write standard HTML markup with embedded dynamic Java code snippets, simplifying the creation of dynamic web views compared to Servlets.",
-      "JSP Architecture & Translation Process:\nWhen a client requests a `.jsp` page for the first time:\n1. Translation Phase: The JSP Engine (e.g. Jasper in Apache Tomcat) reads the `.jsp` source and translates it into an equivalent `.java` Servlet source file (e.g. `index_jsp.java`).\n2. Compilation Phase: The Java compiler (`javac`) compiles the generated servlet source into bytecode (`index_jsp.class`).\n3. Loading & Instantiation: The Web Container loads the class file into memory and creates an instance.\n4. Life Cycle Invocation: The container calls `jspInit()` once, then handles every incoming client request by calling `_jspService(HttpServletRequest, HttpServletResponse)`, and finally calls `jspDestroy()` on shutdown.",
-      "The 3 JSP Directive Tags:\n\u2022 `<%@ page ... %>`: Defines page-dependent attributes: `import`, `contentType`, `session`, `isErrorPage`, `errorPage`.\n\u2022 `<%@ include file=\"header.jsp\" %>`: Static compile-time inclusion of external files.\n\u2022 `<%@ taglib uri=\"...\" prefix=\"c\" %>`: Declares custom JSP Standard Tag Libraries (JSTL).",
-      "The 9 JSP Implicit Objects (Available automatically without instantiation):\n1. `request`: Instance of `HttpServletRequest` (HTTP headers, form parameters).\n2. `response`: Instance of `HttpServletResponse` (cookies, redirection).\n3. `out`: Instance of `JspWriter` (streams HTML output to client).\n4. `session`: Instance of `HttpSession` (tracks conversational state across requests).\n5. `application`: Instance of `ServletContext` (global application-wide context shared across all servlets/JSPs).\n6. `config`: Instance of `ServletConfig` (page-specific initialization parameters).\n7. `pageContext`: Instance of `PageContext` (encapsulates entire page execution environment, provides access to all scopes).\n8. `page`: Instance of `Object` (reference to current servlet instance, equivalent to `this`).\n9. `exception`: Instance of `Throwable` (available strictly inside pages marked with `<%@ page isErrorPage=\"true\" %>`)."
+  "title": "Day 25: JavaServer Pages (JSP) Architecture, Lifecycle & 9 Implicit Objects & Dynamic Programming: 0/1 Knapsack & Partition",
+  "streams": {
+    "academic": {
+      "unit": 5,
+      "topic": "Unit V — JavaServer Pages (JSP) Architecture, Lifecycle & 9 Implicit Objects",
+      "objectives": [
+        "Understand JSP translation to Servlets.",
+        "Master JSP lifecycle and the 9 built-in implicit objects."
+      ],
+      "explanation": "JavaServer Pages (JSP) is a server-side technology that simplifies web presentation by allowing Java code to be embedded directly into HTML documents using special tags. When a JSP page is first requested, the JSP engine translates the `.jsp` file into an equivalent Java Servlet source file (`_jsp.java`), compiles it into bytecode (`_jsp.class`), and executes it. The JSP lifecycle methods are: 1. `jspInit()`: Called once on initialization; 2. `_jspService()`: Called on every request to process dynamic content; 3. `jspDestroy()`: Called once on shutdown. JSP provides 9 predefined implicit objects: `request`, `response`, `pageContext`, `session`, `application`, `out`, `config`, `page`, and `exception`.",
+      "definitions": [
+        {
+          "term": "JSP Translation",
+          "definition": "The compilation phase where the JSP engine converts a `.jsp` page into an equivalent Java Servlet source file."
+        },
+        {
+          "term": "Implicit Objects",
+          "definition": "Pre-initialized Java objects available directly inside JSP scriptlets and expressions without explicit declaration."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "JSP Execution Lifecycle",
+          "content": "Translation (.jsp -> .java) -> Compilation (.java -> .class) -> Loading -> Instantiation -> jspInit() -> _jspService() -> jspDestroy()."
+        },
+        {
+          "title": "The 9 Implicit Objects",
+          "content": "request (HttpServletRequest), response (HttpServletResponse), out (JspWriter), session (HttpSession), application (ServletContext), config (ServletConfig), pageContext (PageContext), page (Object/this), exception (Throwable)."
+        }
+      ],
+      "examples": [
+        "Displaying logged-in username in JSP: `Welcome, <%= session.getAttribute(\"user\") %>`."
+      ],
+      "diagram": "+---------------------------------------------------+\n|                  JSP LIFECYCLE                    |\n| [page.jsp] -> (JSP Engine Translation)            |\n| -> [page_jsp.java] -> (javac Compilation)         |\n| -> [page_jsp.class] -> jspInit() -> _jspService() |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Implicit Object",
+          "Underlying Java Class / Interface",
+          "Scope",
+          "Purpose"
+        ],
+        "rows": [
+          [
+            "request",
+            "javax.servlet.http.HttpServletRequest",
+            "Request",
+            "Retrieve HTTP parameters, headers, cookies"
+          ],
+          [
+            "response",
+            "javax.servlet.http.HttpServletResponse",
+            "Page",
+            "Set HTTP status codes, headers, redirects"
+          ],
+          [
+            "out",
+            "javax.servlet.jsp.JspWriter",
+            "Page",
+            "Write text output directly to client stream"
+          ],
+          [
+            "session",
+            "javax.servlet.http.HttpSession",
+            "Session",
+            "Maintain state across multiple requests per user"
+          ],
+          [
+            "application",
+            "javax.servlet.ServletContext",
+            "Application",
+            "Global context shared across all application users"
+          ],
+          [
+            "pageContext",
+            "javax.servlet.jsp.PageContext",
+            "Page",
+            "Central access point to all scopes and attributes"
+          ],
+          [
+            "config",
+            "javax.servlet.ServletConfig",
+            "Page",
+            "Access initialization parameters defined in web.xml"
+          ],
+          [
+            "page",
+            "java.lang.Object (this)",
+            "Page",
+            "Reference to the current generated servlet instance"
+          ],
+          [
+            "exception",
+            "java.lang.Throwable",
+            "Page (isErrorPage=true)",
+            "Capture runtime errors in designated error pages"
+          ]
+        ]
+      },
+      "memorize": "JSP compiles into a Servlet! Lifecycle: jspInit(), _jspService(), jspDestroy(). 9 implicit objects: request, response, out, session, application, config, pageContext, page, exception.",
+      "understand": "JSP is essentially syntax sugar for Servlets designed to separate presentation HTML from backend business logic.",
+      "common_mistakes": "Attempting to use the `exception` implicit object on a standard JSP page without setting `<%@ page isErrorPage='true' %>`.",
+      "exam_writing_guidance": "Draw the JSP translation-to-servlet lifecycle diagram, explain the 3 lifecycle methods, and list all 9 implicit objects in a structured table.",
+      "mini_practice": [
+        "What is the difference between `<%! %>` (declaration) and `<% %>` (scriptlet) tags in JSP?"
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2024-25 (Q5)",
+          "marks": 15,
+          "question": "What is JSP? Explain its architecture and lifecycle with a neat diagram. Describe any six implicit objects available in JSP with examples. (15 Marks)",
+          "rubric": "JSP Definition & Architecture (3 marks) + Translation & Lifecycle Diagram (4 marks) + 3 Lifecycle methods (3 marks) + 6 Implicit Objects detailed (5 marks) = 15 Marks.",
+          "model_answer": "JavaServer Pages (JSP) is an enterprise web technology that allows developers to insert dynamic Java code into static HTML templates using tags. Architecture & Lifecycle: When a user requests `test.jsp` for the first time, the JSP Engine processes the file through distinct lifecycle phases: 1. Translation: The JSP engine translates `test.jsp` into a standard Java servlet source file `test_jsp.java`; 2. Compilation: The `javac` compiler compiles the source into bytecode `test_jsp.class`; 3. Loading & Instantiation: The container loads the class into JVM memory and creates an instance; 4. Initialization (jspInit): Invoked once to allocate resources; 5. Request Processing (_jspService): Executed concurrently by container threads for each request, passing request and response; 6. Destruction (jspDestroy): Invoked prior to unloading to release resources.\n\nSix Core Implicit Objects:\n1. `request`: Instance of HttpServletRequest; extracts form parameters (`request.getParameter('email')`);\n2. `response`: Instance of HttpServletResponse; sends redirects and sets response headers;\n3. `out`: Instance of JspWriter; writes HTML stream text to client (`out.println('Hello')`);\n4. `session`: Instance of HttpSession; stores user data across requests (`session.setAttribute('cart', cart)`);\n5. `application`: Instance of ServletContext; stores global data accessible to all application users;\n6. `exception`: Instance of Throwable; accessible only when `<%@ page isErrorPage='true' %>` is configured to display unhandled error stack traces.",
+          "answer_structure": "JSP Definition -> Translation Diagram -> Lifecycle Methods -> 6 Implicit Objects Detailed with Code",
+          "important_points": [
+            "JSP translates to Servlet",
+            "jspInit, _jspService, jspDestroy",
+            "9 Implicit Objects",
+            "isErrorPage attribute"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Diagram showing translation from .jsp to .java to .class",
+            "Explicit table or list of implicit objects with types"
+          ],
+          "common_mistakes": [
+            "Writing that JSP executes directly without compiling into a servlet"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2023 / Model",
+          "marks": 5,
+          "question": "Differentiate between JSP Scriptlet `<% %>`, Expression `<%= %>`, and Declaration `<%! %>` tags. (5 Marks)",
+          "rubric": "Definition and generated Servlet location for all 3 tags (5 marks).",
+          "model_answer": "1. Scriptlet `<% ... %>`: Embeds standard Java statements executed inside the generated `_jspService()` method on every request; 2. Expression `<%= ... %>`: Evaluates a Java expression, converts the result to String, and outputs it directly to client using `out.print()` without requiring a semicolon; 3. Declaration `<%! ... %>`: Declares instance variables and methods placed at the class level outside `_jspService()`, shared across all requests."
+        }
+      ],
+      "subject_code": "BCA-5002",
+      "subject_name": "Java Programming & Dynamic Webpage Design",
+      "mcqs": [
+        {
+          "id": "ACAD-25-01",
+          "question": "When a JavaServer Page (.jsp) is requested for the first time, what translation step occurs inside the web container?",
+          "options": [
+            "The JSP is compiled directly into a C++ binary",
+            "The JSP engine translates the JSP source into an equivalent Java Servlet source code (.java) and compiles it into a .class file",
+            "The browser compiles the JSP locally using V8",
+            "The page is converted into a static PDF file"
+          ],
+          "correct_answer": "B",
+          "explanation": "JSP is a high-level servlet abstraction: the container converts .jsp into a Java Servlet (`_jspService`), then compiles and executes it."
+        },
+        {
+          "id": "ACAD-25-02",
+          "question": "Which JSP scripting element syntax `<%= expression %>` is used to output values directly into the client response stream?",
+          "options": [
+            "JSP Scriptlet",
+            "JSP Expression",
+            "JSP Declaration",
+            "JSP Directive"
+          ],
+          "correct_answer": "B",
+          "explanation": "JSP Expression (`<%= expr %>`) evaluates the Java expression, converts the result to String, and writes it directly to the response output stream."
+        },
+        {
+          "id": "ACAD-25-03",
+          "question": "Which JSP directive defines page-wide attributes such as imported Java packages, error pages, and session participation?",
+          "options": [
+            "<%@ include ... %>",
+            "<%@ page ... %>",
+            "<%@ taglib ... %>",
+            "<%@ forward ... %>"
+          ],
+          "correct_answer": "B",
+          "explanation": "The `<%@ page ... %>` directive specifies page settings (e.g., `<%@ page import=\"java.util.*\" session=\"true\" errorPage=\"err.jsp\" %>`)."
+        },
+        {
+          "id": "ACAD-25-04",
+          "question": "What is the key difference between `<%@ include file=\"header.jsp\" %>` and `<jsp:include page=\"header.jsp\" />`?",
+          "options": [
+            "Directive include is static at translation time; standard action `<jsp:include>` is dynamic at request runtime",
+            "Directive include executes faster in Python",
+            "Action include cannot accept parameters",
+            "There is no difference"
+          ],
+          "correct_answer": "A",
+          "explanation": "The include directive merges file source code at translation time; `<jsp:include>` invokes the target servlet dynamically at runtime."
+        },
+        {
+          "id": "ACAD-25-05",
+          "question": "What scope in JSP stores attributes that are accessible to all users and all servlets across the entire web application?",
+          "options": [
+            "page scope",
+            "request scope",
+            "session scope",
+            "application scope (ServletContext)"
+          ],
+          "correct_answer": "D",
+          "explanation": "Application scope (`application` implicit object / ServletContext) is global, accessible by all sessions across the web application."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2024-25 (Q5)",
+        "marks": 15,
+        "question": "What is JSP? Explain its architecture and lifecycle with a neat diagram. Describe any six implicit objects available in JSP with examples. (15 Marks)",
+        "rubric": "JSP Definition & Architecture (3 marks) + Translation & Lifecycle Diagram (4 marks) + 3 Lifecycle methods (3 marks) + 6 Implicit Objects detailed (5 marks) = 15 Marks.",
+        "model_answer": "JavaServer Pages (JSP) is an enterprise web technology that allows developers to insert dynamic Java code into static HTML templates using tags. Architecture & Lifecycle: When a user requests `test.jsp` for the first time, the JSP Engine processes the file through distinct lifecycle phases: 1. Translation: The JSP engine translates `test.jsp` into a standard Java servlet source file `test_jsp.java`; 2. Compilation: The `javac` compiler compiles the source into bytecode `test_jsp.class`; 3. Loading & Instantiation: The container loads the class into JVM memory and creates an instance; 4. Initialization (jspInit): Invoked once to allocate resources; 5. Request Processing (_jspService): Executed concurrently by container threads for each request, passing request and response; 6. Destruction (jspDestroy): Invoked prior to unloading to release resources.\n\nSix Core Implicit Objects:\n1. `request`: Instance of HttpServletRequest; extracts form parameters (`request.getParameter('email')`);\n2. `response`: Instance of HttpServletResponse; sends redirects and sets response headers;\n3. `out`: Instance of JspWriter; writes HTML stream text to client (`out.println('Hello')`);\n4. `session`: Instance of HttpSession; stores user data across requests (`session.setAttribute('cart', cart)`);\n5. `application`: Instance of ServletContext; stores global data accessible to all application users;\n6. `exception`: Instance of Throwable; accessible only when `<%@ page isErrorPage='true' %>` is configured to display unhandled error stack traces.",
+        "answer_structure": "JSP Definition -> Translation Diagram -> Lifecycle Methods -> 6 Implicit Objects Detailed with Code",
+        "important_points": [
+          "JSP translates to Servlet",
+          "jspInit, _jspService, jspDestroy",
+          "9 Implicit Objects",
+          "isErrorPage attribute"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagram showing translation from .jsp to .java to .class",
+          "Explicit table or list of implicit objects with types"
+        ],
+        "common_mistakes": [
+          "Writing that JSP executes directly without compiling into a servlet"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Differentiate between JSP Scriptlet `<% %>`, Expression `<%= %>`, and Declaration `<%! %>` tags. (5 Marks)",
+        "rubric": "Definition and generated Servlet location for all 3 tags (5 marks).",
+        "model_answer": "1. Scriptlet `<% ... %>`: Embeds standard Java statements executed inside the generated `_jspService()` method on every request; 2. Expression `<%= ... %>`: Evaluates a Java expression, converts the result to String, and outputs it directly to client using `out.print()` without requiring a semicolon; 3. Declaration `<%! ... %>`: Declares instance variables and methods placed at the class level outside `_jspService()`, shared across all requests."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                         JSP TRANSLATION & EXECUTION                     |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|  Client Request: GET /index.jsp                                         |\n|         |                                                               |\n|         v                                                               |\n|  [ JSP Engine (Jasper) ]                                                |\n|         |                                                               |\n|         |-- (First Request Only) --> [ 1. Translation: index_jsp.java ] |\n|         |                                          |                    |\n|         |                                          v                    |\n|         |                            [ 2. Compilation: index_jsp.class] |\n|         |                                          |                    |\n|         |                                          v                    |\n|         |                            [ 3. jspInit() (Once) ]            |\n|         |                                          |                    |\n|         v                                          v                    |\n|  [ Container Thread Pool ] --------> [ 4. _jspService(req, res) ]       |\n|                                      (Executed for every request)       |\n|                                                    |                    |\n|                                                    v                    |\n|                                         HTML Stream sent to Browser     |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-25-01",
+        "question": "When a JavaServer Page (.jsp) is requested for the first time, what translation step occurs inside the web container?",
+        "options": [
+          "The JSP is compiled directly into a C++ binary",
+          "The JSP engine translates the JSP source into an equivalent Java Servlet source code (.java) and compiles it into a .class file",
+          "The browser compiles the JSP locally using V8",
+          "The page is converted into a static PDF file"
+        ],
+        "correct_answer": "B",
+        "explanation": "JSP is a high-level servlet abstraction: the container converts .jsp into a Java Servlet (`_jspService`), then compiles and executes it."
+      },
+      {
+        "id": "ACAD-25-02",
+        "question": "Which JSP scripting element syntax `<%= expression %>` is used to output values directly into the client response stream?",
+        "options": [
+          "JSP Scriptlet",
+          "JSP Expression",
+          "JSP Declaration",
+          "JSP Directive"
+        ],
+        "correct_answer": "B",
+        "explanation": "JSP Expression (`<%= expr %>`) evaluates the Java expression, converts the result to String, and writes it directly to the response output stream."
+      },
+      {
+        "id": "ACAD-25-03",
+        "question": "Which JSP directive defines page-wide attributes such as imported Java packages, error pages, and session participation?",
+        "options": [
+          "<%@ include ... %>",
+          "<%@ page ... %>",
+          "<%@ taglib ... %>",
+          "<%@ forward ... %>"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `<%@ page ... %>` directive specifies page settings (e.g., `<%@ page import=\"java.util.*\" session=\"true\" errorPage=\"err.jsp\" %>`)."
+      },
+      {
+        "id": "ACAD-25-04",
+        "question": "What is the key difference between `<%@ include file=\"header.jsp\" %>` and `<jsp:include page=\"header.jsp\" />`?",
+        "options": [
+          "Directive include is static at translation time; standard action `<jsp:include>` is dynamic at request runtime",
+          "Directive include executes faster in Python",
+          "Action include cannot accept parameters",
+          "There is no difference"
+        ],
+        "correct_answer": "A",
+        "explanation": "The include directive merges file source code at translation time; `<jsp:include>` invokes the target servlet dynamically at runtime."
+      },
+      {
+        "id": "ACAD-25-05",
+        "question": "What scope in JSP stores attributes that are accessible to all users and all servlets across the entire web application?",
+        "options": [
+          "page scope",
+          "request scope",
+          "session scope",
+          "application scope (ServletContext)"
+        ],
+        "correct_answer": "D",
+        "explanation": "Application scope (`application` implicit object / ServletContext) is global, accessible by all sessions across the web application."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Vocabulary, Contextual Synonyms & Antonyms",
+      "category": "Verbal Ability",
+      "subtopic": "Vocabulary",
+      "formulas": "1. Root Words: 'Mal' = bad/evil; 'Bene' = good; 'Chron' = time; 'Loqu/Loc' = talk/speak; 'Path' = feeling.\n2. Contextual Tone Analysis: Determine whether the blank requires a positive, negative, or neutral connotation before looking at options.\n3. Secondary Meanings: Words like 'Reservation' (doubt/hesitation vs booking), 'Arrest' (stop progress vs police arrest).",
+      "shortcuts": "Elimination by Tone: If three options are positive adjectives and one is negative, match with the sentence polarity to eliminate three choices instantly.",
+      "tutorial": [
+        "Do not memorize dictionary definitions in isolation. Learn words in contextual families and roots. High-frequency placement vocabulary includes words like Candid, Ephemeral, Pragmatic, Esoteric, Ubiquitous, and Reticent."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Vocabulary",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Vocabulary",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Vocabulary",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Vocabulary",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Vocabulary",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "What is the closest synonym for the word 'EPHEMERAL'?",
+        "options": {
+          "A": "Transient",
+          "B": "Permanent",
+          "C": "Eternal",
+          "D": "Perpetual"
+        },
+        "correct_answer": "A",
+        "explanation": "'Ephemeral' means lasting for a very short time; its synonym is 'transient' or 'fleeting'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "What is the ANTONYM of the word 'PRAGMATIC'?",
+        "options": {
+          "A": "Idealistic",
+          "B": "Practical",
+          "C": "Sensible",
+          "D": "Realistic"
+        },
+        "correct_answer": "A",
+        "explanation": "'Pragmatic' means dealing with things sensibly and realistically. Its antonym is 'idealistic' or 'impractical'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Select the synonym for 'UBIQUITOUS':",
+        "options": {
+          "A": "Omnipresent",
+          "B": "Rare",
+          "C": "Hidden",
+          "D": "Scarce"
+        },
+        "correct_answer": "A",
+        "explanation": "'Ubiquitous' means present, appearing, or found everywhere; synonym is 'omnipresent'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "What is the antonym of 'MITIGATE'?",
+        "options": {
+          "A": "Aggravate",
+          "B": "Alleviate",
+          "C": "Moderate",
+          "D": "Relieve"
+        },
+        "correct_answer": "A",
+        "explanation": "'Mitigate' means to make less severe. Its antonym is 'aggravate' or 'intensify'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Choose the word that best fits: 'The engineer's explanation was so _____ that even non-technical stakeholders grasped the architecture.'",
+        "options": {
+          "A": "Lucid",
+          "B": "Ambiguous",
+          "C": "Obscure",
+          "D": "Convoluted"
+        },
+        "correct_answer": "A",
+        "explanation": "'Lucid' means expressed clearly and easy to understand.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "What is the meaning of 'EQUIVOCAL'?",
+        "options": {
+          "A": "Ambiguous and open to multiple interpretations",
+          "B": "Fair and equal",
+          "C": "Unquestionably true",
+          "D": "Extremely vocal"
+        },
+        "correct_answer": "A",
+        "explanation": "'Equivocal' means ambiguous or intentionally misleading.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Select the antonym for 'BENEVOLENT':",
+        "options": {
+          "A": "Malevolent",
+          "B": "Generous",
+          "C": "Compassionate",
+          "D": "Philanthropic"
+        },
+        "correct_answer": "A",
+        "explanation": "'Benevolent' means kind and charitable. Its antonym is 'malevolent' (wishing evil to others).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "What is the synonym for 'METICULOUS'?",
+        "options": {
+          "A": "Painstaking",
+          "B": "Careless",
+          "C": "Hasty",
+          "D": "Sloppy"
+        },
+        "correct_answer": "A",
+        "explanation": "'Meticulous' means showing great attention to detail; synonym is 'painstaking' or 'scrupulous'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Choose the word that means 'to surrender or yield under agreed conditions':",
+        "options": {
+          "A": "Capitulate",
+          "B": "Retaliate",
+          "C": "Instigate",
+          "D": "Proliferate"
+        },
+        "correct_answer": "A",
+        "explanation": "'Capitulate' means to cease resisting an opponent or an unwelcome demand; surrender.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "What is the antonym of 'LACONIC'?",
+        "options": {
+          "A": "Verbose",
+          "B": "Brief",
+          "C": "Terse",
+          "D": "Concise"
+        },
+        "correct_answer": "A",
+        "explanation": "'Laconic' means using very few words. Its antonym is 'verbose' or 'loquacious'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Vocabulary (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Dynamic Programming: 0/1 Knapsack & Partition",
+      "category": "Dynamic Programming",
+      "concept": "Determines if an exact target value can be achieved by choosing each element at most once using bottom-up boolean tabulation.",
+      "why_it_works": "dp[w] indicates whether a subset summing to w is achievable; updating backwards from target to num prevents using the same element multiple times.",
+      "visual_explanation": "Nums = [1, 5, 11, 5], Total Sum = 22 -> Target = 11\\ndp[0] = true\\nnum = 1: dp[1] = true\\nnum = 5: dp[6]=true, dp[5]=true\\nnum = 11: dp[11] = true ==> Partition Possible!",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int totalSum = 0;\n        for (int num : nums) totalSum += num;\n        if (totalSum % 2 != 0) return false;\n        \n        int target = totalSum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        \n        for (int num : nums) {\n            for (int w = target; w >= num; w--) {\n                dp[w] = dp[w] || dp[w - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+      "code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int totalSum = 0;\n        for (int num : nums) totalSum += num;\n        if (totalSum % 2 != 0) return false;\n        \n        int target = totalSum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        \n        for (int num : nums) {\n            for (int w = target; w >= num; w--) {\n                dp[w] = dp[w] || dp[w - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4-5: Compute total sum; odd sum can never be divided into two equal integers.",
+        "Line 7: Set target = totalSum / 2.",
+        "Line 8-9: Initialize dp array with dp[0] = true.",
+        "Line 11-15: Reverse inner loop (from target down to num) guarantees 0/1 Knapsack semantics (each element used once).",
+        "Line 16: Return dp[target]."
+      ],
+      "dry_run": "nums = [1, 5, 11, 5]. target = 11. Array reaches dp[11] = true. Returns true.",
+      "complexity": "O(N * Target) Time, O(Target) Auxiliary Space",
+      "edge_cases": "Odd sum (returns false immediately), Single element array, Target requires all elements",
+      "edge_cases_list": [
+        "Odd sum (returns false immediately)",
+        "Single element array",
+        "Target requires all elements"
+      ],
+      "interview_variations": [
+        "Partition Equal Subset Sum",
+        "Target Sum",
+        "Coin Change (Unbounded variant)",
+        "Combination Sum IV"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-25-01",
+        "title": "Problem 1: Partition Equal Subset Sum",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dynamic Programming: 0/1 Knapsack & Partition algorithmic technique.\n2. Determines if an exact target value can be achieved by choosing each element at most once using bottom-up boolean tabulation.\n3. Invariants: dp[w] indicates whether a subset summing to w is achievable; updating backwards from target to num prevents using the same element multiple times.",
+        "solution_java": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+        "solution_python": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+        "code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+        "java_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+        "time_complexity": "O(N * Target) Time",
+        "space_complexity": "O(Target) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-25-02",
+        "title": "Problem 2: Coin Change",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given an integer array coins representing coins of different denominations and an integer amount. Return fewest coins to make up that amount.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dynamic Programming: 0/1 Knapsack & Partition.\n2. Handle edge cases: Odd sum (returns false immediately), Single element array, Target requires all elements.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+        "time_complexity": "O(N * Target) Time",
+        "space_complexity": "O(Target) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Python Internals",
+      "topic": "Object-Oriented Python: Dunder Methods, MRO (C3 Linearization) & Metaclasses",
+      "concept_lesson": "Object-oriented programming in Python is dynamic and extensible through special 'dunder' (double underscore) magic methods.\n\nCore Dunder Methods:\n- `__new__(cls, ...)`: Responsible for physically creating and returning a new instance in memory. Runs before `__init__` (used in Singletons and immutable types).\n- `__init__(self, ...)`: Initializes instance attributes on the already-created object.\n- `__repr__` vs `__str__`: `__repr__` provides an unambiguous developer representation (`eval(repr(x)) == x`); `__str__` provides a readable end-user string.\n- `__call__`: Allows an object instance to be invoked as a function: `obj()`.\n- `__eq__`, `__hash__`: Dict keys and sets require hashable objects. If a class overrides `__eq__`, Python sets `__hash__ = None` unless explicitly implemented.\n\nMultiple Inheritance & Method Resolution Order (MRO):\nWhen multiple base classes exist (e.g., class D(B, C)), Python resolves attribute lookups using the C3 Linearization Algorithm.\nProperties of C3 Linearization:\n1. Children precede their parents (Local Precedence Order).\n2. Base class declaration order is strictly preserved.\n3. Monotonicity: A class always appears before its superclasses in every subclass MRO.\nInspectable via `ClassName.__mro__` or `ClassName.mro()`.\n\n`super()` Behavior:\n`super()` does NOT necessarily call the immediate parent class; it delegates to the NEXT class in the dynamic MRO chain, enabling cooperative multi-inheritance without duplicate calls in diamond inheritance hierarchies.",
+      "key_definitions": [
+        {
+          "term": "Method Resolution Order (MRO)",
+          "definition": "The deterministic linear order in which Python searches base classes for attributes and methods."
+        },
+        {
+          "term": "C3 Linearization",
+          "definition": "The algorithm used by Python to compute MRO, ensuring consistency and monotonicity in multiple inheritance."
+        },
+        {
+          "term": "__new__",
+          "definition": "The static class constructor method that creates and returns the physical object instance before __init__ runs."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What is the difference between `__new__` and `__init__` in Python?",
+          "a": "`__new__` is the actual instance creator; it is a static method taking the class `cls` as its first parameter and must return a newly created object instance (usually via `super().__new__(cls)`). `__init__` is the instance initializer; it takes the newly created instance `self` and populates attributes, returning nothing (`None`). `__new__` is used when subclassing immutable types (int, str, tuple) or implementing the Singleton design pattern."
+        },
+        {
+          "q": "How does Python solve the Diamond Problem in multiple inheritance?",
+          "a": "In a diamond inheritance (Class D inherits from B and C, both inheriting from A), Python uses the C3 Linearization algorithm to compute a single linear Method Resolution Order (MRO: D -> B -> C -> A -> object). Calls to `super()` follow this exact linear sequence, guaranteeing that base class A's method is executed exactly once without duplicate calls."
+        },
+        {
+          "q": "What is the difference between `__str__` and `__repr__`?",
+          "a": "`__repr__` is intended for developers and debugging; its output should ideally be unambiguous and look like valid Python code to recreate the object (`eval(repr(x)) == x`). `__str__` is intended for end-users, providing a readable string representation. If `__str__` is not defined, Python falls back to `__repr__`."
+        },
+        {
+          "q": "Why must an object be immutable to be used as a dictionary key or set element?",
+          "a": "Dictionary lookups rely on hash tables where key positions are determined by `hash(key)`. If an object were mutable (like a list) and its contents changed after being inserted into a dict, its hash value would change. The dictionary would then search for the key in a different hash bucket, making the item unfindable. Thus, dict keys must be hashable and immutable."
+        },
+        {
+          "q": "What is a Metaclass in Python and give a real-world use case?",
+          "a": "A metaclass is the 'class of a class'—just as an object is an instance of a class, a class is an instance of a metaclass (by default, `type`). Metaclasses allow intercepting and modifying class definition construction at import time. Real-world use cases include ORMs (like SQLAlchemy or Django Models) and validation frameworks (like Pydantic v1), where field declarations are parsed into SQL columns or validation schemas before instantiation."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-25-01",
+          "question": "Which algorithm does Python use to compute the Method Resolution Order (MRO)?",
+          "options": [
+            "Dijkstra's Algorithm",
+            "C3 Linearization",
+            "Depth-First Search",
+            "Kruskal's Algorithm"
+          ],
+          "correct_answer": "B",
+          "explanation": "Python employs the C3 Linearization algorithm to compute deterministic MRO lists."
+        },
+        {
+          "id": "CS-25-02",
+          "question": "Which magic method is responsible for physically creating and returning a new object instance in memory?",
+          "options": [
+            "__init__",
+            "__new__",
+            "__create__",
+            "__call__"
+          ],
+          "correct_answer": "B",
+          "explanation": "__new__ creates and returns the physical object instance before __init__ initializes it."
+        },
+        {
+          "id": "CS-25-03",
+          "question": "If an object implements `__call__`, it can be:",
+          "options": [
+            "Iterated with for loops",
+            "Invoked like a function: obj()",
+            "Converted to JSON automatically",
+            "Garbage collected immediately"
+          ],
+          "correct_answer": "B",
+          "explanation": "Implementing __call__ allows instance objects to be invoked as callables."
+        },
+        {
+          "id": "CS-25-04",
+          "question": "What is the default metaclass of all standard classes in Python?",
+          "options": [
+            "object",
+            "type",
+            "class",
+            "base"
+          ],
+          "correct_answer": "B",
+          "explanation": "In Python, `type` is the default metaclass that creates classes."
+        },
+        {
+          "id": "CS-25-05",
+          "question": "If a custom class overrides `__eq__` without defining `__hash__`, Python automatically sets `__hash__` to:",
+          "options": [
+            "0",
+            "None (making instances unhashable)",
+            "id(self)",
+            "A random integer"
+          ],
+          "correct_answer": "B",
+          "explanation": "Overriding __eq__ without defining __hash__ sets __hash__ to None to prevent mutable hash violations."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "College Student Management System (CSMS)",
+      "repo_path": "D:\\Projects\\College Student Management System",
+      "topic": "Cloud-Native Educational ERP Architecture with FastAPI & Supabase PostgreSQL",
+      "what_to_understand": "Architecting a multi-role educational ERP system submitted as Sarthak's BCA 5th Semester project under Asst. Prof. Nitin Mishra at VSICS (CSJMU Kanpur).",
+      "what_to_memorize": "FastAPI backend exposes domain routers (auth, students, attendance, grades, hod) communicating with Supabase Cloud PostgreSQL 15+.",
+      "interview_questions": [
+        {
+          "q": "Walk me through the architecture and purpose of your College Student Management System (CSMS).",
+          "a": "I developed CSMS as a cloud-native Educational ERP for my BCA 5th Semester project under Prof. Nitin Mishra at VSICS, CSJMU. Built with FastAPI and Supabase Cloud PostgreSQL with a lightweight Vanilla JS frontend, it automates student lifecycle management across four roles: HOD, Section Incharge, Faculty, and Students. It covers attendance tracking with automated <75% shortage alerts, internal test mark entry with auto-grade calculation, semester fee balance monitoring, and official HOD circular distribution."
+        },
+        {
+          "q": "Why did you use FastAPI with Supabase PostgreSQL instead of Django or Flask?",
+          "a": "FastAPI provides native asynchronous route execution with automatic Pydantic request validation and self-generating Swagger documentation at `/docs`. Coupled with Supabase PostgreSQL, it provided enterprise-grade ACID transactions without the heavy ORM overhead of Django, making it ideal for fast, zero-downtime deployment on Render via Blueprint (`render.yaml`)."
+        }
+      ],
+      "interview_pitch_exercise": "I developed the College Student Management System (CSMS) for my BCA 5th Semester project at VSICS Kanpur. Using FastAPI and Supabase PostgreSQL, I engineered an educational ERP featuring multi-role authentication for HOD, faculty, and students, real-time attendance tracking with shortage alerts, automated grade derivation, and semester fee accounting."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 25 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 25 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'College Student Management System (CSMS)', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In College Student Management System (CSMS) (FastAPI, Supabase PostgreSQL, Vanilla JS), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of College Student Management System (CSMS).",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 24 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5002 — JavaServer Pages (JSP) Architecture & Scriptlets.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Vocabulary, Contextual Synonyms & Antonyms.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: 0/1 Knapsack & Subsets.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Iterators, Generators & yield Semantics.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on JavaServer Pages (JSP) Architecture & Scriptlets.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Dynamic Programming: 0/1 Knapsack & Subsets.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: SmartGalla.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 25 Q1: What is the primary academic thesis of JavaServer Pages (JSP) Architecture & Scriptlets?",
+          "a": "Core theoretical and practical mastery of JavaServer Pages (JSP) Architecture & Scriptlets under the CSJM University BCA-5002 syllabus."
+        },
+        {
+          "q": "Day 25 Q2: What is the key speed calculation formula applied in Vocabulary, Contextual Synonyms & Antonyms?",
+          "a": "High-speed corporate placement arithmetic shortcut for Vocabulary, Contextual Synonyms & Antonyms in campus recruitment exams."
+        },
+        {
+          "q": "Day 25 Q3: What is the time complexity of Dynamic Programming: 0/1 Knapsack & Subsets?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 25 Q4: What is the central architectural principle of Python Iterators, Generators & yield Semantics?",
+          "a": "Foundational systems engineering rule governing Python Iterators, Generators & yield Semantics in production environments."
+        },
+        {
+          "q": "Day 25 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 25 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 25 Q7: What is the verified technical foundation of SmartGalla?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 25 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 25 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 25 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5002 — JavaServer Pages (JSP) Architecture & Scriptlets.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Vocabulary, Contextual Synonyms & Antonyms.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: 0/1 Knapsack & Subsets.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Iterators, Generators & yield Semantics."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5002 — JavaServer Pages (JSP) Architecture & Scriptlets."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Vocabulary, Contextual Synonyms & Antonyms."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Dynamic Programming: 0/1 Knapsack & Subsets."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: SmartGalla."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-25-01",
+        "category": "Academic (Academic Theory)",
+        "question": "When a JavaServer Page (.jsp) is requested for the first time, what translation step occurs inside the web container?",
+        "options": [
+          "The JSP is compiled directly into a C++ binary",
+          "The JSP engine translates the JSP source into an equivalent Java Servlet source code (.java) and compiles it into a .class file",
+          "The browser compiles the JSP locally using V8",
+          "The page is converted into a static PDF file"
+        ],
+        "correct_answer": "B",
+        "explanation": "JSP is a high-level servlet abstraction: the container converts .jsp into a Java Servlet (`_jspService`), then compiles and executes it."
+      },
+      {
+        "id": "TEST-25-02",
+        "category": "Academic (Academic Theory)",
+        "question": "Which JSP scripting element syntax `<%= expression %>` is used to output values directly into the client response stream?",
+        "options": [
+          "JSP Scriptlet",
+          "JSP Expression",
+          "JSP Declaration",
+          "JSP Directive"
+        ],
+        "correct_answer": "B",
+        "explanation": "JSP Expression (`<%= expr %>`) evaluates the Java expression, converts the result to String, and writes it directly to the response output stream."
+      },
+      {
+        "id": "TEST-25-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which JSP directive defines page-wide attributes such as imported Java packages, error pages, and session participation?",
+        "options": [
+          "<%@ include ... %>",
+          "<%@ page ... %>",
+          "<%@ taglib ... %>",
+          "<%@ forward ... %>"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `<%@ page ... %>` directive specifies page settings (e.g., `<%@ page import=\"java.util.*\" session=\"true\" errorPage=\"err.jsp\" %>`)."
+      },
+      {
+        "id": "TEST-25-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the key difference between `<%@ include file=\"header.jsp\" %>` and `<jsp:include page=\"header.jsp\" />`?",
+        "options": [
+          "Directive include is static at translation time; standard action `<jsp:include>` is dynamic at request runtime",
+          "Directive include executes faster in Python",
+          "Action include cannot accept parameters",
+          "There is no difference"
+        ],
+        "correct_answer": "A",
+        "explanation": "The include directive merges file source code at translation time; `<jsp:include>` invokes the target servlet dynamically at runtime."
+      },
+      {
+        "id": "TEST-25-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What scope in JSP stores attributes that are accessible to all users and all servlets across the entire web application?",
+        "options": [
+          "page scope",
+          "request scope",
+          "session scope",
+          "application scope (ServletContext)"
+        ],
+        "correct_answer": "D",
+        "explanation": "Application scope (`application` implicit object / ServletContext) is global, accessible by all sessions across the web application."
+      },
+      {
+        "id": "TEST-25-06",
+        "category": "Placement Aptitude",
+        "question": "Select the word that is nearest in meaning (Synonym) to 'EPHEMERAL':",
+        "options": [
+          "Transient",
+          "Permanent",
+          "Eternal",
+          "Enduring"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Ephemeral' means lasting for a very short time; transient, fleeting, short-lived."
+      },
+      {
+        "id": "TEST-25-07",
+        "category": "Placement Aptitude",
+        "question": "Select the word that is most opposite in meaning (Antonym) to 'CANDID':",
+        "options": [
+          "Deceitful",
+          "Honest",
+          "Frank",
+          "Blunt"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Candid' means truthful, straightforward, and frank. The antonym is deceitful or secretive."
+      },
+      {
+        "id": "TEST-25-08",
+        "category": "Placement Aptitude",
+        "question": "Select the synonym for 'PRAGMATIC':",
+        "options": [
+          "Practical",
+          "Idealistic",
+          "Theoretical",
+          "Speculative"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Pragmatic' means dealing with things sensibly and realistically based on practical considerations."
+      },
+      {
+        "id": "TEST-25-09",
+        "category": "Placement Aptitude",
+        "question": "Select the antonym for 'UBIQUITOUS':",
+        "options": [
+          "Rare",
+          "Omnipresent",
+          "Pervasive",
+          "Universal"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Ubiquitous' means present everywhere simultaneously. The antonym is rare or scarce."
+      },
+      {
+        "id": "TEST-25-10",
+        "category": "Placement Aptitude",
+        "question": "Select the synonym for 'METICULOUS':",
+        "options": [
+          "Thorough",
+          "Careless",
+          "Hasty",
+          "Sloppy"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Meticulous' means showing great attention to detail; very careful and precise; thorough."
+      },
+      {
+        "id": "TEST-25-11",
+        "category": "Core CS (Python Internals)",
+        "question": "Which algorithm does Python use to compute the Method Resolution Order (MRO)?",
+        "options": [
+          "Dijkstra's Algorithm",
+          "C3 Linearization",
+          "Depth-First Search",
+          "Kruskal's Algorithm"
+        ],
+        "correct_answer": "B",
+        "explanation": "Python employs the C3 Linearization algorithm to compute deterministic MRO lists."
+      },
+      {
+        "id": "TEST-25-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which magic method is responsible for physically creating and returning a new object instance in memory?",
+        "options": [
+          "__init__",
+          "__new__",
+          "__create__",
+          "__call__"
+        ],
+        "correct_answer": "B",
+        "explanation": "__new__ creates and returns the physical object instance before __init__ initializes it."
+      },
+      {
+        "id": "TEST-25-13",
+        "category": "Core CS (Python Internals)",
+        "question": "If an object implements `__call__`, it can be:",
+        "options": [
+          "Iterated with for loops",
+          "Invoked like a function: obj()",
+          "Converted to JSON automatically",
+          "Garbage collected immediately"
+        ],
+        "correct_answer": "B",
+        "explanation": "Implementing __call__ allows instance objects to be invoked as callables."
+      },
+      {
+        "id": "TEST-25-14",
+        "category": "Core CS (Python Internals)",
+        "question": "What is the default metaclass of all standard classes in Python?",
+        "options": [
+          "object",
+          "type",
+          "class",
+          "base"
+        ],
+        "correct_answer": "B",
+        "explanation": "In Python, `type` is the default metaclass that creates classes."
+      },
+      {
+        "id": "TEST-25-15",
+        "category": "Core CS (Python Internals)",
+        "question": "If a custom class overrides `__eq__` without defining `__hash__`, Python automatically sets `__hash__` to:",
+        "options": [
+          "0",
+          "None (making instances unhashable)",
+          "id(self)",
+          "A random integer"
+        ],
+        "correct_answer": "B",
+        "explanation": "Overriding __eq__ without defining __hash__ sets __hash__ to None to prevent mutable hash violations."
+      },
+      {
+        "id": "TEST-25-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: 0/1 Knapsack & Partition' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N * Target) Time, O(Target) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: 0/1 Knapsack & Partition' pattern operates with O(N * Target) Time, O(Target) Auxiliary Space: dp[w] indicates whether a subset summing to w is achievable; updating backwards from target to num prevents using the same element multiple times.."
+      },
+      {
+        "id": "TEST-25-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: 0/1 Knapsack & Partition' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Odd sum (returns false immediately).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: 0/1 Knapsack & Partition include Odd sum (returns false immediately), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-25-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Partition Equal Subset Sum', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(Target) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N * Target) Time, O(Target) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-25-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Cloud-Native Educational ERP Architecture with FastAPI & Supabase PostgreSQL'?",
+        "options": [
+          "FastAPI backend exposes domain routers (auth, students, attendance, grades, hod) communicating with Supabase Cloud PostgreSQL 15+.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: FastAPI backend exposes domain routers (auth, students, attendance, grades, hod) communicating with Supabase Cloud PostgreSQL 15+.."
+      },
+      {
+        "id": "TEST-25-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'Walk me through the architecture and purpose of your College Student Management System (CSMS).'?",
+        "options": [
+          "I developed CSMS as a cloud-native Educational ERP for my BCA 5th Semester project under Prof. Nitin Mishra at VSICS, CSJMU. Built with FastAPI and Supabase Clo...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: I developed CSMS as a cloud-native Educational ERP for my BCA 5th Semester project under Prof. Nitin Mishra at VSICS, CSJMU. Built with Fast."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-25",
+      "title": "Partition Equal Subset Sum (Dynamic Programming: 0/1 Knapsack & Partition)",
+      "time_limit_minutes": 45,
+      "difficulty": "Hard",
+      "problem_statement": "Solve the core placement problem: Partition Equal Subset Sum.\n\nGiven an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dynamic Programming: 0/1 Knapsack & Partition\n- Time Complexity Target: O(N * Target) Time\n- Space Complexity Target: O(Target) Auxiliary Space\n- Handle all edge cases: Odd sum (returns false immediately), Single element array, Target requires all elements.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: 0/1 Knapsack & Partition\n    public boolean canPartition(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: 0/1 Knapsack & Partition\n    public boolean canPartition(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Dynamic Programming: 0/1 Knapsack & Partition logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Odd sum (returns false immediately)",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N * Target) Time)",
+        "Space Complexity": "20 points (Meets O(Target) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Java Programming & Dynamic Webpage Design",
+    "subject_code": "BCA-5002",
+    "unit": 5,
+    "topic": "Unit V — JavaServer Pages (JSP) Architecture, Lifecycle & 9 Implicit Objects",
+    "objectives": [
+      "Understand JSP translation to Servlets.",
+      "Master JSP lifecycle and the 9 built-in implicit objects."
+    ],
+    "detailed_notes": [
+      "JavaServer Pages (JSP) is a server-side technology that simplifies web presentation by allowing Java code to be embedded directly into HTML documents using special tags. When a JSP page is first requested, the JSP engine translates the `.jsp` file into an equivalent Java Servlet source file (`_jsp.java`), compiles it into bytecode (`_jsp.class`), and executes it. The JSP lifecycle methods are: 1. `jspInit()`: Called once on initialization; 2. `_jspService()`: Called on every request to process dynamic content; 3. `jspDestroy()`: Called once on shutdown. JSP provides 9 predefined implicit objects: `request`, `response`, `pageContext`, `session`, `application`, `out`, `config`, `page`, and `exception`.",
+      "Translation (.jsp -> .java) -> Compilation (.java -> .class) -> Loading -> Instantiation -> jspInit() -> _jspService() -> jspDestroy().",
+      "request (HttpServletRequest), response (HttpServletResponse), out (JspWriter), session (HttpSession), application (ServletContext), config (ServletConfig), pageContext (PageContext), page (Object/this), exception (Throwable)."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|                  JSP LIFECYCLE                    |\n| [page.jsp] -> (JSP Engine Translation)            |\n| -> [page_jsp.java] -> (javac Compilation)         |\n| -> [page_jsp.class] -> jspInit() -> _jspService() |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
         "Implicit Object",
-        "Underlying Java Type",
-        "Functional Scope",
-        "Typical Usage"
+        "Underlying Java Class / Interface",
+        "Scope",
+        "Purpose"
       ],
       "rows": [
         [
           "request",
           "javax.servlet.http.HttpServletRequest",
-          "Request Scope",
-          "Reading form inputs via req.getParameter()"
+          "Request",
+          "Retrieve HTTP parameters, headers, cookies"
         ],
         [
           "response",
           "javax.servlet.http.HttpServletResponse",
-          "Page Scope",
-          "Setting cookies, HTTP headers, redirection"
-        ],
-        [
-          "session",
-          "javax.servlet.http.HttpSession",
-          "Session Scope",
-          "User authentication state, shopping cart"
-        ],
-        [
-          "application",
-          "javax.servlet.ServletContext",
-          "Application Scope",
-          "Global counter, shared DB connection pool"
+          "Page",
+          "Set HTTP status codes, headers, redirects"
         ],
         [
           "out",
           "javax.servlet.jsp.JspWriter",
-          "Page Scope",
-          "Printing dynamic HTML content to response buffer"
+          "Page",
+          "Write text output directly to client stream"
+        ],
+        [
+          "session",
+          "javax.servlet.http.HttpSession",
+          "Session",
+          "Maintain state across multiple requests per user"
+        ],
+        [
+          "application",
+          "javax.servlet.ServletContext",
+          "Application",
+          "Global context shared across all application users"
         ],
         [
           "pageContext",
           "javax.servlet.jsp.PageContext",
-          "Page Scope",
-          "Accessing attributes across page, request, session, app"
+          "Page",
+          "Central access point to all scopes and attributes"
+        ],
+        [
+          "config",
+          "javax.servlet.ServletConfig",
+          "Page",
+          "Access initialization parameters defined in web.xml"
+        ],
+        [
+          "page",
+          "java.lang.Object (this)",
+          "Page",
+          "Reference to the current generated servlet instance"
         ],
         [
           "exception",
           "java.lang.Throwable",
-          "Page Scope",
-          "Displaying stack trace on dedicated error pages"
+          "Page (isErrorPage=true)",
+          "Capture runtime errors in designated error pages"
         ]
       ]
     },
-    "memorize": "JSP compiles to a Servlet. 3 Directives: page, include, taglib. 9 Implicit objects: request, response, out, session, application, config, pageContext, page, exception. exception only exists when isErrorPage='true'.",
-    "understand": "Why was JSP introduced if it compiles to a Servlet? Separation of concerns. Servlets mix heavy Java business logic with tedious `out.println('<html>')` string concatenations, which is unmaintainable for UI designers. JSP flips this: HTML is the default canvas, and Java is embedded only where dynamic data is required.",
-    "common_mistakes": "1. Trying to access the `exception` object on a regular JSP page without setting `<%@ page isErrorPage=\"true\" %>`. 2. Writing database queries directly inside JSP scriptlets instead of delegating to backend DAO/Service classes.",
-    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "High-Frequency 15-Mark Core Question (Appeared in 2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_question": "Explain the architecture and life cycle of JSP in detail. List and explain all the 9 implicit objects available in JSP with their underlying Java classes and scopes. Differentiate clearly between Servlets and JSP. (15 Marks)",
-    "pyq_rubric": "JSP Architecture & Translation phases (4 marks) + 9 Implicit objects breakdown with table (6 marks) + JSP vs Servlet comparison (3 marks) + Life cycle methods: jspInit, _jspService, jspDestroy (2 marks) = 15 Marks.",
+    "memorize": "JSP compiles into a Servlet! Lifecycle: jspInit(), _jspService(), jspDestroy(). 9 implicit objects: request, response, out, session, application, config, pageContext, page, exception.",
+    "understand": "JSP is essentially syntax sugar for Servlets designed to separate presentation HTML from backend business logic.",
+    "common_mistakes": "Attempting to use the `exception` implicit object on a standard JSP page without setting `<%@ page isErrorPage='true' %>`.",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2024-25 (Q5)",
+        "marks": 15,
+        "question": "What is JSP? Explain its architecture and lifecycle with a neat diagram. Describe any six implicit objects available in JSP with examples. (15 Marks)",
+        "rubric": "JSP Definition & Architecture (3 marks) + Translation & Lifecycle Diagram (4 marks) + 3 Lifecycle methods (3 marks) + 6 Implicit Objects detailed (5 marks) = 15 Marks.",
+        "model_answer": "JavaServer Pages (JSP) is an enterprise web technology that allows developers to insert dynamic Java code into static HTML templates using tags. Architecture & Lifecycle: When a user requests `test.jsp` for the first time, the JSP Engine processes the file through distinct lifecycle phases: 1. Translation: The JSP engine translates `test.jsp` into a standard Java servlet source file `test_jsp.java`; 2. Compilation: The `javac` compiler compiles the source into bytecode `test_jsp.class`; 3. Loading & Instantiation: The container loads the class into JVM memory and creates an instance; 4. Initialization (jspInit): Invoked once to allocate resources; 5. Request Processing (_jspService): Executed concurrently by container threads for each request, passing request and response; 6. Destruction (jspDestroy): Invoked prior to unloading to release resources.\n\nSix Core Implicit Objects:\n1. `request`: Instance of HttpServletRequest; extracts form parameters (`request.getParameter('email')`);\n2. `response`: Instance of HttpServletResponse; sends redirects and sets response headers;\n3. `out`: Instance of JspWriter; writes HTML stream text to client (`out.println('Hello')`);\n4. `session`: Instance of HttpSession; stores user data across requests (`session.setAttribute('cart', cart)`);\n5. `application`: Instance of ServletContext; stores global data accessible to all application users;\n6. `exception`: Instance of Throwable; accessible only when `<%@ page isErrorPage='true' %>` is configured to display unhandled error stack traces.",
+        "answer_structure": "JSP Definition -> Translation Diagram -> Lifecycle Methods -> 6 Implicit Objects Detailed with Code",
+        "important_points": [
+          "JSP translates to Servlet",
+          "jspInit, _jspService, jspDestroy",
+          "9 Implicit Objects",
+          "isErrorPage attribute"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagram showing translation from .jsp to .java to .class",
+          "Explicit table or list of implicit objects with types"
+        ],
+        "common_mistakes": [
+          "Writing that JSP executes directly without compiling into a servlet"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Differentiate between JSP Scriptlet `<% %>`, Expression `<%= %>`, and Declaration `<%! %>` tags. (5 Marks)",
+        "rubric": "Definition and generated Servlet location for all 3 tags (5 marks).",
+        "model_answer": "1. Scriptlet `<% ... %>`: Embeds standard Java statements executed inside the generated `_jspService()` method on every request; 2. Expression `<%= ... %>`: Evaluates a Java expression, converts the result to String, and outputs it directly to client using `out.print()` without requiring a semicolon; 3. Declaration `<%! ... %>`: Declares instance variables and methods placed at the class level outside `_jspService()`, shared across all requests."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-25-01",
+        "question": "When a JavaServer Page (.jsp) is requested for the first time, what translation step occurs inside the web container?",
+        "options": [
+          "The JSP is compiled directly into a C++ binary",
+          "The JSP engine translates the JSP source into an equivalent Java Servlet source code (.java) and compiles it into a .class file",
+          "The browser compiles the JSP locally using V8",
+          "The page is converted into a static PDF file"
+        ],
+        "correct_answer": "B",
+        "explanation": "JSP is a high-level servlet abstraction: the container converts .jsp into a Java Servlet (`_jspService`), then compiles and executes it."
+      },
+      {
+        "id": "ACAD-25-02",
+        "question": "Which JSP scripting element syntax `<%= expression %>` is used to output values directly into the client response stream?",
+        "options": [
+          "JSP Scriptlet",
+          "JSP Expression",
+          "JSP Declaration",
+          "JSP Directive"
+        ],
+        "correct_answer": "B",
+        "explanation": "JSP Expression (`<%= expr %>`) evaluates the Java expression, converts the result to String, and writes it directly to the response output stream."
+      },
+      {
+        "id": "ACAD-25-03",
+        "question": "Which JSP directive defines page-wide attributes such as imported Java packages, error pages, and session participation?",
+        "options": [
+          "<%@ include ... %>",
+          "<%@ page ... %>",
+          "<%@ taglib ... %>",
+          "<%@ forward ... %>"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `<%@ page ... %>` directive specifies page settings (e.g., `<%@ page import=\"java.util.*\" session=\"true\" errorPage=\"err.jsp\" %>`)."
+      },
+      {
+        "id": "ACAD-25-04",
+        "question": "What is the key difference between `<%@ include file=\"header.jsp\" %>` and `<jsp:include page=\"header.jsp\" />`?",
+        "options": [
+          "Directive include is static at translation time; standard action `<jsp:include>` is dynamic at request runtime",
+          "Directive include executes faster in Python",
+          "Action include cannot accept parameters",
+          "There is no difference"
+        ],
+        "correct_answer": "A",
+        "explanation": "The include directive merges file source code at translation time; `<jsp:include>` invokes the target servlet dynamically at runtime."
+      },
+      {
+        "id": "ACAD-25-05",
+        "question": "What scope in JSP stores attributes that are accessible to all users and all servlets across the entire web application?",
+        "options": [
+          "page scope",
+          "request scope",
+          "session scope",
+          "application scope (ServletContext)"
+        ],
+        "correct_answer": "D",
+        "explanation": "Application scope (`application` implicit object / ServletContext) is global, accessible by all sessions across the web application."
+      }
+    ],
+    "pyq_year": "2024-25 (Q5)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "What is JSP? Explain its architecture and lifecycle with a neat diagram. Describe any six implicit objects available in JSP with examples. (15 Marks)",
+    "pyq_rubric": "JSP Definition & Architecture (3 marks) + Translation & Lifecycle Diagram (4 marks) + 3 Lifecycle methods (3 marks) + 6 Implicit Objects detailed (5 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Architecture and Life Cycle of JSP:",
-        "JavaServer Pages (JSP) is an extension of Servlet technology designed for presentation rendering. When a client requests a `.jsp` page, the Web Container executes a two-phase lifecycle:\n\u2022 Translation & Compilation: The JSP parser converts the JSP markup into a standard Java servlet source file (`_jsp.java`) and compiles it into executable bytecode (`_jsp.class`). This occurs strictly once unless the JSP source file is modified.\n\u2022 Life Cycle Methods: The container calls `jspInit()` for one-time initialization, then dispatches each client request to `_jspService(HttpServletRequest, HttpServletResponse)`, and executes `jspDestroy()` when unloading the page."
+        "1. Model Answer & Technical Presentation",
+        "JavaServer Pages (JSP) is an enterprise web technology that allows developers to insert dynamic Java code into static HTML templates using tags. Architecture & Lifecycle: When a user requests `test.jsp` for the first time, the JSP Engine processes the file through distinct lifecycle phases: 1. Translation: The JSP engine translates `test.jsp` into a standard Java servlet source file `test_jsp.java`; 2. Compilation: The `javac` compiler compiles the source into bytecode `test_jsp.class`; 3. Loading & Instantiation: The container loads the class into JVM memory and creates an instance; 4. Initialization (jspInit): Invoked once to allocate resources; 5. Request Processing (_jspService): Executed concurrently by container threads for each request, passing request and response; 6. Destruction (jspDestroy): Invoked prior to unloading to release resources.\n\nSix Core Implicit Objects:\n1. `request`: Instance of HttpServletRequest; extracts form parameters (`request.getParameter('email')`);\n2. `response`: Instance of HttpServletResponse; sends redirects and sets response headers;\n3. `out`: Instance of JspWriter; writes HTML stream text to client (`out.println('Hello')`);\n4. `session`: Instance of HttpSession; stores user data across requests (`session.setAttribute('cart', cart)`);\n5. `application`: Instance of ServletContext; stores global data accessible to all application users;\n6. `exception`: Instance of Throwable; accessible only when `<%@ page isErrorPage='true' %>` is configured to display unhandled error stack traces."
       ],
       [
-        "2. The 9 Implicit Objects in JSP:",
-        "JSP provides 9 pre-instantiated implicit objects available automatically in scriptlets and expressions:\n1. `request` (`HttpServletRequest`): Accesses client request headers, parameters, and cookies.\n2. `response` (`HttpServletResponse`): Configures response MIME types, cookies, and HTTP redirects.\n3. `out` (`JspWriter`): Buffered character stream writing dynamic HTML to the client browser.\n4. `session` (`HttpSession`): Maintains conversational user state between requests.\n5. `application` (`ServletContext`): Global application context shared by all users.\n6. `config` (`ServletConfig`): Page-specific initialization parameters from web.xml.\n7. `pageContext` (`PageContext`): Unified interface accessing all four variable scopes (page, request, session, application).\n8. `page` (`Object`): Refers to the generated servlet instance itself (`this`).\n9. `exception` (`Throwable`): Captures unhandled runtime errors, available only when `<%@ page isErrorPage=\"true\" %>` is declared."
-      ],
-      [
-        "3. Servlets vs JSP Comparative Analysis:",
-        "Servlets excel at handling controller logic, request routing, and business processing, but writing HTML via `out.println()` is clumsy. JSP excels at presentation and view templates because HTML is native, but embedding heavy business logic in JSPs leads to 'Spaghetti Code'. In modern enterprise architecture (MVC Pattern), Servlets act as Controllers while JSPs act as Views."
+        "2. Expected Examiner Criteria",
+        [
+          "Diagram showing translation from .jsp to .java to .class",
+          "Explicit table or list of implicit objects with types"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master JSP Translation Cycle & All 9 Implicit Objects",
-    "milestone": "Full 15/15 on Java Web Technologies Exam Question"
-  },
   "apt_data": {
-    "topic": "Verbal Reasoning \u2014 Critical Reasoning: Statement & Assumptions / Arguments",
+    "topic": "Vocabulary, Contextual Synonyms & Antonyms",
+    "category": "Verbal Ability",
+    "subtopic": "Vocabulary",
+    "formulas": "1. Root Words: 'Mal' = bad/evil; 'Bene' = good; 'Chron' = time; 'Loqu/Loc' = talk/speak; 'Path' = feeling.\n2. Contextual Tone Analysis: Determine whether the blank requires a positive, negative, or neutral connotation before looking at options.\n3. Secondary Meanings: Words like 'Reservation' (doubt/hesitation vs booking), 'Arrest' (stop progress vs police arrest).",
+    "shortcut": "Elimination by Tone: If three options are positive adjectives and one is negative, match with the sentence polarity to eliminate three choices instantly.",
     "tutorial": [
-      "Critical Reasoning tests deductive logic in verbal communication:\n1. Statement & Assumptions:\n\u2022 An assumption is something taken for granted or accepted as true without explicit proof before making the statement.\n\u2022 Validity Rule: An assumption is valid if the statement makes no sense without assuming it to be true.\n\u2022 Negation Test: If negating the assumption makes the statement fall apart or become completely pointless, the assumption is 100% IMPLICIT!\n2. Statement & Arguments (Strong vs Weak Arguments):\n\u2022 Strong Argument: Based on established facts, logical consequences, constitutional law, or universal truth. Directly addresses the core issue.\n\u2022 Weak Argument: Based on emotional appeals, vague opinions, comparisons with unrelated nations, or trivial reasons."
+      "Do not memorize dictionary definitions in isolation. Learn words in contextual families and roots. High-frequency placement vocabulary includes words like Candid, Ephemeral, Pragmatic, Esoteric, Ubiquitous, and Reticent."
     ],
-    "formulas": "Negation Test: If ~Assumption invalidates Statement ==> Assumption is Implicit. Strong arguments must be realistic and consequential.",
-    "shortcut": "Reject Extreme Words: Assumptions containing words like 'only', 'best', 'always', 'never', 'all' are usually NOT implicit unless explicitly mandated by the statement.",
-    "recognition": "Look for 'Statement: The government has decided to... Assumptions: I. People may... II. Other countries...' in TCS NQT and Infosys verbal rounds.",
-    "tier1_problem": "Statement: 'Please do not lean out of the window while the train is in motion.' \u2014 A notice in a railway coach.\nAssumptions:\nI. Leaning out of the window while moving is dangerous.\nII. Passengers are expected to read and follow railway notices.",
-    "tier1_solution": "Apply Negation Test:\n\u2022 Negate Assumption I: 'Leaning out is completely safe.' If it is safe, posting a warning makes no sense! Therefore, Assumption I is IMPLICIT.\n\u2022 Negate Assumption II: 'Passengers will never read notices.' If nobody reads them, putting up a sign is futile! Therefore, Assumption II is IMPLICIT.\nAnswer: Both Assumptions I and II are implicit.",
-    "tier2_problem": "Statement: 'Switch to our high-speed fiber internet for uninterrupted video calling and streaming.' \u2014 An advertisement.\nAssumptions:\nI. People desire uninterrupted video calling and streaming.\nII. No other company provides high-speed internet.",
-    "tier2_solution": "\u2022 Assumption I directly addresses consumer demand that makes advertising appealing ==> Implicit.\n\u2022 Assumption II uses extreme claim ('No other company') which is not implied by promoting one's own service ==> Not implicit.\nAnswer: Only Assumption I is implicit.",
-    "tier3_problem": "[TCS Digital Verbal Pattern]\nStatement: Should all examinations in colleges be conducted with open books?\nArguments:\nI. Yes, because open-book exams test conceptual understanding and application rather than rote memorization.\nII. No, because students will stop studying and will simply copy directly from textbooks during the exam.",
-    "tier3_solution": "\u2022 Argument I is strong because open-book exams are specifically designed to require higher-order analysis, problem-solving, and synthesis rather than textbook reproduction.\n\u2022 Argument II is weak because it assumes open-book questions are verbatim copies of text, misunderstanding the design of analytical open-book testing.\nAnswer: Only Argument I is strong.",
-    "tier4_problem": "Statement: 'In order to reduce traffic congestion, the municipal corporation will impose a congestion tax on private cars entering the central commercial district during peak hours.'\nAssumptions:\nI. The congestion tax will deter at least some private car owners from driving into the city center during peak hours.\nII. The public transport system has enough capacity to handle commuters who switch from cars.",
-    "tier4_solution": "\u2022 Assumption I: If nobody is deterred by the fee, the policy will fail to reduce congestion. Hence, the administration must assume at least some behavioral shift ==> Implicit.\n\u2022 Assumption II: If the municipality implements this policy without assuming viable transit alternatives exist, the city would experience economic gridlock. Imposing disincentives presupposes alternative feasibility ==> Implicit.\nAnswer: Both Assumptions I and II are implicit.",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "Statement: 'Buy pure ghee of brand X.' Assumption: People want pure ghee.",
-        "a": "Implicit. Advertisements assume consumer demand for product qualities."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "Statement: 'Warning: Smoking causes cancer.' Assumption: Smokers want to read warnings.",
-        "a": "Implicit. Public warnings assume visibility and public awareness."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "Statement: 'Enroll in our coding bootcamp to become a software engineer.' Assumption: Only our bootcamp makes engineers.",
-        "a": "Not implicit. Word 'Only' makes it extreme."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "Argument: 'Should children use smartphones?' Arg: 'No, radiation destroys brains.'",
-        "a": "Weak. Unsubstantiated sensational claim."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "Statement: 'Fly Airline A for lowest fares.' Assumption: Passengers prefer lower fares.",
-        "a": "Implicit. Rationale for pricing-based marketing."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Vocabulary",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Vocabulary",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Vocabulary",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Vocabulary",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Vocabulary",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "What is the closest synonym for the word 'EPHEMERAL'?",
+        "options": {
+          "A": "Transient",
+          "B": "Permanent",
+          "C": "Eternal",
+          "D": "Perpetual"
+        },
+        "correct_answer": "A",
+        "explanation": "'Ephemeral' means lasting for a very short time; its synonym is 'transient' or 'fleeting'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "What is the ANTONYM of the word 'PRAGMATIC'?",
+        "options": {
+          "A": "Idealistic",
+          "B": "Practical",
+          "C": "Sensible",
+          "D": "Realistic"
+        },
+        "correct_answer": "A",
+        "explanation": "'Pragmatic' means dealing with things sensibly and realistically. Its antonym is 'idealistic' or 'impractical'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Select the synonym for 'UBIQUITOUS':",
+        "options": {
+          "A": "Omnipresent",
+          "B": "Rare",
+          "C": "Hidden",
+          "D": "Scarce"
+        },
+        "correct_answer": "A",
+        "explanation": "'Ubiquitous' means present, appearing, or found everywhere; synonym is 'omnipresent'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "What is the antonym of 'MITIGATE'?",
+        "options": {
+          "A": "Aggravate",
+          "B": "Alleviate",
+          "C": "Moderate",
+          "D": "Relieve"
+        },
+        "correct_answer": "A",
+        "explanation": "'Mitigate' means to make less severe. Its antonym is 'aggravate' or 'intensify'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Choose the word that best fits: 'The engineer's explanation was so _____ that even non-technical stakeholders grasped the architecture.'",
+        "options": {
+          "A": "Lucid",
+          "B": "Ambiguous",
+          "C": "Obscure",
+          "D": "Convoluted"
+        },
+        "correct_answer": "A",
+        "explanation": "'Lucid' means expressed clearly and easy to understand.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "What is the meaning of 'EQUIVOCAL'?",
+        "options": {
+          "A": "Ambiguous and open to multiple interpretations",
+          "B": "Fair and equal",
+          "C": "Unquestionably true",
+          "D": "Extremely vocal"
+        },
+        "correct_answer": "A",
+        "explanation": "'Equivocal' means ambiguous or intentionally misleading.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Select the antonym for 'BENEVOLENT':",
+        "options": {
+          "A": "Malevolent",
+          "B": "Generous",
+          "C": "Compassionate",
+          "D": "Philanthropic"
+        },
+        "correct_answer": "A",
+        "explanation": "'Benevolent' means kind and charitable. Its antonym is 'malevolent' (wishing evil to others).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "What is the synonym for 'METICULOUS'?",
+        "options": {
+          "A": "Painstaking",
+          "B": "Careless",
+          "C": "Hasty",
+          "D": "Sloppy"
+        },
+        "correct_answer": "A",
+        "explanation": "'Meticulous' means showing great attention to detail; synonym is 'painstaking' or 'scrupulous'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Choose the word that means 'to surrender or yield under agreed conditions':",
+        "options": {
+          "A": "Capitulate",
+          "B": "Retaliate",
+          "C": "Instigate",
+          "D": "Proliferate"
+        },
+        "correct_answer": "A",
+        "explanation": "'Capitulate' means to cease resisting an opponent or an unwelcome demand; surrender.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "What is the antonym of 'LACONIC'?",
+        "options": {
+          "A": "Verbose",
+          "B": "Brief",
+          "C": "Terse",
+          "D": "Concise"
+        },
+        "correct_answer": "A",
+        "explanation": "'Laconic' means using very few words. Its antonym is 'verbose' or 'loquacious'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Vocabulary (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "Word Break (LeetCode 139 - Medium)",
+      "title": "Problem 1: Partition Equal Subset Sum",
       "difficulty": "Medium",
-      "importance": "High-Frequency Placement String DP Problem (Amazon, Google, TCS Digital)",
-      "problem_statement": "Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words. You may assume the same word in the dictionary may be reused multiple times.",
-      "solution_approach": "Bottom-Up 1D Dynamic Programming:\n1. Define `dp[i]` as boolean: can substring `s[0..i-1]` be segmented using dictionary words?\n2. Base case: `dp[0] = True` (empty string is always valid).\n3. Convert `wordDict` into a hash set for O(1) lookups.\n4. For `i` from 1 to `len(s)`:\n   For `j` from 0 to `i`:\n     If `dp[j] is True` and `s[j..i]` is in word set:\n       `dp[i] = True`, break inner loop.\n5. Return `dp[len(s)]`.",
-      "code": "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    words = set(wordDict)\n    dp = [False] * (len(s) + 1)\n    dp[0] = True\n    \n    for i in range(1, len(s) + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in words:\n                dp[i] = True\n                break\n                \n    return dp[len(s)]",
-      "line_by_line": [
-        [
-          "words = set(wordDict)",
-          "Hash set conversion enables O(1) word membership checks."
-        ],
-        [
-          "dp = [False] * (len(s) + 1); dp[0] = True",
-          "Initialize DP array where dp[i] denotes validity of prefix length i."
-        ],
-        [
-          "if dp[j] and s[j:i] in words:",
-          "Prefix up to j is valid AND remaining chunk s[j:i] is a dictionary word."
-        ],
-        [
-          "dp[i] = True; break",
-          "Mark prefix length i as valid and prune remaining inner searches."
-        ]
-      ],
-      "time_complexity": "O(N^2) where N is length of string s.",
-      "space_complexity": "O(N) for DP array + O(W) for word set.",
-      "edge_cases": "Single character string; word not found (returns False); all single-letter words."
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal.",
+      "solution_approach": "1. Apply Dynamic Programming: 0/1 Knapsack & Partition algorithmic technique.\n2. Determines if an exact target value can be achieved by choosing each element at most once using bottom-up boolean tabulation.\n3. Invariants: dp[w] indicates whether a subset summing to w is achievable; updating backwards from target to num prevents using the same element multiple times.",
+      "code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+      "java_solution": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+      "solution_java": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+      "time_complexity": "O(N * Target) Time",
+      "space_complexity": "O(Target) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Coin Change",
+      "difficulty": "Hard",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "You are given an integer array coins representing coins of different denominations and an integer amount. Return fewest coins to make up that amount.",
+      "solution_approach": "1. Identify interview variation of Dynamic Programming: 0/1 Knapsack & Partition.\n2. Handle edge cases: Odd sum (returns false immediately), Single element array, Target requires all elements.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+      "time_complexity": "O(N * Target) Time",
+      "space_complexity": "O(Target) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Dynamic Programming: 0/1 Knapsack & Partition",
+    "category": "Dynamic Programming",
+    "concept": "Determines if an exact target value can be achieved by choosing each element at most once using bottom-up boolean tabulation.",
+    "why_it_works": "dp[w] indicates whether a subset summing to w is achievable; updating backwards from target to num prevents using the same element multiple times.",
+    "visual_explanation": "Nums = [1, 5, 11, 5], Total Sum = 22 -> Target = 11\\ndp[0] = true\\nnum = 1: dp[1] = true\\nnum = 5: dp[6]=true, dp[5]=true\\nnum = 11: dp[11] = true ==> Partition Possible!",
+    "java_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int totalSum = 0;\n        for (int num : nums) totalSum += num;\n        if (totalSum % 2 != 0) return false;\n        \n        int target = totalSum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        \n        for (int num : nums) {\n            for (int w = target; w >= num; w--) {\n                dp[w] = dp[w] || dp[w - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+    "code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int totalSum = 0;\n        for (int num : nums) totalSum += num;\n        if (totalSum % 2 != 0) return false;\n        \n        int target = totalSum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        \n        for (int num : nums) {\n            for (int w = target; w >= num; w--) {\n                dp[w] = dp[w] || dp[w - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+    "python_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int totalSum = 0;\n        for (int num : nums) totalSum += num;\n        if (totalSum % 2 != 0) return false;\n        \n        int target = totalSum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        \n        for (int num : nums) {\n            for (int w = target; w >= num; w--) {\n                dp[w] = dp[w] || dp[w - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4-5: Compute total sum; odd sum can never be divided into two equal integers.",
+      "Line 7: Set target = totalSum / 2.",
+      "Line 8-9: Initialize dp array with dp[0] = true.",
+      "Line 11-15: Reverse inner loop (from target down to num) guarantees 0/1 Knapsack semantics (each element used once).",
+      "Line 16: Return dp[target]."
+    ],
+    "dry_run": "nums = [1, 5, 11, 5]. target = 11. Array reaches dp[11] = true. Returns true.",
+    "complexity": "O(N * Target) Time, O(Target) Auxiliary Space",
+    "edge_cases": [
+      "Odd sum (returns false immediately)",
+      "Single element array",
+      "Target requires all elements"
+    ],
+    "interview_variations": [
+      "Partition Equal Subset Sum",
+      "Target Sum",
+      "Coin Change (Unbounded variant)",
+      "Combination Sum IV"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-25-01",
+        "title": "Problem 1: Partition Equal Subset Sum",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dynamic Programming: 0/1 Knapsack & Partition algorithmic technique.\n2. Determines if an exact target value can be achieved by choosing each element at most once using bottom-up boolean tabulation.\n3. Invariants: dp[w] indicates whether a subset summing to w is achievable; updating backwards from target to num prevents using the same element multiple times.",
+        "solution_java": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+        "solution_python": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+        "code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+        "java_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+        "time_complexity": "O(N * Target) Time",
+        "space_complexity": "O(Target) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-25-02",
+        "title": "Problem 2: Coin Change",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given an integer array coins representing coins of different denominations and an integer amount. Return fewest coins to make up that amount.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dynamic Programming: 0/1 Knapsack & Partition.\n2. Handle edge cases: Odd sum (returns false immediately), Single element array, Target requires all elements.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int coinChange(int[] coins, int amount) {\n        int[] dp = new int[amount + 1];\n        Arrays.fill(dp, amount + 1);\n        dp[0] = 0;\n        for (int i = 1; i <= amount; i++) {\n            for (int c : coins) {\n                if (i >= c) dp[i] = Math.min(dp[i], dp[i - c] + 1);\n            }\n        }\n        return dp[amount] > amount ? -1 : dp[amount];\n    }\n}",
+        "time_complexity": "O(N * Target) Time",
+        "space_complexity": "O(Target) Auxiliary Space"
+      }
+    ]
+  },
   "cs_core": {
-    "subject": "Operating Systems",
-    "topic": "Disk Scheduling Algorithms: FCFS, SSTF, SCAN (Elevator) & C-SCAN",
+    "subject": "Python Internals",
+    "topic": "Object-Oriented Python: Dunder Methods, MRO (C3 Linearization) & Metaclasses",
     "detailed_notes": [
-      "Disk scheduling manages I/O request queues to minimize total disk head seek time (the time required to move the read/write head to the desired cylinder/track).",
-      "Primary Algorithms Analyzed:\n1. FCFS (First-Come, First-Served): Services requests in arrival order. Simple and fair, but produces wild head swings and high average seek time.\n2. SSTF (Shortest Seek Time First): Services the request closest to current head position. Minimizes average seek time, but causes STARVATION for requests located far away from dense request clusters.\n3. SCAN (Elevator Algorithm): Head moves continuously in one direction servicing requests until it reaches the physical end of the disk, then reverses direction. Eliminates starvation.\n4. C-SCAN (Circular SCAN): Head moves in one direction servicing requests until the end, then immediately returns to the beginning of the disk WITHOUT servicing requests on the return trip. Provides uniform wait times across tracks."
+      "Object-oriented programming in Python is dynamic and extensible through special 'dunder' (double underscore) magic methods.\n\nCore Dunder Methods:\n- `__new__(cls, ...)`: Responsible for physically creating and returning a new instance in memory. Runs before `__init__` (used in Singletons and immutable types).\n- `__init__(self, ...)`: Initializes instance attributes on the already-created object.\n- `__repr__` vs `__str__`: `__repr__` provides an unambiguous developer representation (`eval(repr(x)) == x`); `__str__` provides a readable end-user string.\n- `__call__`: Allows an object instance to be invoked as a function: `obj()`.\n- `__eq__`, `__hash__`: Dict keys and sets require hashable objects. If a class overrides `__eq__`, Python sets `__hash__ = None` unless explicitly implemented.\n\nMultiple Inheritance & Method Resolution Order (MRO):\nWhen multiple base classes exist (e.g., class D(B, C)), Python resolves attribute lookups using the C3 Linearization Algorithm.\nProperties of C3 Linearization:\n1. Children precede their parents (Local Precedence Order).\n2. Base class declaration order is strictly preserved.\n3. Monotonicity: A class always appears before its superclasses in every subclass MRO.\nInspectable via `ClassName.__mro__` or `ClassName.mro()`.\n\n`super()` Behavior:\n`super()` does NOT necessarily call the immediate parent class; it delegates to the NEXT class in the dynamic MRO chain, enabling cooperative multi-inheritance without duplicate calls in diamond inheritance hierarchies."
+    ],
+    "key_definitions": [
+      {
+        "term": "Method Resolution Order (MRO)",
+        "definition": "The deterministic linear order in which Python searches base classes for attributes and methods."
+      },
+      {
+        "term": "C3 Linearization",
+        "definition": "The algorithm used by Python to compute MRO, ensuring consistency and monotonicity in multiple inheritance."
+      },
+      {
+        "term": "__new__",
+        "definition": "The static class constructor method that creates and returns the physical object instance before __init__ runs."
+      }
     ],
     "interview_qa": [
       {
-        "q": "Why is SSTF disk scheduling rarely used in production operating systems despite lower average seek times?",
-        "a": "Because SSTF causes starvation. If a continuous stream of I/O requests arrives near the current head position, the disk head will remain hovering around that locality, and requests on distant cylinders will wait indefinitely. Production systems prefer SCAN or C-LOOK (Elevator algorithms) which guarantee bounded waiting times."
+        "q": "What is the difference between `__new__` and `__init__` in Python?",
+        "a": "`__new__` is the actual instance creator; it is a static method taking the class `cls` as its first parameter and must return a newly created object instance (usually via `super().__new__(cls)`). `__init__` is the instance initializer; it takes the newly created instance `self` and populates attributes, returning nothing (`None`). `__new__` is used when subclassing immutable types (int, str, tuple) or implementing the Singleton design pattern."
       },
       {
-        "q": "What is the difference between SCAN and C-SCAN?",
-        "a": "SCAN travels back and forth, servicing requests in both directions. In contrast, C-SCAN treats the cylinders as a circular list: it services requests in one direction only, and when it reaches the outer boundary, it rapidly sweeps back to the beginning without servicing requests on the return journey, providing uniform waiting times for all cylinders."
+        "q": "How does Python solve the Diamond Problem in multiple inheritance?",
+        "a": "In a diamond inheritance (Class D inherits from B and C, both inheriting from A), Python uses the C3 Linearization algorithm to compute a single linear Method Resolution Order (MRO: D -> B -> C -> A -> object). Calls to `super()` follow this exact linear sequence, guaranteeing that base class A's method is executed exactly once without duplicate calls."
+      },
+      {
+        "q": "What is the difference between `__str__` and `__repr__`?",
+        "a": "`__repr__` is intended for developers and debugging; its output should ideally be unambiguous and look like valid Python code to recreate the object (`eval(repr(x)) == x`). `__str__` is intended for end-users, providing a readable string representation. If `__str__` is not defined, Python falls back to `__repr__`."
+      },
+      {
+        "q": "Why must an object be immutable to be used as a dictionary key or set element?",
+        "a": "Dictionary lookups rely on hash tables where key positions are determined by `hash(key)`. If an object were mutable (like a list) and its contents changed after being inserted into a dict, its hash value would change. The dictionary would then search for the key in a different hash bucket, making the item unfindable. Thus, dict keys must be hashable and immutable."
+      },
+      {
+        "q": "What is a Metaclass in Python and give a real-world use case?",
+        "a": "A metaclass is the 'class of a class'—just as an object is an instance of a class, a class is an instance of a metaclass (by default, `type`). Metaclasses allow intercepting and modifying class definition construction at import time. Real-world use cases include ORMs (like SQLAlchemy or Django Models) and validation frameworks (like Pydantic v1), where field declarations are parsed into SQL columns or validation schemas before instantiation."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-25-01",
+        "question": "Which algorithm does Python use to compute the Method Resolution Order (MRO)?",
+        "options": [
+          "Dijkstra's Algorithm",
+          "C3 Linearization",
+          "Depth-First Search",
+          "Kruskal's Algorithm"
+        ],
+        "correct_answer": "B",
+        "explanation": "Python employs the C3 Linearization algorithm to compute deterministic MRO lists."
+      },
+      {
+        "id": "CS-25-02",
+        "question": "Which magic method is responsible for physically creating and returning a new object instance in memory?",
+        "options": [
+          "__init__",
+          "__new__",
+          "__create__",
+          "__call__"
+        ],
+        "correct_answer": "B",
+        "explanation": "__new__ creates and returns the physical object instance before __init__ initializes it."
+      },
+      {
+        "id": "CS-25-03",
+        "question": "If an object implements `__call__`, it can be:",
+        "options": [
+          "Iterated with for loops",
+          "Invoked like a function: obj()",
+          "Converted to JSON automatically",
+          "Garbage collected immediately"
+        ],
+        "correct_answer": "B",
+        "explanation": "Implementing __call__ allows instance objects to be invoked as callables."
+      },
+      {
+        "id": "CS-25-04",
+        "question": "What is the default metaclass of all standard classes in Python?",
+        "options": [
+          "object",
+          "type",
+          "class",
+          "base"
+        ],
+        "correct_answer": "B",
+        "explanation": "In Python, `type` is the default metaclass that creates classes."
+      },
+      {
+        "id": "CS-25-05",
+        "question": "If a custom class overrides `__eq__` without defining `__hash__`, Python automatically sets `__hash__` to:",
+        "options": [
+          "0",
+          "None (making instances unhashable)",
+          "id(self)",
+          "A random integer"
+        ],
+        "correct_answer": "B",
+        "explanation": "Overriding __eq__ without defining __hash__ sets __hash__ to None to prevent mutable hash violations."
       }
     ]
   },
   "project_defense": {
-    "project_name": "Deployment & CI/CD Engineering",
-    "feature_focus": "Docker Containerization & GitHub Actions CI/CD for FastAPI Backends",
-    "architecture_deep_dive": "Standardizing Production Deployment across Sarthak's FastAPI Services:\n\n1. Multi-Stage Dockerfile Optimization:\n\u2022 Stage 1 (Builder): Uses `python:3.11-slim`, installs build tools (gcc, libpq-dev), and installs dependencies into a virtual environment.\n\u2022 Stage 2 (Runner): Copies only the virtual environment into a minimal base image, stripping compilers and build headers. Reduces container image size from 850MB to under 140MB!\n\n2. Automated CI/CD Workflow (`.github/workflows/deploy.yml`):\n\u2022 Triggers automatically on push to `main` branch.\n\u2022 Runs automated tests via `pytest` and linter checks (`ruff`/`black`).\n\u2022 On test pass, builds Docker image, pushes to GitHub Packages (GHCR), and triggers SSH webhook to restart container on the production VPS with zero downtime.",
+    "project_name": "College Student Management System (CSMS)",
+    "repo_path": "D:\\Projects\\College Student Management System",
+    "feature_focus": "Cloud-Native Educational ERP Architecture with FastAPI & Supabase PostgreSQL",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nArchitecting a multi-role educational ERP system submitted as Sarthak's BCA 5th Semester project under Asst. Prof. Nitin Mishra at VSICS (CSJMU Kanpur).\n\nWHAT TO MEMORIZE:\nFastAPI backend exposes domain routers (auth, students, attendance, grades, hod) communicating with Supabase Cloud PostgreSQL 15+.\n\n60-SECOND INTERVIEW PITCH:\nI developed the College Student Management System (CSMS) for my BCA 5th Semester project at VSICS Kanpur. Using FastAPI and Supabase PostgreSQL, I engineered an educational ERP featuring multi-role authentication for HOD, faculty, and students, real-time attendance tracking with shortage alerts, automated grade derivation, and semester fee accounting.",
     "interview_qa": [
       {
-        "q": "Why do you use Multi-Stage builds in your Dockerfiles?",
-        "a": "Multi-stage builds allow me to separate the compilation environment from the final execution environment. Heavy build utilities, compilers, and development headers are isolated in the builder stage. Only the compiled wheels and runtime binaries are copied to the production image, drastically reducing the image footprint from 800MB+ to 140MB and minimizing attack surface vulnerabilities."
+        "q": "Walk me through the architecture and purpose of your College Student Management System (CSMS).",
+        "a": "I developed CSMS as a cloud-native Educational ERP for my BCA 5th Semester project under Prof. Nitin Mishra at VSICS, CSJMU. Built with FastAPI and Supabase Cloud PostgreSQL with a lightweight Vanilla JS frontend, it automates student lifecycle management across four roles: HOD, Section Incharge, Faculty, and Students. It covers attendance tracking with automated <75% shortage alerts, internal test mark entry with auto-grade calculation, semester fee balance monitoring, and official HOD circular distribution."
       },
       {
-        "q": "How do you ensure environment variables and API keys remain secure in CI/CD pipelines?",
-        "a": "I never commit `.env` files to Git. Secrets are stored in GitHub Repository Secrets and injected at runtime as environment variables. In Docker containers, secrets are passed via `docker run --env-file` or Docker Compose environment variables, running under a non-root user."
+        "q": "Why did you use FastAPI with Supabase PostgreSQL instead of Django or Flask?",
+        "a": "FastAPI provides native asynchronous route execution with automatic Pydantic request validation and self-generating Swagger documentation at `/docs`. Coupled with Supabase PostgreSQL, it provided enterprise-grade ACID transactions without the heavy ORM overhead of Django, making it ideal for fast, zero-downtime deployment on Render via Blueprint (`render.yaml`)."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 25 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 25 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'College Student Management System (CSMS)', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In College Student Management System (CSMS) (FastAPI, Supabase PostgreSQL, Vanilla JS), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of College Student Management System (CSMS).",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 24 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5002 — JavaServer Pages (JSP) Architecture & Scriptlets.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Vocabulary, Contextual Synonyms & Antonyms.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: 0/1 Knapsack & Subsets.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Iterators, Generators & yield Semantics.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on JavaServer Pages (JSP) Architecture & Scriptlets.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Dynamic Programming: 0/1 Knapsack & Subsets.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: SmartGalla.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 25 Q1: What is the primary academic thesis of JavaServer Pages (JSP) Architecture & Scriptlets?",
+        "a": "Core theoretical and practical mastery of JavaServer Pages (JSP) Architecture & Scriptlets under the CSJM University BCA-5002 syllabus."
+      },
+      {
+        "q": "Day 25 Q2: What is the key speed calculation formula applied in Vocabulary, Contextual Synonyms & Antonyms?",
+        "a": "High-speed corporate placement arithmetic shortcut for Vocabulary, Contextual Synonyms & Antonyms in campus recruitment exams."
+      },
+      {
+        "q": "Day 25 Q3: What is the time complexity of Dynamic Programming: 0/1 Knapsack & Subsets?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 25 Q4: What is the central architectural principle of Python Iterators, Generators & yield Semantics?",
+        "a": "Foundational systems engineering rule governing Python Iterators, Generators & yield Semantics in production environments."
+      },
+      {
+        "q": "Day 25 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 25 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 25 Q7: What is the verified technical foundation of SmartGalla?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 25 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 25 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 25 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5002 — JavaServer Pages (JSP) Architecture & Scriptlets.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Vocabulary, Contextual Synonyms & Antonyms.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: 0/1 Knapsack & Subsets.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Iterators, Generators & yield Semantics."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5002 — JavaServer Pages (JSP) Architecture & Scriptlets."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Vocabulary, Contextual Synonyms & Antonyms."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Dynamic Programming: 0/1 Knapsack & Subsets."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: SmartGalla."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 25,
+    "title": "Day 25 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "What happens during the Translation phase of a JSP file?",
-        "a": "The JSP Engine translates the `.jsp` markup into a Java Servlet source file (`.java`)."
+        "q": "When a JavaServer Page (.jsp) is requested for the first time, what translation step occurs inside the web container?",
+        "a": "Answer: B\n\nJSP is a high-level servlet abstraction: the container converts .jsp into a Java Servlet (`_jspService`), then compiles and executes it."
       },
       {
-        "q": "Name 4 of the 9 implicit objects in JSP.",
-        "a": "request, response, session, out, application, config, pageContext, page, exception."
+        "q": "Which JSP scripting element syntax `<%= expression %>` is used to output values directly into the client response stream?",
+        "a": "Answer: B\n\nJSP Expression (`<%= expr %>`) evaluates the Java expression, converts the result to String, and writes it directly to the response output stream."
       },
       {
-        "q": "Under what condition is the `exception` implicit object accessible in a JSP?",
-        "a": "Strictly when the page directive includes `<%@ page isErrorPage=\"true\" %>`."
+        "q": "Which JSP directive defines page-wide attributes such as imported Java packages, error pages, and session participation?",
+        "a": "Answer: B\n\nThe `<%@ page ... %>` directive specifies page settings (e.g., `<%@ page import=\"java.util.*\" session=\"true\" errorPage=\"err.jsp\" %>`)."
       },
       {
-        "q": "What is the primary drawback of the SSTF disk scheduling algorithm?",
-        "a": "Starvation of distant track requests under heavy localized I/O traffic."
+        "q": "What is the key difference between `<%@ include file=\"header.jsp\" %>` and `<jsp:include page=\"header.jsp\" />`?",
+        "a": "Answer: A\n\nThe include directive merges file source code at translation time; `<jsp:include>` invokes the target servlet dynamically at runtime."
       },
       {
-        "q": "How does C-SCAN differ from standard SCAN disk scheduling?",
-        "a": "C-SCAN services requests in one direction only and returns directly to the start track without servicing requests on the return journey, ensuring uniform wait times."
+        "q": "What scope in JSP stores attributes that are accessible to all users and all servlets across the entire web application?",
+        "a": "Answer: D\n\nApplication scope (`application` implicit object / ServletContext) is global, accessible by all sessions across the web application."
       },
       {
-        "q": "What is the time complexity of the DP solution for Word Break (LeetCode 139)?",
-        "a": "O(N^2) where N is the length of the string."
+        "q": "Select the word that is nearest in meaning (Synonym) to 'EPHEMERAL':",
+        "a": "Answer: A\n\n'Ephemeral' means lasting for a very short time; transient, fleeting, short-lived."
       },
       {
-        "q": "Why are extreme words ('all', 'never', 'only') usually red flags in Critical Reasoning assumptions?",
-        "a": "Because real-world statements rarely warrant absolute, sweeping generalizations unless explicitly stated."
+        "q": "Select the word that is most opposite in meaning (Antonym) to 'CANDID':",
+        "a": "Answer: A\n\n'Candid' means truthful, straightforward, and frank. The antonym is deceitful or secretive."
       },
       {
-        "q": "What is the benefit of multi-stage Docker builds?",
-        "a": "Separates the build environment from runtime, producing lightweight, secure container images without compiler dependencies."
+        "q": "Select the synonym for 'PRAGMATIC':",
+        "a": "Answer: A\n\n'Pragmatic' means dealing with things sensibly and realistically based on practical considerations."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-25-01",
+        "category": "Academic (Academic Theory)",
+        "question": "When a JavaServer Page (.jsp) is requested for the first time, what translation step occurs inside the web container?",
+        "options": [
+          "The JSP is compiled directly into a C++ binary",
+          "The JSP engine translates the JSP source into an equivalent Java Servlet source code (.java) and compiles it into a .class file",
+          "The browser compiles the JSP locally using V8",
+          "The page is converted into a static PDF file"
+        ],
+        "correct_answer": "B",
+        "explanation": "JSP is a high-level servlet abstraction: the container converts .jsp into a Java Servlet (`_jspService`), then compiles and executes it."
+      },
+      {
+        "id": "TEST-25-02",
+        "category": "Academic (Academic Theory)",
+        "question": "Which JSP scripting element syntax `<%= expression %>` is used to output values directly into the client response stream?",
+        "options": [
+          "JSP Scriptlet",
+          "JSP Expression",
+          "JSP Declaration",
+          "JSP Directive"
+        ],
+        "correct_answer": "B",
+        "explanation": "JSP Expression (`<%= expr %>`) evaluates the Java expression, converts the result to String, and writes it directly to the response output stream."
+      },
+      {
+        "id": "TEST-25-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which JSP directive defines page-wide attributes such as imported Java packages, error pages, and session participation?",
+        "options": [
+          "<%@ include ... %>",
+          "<%@ page ... %>",
+          "<%@ taglib ... %>",
+          "<%@ forward ... %>"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `<%@ page ... %>` directive specifies page settings (e.g., `<%@ page import=\"java.util.*\" session=\"true\" errorPage=\"err.jsp\" %>`)."
+      },
+      {
+        "id": "TEST-25-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the key difference between `<%@ include file=\"header.jsp\" %>` and `<jsp:include page=\"header.jsp\" />`?",
+        "options": [
+          "Directive include is static at translation time; standard action `<jsp:include>` is dynamic at request runtime",
+          "Directive include executes faster in Python",
+          "Action include cannot accept parameters",
+          "There is no difference"
+        ],
+        "correct_answer": "A",
+        "explanation": "The include directive merges file source code at translation time; `<jsp:include>` invokes the target servlet dynamically at runtime."
+      },
+      {
+        "id": "TEST-25-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What scope in JSP stores attributes that are accessible to all users and all servlets across the entire web application?",
+        "options": [
+          "page scope",
+          "request scope",
+          "session scope",
+          "application scope (ServletContext)"
+        ],
+        "correct_answer": "D",
+        "explanation": "Application scope (`application` implicit object / ServletContext) is global, accessible by all sessions across the web application."
+      },
+      {
+        "id": "TEST-25-06",
+        "category": "Placement Aptitude",
+        "question": "Select the word that is nearest in meaning (Synonym) to 'EPHEMERAL':",
+        "options": [
+          "Transient",
+          "Permanent",
+          "Eternal",
+          "Enduring"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Ephemeral' means lasting for a very short time; transient, fleeting, short-lived."
+      },
+      {
+        "id": "TEST-25-07",
+        "category": "Placement Aptitude",
+        "question": "Select the word that is most opposite in meaning (Antonym) to 'CANDID':",
+        "options": [
+          "Deceitful",
+          "Honest",
+          "Frank",
+          "Blunt"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Candid' means truthful, straightforward, and frank. The antonym is deceitful or secretive."
+      },
+      {
+        "id": "TEST-25-08",
+        "category": "Placement Aptitude",
+        "question": "Select the synonym for 'PRAGMATIC':",
+        "options": [
+          "Practical",
+          "Idealistic",
+          "Theoretical",
+          "Speculative"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Pragmatic' means dealing with things sensibly and realistically based on practical considerations."
+      },
+      {
+        "id": "TEST-25-09",
+        "category": "Placement Aptitude",
+        "question": "Select the antonym for 'UBIQUITOUS':",
+        "options": [
+          "Rare",
+          "Omnipresent",
+          "Pervasive",
+          "Universal"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Ubiquitous' means present everywhere simultaneously. The antonym is rare or scarce."
+      },
+      {
+        "id": "TEST-25-10",
+        "category": "Placement Aptitude",
+        "question": "Select the synonym for 'METICULOUS':",
+        "options": [
+          "Thorough",
+          "Careless",
+          "Hasty",
+          "Sloppy"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Meticulous' means showing great attention to detail; very careful and precise; thorough."
+      },
+      {
+        "id": "TEST-25-11",
+        "category": "Core CS (Python Internals)",
+        "question": "Which algorithm does Python use to compute the Method Resolution Order (MRO)?",
+        "options": [
+          "Dijkstra's Algorithm",
+          "C3 Linearization",
+          "Depth-First Search",
+          "Kruskal's Algorithm"
+        ],
+        "correct_answer": "B",
+        "explanation": "Python employs the C3 Linearization algorithm to compute deterministic MRO lists."
+      },
+      {
+        "id": "TEST-25-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which magic method is responsible for physically creating and returning a new object instance in memory?",
+        "options": [
+          "__init__",
+          "__new__",
+          "__create__",
+          "__call__"
+        ],
+        "correct_answer": "B",
+        "explanation": "__new__ creates and returns the physical object instance before __init__ initializes it."
+      },
+      {
+        "id": "TEST-25-13",
+        "category": "Core CS (Python Internals)",
+        "question": "If an object implements `__call__`, it can be:",
+        "options": [
+          "Iterated with for loops",
+          "Invoked like a function: obj()",
+          "Converted to JSON automatically",
+          "Garbage collected immediately"
+        ],
+        "correct_answer": "B",
+        "explanation": "Implementing __call__ allows instance objects to be invoked as callables."
+      },
+      {
+        "id": "TEST-25-14",
+        "category": "Core CS (Python Internals)",
+        "question": "What is the default metaclass of all standard classes in Python?",
+        "options": [
+          "object",
+          "type",
+          "class",
+          "base"
+        ],
+        "correct_answer": "B",
+        "explanation": "In Python, `type` is the default metaclass that creates classes."
+      },
+      {
+        "id": "TEST-25-15",
+        "category": "Core CS (Python Internals)",
+        "question": "If a custom class overrides `__eq__` without defining `__hash__`, Python automatically sets `__hash__` to:",
+        "options": [
+          "0",
+          "None (making instances unhashable)",
+          "id(self)",
+          "A random integer"
+        ],
+        "correct_answer": "B",
+        "explanation": "Overriding __eq__ without defining __hash__ sets __hash__ to None to prevent mutable hash violations."
+      },
+      {
+        "id": "TEST-25-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: 0/1 Knapsack & Partition' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N * Target) Time, O(Target) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: 0/1 Knapsack & Partition' pattern operates with O(N * Target) Time, O(Target) Auxiliary Space: dp[w] indicates whether a subset summing to w is achievable; updating backwards from target to num prevents using the same element multiple times.."
+      },
+      {
+        "id": "TEST-25-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: 0/1 Knapsack & Partition' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Odd sum (returns false immediately).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: 0/1 Knapsack & Partition include Odd sum (returns false immediately), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-25-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Partition Equal Subset Sum', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(Target) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N * Target) Time, O(Target) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-25-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Cloud-Native Educational ERP Architecture with FastAPI & Supabase PostgreSQL'?",
+        "options": [
+          "FastAPI backend exposes domain routers (auth, students, attendance, grades, hod) communicating with Supabase Cloud PostgreSQL 15+.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: FastAPI backend exposes domain routers (auth, students, attendance, grades, hod) communicating with Supabase Cloud PostgreSQL 15+.."
+      },
+      {
+        "id": "TEST-25-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'Walk me through the architecture and purpose of your College Student Management System (CSMS).'?",
+        "options": [
+          "I developed CSMS as a cloud-native Educational ERP for my BCA 5th Semester project under Prof. Nitin Mishra at VSICS, CSJMU. Built with FastAPI and Supabase Clo...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: I developed CSMS as a cloud-native Educational ERP for my BCA 5th Semester project under Prof. Nitin Mishra at VSICS, CSJMU. Built with Fast."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-25",
+    "title": "Partition Equal Subset Sum (Dynamic Programming: 0/1 Knapsack & Partition)",
+    "time_limit_minutes": 45,
+    "difficulty": "Hard",
+    "problem_statement": "Solve the core placement problem: Partition Equal Subset Sum.\n\nGiven an integer array nums, return true if you can partition the array into two subsets such that the sum of the elements in both subsets is equal.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dynamic Programming: 0/1 Knapsack & Partition\n- Time Complexity Target: O(N * Target) Time\n- Space Complexity Target: O(Target) Auxiliary Space\n- Handle all edge cases: Odd sum (returns false immediately), Single element array, Target requires all elements.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: 0/1 Knapsack & Partition\n    public boolean canPartition(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: 0/1 Knapsack & Partition\n    public boolean canPartition(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public boolean canPartition(int[] nums) {\n        int sum = 0;\n        for (int n : nums) sum += n;\n        if (sum % 2 != 0) return false;\n        int target = sum / 2;\n        boolean[] dp = new boolean[target + 1];\n        dp[0] = true;\n        for (int num : nums) {\n            for (int j = target; j >= num; j--) {\n                dp[j] = dp[j] || dp[j - num];\n            }\n        }\n        return dp[target];\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Dynamic Programming: 0/1 Knapsack & Partition logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Odd sum (returns false immediately)",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N * Target) Time)",
+      "Space Complexity": "20 points (Meets O(Target) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }

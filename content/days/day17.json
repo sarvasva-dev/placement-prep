@@ -1,164 +1,2449 @@
 {
   "day": 17,
-  "title": "Java Servlet Life Cycle, Topological Sort & Bayes' Theorem",
-  "sem_data": {
-    "subject": "BCA-5002 Java Programming",
-    "topic": "Unit IV \u2014 Servlet Architecture, 3-Stage Life Cycle & forward() vs sendRedirect()",
-    "detailed_notes": [
-      "A Servlet is a server-side Java software component managed by a Web Container (Servlet Engine, such as Apache Tomcat) that dynamically extends the capabilities of a web server to generate dynamic HTML responses and handle HTTP requests.",
-      "Servlet Interface Inheritance Hierarchy:\n\u2022 java.servlet.Servlet: The core root interface defining basic life cycle methods.\n\u2022 java.servlet.GenericServlet: An abstract protocol-independent servlet implementation implementing Servlet and ServletConfig interfaces.\n\u2022 java.servlet.http.HttpServlet: An abstract protocol-specific subclass designed exclusively for HTTP communication. It overrides service() to dispatch incoming requests to HTTP verb handlers: doGet(), doPost(), doPut(), doDelete().",
-      "The 3-Stage Servlet Life Cycle:\n1. Initialization Stage (Loading & init()): The Web Container loads the servlet class, instantiates it via reflection, and calls 'init(ServletConfig config)'. Executed EXACTLY ONCE during the servlet's lifetime. Used for initializing database connections and reading configuration parameters.\n2. Request Handling Stage (service()): For EVERY incoming client HTTP request, the container spawns a new lightweight thread and invokes 'service(HttpServletRequest, HttpServletResponse)'. The service() method inspects the HTTP request method and delegates to doGet() or doPost(). This multi-threaded execution model provides exceptional concurrency over CGI scripts.\n3. Destruction Stage (destroy()): When the container shuts down or reloads the application, it invokes 'destroy()'. Executed EXACTLY ONCE to release database connections, close open file streams, and flush caches. The garbage collector reclaims the servlet instance.",
-      "Servlet Communication & Navigation:\n\u2022 RequestDispatcher.forward(req, res): Server-side internal dispatch. The request and response objects are passed to another servlet/JSP on the same server. Invisible to the client browser (URL does not change). Extremely fast.\n\u2022 HttpServletResponse.sendRedirect(url): Client-side redirection. The server sends an HTTP 302 response instructing the browser to issue a completely new GET request to the new URL. The URL changes in the browser address bar, creating a brand-new request lifecycle."
+  "title": "Day 17: Java Servlet Technology: Life Cycle (init, service, destroy), Architecture & Deployment Descriptor & Binary Search Tree (BST) Validation",
+  "streams": {
+    "academic": {
+      "unit": 4,
+      "topic": "Unit IV — Java Servlet Technology: Life Cycle (init, service, destroy), Architecture & Deployment Descriptor",
+      "objectives": [
+        "Understand Servlet container web architecture.",
+        "Master Servlet lifecycle methods and web.xml deployment descriptor mapping."
+      ],
+      "explanation": "A Servlet is a server-side Java programming component that extends the capabilities of web servers by dynamically handling client HTTP requests and generating responses. Servlets execute inside a Servlet Container (e.g., Apache Tomcat). The Servlet interface defines 3 lifecycle methods:\n1. `init(ServletConfig config)`: Invoked exactly once when the servlet is first loaded into memory to perform resource initialization;\n2. `service(ServletRequest req, ServletResponse res)`: Invoked on every client HTTP request by a newly spawned thread from the container's thread pool, delegating to `doGet()` or `doPost()`;\n3. `destroy()`: Invoked exactly once when the container unloads the servlet or shuts down to release resources and close database connections.\nConfiguration is handled via the deployment descriptor (`web.xml`) using `<servlet>` and `<servlet-mapping>` elements or modern `@WebServlet` annotations.",
+      "definitions": [
+        {
+          "term": "Servlet Container",
+          "definition": "The web server component (e.g., Tomcat) that manages servlet lifecycle, maps URLs, spawns request threads, and handles socket connections."
+        },
+        {
+          "term": "Deployment Descriptor (web.xml)",
+          "definition": "An XML configuration file in WEB-INF that instructs the servlet container how to map incoming URL patterns to specific servlet classes."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Servlet Lifecycle Flow",
+          "content": "Load Class -> Instantiate -> init() -> [Client Requests: service() -> doGet()/doPost()] -> destroy() -> Garbage Collected."
+        },
+        {
+          "title": "web.xml Configuration",
+          "content": "Maps `<servlet-name>` to `<servlet-class>` and binds `<url-pattern>` via `<servlet-mapping>`."
+        }
+      ],
+      "examples": [
+        "An authentication HttpServlet receiving user credentials via HTTP POST and dispatching session tokens."
+      ],
+      "diagram": "+---------------------------------------------------+\n|                 SERVLET LIFECYCLE                 |\n| Container Start -> init() [Once]                  |\n|   |-> Client Request -> Thread Spawn -> service() |\n| Container Shutdown -> destroy() [Once]            |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Lifecycle Method",
+          "Execution Frequency",
+          "Invoked By",
+          "Core Purpose"
+        ],
+        "rows": [
+          [
+            "init(ServletConfig)",
+            "Exactly once per servlet instance",
+            "Servlet Container",
+            "Initialize resources, database connections, cache warm-up"
+          ],
+          [
+            "service(req, res)",
+            "Every incoming HTTP request",
+            "Container Thread",
+            "Dispatches request to doGet(), doPost(), etc."
+          ],
+          [
+            "destroy()",
+            "Exactly once prior to unload",
+            "Servlet Container",
+            "Cleanup open files, flush streams, release memory"
+          ],
+          [
+            "doGet(req, res)",
+            "Every incoming HTTP GET",
+            "service() method",
+            "Handle read-only queries with parameters in URL"
+          ],
+          [
+            "doPost(req, res)",
+            "Every incoming HTTP POST",
+            "service() method",
+            "Handle form submissions, updates with payload in body"
+          ]
+        ]
+      },
+      "memorize": "Servlet lifecycle: init() runs once, service() runs per request on new thread, destroy() runs once on shutdown. web.xml maps URLs to classes.",
+      "understand": "Unlike CGI which spawned a heavy OS process for every request, Servlets handle each client request inside a lightweight thread within a single JVM process.",
+      "common_mistakes": "Overriding service() directly instead of overriding doGet() and doPost() in an HttpServlet.",
+      "exam_writing_guidance": "Draw the lifecycle flow diagram, explain the 3 methods in sequence, show complete sample HttpServlet code, and provide web.xml snippet.",
+      "mini_practice": [
+        "Write web.xml mapping for a servlet named 'LoginServlet' mapped to '/login'."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2023-24 (Q4)",
+          "marks": 15,
+          "question": "Explain the life cycle of a Servlet with a neat diagram. Discuss the role of web.xml deployment descriptor with a complete code example. (15 Marks)",
+          "rubric": "Servlet Lifecycle Diagram (4 marks) + Explanation of init, service, destroy (5 marks) + web.xml configuration snippet (3 marks) + HttpServlet code snippet (3 marks) = 15 Marks.",
+          "model_answer": "A Servlet is a server-side Java class managed by a Servlet Container (like Tomcat) that dynamically handles HTTP client requests. Its lifecycle comprises three primary phases: 1. Initialization (init): When the container loads the servlet class, it calls init(ServletConfig) exactly once to configure resources; 2. Request Handling (service): For each incoming client HTTP request, the container allocates a thread from its thread pool and invokes service(ServletRequest, ServletResponse). The service() method examines the HTTP verb and dispatches the request to doGet() or doPost(); 3. Destruction (destroy): When the container shuts down or reloads the application, it invokes destroy() once to close database connections and release resources.\n\nDeployment Descriptor (web.xml) Configuration:\n```xml\n<web-app>\n    <servlet>\n        <servlet-name>HelloServlet</servlet-name>\n        <servlet-class>com.app.HelloServlet</servlet-class>\n    </servlet>\n    <servlet-mapping>\n        <servlet-name>HelloServlet</servlet-name>\n        <url-pattern>/hello</url-pattern>\n    </servlet-mapping>\n</web-app>\n```",
+          "answer_structure": "Lifecycle Diagram -> 3 Methods Detailed -> CGI vs Servlet Comparison -> web.xml -> HttpServlet Code",
+          "important_points": [
+            "init() runs once",
+            "service() runs per request on thread",
+            "destroy() runs on unload",
+            "web.xml servlet-mapping"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Thread-based execution model explained",
+            "Valid web.xml XML syntax"
+          ],
+          "common_mistakes": [
+            "Writing that init() is called for every request"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "Differentiate between doGet() and doPost() methods in HttpServlet. (5 Marks)",
+          "rubric": "Comparison table across URL visibility, Payload size, Security, and Idempotency (5 marks).",
+          "model_answer": "1. Parameter Visibility: `doGet()` sends parameters appended directly to the URL query string, visible in browser history; `doPost()` sends parameters enclosed within the HTTP request body, invisible in URLs; 2. Data Capacity: `doGet()` is constrained by URL length limits (~2048 chars); `doPost()` can transfer arbitrarily large payloads (file uploads); 3. Idempotency: GET requests should be idempotent (safe to retry without side effects); POST requests are non-idempotent (creates orders, modifies state); 4. Security: Sensitive data like passwords must never be transmitted via doGet()."
+        }
+      ],
+      "subject_code": "BCA-5002",
+      "subject_name": "Java Programming & Dynamic Webpage Design",
+      "mcqs": [
+        {
+          "id": "ACAD-17-01",
+          "question": "What condition guarantees the convergence of both Gauss-Jacobi and Gauss-Seidel iterative methods for solving AX = B?",
+          "options": [
+            "Matrix A is skew-symmetric",
+            "Matrix A is Strictly Diagonally Dominant (|a_ii| > sum_{j!=i} |a_ij| for all rows)",
+            "det(A) < 1",
+            "All elements of A are negative"
+          ],
+          "correct_answer": "B",
+          "explanation": "Strict diagonal dominance guarantees that iterative approximations converge to the unique solution regardless of initial guess."
+        },
+        {
+          "id": "ACAD-17-02",
+          "question": "How does Gauss-Seidel iteration differ from the Gauss-Jacobi method?",
+          "options": [
+            "Gauss-Seidel uses the most freshly computed variable values immediately in the current iteration",
+            "Gauss-Jacobi converges twice as fast as Gauss-Seidel",
+            "Gauss-Seidel cannot be used for 3x3 systems",
+            "Gauss-Jacobi does not require matrix coefficients"
+          ],
+          "correct_answer": "A",
+          "explanation": "Gauss-Seidel updates variables in-place, using x_1^{(k+1)} immediately to calculate x_2^{(k+1)}, converging roughly twice as fast as Jacobi."
+        },
+        {
+          "id": "ACAD-17-03",
+          "question": "In iterative methods, what does the relaxation parameter omega represent in the Successive Over-Relaxation (SOR) method?",
+          "options": [
+            "Matrix inversion scale",
+            "An extrapolation factor where 1 < omega < 2 accelerates convergence compared to standard Gauss-Seidel",
+            "The number of CPU threads allocated",
+            "The floating point precision epsilon"
+          ],
+          "correct_answer": "B",
+          "explanation": "SOR accelerates Gauss-Seidel by weighting the new estimate with a relaxation factor (1 < omega < 2 for over-relaxation)."
+        },
+        {
+          "id": "ACAD-17-04",
+          "question": "If an iterative method computes x^{(k+1)} = [2.001, 3.999] and x^{(k)} = [2.000, 4.000], what is the absolute error norm ||x^{(k+1)} - x^{(k)}||_infinity?",
+          "options": [
+            "0.001",
+            "0.002",
+            "0.000",
+            "0.010"
+          ],
+          "correct_answer": "A",
+          "explanation": "The infinity norm is the maximum absolute difference across components: max(|2.001 - 2.000|, |3.999 - 4.000|) = 0.001."
+        },
+        {
+          "id": "ACAD-17-05",
+          "question": "Why are iterative methods (Jacobi, Seidel) preferred over direct methods (Gauss Elimination) for very large sparse systems (e.g., 100,000 equations)?",
+          "options": [
+            "They require O(N) storage preserving zero entries and avoid massive O(N^3) matrix fill-in",
+            "They always produce exact solutions without rounding errors",
+            "They do not require initial guesses",
+            "They only use integer multiplication"
+          ],
+          "correct_answer": "A",
+          "explanation": "Sparse systems from PDEs have mostly zero entries. Iterative methods avoid fill-in and have O(N) memory and per-iteration work."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023-24 (Q4)",
+        "marks": 15,
+        "question": "Explain the life cycle of a Servlet with a neat diagram. Discuss the role of web.xml deployment descriptor with a complete code example. (15 Marks)",
+        "rubric": "Servlet Lifecycle Diagram (4 marks) + Explanation of init, service, destroy (5 marks) + web.xml configuration snippet (3 marks) + HttpServlet code snippet (3 marks) = 15 Marks.",
+        "model_answer": "A Servlet is a server-side Java class managed by a Servlet Container (like Tomcat) that dynamically handles HTTP client requests. Its lifecycle comprises three primary phases: 1. Initialization (init): When the container loads the servlet class, it calls init(ServletConfig) exactly once to configure resources; 2. Request Handling (service): For each incoming client HTTP request, the container allocates a thread from its thread pool and invokes service(ServletRequest, ServletResponse). The service() method examines the HTTP verb and dispatches the request to doGet() or doPost(); 3. Destruction (destroy): When the container shuts down or reloads the application, it invokes destroy() once to close database connections and release resources.\n\nDeployment Descriptor (web.xml) Configuration:\n```xml\n<web-app>\n    <servlet>\n        <servlet-name>HelloServlet</servlet-name>\n        <servlet-class>com.app.HelloServlet</servlet-class>\n    </servlet>\n    <servlet-mapping>\n        <servlet-name>HelloServlet</servlet-name>\n        <url-pattern>/hello</url-pattern>\n    </servlet-mapping>\n</web-app>\n```",
+        "answer_structure": "Lifecycle Diagram -> 3 Methods Detailed -> CGI vs Servlet Comparison -> web.xml -> HttpServlet Code",
+        "important_points": [
+          "init() runs once",
+          "service() runs per request on thread",
+          "destroy() runs on unload",
+          "web.xml servlet-mapping"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Thread-based execution model explained",
+          "Valid web.xml XML syntax"
+        ],
+        "common_mistakes": [
+          "Writing that init() is called for every request"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Differentiate between doGet() and doPost() methods in HttpServlet. (5 Marks)",
+        "rubric": "Comparison table across URL visibility, Payload size, Security, and Idempotency (5 marks).",
+        "model_answer": "1. Parameter Visibility: `doGet()` sends parameters appended directly to the URL query string, visible in browser history; `doPost()` sends parameters enclosed within the HTTP request body, invisible in URLs; 2. Data Capacity: `doGet()` is constrained by URL length limits (~2048 chars); `doPost()` can transfer arbitrarily large payloads (file uploads); 3. Idempotency: GET requests should be idempotent (safe to retry without side effects); POST requests are non-idempotent (creates orders, modifies state); 4. Security: Sensitive data like passwords must never be transmitted via doGet()."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    SERVLET LIFE CYCLE & CONTAINER FLOW                  |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|       Client Request                                                    |\n|             |                                                           |\n|             v                                                           |\n|   +-----------------------------------------------------------------+   |\n|   |                  WEB CONTAINER (APACHE TOMCAT)                  |   |\n|   |                                                                 |   |\n|   |   1. Is Servlet Loaded? --(No)--> [ Load Class & Instantiate ]  |   |\n|   |                                               |                 |   |\n|   |                                               v                 |   |\n|   |                                     [ init(ServletConfig) ]     |   |\n|   |                                     (Executed Once in Lifetime) |\n|   |                                               |                 |   |\n|   |                                               v                 |   |\n|   |   2. For Every Incoming Request:                                |\n|   |      [ Spawn New Thread ] ----> [ service(request, response) ]  |   |\n|   |                                               |                 |   |\n|   |                            +------------------+-----------------+\n|   |                            |                                    |\n|   |                            v                                    v\n|   |                        doGet()                                doPost()|\n|   |                                                                 |   |\n|   |   3. Container Shutdown:                                        |   |\n|   |      [ destroy() ] ----> [ Reclaimed by Garbage Collector ]     |   |\n|   +-----------------------------------------------------------------+   |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-17-01",
+        "question": "What condition guarantees the convergence of both Gauss-Jacobi and Gauss-Seidel iterative methods for solving AX = B?",
+        "options": [
+          "Matrix A is skew-symmetric",
+          "Matrix A is Strictly Diagonally Dominant (|a_ii| > sum_{j!=i} |a_ij| for all rows)",
+          "det(A) < 1",
+          "All elements of A are negative"
+        ],
+        "correct_answer": "B",
+        "explanation": "Strict diagonal dominance guarantees that iterative approximations converge to the unique solution regardless of initial guess."
+      },
+      {
+        "id": "ACAD-17-02",
+        "question": "How does Gauss-Seidel iteration differ from the Gauss-Jacobi method?",
+        "options": [
+          "Gauss-Seidel uses the most freshly computed variable values immediately in the current iteration",
+          "Gauss-Jacobi converges twice as fast as Gauss-Seidel",
+          "Gauss-Seidel cannot be used for 3x3 systems",
+          "Gauss-Jacobi does not require matrix coefficients"
+        ],
+        "correct_answer": "A",
+        "explanation": "Gauss-Seidel updates variables in-place, using x_1^{(k+1)} immediately to calculate x_2^{(k+1)}, converging roughly twice as fast as Jacobi."
+      },
+      {
+        "id": "ACAD-17-03",
+        "question": "In iterative methods, what does the relaxation parameter omega represent in the Successive Over-Relaxation (SOR) method?",
+        "options": [
+          "Matrix inversion scale",
+          "An extrapolation factor where 1 < omega < 2 accelerates convergence compared to standard Gauss-Seidel",
+          "The number of CPU threads allocated",
+          "The floating point precision epsilon"
+        ],
+        "correct_answer": "B",
+        "explanation": "SOR accelerates Gauss-Seidel by weighting the new estimate with a relaxation factor (1 < omega < 2 for over-relaxation)."
+      },
+      {
+        "id": "ACAD-17-04",
+        "question": "If an iterative method computes x^{(k+1)} = [2.001, 3.999] and x^{(k)} = [2.000, 4.000], what is the absolute error norm ||x^{(k+1)} - x^{(k)}||_infinity?",
+        "options": [
+          "0.001",
+          "0.002",
+          "0.000",
+          "0.010"
+        ],
+        "correct_answer": "A",
+        "explanation": "The infinity norm is the maximum absolute difference across components: max(|2.001 - 2.000|, |3.999 - 4.000|) = 0.001."
+      },
+      {
+        "id": "ACAD-17-05",
+        "question": "Why are iterative methods (Jacobi, Seidel) preferred over direct methods (Gauss Elimination) for very large sparse systems (e.g., 100,000 equations)?",
+        "options": [
+          "They require O(N) storage preserving zero entries and avoid massive O(N^3) matrix fill-in",
+          "They always produce exact solutions without rounding errors",
+          "They do not require initial guesses",
+          "They only use integer multiplication"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sparse systems from PDEs have mostly zero entries. Iterative methods avoid fill-in and have O(N) memory and per-iteration work."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Coding-Decoding & Letter Shifting",
+      "category": "Logical Reasoning",
+      "subtopic": "Coding-Decoding",
+      "formulas": "1. Alphabet Positional Values: A=1, B=2, ..., Z=26 (EJOTY mnemonic: 5, 10, 15, 20, 25).\n2. Reverse Alphabet Positional Values: Sum of letter and its opposite is ALWAYS 27 (A=1 opposite Z=26; B=2 opposite Y=25).\n3. Common Patterns: Fixed shift (+k, -k), Alternating shifts (+1, -2, +3), Reversal, Pairing.",
+      "shortcuts": "EJOTY / CFILORUX: Memorize multiples of 3 (CFILORUX) and 5 (EJOTY) to identify letter numbers in less than 2 seconds.",
+      "tutorial": [
+        "Examine whether letters are substituted, permuted, or mapped to numerical values. If letters in the output match the input word exactly, it is a transposition/rearrangement cipher, not a substitution cipher."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Coding-Decoding",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Coding-Decoding",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Coding-Decoding",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Coding-Decoding",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Coding-Decoding",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "In a certain code language, 'COMPUTER' is written as 'RFUVQNPC'. How is 'MEDICINE' written in that code?",
+        "options": {
+          "A": "EOJDEJFM",
+          "B": "EOJDJEFM",
+          "C": "EOJDEJGM",
+          "D": "MFEJDJOE"
+        },
+        "correct_answer": "A",
+        "explanation": "Reverse the word and replace each letter: First and last remain reversed, intermediate letters shift +1. 'MEDICINE' becomes 'EOJDEJFM'.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "If 'DELHI' is coded as 73541 and 'CALCUTTA' as 82589662, how can 'CALICUT' be coded?",
+        "options": {
+          "A": "8251896",
+          "B": "8251396",
+          "C": "8254362",
+          "D": "8251862"
+        },
+        "correct_answer": "A",
+        "explanation": "Direct letter-to-digit substitution: C=8, A=2, L=5, I=1, C=8, U=9, T=6 => 8251896.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "If 'ROAD' is written as 'URDG', how is 'SWAN' written in that code?",
+        "options": {
+          "A": "VZDQ",
+          "B": "VXDQ",
+          "C": "VZCQ",
+          "D": "UXDQ"
+        },
+        "correct_answer": "A",
+        "explanation": "Each letter is shifted forward by +3 positions: S(+3)->V, W(+3)->Z, A(+3)->D, N(+3)->Q => VZDQ.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "In a code language, if 'WATER' is written as 'YCVGT', how is 'HIKER' written?",
+        "options": {
+          "A": "JKMGT",
+          "B": "JKNGT",
+          "C": "KLMGT",
+          "D": "JJNGT"
+        },
+        "correct_answer": "A",
+        "explanation": "Each letter advances by +2 positions in the alphabet: H->J, I->K, K->M, E->G, R->T => JKMGT.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "If 'FRIEND' is coded as 'HUMJTK', how is 'CANDLE' coded?",
+        "options": {
+          "A": "EDRIRL",
+          "B": "ESJFME",
+          "C": "DEQJQM",
+          "D": "FYOBOC"
+        },
+        "correct_answer": "A",
+        "explanation": "Shifts increase progressively: +2, +3, +4, +5, +6, +7. C(+2)->E, A(+3)->D, N(+4)->R, D(+5)->I, L(+6)->R, E(+7)->L => EDRIRL.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "In a certain code, '253' means 'books are old', '546' means 'man is old', and '378' means 'buy good books'. What digit stands for 'are'?",
+        "options": {
+          "A": "2",
+          "B": "5",
+          "C": "3",
+          "D": "4"
+        },
+        "correct_answer": "A",
+        "explanation": "In 253 and 546, common word is 'old' and common digit is '5'. In 253 and 378, common word is 'books' and digit is '3'. Therefore in '253', remaining digit '2' represents 'are'.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "If 'ZEBRA' is written as 2652181, how is 'COBRA' written?",
+        "options": {
+          "A": "3152181",
+          "B": "30152181",
+          "C": "31521818",
+          "D": "3152118"
+        },
+        "correct_answer": "A",
+        "explanation": "Letters are replaced by their standard 1-based alphabetical positions: C=3, O=15, B=2, R=18, A=1 => 3152181.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "If 'RAIN' is coded as '8$%6' and 'MORE' is coded as '7#8@', how is 'REMAIN' written?",
+        "options": {
+          "A": "8@7$6%",
+          "B": "8@7$%6",
+          "C": "7@8$%6",
+          "D": "8$%@76"
+        },
+        "correct_answer": "B",
+        "explanation": "Direct character-symbol mapping: R=8, E=@, M=7, A=$, I=%, N=6 => 8@7$%6.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "In a certain code, 'SYSTEM' is coded as 'SYSMET' and 'NEARER' as 'AENRER'. What is the code for 'FRACTION'?",
+        "options": {
+          "A": "CARFNOIT",
+          "B": "CARFTION",
+          "C": "ARFCNOIT",
+          "D": "CARFNOIT"
+        },
+        "correct_answer": "A",
+        "explanation": "Divide into two equal 4-letter halves and reverse each half independently: FRAC -> CARF; TION -> NOIT => CARFNOIT.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "If 'GIVE' is coded as '5137' and 'BAT' as '924', how is 'GATE' coded?",
+        "options": {
+          "A": "5247",
+          "B": "5427",
+          "C": "5724",
+          "D": "2547"
+        },
+        "correct_answer": "A",
+        "explanation": "Direct substitution: G=5, A=2, T=4, E=7 => 5247.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Coding-Decoding (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Binary Search Tree (BST) Validation",
+      "category": "Binary Search Tree",
+      "concept": "Validates that for every node in a tree, all nodes in its left subtree are strictly smaller and all nodes in its right subtree are strictly greater.",
+      "why_it_works": "Passes down valid value bounds [low, high] that tighten as we descend into left and right subtrees.",
+      "visual_explanation": "Node Val = 5, Allowed Range: (-inf, +inf)\\nLeft Child = 3, Allowed Range: (-inf, 5)\\nRight Child = 7, Allowed Range: (5, +inf)",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) {\n            return false;\n        }\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+      "code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) {\n            return false;\n        }\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 2-4: Entry method passing null bounds (representing infinity).",
+        "Line 5: Base case: empty node is valid BST.",
+        "Line 6-8: If current node violates lower or upper bound, return false.",
+        "Line 9: Recursively validate left subtree with upper bound = node.val, and right subtree with lower bound = node.val."
+      ],
+      "dry_run": "Node 5 -> left child 1 (range -inf..5, valid); right child 4 (range 5..inf, node.val 4 <= 5 -> INVALID). Returns false.",
+      "complexity": "O(N) Time, O(H) Auxiliary Space",
+      "edge_cases": "Single node, Duplicate values (invalid in strict BST), Integer.MIN_VALUE or MAX_VALUE bounds handled safely with Integer objects",
+      "edge_cases_list": [
+        "Single node",
+        "Duplicate values (invalid in strict BST)",
+        "Integer.MIN_VALUE or MAX_VALUE bounds handled safely with Integer objects"
+      ],
+      "interview_variations": [
+        "Kth Smallest Element in a BST",
+        "Inorder Successor in BST",
+        "Convert Sorted Array to Binary Search Tree"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-17-01",
+        "title": "Problem 1: Validate Binary Search Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given the root of a binary tree, determine if it is a valid binary search tree (BST).",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Binary Search Tree (BST) Validation algorithmic technique.\n2. Validates that for every node in a tree, all nodes in its left subtree are strictly smaller and all nodes in its right subtree are strictly greater.\n3. Invariants: Passes down valid value bounds [low, high] that tighten as we descend into left and right subtrees.",
+        "solution_java": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+        "solution_python": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+        "code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+        "java_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-17-02",
+        "title": "Problem 2: Kth Smallest Element in a BST",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Binary Search Tree (BST) Validation.\n2. Handle edge cases: Single node, Duplicate values (invalid in strict BST), Integer.MIN_VALUE or MAX_VALUE bounds handled safely with Integer objects.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Computer Networks",
+      "topic": "Medium Access Control (MAC): CSMA/CD, CSMA/CA, Ethernet & Collision Handling",
+      "concept_lesson": "When multiple nodes share a single broadcast transmission medium, the Medium Access Control (MAC) sublayer manages channel allocation to prevent and resolve transmission collisions.\n\nRandom Access Protocols Evolution:\n1. Pure ALOHA: Transmit whenever ready. Throughput max = 18.4% (vulnerable period = 2 * T_frame).\n2. Slotted ALOHA: Time divided into discrete slots equal to T_frame; transmit only at slot start. Throughput max = 36.8%.\n3. CSMA (Carrier Sense Multiple Access): 'Listen before talk'. Node senses channel before transmitting (1-persistent, p-persistent, non-persistent).\n\nCSMA/CD (Collision Detection — Ethernet IEEE 802.3):\n'Listen while talk'. Sender continuously monitors medium while transmitting. If signal energy exceeds threshold (collision), the sender immediately aborts transmission, broadcasts a 32-bit Jam Signal to notify all nodes, and waits for a backoff period.\n- Exponential Backoff Algorithm: After collision k (capped at 10), pick random r in [0, 2^k - 1]; wait r * 51.2 microseconds. After 16 collisions, abort.\n- Minimum Frame Size Rule: Frame transmission time must be >= 2 * propagation delay (T_tx >= 2 * T_prop) so sender is still transmitting when the collision echo returns. In standard 10Mbps Ethernet, min frame size is 64 bytes (512 bits).\n\nCSMA/CA (Collision Avoidance — Wi-Fi IEEE 802.11):\nWireless transceivers cannot transmit and listen simultaneously (transmitted power drowns out received signals). Uses Interframe Spaces (DIFS, SIFS) and optional RTS/CTS (Request-to-Send / Clear-to-Send) handshakes to solve the Hidden Terminal Problem.",
+      "key_definitions": [
+        {
+          "term": "CSMA/CD",
+          "definition": "Carrier Sense Multiple Access with Collision Detection: protocol detecting collisions by monitoring energy on wire."
+        },
+        {
+          "term": "Exponential Backoff",
+          "definition": "An algorithm multiplying random collision wait intervals to prevent repeated simultaneous retries."
+        },
+        {
+          "term": "Hidden Terminal Problem",
+          "definition": "A wireless state where two nodes cannot sense each other but collide at a shared central access point."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "Why does Ethernet require a Minimum Frame Size of 64 bytes in CSMA/CD?",
+          "a": "For CSMA/CD to work, the transmitting station must still be transmitting its frame when a collision notification returns from the furthest point on the network. Mathematically, Transmission Time (T_tx) >= 2 * Propagation Delay (T_prop). For 10Mbps Ethernet over a 2.5km collision domain, round-trip time is ~51.2 microseconds. In 51.2 microseconds at 10Mbps, 512 bits (64 bytes) are transmitted. Any frame smaller than 64 bytes could finish before a collision arrives, violating collision detection."
+        },
+        {
+          "q": "How does Binary Exponential Backoff resolve repeat collisions?",
+          "a": "After the k-th collision, the node chooses a random slot wait time r from the range [0, 2^k - 1] (k is capped at 10). The wait duration is r * slot_time (51.2 microseconds). As collisions repeat, the contention window expands exponentially (1, 2, 4, 8, ... up to 1024), dynamically spreading competing nodes across wider intervals and dramatically reducing re-collision probability."
+        },
+        {
+          "q": "Why is CSMA/CD not used in wireless Wi-Fi networks?",
+          "a": "In wireless transmission, the transmitted signal from an antenna is millions of times stronger than incoming signals from distant nodes. A wireless radio's own transmission blinds its receiver, making hardware collision detection impossible. Wireless networks instead use CSMA/CA (Collision Avoidance) with RTS/CTS."
+        },
+        {
+          "q": "Explain the Hidden Terminal Problem and how RTS/CTS resolves it.",
+          "a": "Node A and Node C are both in range of Access Point B, but out of radio range of each other. A senses the channel, detects silence, and transmits to B. Simultaneously, C senses the channel, detects silence, and transmits to B. Their transmissions collide at B. Solved via RTS/CTS: A sends Request-To-Send to B; B broadcasts Clear-To-Send (CTS) containing transmission duration. Node C overhears B's CTS and silences its transmitter."
+        },
+        {
+          "q": "What is the difference between a Hub, a Switch, and a Router regarding collision and broadcast domains?",
+          "a": "A Hub (Layer 1) has 1 collision domain and 1 broadcast domain across all ports. A Switch (Layer 2) creates a dedicated collision domain per port, but maintains 1 unified broadcast domain. A Router (Layer 3) creates separate collision domains per port AND separates broadcast domains, preventing broadcast packet propagation between subnets."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-17-01",
+          "question": "What is the minimum frame size in standard 10Mbps Ethernet to guarantee collision detection?",
+          "options": [
+            "32 bytes",
+            "64 bytes",
+            "128 bytes",
+            "512 bytes"
+          ],
+          "correct_answer": "B",
+          "explanation": "Standard Ethernet mandates a 64-byte (512-bit) minimum frame size."
+        },
+        {
+          "id": "CS-17-02",
+          "question": "In CSMA/CD, the condition ensuring a sender detects collision before finishing transmission is:",
+          "options": [
+            "T_tx >= T_prop",
+            "T_tx >= 2 * T_prop",
+            "T_prop >= 2 * T_tx",
+            "T_tx = 0"
+          ],
+          "correct_answer": "B",
+          "explanation": "Transmission time must exceed two times propagation delay to detect worst-case collision echo."
+        },
+        {
+          "id": "CS-17-03",
+          "question": "The mechanism used in IEEE 802.11 Wi-Fi to solve the Hidden Terminal problem is:",
+          "options": [
+            "Token Ring passing",
+            "RTS/CTS handshake",
+            "CSMA/CD Jam signals",
+            "CRC-32 checksums"
+          ],
+          "correct_answer": "B",
+          "explanation": "RTS/CTS reservations inform hidden nodes to defer transmission."
+        },
+        {
+          "id": "CS-17-04",
+          "question": "How many collision domains does an 8-port Ethernet Layer-2 Switch have?",
+          "options": [
+            "1",
+            "2",
+            "8",
+            "0"
+          ],
+          "correct_answer": "C",
+          "explanation": "Each switch port represents an isolated collision domain, so an 8-port switch has 8."
+        },
+        {
+          "id": "CS-17-05",
+          "question": "In the Binary Exponential Backoff algorithm, after 3 consecutive collisions, the random multiplier r is chosen from:",
+          "options": [
+            "0 to 3",
+            "0 to 7",
+            "0 to 15",
+            "0 to 8"
+          ],
+          "correct_answer": "B",
+          "explanation": "Range is [0, 2^k - 1] = [0, 2^3 - 1] = [0, 7]."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "NSE2 / BulkBeat TV",
+      "repo_path": "D:\\Projects\\nse2",
+      "topic": "Subscription Monetization, Webhook Reconciliation & Real Revenue Metrics",
+      "what_to_understand": "Auditing Razorpay subscription webhooks, ledger reconciliation, and verified user metrics.",
+      "what_to_memorize": "104 paying subscribers generated approximately ₹1.11 lakh in revenue with automated license key provisioning.",
+      "interview_questions": [
+        {
+          "q": "How did you automate subscription renewals and access revocation in NSE2?",
+          "a": "We integrated Razorpay Subscriptions. When a user pays, Razorpay triggers a webhook containing the user's telegram ID in the payment notes. The backend verifies the HMAC signature, updates `users.working_days_left` in `trading_bot.db`, and sends a personalized receipt card. A nightly cron job decrements active days and automatically downgrades expired users to the free tier."
+        },
+        {
+          "q": "How did you reconcile payments when webhook deliveries failed during network glitches?",
+          "a": "I authored `audit_all_razorpay_payments.py` and `reconcile_payments.py`, which periodically fetch raw settlement logs directly from Razorpay's REST API and cross-reference them against internal database transactions. Any orphaned payments are backfilled automatically without manual intervention."
+        }
+      ],
+      "interview_pitch_exercise": "BulkBeat TV wasn't just a toy project—it was a commercial SaaS that generated ~₹1.11 lakh in revenue from 104 paying subscribers. I built the full billing infrastructure with Razorpay webhooks, automated subscription renewals, access gating, and payment reconciliation scripts that ensured zero license loss."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 17 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 17 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'TerraStract', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In TerraStract (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of TerraStract.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 16 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5004 — Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Coding-Decoding & Letter Shifting.\n• Algorithmic Invariant: Optimal time and space complexity rules for Binary Search Tree (BST) Validation.\n• Systems Law: Architectural equations, protocols, and complexity bounds for MAC Sublayer: Pure/Slotted ALOHA & CSMA/CD.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Binary Search Tree (BST) Validation.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 17 Q1: What is the primary academic thesis of Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel?",
+          "a": "Core theoretical and practical mastery of Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel under the CSJM University BCA-5004 syllabus."
+        },
+        {
+          "q": "Day 17 Q2: What is the key speed calculation formula applied in Coding-Decoding & Letter Shifting?",
+          "a": "High-speed corporate placement arithmetic shortcut for Coding-Decoding & Letter Shifting in campus recruitment exams."
+        },
+        {
+          "q": "Day 17 Q3: What is the time complexity of Binary Search Tree (BST) Validation?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 17 Q4: What is the central architectural principle of MAC Sublayer: Pure/Slotted ALOHA & CSMA/CD?",
+          "a": "Foundational systems engineering rule governing MAC Sublayer: Pure/Slotted ALOHA & CSMA/CD in production environments."
+        },
+        {
+          "q": "Day 17 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 17 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 17 Q7: What is the verified technical foundation of College Student Management System (CSMS)?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 17 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 17 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 17 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5004 — Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Coding-Decoding & Letter Shifting.\n• Algorithmic Invariant: Optimal time and space complexity rules for Binary Search Tree (BST) Validation.\n• Systems Law: Architectural equations, protocols, and complexity bounds for MAC Sublayer: Pure/Slotted ALOHA & CSMA/CD."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5004 — Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Coding-Decoding & Letter Shifting."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Binary Search Tree (BST) Validation."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: College Student Management System (CSMS)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-17-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What condition guarantees the convergence of both Gauss-Jacobi and Gauss-Seidel iterative methods for solving AX = B?",
+        "options": [
+          "Matrix A is skew-symmetric",
+          "Matrix A is Strictly Diagonally Dominant (|a_ii| > sum_{j!=i} |a_ij| for all rows)",
+          "det(A) < 1",
+          "All elements of A are negative"
+        ],
+        "correct_answer": "B",
+        "explanation": "Strict diagonal dominance guarantees that iterative approximations converge to the unique solution regardless of initial guess."
+      },
+      {
+        "id": "TEST-17-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does Gauss-Seidel iteration differ from the Gauss-Jacobi method?",
+        "options": [
+          "Gauss-Seidel uses the most freshly computed variable values immediately in the current iteration",
+          "Gauss-Jacobi converges twice as fast as Gauss-Seidel",
+          "Gauss-Seidel cannot be used for 3x3 systems",
+          "Gauss-Jacobi does not require matrix coefficients"
+        ],
+        "correct_answer": "A",
+        "explanation": "Gauss-Seidel updates variables in-place, using x_1^{(k+1)} immediately to calculate x_2^{(k+1)}, converging roughly twice as fast as Jacobi."
+      },
+      {
+        "id": "TEST-17-03",
+        "category": "Academic (Academic Theory)",
+        "question": "In iterative methods, what does the relaxation parameter omega represent in the Successive Over-Relaxation (SOR) method?",
+        "options": [
+          "Matrix inversion scale",
+          "An extrapolation factor where 1 < omega < 2 accelerates convergence compared to standard Gauss-Seidel",
+          "The number of CPU threads allocated",
+          "The floating point precision epsilon"
+        ],
+        "correct_answer": "B",
+        "explanation": "SOR accelerates Gauss-Seidel by weighting the new estimate with a relaxation factor (1 < omega < 2 for over-relaxation)."
+      },
+      {
+        "id": "TEST-17-04",
+        "category": "Academic (Academic Theory)",
+        "question": "If an iterative method computes x^{(k+1)} = [2.001, 3.999] and x^{(k)} = [2.000, 4.000], what is the absolute error norm ||x^{(k+1)} - x^{(k)}||_infinity?",
+        "options": [
+          "0.001",
+          "0.002",
+          "0.000",
+          "0.010"
+        ],
+        "correct_answer": "A",
+        "explanation": "The infinity norm is the maximum absolute difference across components: max(|2.001 - 2.000|, |3.999 - 4.000|) = 0.001."
+      },
+      {
+        "id": "TEST-17-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Why are iterative methods (Jacobi, Seidel) preferred over direct methods (Gauss Elimination) for very large sparse systems (e.g., 100,000 equations)?",
+        "options": [
+          "They require O(N) storage preserving zero entries and avoid massive O(N^3) matrix fill-in",
+          "They always produce exact solutions without rounding errors",
+          "They do not require initial guesses",
+          "They only use integer multiplication"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sparse systems from PDEs have mostly zero entries. Iterative methods avoid fill-in and have O(N) memory and per-iteration work."
+      },
+      {
+        "id": "TEST-17-06",
+        "category": "Placement Aptitude",
+        "question": "If in a certain code 'TEACHER' is written as 'VGCEJGT', how is 'CHILDREN' written in that code?",
+        "options": [
+          "EJKNFTGP",
+          "EJKNFUTP",
+          "EJKNFTHP",
+          "EJKNHTGP"
+        ],
+        "correct_answer": "A",
+        "explanation": "Each letter is shifted forward by +2 positions in the alphabet: C->E, H->J, I->K, L->N, D->F, R->T, E->G, N->P => EJKNFTGP."
+      },
+      {
+        "id": "TEST-17-07",
+        "category": "Placement Aptitude",
+        "question": "If 'DELHI' can be coded as '73541' and 'CALCUTTA' as '82589662', how can 'CALICUT' be coded?",
+        "options": [
+          "8251896",
+          "8251869",
+          "8258196",
+          "8521896"
+        ],
+        "correct_answer": "A",
+        "explanation": "Direct letter substitution: C=8, A=2, L=5, I=1, C=8, U=9, T=6 => 8251896."
+      },
+      {
+        "id": "TEST-17-08",
+        "category": "Placement Aptitude",
+        "question": "In a certain code language, 'pit dar na' means 'you are good', 'dar tok pa' means 'good and bad', and 'tim na tok' means 'they are bad'. What represents 'they'?",
+        "options": [
+          "tim",
+          "na",
+          "tok",
+          "dar"
+        ],
+        "correct_answer": "A",
+        "explanation": "Comparing 'na' is 'are', 'tok' is 'bad'. In 'tim na tok' ('they are bad'), 'tim' must represent 'they'."
+      },
+      {
+        "id": "TEST-17-09",
+        "category": "Placement Aptitude",
+        "question": "If 'ROSE' is coded as 6821, 'CHAIR' is 73456, and 'PREACH' is 961473, what is the code for 'SEARCH'?",
+        "options": [
+          "214673",
+          "214763",
+          "241673",
+          "214637"
+        ],
+        "correct_answer": "A",
+        "explanation": "Direct substitution: S=2, E=1, A=4, R=6, C=7, H=3 => 214673."
+      },
+      {
+        "id": "TEST-17-10",
+        "category": "Placement Aptitude",
+        "question": "In a certain code, 'MONKEY' is written as 'XDJMNL'. How is 'TIGER' written in that code?",
+        "options": [
+          "QDFHS",
+          "SDFHQ",
+          "QDFHR",
+          "SDFHS"
+        ],
+        "correct_answer": "A",
+        "explanation": "Reverse the word and subtract 1 from each letter: TIGER reversed is REGIT. R-1=Q, E-1=D, G-1=F, I-1=H, T-1=S => QDFHS."
+      },
+      {
+        "id": "TEST-17-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is the minimum frame size in standard 10Mbps Ethernet to guarantee collision detection?",
+        "options": [
+          "32 bytes",
+          "64 bytes",
+          "128 bytes",
+          "512 bytes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard Ethernet mandates a 64-byte (512-bit) minimum frame size."
+      },
+      {
+        "id": "TEST-17-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "In CSMA/CD, the condition ensuring a sender detects collision before finishing transmission is:",
+        "options": [
+          "T_tx >= T_prop",
+          "T_tx >= 2 * T_prop",
+          "T_prop >= 2 * T_tx",
+          "T_tx = 0"
+        ],
+        "correct_answer": "B",
+        "explanation": "Transmission time must exceed two times propagation delay to detect worst-case collision echo."
+      },
+      {
+        "id": "TEST-17-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "The mechanism used in IEEE 802.11 Wi-Fi to solve the Hidden Terminal problem is:",
+        "options": [
+          "Token Ring passing",
+          "RTS/CTS handshake",
+          "CSMA/CD Jam signals",
+          "CRC-32 checksums"
+        ],
+        "correct_answer": "B",
+        "explanation": "RTS/CTS reservations inform hidden nodes to defer transmission."
+      },
+      {
+        "id": "TEST-17-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "How many collision domains does an 8-port Ethernet Layer-2 Switch have?",
+        "options": [
+          "1",
+          "2",
+          "8",
+          "0"
+        ],
+        "correct_answer": "C",
+        "explanation": "Each switch port represents an isolated collision domain, so an 8-port switch has 8."
+      },
+      {
+        "id": "TEST-17-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "In the Binary Exponential Backoff algorithm, after 3 consecutive collisions, the random multiplier r is chosen from:",
+        "options": [
+          "0 to 3",
+          "0 to 7",
+          "0 to 15",
+          "0 to 8"
+        ],
+        "correct_answer": "B",
+        "explanation": "Range is [0, 2^k - 1] = [0, 2^3 - 1] = [0, 7]."
+      },
+      {
+        "id": "TEST-17-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Binary Search Tree (BST) Validation' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(H) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Binary Search Tree (BST) Validation' pattern operates with O(N) Time, O(H) Auxiliary Space: Passes down valid value bounds [low, high] that tighten as we descend into left and right subtrees.."
+      },
+      {
+        "id": "TEST-17-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Binary Search Tree (BST) Validation' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Single node.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Binary Search Tree (BST) Validation include Single node, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-17-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Validate Binary Search Tree', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(H) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(H) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-17-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Subscription Monetization, Webhook Reconciliation & Real Revenue Metrics'?",
+        "options": [
+          "104 paying subscribers generated approximately ₹1.11 lakh in revenue with automated license key provisioning.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: 104 paying subscribers generated approximately ₹1.11 lakh in revenue with automated license key provisioning.."
+      },
+      {
+        "id": "TEST-17-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How did you automate subscription renewals and access revocation in NSE2?'?",
+        "options": [
+          "We integrated Razorpay Subscriptions. When a user pays, Razorpay triggers a webhook containing the user's telegram ID in the payment notes. The backend verifies...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: We integrated Razorpay Subscriptions. When a user pays, Razorpay triggers a webhook containing the user's telegram ID in the payment notes. ."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-17",
+      "title": "Validate Binary Search Tree (Binary Search Tree (BST) Validation)",
+      "time_limit_minutes": 35,
+      "difficulty": "Medium",
+      "problem_statement": "Solve the core placement problem: Validate Binary Search Tree.\n\nGiven the root of a binary tree, determine if it is a valid binary search tree (BST).\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Binary Search Tree (BST) Validation\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(H) Auxiliary Space\n- Handle all edge cases: Single node, Duplicate values (invalid in strict BST), Integer.MIN_VALUE or MAX_VALUE bounds handled safely with Integer objects.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Binary Search Tree (BST) Validation\n    public boolean isValidBST(TreeNode root) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Binary Search Tree (BST) Validation\n    public boolean isValidBST(TreeNode root) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Binary Search Tree (BST) Validation logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Single node",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(H) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Java Programming & Dynamic Webpage Design",
+    "subject_code": "BCA-5002",
+    "unit": 4,
+    "topic": "Unit IV — Java Servlet Technology: Life Cycle (init, service, destroy), Architecture & Deployment Descriptor",
+    "objectives": [
+      "Understand Servlet container web architecture.",
+      "Master Servlet lifecycle methods and web.xml deployment descriptor mapping."
+    ],
+    "detailed_notes": [
+      "A Servlet is a server-side Java programming component that extends the capabilities of web servers by dynamically handling client HTTP requests and generating responses. Servlets execute inside a Servlet Container (e.g., Apache Tomcat). The Servlet interface defines 3 lifecycle methods:\n1. `init(ServletConfig config)`: Invoked exactly once when the servlet is first loaded into memory to perform resource initialization;\n2. `service(ServletRequest req, ServletResponse res)`: Invoked on every client HTTP request by a newly spawned thread from the container's thread pool, delegating to `doGet()` or `doPost()`;\n3. `destroy()`: Invoked exactly once when the container unloads the servlet or shuts down to release resources and close database connections.\nConfiguration is handled via the deployment descriptor (`web.xml`) using `<servlet>` and `<servlet-mapping>` elements or modern `@WebServlet` annotations.",
+      "Load Class -> Instantiate -> init() -> [Client Requests: service() -> doGet()/doPost()] -> destroy() -> Garbage Collected.",
+      "Maps `<servlet-name>` to `<servlet-class>` and binds `<url-pattern>` via `<servlet-mapping>`."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|                 SERVLET LIFECYCLE                 |\n| Container Start -> init() [Once]                  |\n|   |-> Client Request -> Thread Spawn -> service() |\n| Container Shutdown -> destroy() [Once]            |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Comparison Parameter",
-        "RequestDispatcher.forward()",
-        "HttpServletResponse.sendRedirect()"
+        "Lifecycle Method",
+        "Execution Frequency",
+        "Invoked By",
+        "Core Purpose"
       ],
       "rows": [
         [
-          "Execution Location",
-          "Server-side internal routing",
-          "Client-side browser redirection"
+          "init(ServletConfig)",
+          "Exactly once per servlet instance",
+          "Servlet Container",
+          "Initialize resources, database connections, cache warm-up"
         ],
         [
-          "HTTP Requests Count",
-          "Single request/response lifecycle",
-          "Two distinct requests (Client issues new GET)"
+          "service(req, res)",
+          "Every incoming HTTP request",
+          "Container Thread",
+          "Dispatches request to doGet(), doPost(), etc."
         ],
         [
-          "Browser Address Bar",
-          "URL remains unchanged (hidden from user)",
-          "URL changes to target redirection address"
+          "destroy()",
+          "Exactly once prior to unload",
+          "Servlet Container",
+          "Cleanup open files, flush streams, release memory"
         ],
         [
-          "Scope of Targets",
-          "Can only route within the same web application",
-          "Can redirect to any external domain (e.g. google.com)"
+          "doGet(req, res)",
+          "Every incoming HTTP GET",
+          "service() method",
+          "Handle read-only queries with parameters in URL"
         ],
         [
-          "Attribute Retention",
-          "Request attributes (req.setAttribute) preserved",
-          "Request attributes lost (new request object created)"
-        ],
-        [
-          "Performance Speed",
-          "Faster (internal server handoff)",
-          "Slower (extra round-trip network latency)"
+          "doPost(req, res)",
+          "Every incoming HTTP POST",
+          "service() method",
+          "Handle form submissions, updates with payload in body"
         ]
       ]
     },
-    "memorize": "3 Life Cycle Methods: init() [Once], service() [Every Request], destroy() [Once]. forward() is server-side (URL unchanged, 1 request); sendRedirect() is client-side (URL changes, 2 requests). HttpServlet overrides service() to dispatch to doGet() and doPost().",
-    "understand": "In traditional CGI, the web server spawned a heavy OS process for every user, exhausting server RAM. Java Servlets revolutionized web architecture because the Web Container loads the servlet class ONCE, and handles 10,000 concurrent user requests by spawning 10,000 lightweight Java threads executing the service() method.",
-    "common_mistakes": "1. Calling super.doGet(req, res) inside overridden doGet() (causes HTTP 405 Method Not Allowed error). 2. Trying to read request attributes after sendRedirect() (attributes are wiped because it creates a new request).",
-    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q5 - 15m), 2022-23 (Q4 - 15m), 2023-24 (Q5 - 15m), 2024-25 (Q4 - 15m)",
-    "pyq_question": "Explain the life cycle of a Servlet with a neat diagram. Differentiate clearly between RequestDispatcher.forward() and HttpServletResponse.sendRedirect(). Write a complete Servlet to handle user login authentication. (15 Marks)",
-    "pyq_rubric": "Servlet Life Cycle Diagram & Explanation (5 marks) + forward vs sendRedirect comparison table (4 marks) + Complete Login Servlet code with doGet/doPost (6 marks) = 15 Marks.",
+    "memorize": "Servlet lifecycle: init() runs once, service() runs per request on new thread, destroy() runs once on shutdown. web.xml maps URLs to classes.",
+    "understand": "Unlike CGI which spawned a heavy OS process for every request, Servlets handle each client request inside a lightweight thread within a single JVM process.",
+    "common_mistakes": "Overriding service() directly instead of overriding doGet() and doPost() in an HttpServlet.",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023-24 (Q4)",
+        "marks": 15,
+        "question": "Explain the life cycle of a Servlet with a neat diagram. Discuss the role of web.xml deployment descriptor with a complete code example. (15 Marks)",
+        "rubric": "Servlet Lifecycle Diagram (4 marks) + Explanation of init, service, destroy (5 marks) + web.xml configuration snippet (3 marks) + HttpServlet code snippet (3 marks) = 15 Marks.",
+        "model_answer": "A Servlet is a server-side Java class managed by a Servlet Container (like Tomcat) that dynamically handles HTTP client requests. Its lifecycle comprises three primary phases: 1. Initialization (init): When the container loads the servlet class, it calls init(ServletConfig) exactly once to configure resources; 2. Request Handling (service): For each incoming client HTTP request, the container allocates a thread from its thread pool and invokes service(ServletRequest, ServletResponse). The service() method examines the HTTP verb and dispatches the request to doGet() or doPost(); 3. Destruction (destroy): When the container shuts down or reloads the application, it invokes destroy() once to close database connections and release resources.\n\nDeployment Descriptor (web.xml) Configuration:\n```xml\n<web-app>\n    <servlet>\n        <servlet-name>HelloServlet</servlet-name>\n        <servlet-class>com.app.HelloServlet</servlet-class>\n    </servlet>\n    <servlet-mapping>\n        <servlet-name>HelloServlet</servlet-name>\n        <url-pattern>/hello</url-pattern>\n    </servlet-mapping>\n</web-app>\n```",
+        "answer_structure": "Lifecycle Diagram -> 3 Methods Detailed -> CGI vs Servlet Comparison -> web.xml -> HttpServlet Code",
+        "important_points": [
+          "init() runs once",
+          "service() runs per request on thread",
+          "destroy() runs on unload",
+          "web.xml servlet-mapping"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Thread-based execution model explained",
+          "Valid web.xml XML syntax"
+        ],
+        "common_mistakes": [
+          "Writing that init() is called for every request"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Differentiate between doGet() and doPost() methods in HttpServlet. (5 Marks)",
+        "rubric": "Comparison table across URL visibility, Payload size, Security, and Idempotency (5 marks).",
+        "model_answer": "1. Parameter Visibility: `doGet()` sends parameters appended directly to the URL query string, visible in browser history; `doPost()` sends parameters enclosed within the HTTP request body, invisible in URLs; 2. Data Capacity: `doGet()` is constrained by URL length limits (~2048 chars); `doPost()` can transfer arbitrarily large payloads (file uploads); 3. Idempotency: GET requests should be idempotent (safe to retry without side effects); POST requests are non-idempotent (creates orders, modifies state); 4. Security: Sensitive data like passwords must never be transmitted via doGet()."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-17-01",
+        "question": "What condition guarantees the convergence of both Gauss-Jacobi and Gauss-Seidel iterative methods for solving AX = B?",
+        "options": [
+          "Matrix A is skew-symmetric",
+          "Matrix A is Strictly Diagonally Dominant (|a_ii| > sum_{j!=i} |a_ij| for all rows)",
+          "det(A) < 1",
+          "All elements of A are negative"
+        ],
+        "correct_answer": "B",
+        "explanation": "Strict diagonal dominance guarantees that iterative approximations converge to the unique solution regardless of initial guess."
+      },
+      {
+        "id": "ACAD-17-02",
+        "question": "How does Gauss-Seidel iteration differ from the Gauss-Jacobi method?",
+        "options": [
+          "Gauss-Seidel uses the most freshly computed variable values immediately in the current iteration",
+          "Gauss-Jacobi converges twice as fast as Gauss-Seidel",
+          "Gauss-Seidel cannot be used for 3x3 systems",
+          "Gauss-Jacobi does not require matrix coefficients"
+        ],
+        "correct_answer": "A",
+        "explanation": "Gauss-Seidel updates variables in-place, using x_1^{(k+1)} immediately to calculate x_2^{(k+1)}, converging roughly twice as fast as Jacobi."
+      },
+      {
+        "id": "ACAD-17-03",
+        "question": "In iterative methods, what does the relaxation parameter omega represent in the Successive Over-Relaxation (SOR) method?",
+        "options": [
+          "Matrix inversion scale",
+          "An extrapolation factor where 1 < omega < 2 accelerates convergence compared to standard Gauss-Seidel",
+          "The number of CPU threads allocated",
+          "The floating point precision epsilon"
+        ],
+        "correct_answer": "B",
+        "explanation": "SOR accelerates Gauss-Seidel by weighting the new estimate with a relaxation factor (1 < omega < 2 for over-relaxation)."
+      },
+      {
+        "id": "ACAD-17-04",
+        "question": "If an iterative method computes x^{(k+1)} = [2.001, 3.999] and x^{(k)} = [2.000, 4.000], what is the absolute error norm ||x^{(k+1)} - x^{(k)}||_infinity?",
+        "options": [
+          "0.001",
+          "0.002",
+          "0.000",
+          "0.010"
+        ],
+        "correct_answer": "A",
+        "explanation": "The infinity norm is the maximum absolute difference across components: max(|2.001 - 2.000|, |3.999 - 4.000|) = 0.001."
+      },
+      {
+        "id": "ACAD-17-05",
+        "question": "Why are iterative methods (Jacobi, Seidel) preferred over direct methods (Gauss Elimination) for very large sparse systems (e.g., 100,000 equations)?",
+        "options": [
+          "They require O(N) storage preserving zero entries and avoid massive O(N^3) matrix fill-in",
+          "They always produce exact solutions without rounding errors",
+          "They do not require initial guesses",
+          "They only use integer multiplication"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sparse systems from PDEs have mostly zero entries. Iterative methods avoid fill-in and have O(N) memory and per-iteration work."
+      }
+    ],
+    "pyq_year": "2023-24 (Q4)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Explain the life cycle of a Servlet with a neat diagram. Discuss the role of web.xml deployment descriptor with a complete code example. (15 Marks)",
+    "pyq_rubric": "Servlet Lifecycle Diagram (4 marks) + Explanation of init, service, destroy (5 marks) + web.xml configuration snippet (3 marks) + HttpServlet code snippet (3 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Servlet Architecture & The Web Container:",
-        "A Servlet is a server-side Java class running inside a Web Container (e.g., Apache Tomcat) that implements the Request-Response computing model. The container manages class loading, network socket allocation, concurrency via thread pooling, and the entire servlet life cycle."
+        "1. Model Answer & Technical Presentation",
+        "A Servlet is a server-side Java class managed by a Servlet Container (like Tomcat) that dynamically handles HTTP client requests. Its lifecycle comprises three primary phases: 1. Initialization (init): When the container loads the servlet class, it calls init(ServletConfig) exactly once to configure resources; 2. Request Handling (service): For each incoming client HTTP request, the container allocates a thread from its thread pool and invokes service(ServletRequest, ServletResponse). The service() method examines the HTTP verb and dispatches the request to doGet() or doPost(); 3. Destruction (destroy): When the container shuts down or reloads the application, it invokes destroy() once to close database connections and release resources.\n\nDeployment Descriptor (web.xml) Configuration:\n```xml\n<web-app>\n    <servlet>\n        <servlet-name>HelloServlet</servlet-name>\n        <servlet-class>com.app.HelloServlet</servlet-class>\n    </servlet>\n    <servlet-mapping>\n        <servlet-name>HelloServlet</servlet-name>\n        <url-pattern>/hello</url-pattern>\n    </servlet-mapping>\n</web-app>\n```"
       ],
       [
-        "2. The 3 Core Life Cycle Methods:",
-        "\u2022 init(ServletConfig config): Executed strictly once when the servlet is first loaded into memory. Used for one-time initialization (establishing database connection pools, loading properties). If initialization fails, an UnavailableException is raised.\n\u2022 service(ServletRequest req, ServletResponse res): Executed for every single client request. The container spawns a new thread from its thread pool and passes the HTTP request and response objects. In HttpServlet, service() automatically routes requests based on HTTP verb to doGet(), doPost(), doPut(), or doDelete().\n\u2022 destroy(): Executed strictly once before the container unloads the servlet. It allows cleanup of long-lived resources (closing database sockets, flushing disk buffers)."
-      ],
-      [
-        "3. Comparative Analysis: forward() vs sendRedirect():",
-        "\u2022 RequestDispatcher.forward() operates entirely on the server side. The original request and response objects are forwarded internally to another resource. The client is completely unaware of the redirection, meaning the browser URL remains unchanged and all request attributes set via req.setAttribute() are preserved.\n\u2022 HttpServletResponse.sendRedirect() issues an HTTP 302 Found response back to the client browser containing the target URL. The browser automatically generates a brand-new HTTP GET request to that URL. The browser URL updates to the new destination, creating a new request object and discarding previous request-scoped attributes. It allows redirecting to external domains (e.g. res.sendRedirect(\"https://google.com\"))."
-      ],
-      [
-        "4. Complete Login Authentication Servlet Program:",
-        "import java.io.*;\nimport javax.servlet.*;\nimport javax.servlet.http.*;\nimport javax.servlet.annotation.WebServlet;\n\n@WebServlet(\"/login\")\npublic class LoginServlet extends HttpServlet {\n    protected void doPost(HttpServletRequest request, HttpServletResponse response) \n            throws ServletException, IOException {\n        response.setContentType(\"text/html;charset=UTF-8\");\n        String email = request.getParameter(\"email\");\n        String pass = request.getParameter(\"password\");\n        PrintWriter out = response.getWriter();\n        if (\"admin@college.edu\".equals(email) && \"secret123\".equals(pass)) {\n            // Valid: Forward to dashboard internally\n            RequestDispatcher rd = request.getRequestDispatcher(\"dashboard.jsp\");\n            request.setAttribute(\"user\", email);\n            rd.forward(request, response);\n        } else {\n            // Invalid: Redirect back with error query parameter\n            response.sendRedirect(\"login.html?error=invalid_credentials\");\n        }\n    }\n}"
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Explain ServletConfig vs ServletContext with examples of initialization parameters. (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "What is the difference between doGet() and doPost() methods in HttpServlet? (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Thread-based execution model explained",
+          "Valid web.xml XML syntax"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Servlet Life Cycle (init, service, destroy), forward vs sendRedirect, and Login Servlet.",
-    "milestone": "Full 15/15 marks on University Question 4 (BCA-5002 Java Servlets)."
-  },
   "apt_data": {
-    "topic": "Conditional Probability & Bayes' Theorem \u2014 Diagnostics & Machine Defect Models",
+    "topic": "Coding-Decoding & Letter Shifting",
+    "category": "Logical Reasoning",
+    "subtopic": "Coding-Decoding",
+    "formulas": "1. Alphabet Positional Values: A=1, B=2, ..., Z=26 (EJOTY mnemonic: 5, 10, 15, 20, 25).\n2. Reverse Alphabet Positional Values: Sum of letter and its opposite is ALWAYS 27 (A=1 opposite Z=26; B=2 opposite Y=25).\n3. Common Patterns: Fixed shift (+k, -k), Alternating shifts (+1, -2, +3), Reversal, Pairing.",
+    "shortcut": "EJOTY / CFILORUX: Memorize multiples of 3 (CFILORUX) and 5 (EJOTY) to identify letter numbers in less than 2 seconds.",
     "tutorial": [
-      "Conditional Probability: The probability of an event A occurring given that another event B has ALREADY occurred:\nP(A | B) = P(A cap B) / P(B), provided P(B) > 0.",
-      "The Multiplication Theorem of Probability:\nP(A cap B) = P(B) * P(A | B) = P(A) * P(B | A).",
-      "Theorem of Total Probability:\nIf events B1, B2, ..., Bn form a partition of the sample space S (mutually exclusive and exhaustive):\nP(A) = Sum_{i=1 to n} [P(B_i) * P(A | B_i)].",
-      "Bayes' Theorem (Inverse / Posterior Probability):\nUsed to calculate the probability of a specific cause B_k given that the final effect A has already been observed:\nP(B_k | A) = [P(B_k) * P(A | B_k)] / [Sum_{i=1 to n} (P(B_i) * P(A | B_i))].",
-      "Classical Placement Scenarios:\n1. Factory Machines: Machines X, Y, Z produce 50%, 30%, 20% of items with 2%, 3%, 4% defective rates. Given a chosen item is defective, find probability it was produced by Machine X.\n2. Disease Diagnostics: A test is 99% accurate on sick patients, but has a 1% false positive rate on healthy people. If 0.1% of the population has the disease, what is the probability a positive patient actually has the disease?"
+      "Examine whether letters are substituted, permuted, or mapped to numerical values. If letters in the output match the input word exactly, it is a transposition/rearrangement cipher, not a substitution cipher."
     ],
-    "formulas": "1. Conditional Probability: P(A | B) = P(A cap B) / P(B)\n2. Total Probability: P(A) = P(B1)*P(A|B1) + P(B2)*P(A|B2) + ...\n3. Bayes' Theorem: P(Bi | A) = [P(Bi) * P(A|Bi)] / P(A)\n4. Independent Events: P(A | B) = P(A)",
-    "shortcut": "The Absolute Number Assumption Shortcut (The 10,000 Population Method):\nInstead of manipulating nested fractions in Bayes' Theorem, assume a total population of 10,000 or 1,000 items!\nDistribute items into simple integer counts across causes and calculate: Desired Count / Total Observed Count.",
-    "recognition": "Keywords: 'given that the selected item is defective, what is the probability that it was produced by machine A', 'a person is tested positive, what is the probability he actually has the disease'.",
-    "p1_q": "[Foundation] A die is thrown. Let A be the event that the number is prime, and B be the event that the number is odd. Find P(A | B).",
-    "p1_s": "Step 1: Sample space S = {1, 2, 3, 4, 5, 6} (6 outcomes).\nStep 2: Event B (number is odd) = {1, 3, 5} ==> n(B) = 3 ==> P(B) = 3 / 6 = 1/2.\nStep 3: Event A (number is prime) = {2, 3, 5}.\nIntersection (A cap B) = Prime AND Odd = {3, 5} ==> n(A cap B) = 2 ==> P(A cap B) = 2 / 6 = 1/3.\nStep 4: Conditional Probability P(A | B) = P(A cap B) / P(B) = (2 / 6) / (3 / 6) = 2 / 3.\nIntuition: Given that the number is odd (out of 1, 3, 5), exactly two of them (3, 5) are prime. Thus 2/3!\nAnswer: 2 / 3.",
-    "p2_q": "[Standard Placement] In a factory, Machine A produces 60% of the total output and Machine B produces 40%. 2% of the units produced by Machine A and 1% of the units produced by Machine B are defective. A unit is selected at random and found to be defective. What is the probability that it was manufactured by Machine A?",
-    "p2_s": "Method: The 10,000 Items Shortcut Method:\nAssume total factory production = 10,000 units.\nStep 1: Units manufactured by each machine:\n- Machine A produces 60% = 6,000 units.\n- Machine B produces 40% = 4,000 units.\nStep 2: Defective units from each machine:\n- Machine A defectives = 2% of 6,000 = 120 units.\n- Machine B defectives = 1% of 4,000 = 40 units.\nStep 3: Total defective units in factory = 120 + 40 = 160 units.\nStep 4: Given that the chosen item is defective, probability it came from Machine A:\nP(Machine A | Defective) = (Defectives from A) / (Total Defectives) = 120 / 160 = 3 / 4 = 0.75.\nBayes' Formula Verification: [0.60 * 0.02] / [0.60 * 0.02 + 0.40 * 0.01] = 0.012 / [0.012 + 0.004] = 0.012 / 0.016 = 3/4. Exact match!\nAnswer: 3 / 4 (or 75%).",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys / Cognizant Analytical Round]",
-    "p3_q": "Three urns contain colored balls:\nUrn I has 1 white, 2 black, and 3 red balls.\nUrn II has 2 white, 1 black, and 1 red ball.\nUrn III has 4 white, 5 black, and 3 red balls.\nOne urn is chosen at random and two balls are drawn. They happen to be white and red. What is the probability that they come from Urn I?",
-    "p3_s": "Step 1: Probability of choosing any urn: P(U1) = P(U2) = P(U3) = 1/3.\nStep 2: Probability of drawing 1 White and 1 Red ball from each urn:\n- Urn I (Total 6 balls: 1W, 2B, 3R):\n  P(WR | U1) = (^1 C_1 * ^3 C_1) / (^6 C_2) = (1 * 3) / 15 = 3 / 15 = 1 / 5.\n- Urn II (Total 4 balls: 2W, 1B, 1R):\n  P(WR | U2) = (^2 C_1 * ^1 C_1) / (^4 C_2) = (2 * 1) / 6 = 2 / 6 = 1 / 3.\n- Urn III (Total 12 balls: 4W, 5B, 3R):\n  P(WR | U3) = (^4 C_1 * ^3 C_1) / (^12 C_2) = (4 * 3) / 66 = 12 / 66 = 2 / 11.\nStep 3: Apply Bayes' Theorem:\nP(U1 | WR) = [P(U1) * P(WR | U1)] / [P(U1)*P(WR|U1) + P(U2)*P(WR|U2) + P(U3)*P(WR|U3)].\nSince P(U) = 1/3 cancels out:\nNumerator = 1/5.\nDenominator = 1/5 + 1/3 + 2/11 = (33 + 55 + 30) / 165 = 118 / 165.\nP(U1 | WR) = (1 / 5) / (118 / 165) = (1 / 5) * (165 / 118) = 33 / 118.\nAnswer: 33 / 118.",
-    "p4_q": "[Hard / Time-Pressure] A doctor is called to see a sick patient. From past records, the probability that the doctor comes by train, bus, scooter, or taxi are 3/10, 1/5, 1/10, and 2/5 respectively. The probabilities that he will be late are 1/4, 1/3, 1/12, and 0 (taxi is never late). If he arrives late, what is the probability that he came by train?",
-    "p4_s": "Step 1: Prior probabilities of transport modes:\nP(T) = 3/10, P(B) = 1/5 = 2/10, P(S) = 1/10, P(Tx) = 2/5 = 4/10.\nStep 2: Conditional probability of being late given mode:\nP(Late | T) = 1/4, P(Late | B) = 1/3, P(Late | S) = 1/12, P(Late | Tx) = 0.\nStep 3: Total Probability of being late P(Late):\nP(Late) = (3/10 * 1/4) + (2/10 * 1/3) + (1/10 * 1/12) + (4/10 * 0)\n= 3/40 + 2/30 + 1/120 + 0 = 9/120 + 8/120 + 1/120 = 18 / 120 = 3 / 20.\nStep 4: Probability he came by train given that he is late:\nP(Train | Late) = [P(T) * P(Late | T)] / P(Late) = (3 / 40) / (3 / 20) = (3 / 40) * (20 / 3) = 1 / 2.\nAnswer: 1 / 2 (or 50%).",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "If P(A) = 0.8, P(B) = 0.5, and P(B | A) = 0.4, find P(A cap B) and P(A | B)."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "A box has 5 red and 3 black balls. Two drawn without replacement. Find probability second is black given first was red."
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "Machine A makes 70% bolts, Machine B 30%. 3% of A and 5% of B defective. Found defective; find prob from B."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "Two independent events A and B have P(A) = 0.3, P(B) = 0.6. Find P(A and B) and P(A or B)."
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "An urn contains 6 red and 4 blue balls. Two balls are drawn. Find prob that both are of the same color."
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Coding-Decoding",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Coding-Decoding",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Coding-Decoding",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Coding-Decoding",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Coding-Decoding",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "In a certain code language, 'COMPUTER' is written as 'RFUVQNPC'. How is 'MEDICINE' written in that code?",
+        "options": {
+          "A": "EOJDEJFM",
+          "B": "EOJDJEFM",
+          "C": "EOJDEJGM",
+          "D": "MFEJDJOE"
+        },
+        "correct_answer": "A",
+        "explanation": "Reverse the word and replace each letter: First and last remain reversed, intermediate letters shift +1. 'MEDICINE' becomes 'EOJDEJFM'.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "If 'DELHI' is coded as 73541 and 'CALCUTTA' as 82589662, how can 'CALICUT' be coded?",
+        "options": {
+          "A": "8251896",
+          "B": "8251396",
+          "C": "8254362",
+          "D": "8251862"
+        },
+        "correct_answer": "A",
+        "explanation": "Direct letter-to-digit substitution: C=8, A=2, L=5, I=1, C=8, U=9, T=6 => 8251896.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "If 'ROAD' is written as 'URDG', how is 'SWAN' written in that code?",
+        "options": {
+          "A": "VZDQ",
+          "B": "VXDQ",
+          "C": "VZCQ",
+          "D": "UXDQ"
+        },
+        "correct_answer": "A",
+        "explanation": "Each letter is shifted forward by +3 positions: S(+3)->V, W(+3)->Z, A(+3)->D, N(+3)->Q => VZDQ.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "In a code language, if 'WATER' is written as 'YCVGT', how is 'HIKER' written?",
+        "options": {
+          "A": "JKMGT",
+          "B": "JKNGT",
+          "C": "KLMGT",
+          "D": "JJNGT"
+        },
+        "correct_answer": "A",
+        "explanation": "Each letter advances by +2 positions in the alphabet: H->J, I->K, K->M, E->G, R->T => JKMGT.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "If 'FRIEND' is coded as 'HUMJTK', how is 'CANDLE' coded?",
+        "options": {
+          "A": "EDRIRL",
+          "B": "ESJFME",
+          "C": "DEQJQM",
+          "D": "FYOBOC"
+        },
+        "correct_answer": "A",
+        "explanation": "Shifts increase progressively: +2, +3, +4, +5, +6, +7. C(+2)->E, A(+3)->D, N(+4)->R, D(+5)->I, L(+6)->R, E(+7)->L => EDRIRL.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "In a certain code, '253' means 'books are old', '546' means 'man is old', and '378' means 'buy good books'. What digit stands for 'are'?",
+        "options": {
+          "A": "2",
+          "B": "5",
+          "C": "3",
+          "D": "4"
+        },
+        "correct_answer": "A",
+        "explanation": "In 253 and 546, common word is 'old' and common digit is '5'. In 253 and 378, common word is 'books' and digit is '3'. Therefore in '253', remaining digit '2' represents 'are'.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "If 'ZEBRA' is written as 2652181, how is 'COBRA' written?",
+        "options": {
+          "A": "3152181",
+          "B": "30152181",
+          "C": "31521818",
+          "D": "3152118"
+        },
+        "correct_answer": "A",
+        "explanation": "Letters are replaced by their standard 1-based alphabetical positions: C=3, O=15, B=2, R=18, A=1 => 3152181.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "If 'RAIN' is coded as '8$%6' and 'MORE' is coded as '7#8@', how is 'REMAIN' written?",
+        "options": {
+          "A": "8@7$6%",
+          "B": "8@7$%6",
+          "C": "7@8$%6",
+          "D": "8$%@76"
+        },
+        "correct_answer": "B",
+        "explanation": "Direct character-symbol mapping: R=8, E=@, M=7, A=$, I=%, N=6 => 8@7$%6.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "In a certain code, 'SYSTEM' is coded as 'SYSMET' and 'NEARER' as 'AENRER'. What is the code for 'FRACTION'?",
+        "options": {
+          "A": "CARFNOIT",
+          "B": "CARFTION",
+          "C": "ARFCNOIT",
+          "D": "CARFNOIT"
+        },
+        "correct_answer": "A",
+        "explanation": "Divide into two equal 4-letter halves and reverse each half independently: FRAC -> CARF; TION -> NOIT => CARFNOIT.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "If 'GIVE' is coded as '5137' and 'BAT' as '924', how is 'GATE' coded?",
+        "options": {
+          "A": "5247",
+          "B": "5427",
+          "C": "5724",
+          "D": "2547"
+        },
+        "correct_answer": "A",
+        "explanation": "Direct substitution: G=5, A=2, T=4, E=7 => 5247.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Coding-Decoding (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "P(A cap B) = P(A)*P(B|A) = 0.8 * 0.4 = 0.32. P(A | B) = 0.32 / 0.5 = 0.64. Answer: 0.32 and 0.64."
-      ],
-      [
-        "Solution Q2:",
-        "After 1 red removed, 7 balls remain (4 red, 3 black). P(2nd Black | 1st Red) = 3 / 7. Answer: 3 / 7."
-      ],
-      [
-        "Solution Q3:",
-        "A def = 70 * 0.03 = 2.1. B def = 30 * 0.05 = 1.5. Total def = 3.6. P(B | def) = 1.5 / 3.6 = 15 / 36 = 5 / 12. Answer: 5 / 12."
-      ],
-      [
-        "Solution Q4:",
-        "P(A and B) = 0.3 * 0.6 = 0.18. P(A or B) = 0.3 + 0.6 - 0.18 = 0.72. Answer: 0.18 and 0.72."
-      ],
-      [
-        "Solution Q5:",
-        "(^6 C_2 + ^4 C_2) / (^10 C_2) = (15 + 6) / 45 = 21 / 45 = 7 / 15. Answer: 7 / 15."
-      ]
-    ],
-    "trap": "In Bayes' theorem problems, always check that the prior probabilities of the causes sum to exactly 1 (e.g. 60% + 40% = 100%). If not, you missed an event partition!"
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Validate Binary Search Tree",
+      "difficulty": "Medium",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given the root of a binary tree, determine if it is a valid binary search tree (BST).",
+      "solution_approach": "1. Apply Binary Search Tree (BST) Validation algorithmic technique.\n2. Validates that for every node in a tree, all nodes in its left subtree are strictly smaller and all nodes in its right subtree are strictly greater.\n3. Invariants: Passes down valid value bounds [low, high] that tighten as we descend into left and right subtrees.",
+      "code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+      "java_solution": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+      "solution_java": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(H) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Kth Smallest Element in a BST",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.",
+      "solution_approach": "1. Identify interview variation of Binary Search Tree (BST) Validation.\n2. Handle edge cases: Single node, Duplicate values (invalid in strict BST), Integer.MIN_VALUE or MAX_VALUE bounds handled safely with Integer objects.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(H) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Binary Search Tree (BST) Validation",
+    "category": "Binary Search Tree",
+    "concept": "Validates that for every node in a tree, all nodes in its left subtree are strictly smaller and all nodes in its right subtree are strictly greater.",
+    "why_it_works": "Passes down valid value bounds [low, high] that tighten as we descend into left and right subtrees.",
+    "visual_explanation": "Node Val = 5, Allowed Range: (-inf, +inf)\\nLeft Child = 3, Allowed Range: (-inf, 5)\\nRight Child = 7, Allowed Range: (5, +inf)",
+    "java_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) {\n            return false;\n        }\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+    "code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) {\n            return false;\n        }\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+    "python_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) {\n            return false;\n        }\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 2-4: Entry method passing null bounds (representing infinity).",
+      "Line 5: Base case: empty node is valid BST.",
+      "Line 6-8: If current node violates lower or upper bound, return false.",
+      "Line 9: Recursively validate left subtree with upper bound = node.val, and right subtree with lower bound = node.val."
+    ],
+    "dry_run": "Node 5 -> left child 1 (range -inf..5, valid); right child 4 (range 5..inf, node.val 4 <= 5 -> INVALID). Returns false.",
+    "complexity": "O(N) Time, O(H) Auxiliary Space",
+    "edge_cases": [
+      "Single node",
+      "Duplicate values (invalid in strict BST)",
+      "Integer.MIN_VALUE or MAX_VALUE bounds handled safely with Integer objects"
+    ],
+    "interview_variations": [
+      "Kth Smallest Element in a BST",
+      "Inorder Successor in BST",
+      "Convert Sorted Array to Binary Search Tree"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-17-01",
+        "title": "Problem 1: Validate Binary Search Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given the root of a binary tree, determine if it is a valid binary search tree (BST).",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Binary Search Tree (BST) Validation algorithmic technique.\n2. Validates that for every node in a tree, all nodes in its left subtree are strictly smaller and all nodes in its right subtree are strictly greater.\n3. Invariants: Passes down valid value bounds [low, high] that tighten as we descend into left and right subtrees.",
+        "solution_java": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+        "solution_python": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+        "code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+        "java_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-17-02",
+        "title": "Problem 2: Kth Smallest Element in a BST",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Binary Search Tree (BST) Validation.\n2. Handle edge cases: Single node, Duplicate values (invalid in strict BST), Integer.MIN_VALUE or MAX_VALUE bounds handled safely with Integer objects.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> stack = new ArrayDeque<>();\n        TreeNode curr = root;\n        while (curr != null || !stack.isEmpty()) {\n            while (curr != null) {\n                stack.push(curr);\n                curr = curr.left;\n            }\n            curr = stack.pop();\n            if (--k == 0) return curr.val;\n            curr = curr.right;\n        }\n        return -1;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "Computer Networks",
+    "topic": "Medium Access Control (MAC): CSMA/CD, CSMA/CA, Ethernet & Collision Handling",
+    "detailed_notes": [
+      "When multiple nodes share a single broadcast transmission medium, the Medium Access Control (MAC) sublayer manages channel allocation to prevent and resolve transmission collisions.\n\nRandom Access Protocols Evolution:\n1. Pure ALOHA: Transmit whenever ready. Throughput max = 18.4% (vulnerable period = 2 * T_frame).\n2. Slotted ALOHA: Time divided into discrete slots equal to T_frame; transmit only at slot start. Throughput max = 36.8%.\n3. CSMA (Carrier Sense Multiple Access): 'Listen before talk'. Node senses channel before transmitting (1-persistent, p-persistent, non-persistent).\n\nCSMA/CD (Collision Detection — Ethernet IEEE 802.3):\n'Listen while talk'. Sender continuously monitors medium while transmitting. If signal energy exceeds threshold (collision), the sender immediately aborts transmission, broadcasts a 32-bit Jam Signal to notify all nodes, and waits for a backoff period.\n- Exponential Backoff Algorithm: After collision k (capped at 10), pick random r in [0, 2^k - 1]; wait r * 51.2 microseconds. After 16 collisions, abort.\n- Minimum Frame Size Rule: Frame transmission time must be >= 2 * propagation delay (T_tx >= 2 * T_prop) so sender is still transmitting when the collision echo returns. In standard 10Mbps Ethernet, min frame size is 64 bytes (512 bits).\n\nCSMA/CA (Collision Avoidance — Wi-Fi IEEE 802.11):\nWireless transceivers cannot transmit and listen simultaneously (transmitted power drowns out received signals). Uses Interframe Spaces (DIFS, SIFS) and optional RTS/CTS (Request-to-Send / Clear-to-Send) handshakes to solve the Hidden Terminal Problem."
+    ],
+    "key_definitions": [
+      {
+        "term": "CSMA/CD",
+        "definition": "Carrier Sense Multiple Access with Collision Detection: protocol detecting collisions by monitoring energy on wire."
+      },
+      {
+        "term": "Exponential Backoff",
+        "definition": "An algorithm multiplying random collision wait intervals to prevent repeated simultaneous retries."
+      },
+      {
+        "term": "Hidden Terminal Problem",
+        "definition": "A wireless state where two nodes cannot sense each other but collide at a shared central access point."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "Why does Ethernet require a Minimum Frame Size of 64 bytes in CSMA/CD?",
+        "a": "For CSMA/CD to work, the transmitting station must still be transmitting its frame when a collision notification returns from the furthest point on the network. Mathematically, Transmission Time (T_tx) >= 2 * Propagation Delay (T_prop). For 10Mbps Ethernet over a 2.5km collision domain, round-trip time is ~51.2 microseconds. In 51.2 microseconds at 10Mbps, 512 bits (64 bytes) are transmitted. Any frame smaller than 64 bytes could finish before a collision arrives, violating collision detection."
+      },
+      {
+        "q": "How does Binary Exponential Backoff resolve repeat collisions?",
+        "a": "After the k-th collision, the node chooses a random slot wait time r from the range [0, 2^k - 1] (k is capped at 10). The wait duration is r * slot_time (51.2 microseconds). As collisions repeat, the contention window expands exponentially (1, 2, 4, 8, ... up to 1024), dynamically spreading competing nodes across wider intervals and dramatically reducing re-collision probability."
+      },
+      {
+        "q": "Why is CSMA/CD not used in wireless Wi-Fi networks?",
+        "a": "In wireless transmission, the transmitted signal from an antenna is millions of times stronger than incoming signals from distant nodes. A wireless radio's own transmission blinds its receiver, making hardware collision detection impossible. Wireless networks instead use CSMA/CA (Collision Avoidance) with RTS/CTS."
+      },
+      {
+        "q": "Explain the Hidden Terminal Problem and how RTS/CTS resolves it.",
+        "a": "Node A and Node C are both in range of Access Point B, but out of radio range of each other. A senses the channel, detects silence, and transmits to B. Simultaneously, C senses the channel, detects silence, and transmits to B. Their transmissions collide at B. Solved via RTS/CTS: A sends Request-To-Send to B; B broadcasts Clear-To-Send (CTS) containing transmission duration. Node C overhears B's CTS and silences its transmitter."
+      },
+      {
+        "q": "What is the difference between a Hub, a Switch, and a Router regarding collision and broadcast domains?",
+        "a": "A Hub (Layer 1) has 1 collision domain and 1 broadcast domain across all ports. A Switch (Layer 2) creates a dedicated collision domain per port, but maintains 1 unified broadcast domain. A Router (Layer 3) creates separate collision domains per port AND separates broadcast domains, preventing broadcast packet propagation between subnets."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-17-01",
+        "question": "What is the minimum frame size in standard 10Mbps Ethernet to guarantee collision detection?",
+        "options": [
+          "32 bytes",
+          "64 bytes",
+          "128 bytes",
+          "512 bytes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard Ethernet mandates a 64-byte (512-bit) minimum frame size."
+      },
+      {
+        "id": "CS-17-02",
+        "question": "In CSMA/CD, the condition ensuring a sender detects collision before finishing transmission is:",
+        "options": [
+          "T_tx >= T_prop",
+          "T_tx >= 2 * T_prop",
+          "T_prop >= 2 * T_tx",
+          "T_tx = 0"
+        ],
+        "correct_answer": "B",
+        "explanation": "Transmission time must exceed two times propagation delay to detect worst-case collision echo."
+      },
+      {
+        "id": "CS-17-03",
+        "question": "The mechanism used in IEEE 802.11 Wi-Fi to solve the Hidden Terminal problem is:",
+        "options": [
+          "Token Ring passing",
+          "RTS/CTS handshake",
+          "CSMA/CD Jam signals",
+          "CRC-32 checksums"
+        ],
+        "correct_answer": "B",
+        "explanation": "RTS/CTS reservations inform hidden nodes to defer transmission."
+      },
+      {
+        "id": "CS-17-04",
+        "question": "How many collision domains does an 8-port Ethernet Layer-2 Switch have?",
+        "options": [
+          "1",
+          "2",
+          "8",
+          "0"
+        ],
+        "correct_answer": "C",
+        "explanation": "Each switch port represents an isolated collision domain, so an 8-port switch has 8."
+      },
+      {
+        "id": "CS-17-05",
+        "question": "In the Binary Exponential Backoff algorithm, after 3 consecutive collisions, the random multiplier r is chosen from:",
+        "options": [
+          "0 to 3",
+          "0 to 7",
+          "0 to 15",
+          "0 to 8"
+        ],
+        "correct_answer": "B",
+        "explanation": "Range is [0, 2^k - 1] = [0, 2^3 - 1] = [0, 7]."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "NSE2 / BulkBeat TV",
+    "repo_path": "D:\\Projects\\nse2",
+    "feature_focus": "Subscription Monetization, Webhook Reconciliation & Real Revenue Metrics",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nAuditing Razorpay subscription webhooks, ledger reconciliation, and verified user metrics.\n\nWHAT TO MEMORIZE:\n104 paying subscribers generated approximately ₹1.11 lakh in revenue with automated license key provisioning.\n\n60-SECOND INTERVIEW PITCH:\nBulkBeat TV wasn't just a toy project—it was a commercial SaaS that generated ~₹1.11 lakh in revenue from 104 paying subscribers. I built the full billing infrastructure with Razorpay webhooks, automated subscription renewals, access gating, and payment reconciliation scripts that ensured zero license loss.",
+    "interview_qa": [
+      {
+        "q": "How did you automate subscription renewals and access revocation in NSE2?",
+        "a": "We integrated Razorpay Subscriptions. When a user pays, Razorpay triggers a webhook containing the user's telegram ID in the payment notes. The backend verifies the HMAC signature, updates `users.working_days_left` in `trading_bot.db`, and sends a personalized receipt card. A nightly cron job decrements active days and automatically downgrades expired users to the free tier."
+      },
+      {
+        "q": "How did you reconcile payments when webhook deliveries failed during network glitches?",
+        "a": "I authored `audit_all_razorpay_payments.py` and `reconcile_payments.py`, which periodically fetch raw settlement logs directly from Razorpay's REST API and cross-reference them against internal database transactions. Any orphaned payments are backfilled automatically without manual intervention."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 17 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 17 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'TerraStract', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In TerraStract (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of TerraStract.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 16 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5004 — Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Coding-Decoding & Letter Shifting.\n• Algorithmic Invariant: Optimal time and space complexity rules for Binary Search Tree (BST) Validation.\n• Systems Law: Architectural equations, protocols, and complexity bounds for MAC Sublayer: Pure/Slotted ALOHA & CSMA/CD.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Binary Search Tree (BST) Validation.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 17 Q1: What is the primary academic thesis of Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel?",
+        "a": "Core theoretical and practical mastery of Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel under the CSJM University BCA-5004 syllabus."
+      },
+      {
+        "q": "Day 17 Q2: What is the key speed calculation formula applied in Coding-Decoding & Letter Shifting?",
+        "a": "High-speed corporate placement arithmetic shortcut for Coding-Decoding & Letter Shifting in campus recruitment exams."
+      },
+      {
+        "q": "Day 17 Q3: What is the time complexity of Binary Search Tree (BST) Validation?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 17 Q4: What is the central architectural principle of MAC Sublayer: Pure/Slotted ALOHA & CSMA/CD?",
+        "a": "Foundational systems engineering rule governing MAC Sublayer: Pure/Slotted ALOHA & CSMA/CD in production environments."
+      },
+      {
+        "q": "Day 17 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 17 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 17 Q7: What is the verified technical foundation of College Student Management System (CSMS)?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 17 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 17 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 17 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5004 — Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Coding-Decoding & Letter Shifting.\n• Algorithmic Invariant: Optimal time and space complexity rules for Binary Search Tree (BST) Validation.\n• Systems Law: Architectural equations, protocols, and complexity bounds for MAC Sublayer: Pure/Slotted ALOHA & CSMA/CD."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5004 — Iterative Linear Systems: Gauss-Jacobi & Gauss-Seidel."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Coding-Decoding & Letter Shifting."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Binary Search Tree (BST) Validation."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: College Student Management System (CSMS)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 17 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "What condition guarantees the convergence of both Gauss-Jacobi and Gauss-Seidel iterative methods for solving AX = B?",
+        "a": "Answer: B\n\nStrict diagonal dominance guarantees that iterative approximations converge to the unique solution regardless of initial guess."
+      },
+      {
+        "q": "How does Gauss-Seidel iteration differ from the Gauss-Jacobi method?",
+        "a": "Answer: A\n\nGauss-Seidel updates variables in-place, using x_1^{(k+1)} immediately to calculate x_2^{(k+1)}, converging roughly twice as fast as Jacobi."
+      },
+      {
+        "q": "In iterative methods, what does the relaxation parameter omega represent in the Successive Over-Relaxation (SOR) method?",
+        "a": "Answer: B\n\nSOR accelerates Gauss-Seidel by weighting the new estimate with a relaxation factor (1 < omega < 2 for over-relaxation)."
+      },
+      {
+        "q": "If an iterative method computes x^{(k+1)} = [2.001, 3.999] and x^{(k)} = [2.000, 4.000], what is the absolute error norm ||x^{(k+1)} - x^{(k)}||_infinity?",
+        "a": "Answer: A\n\nThe infinity norm is the maximum absolute difference across components: max(|2.001 - 2.000|, |3.999 - 4.000|) = 0.001."
+      },
+      {
+        "q": "Why are iterative methods (Jacobi, Seidel) preferred over direct methods (Gauss Elimination) for very large sparse systems (e.g., 100,000 equations)?",
+        "a": "Answer: A\n\nSparse systems from PDEs have mostly zero entries. Iterative methods avoid fill-in and have O(N) memory and per-iteration work."
+      },
+      {
+        "q": "If in a certain code 'TEACHER' is written as 'VGCEJGT', how is 'CHILDREN' written in that code?",
+        "a": "Answer: A\n\nEach letter is shifted forward by +2 positions in the alphabet: C->E, H->J, I->K, L->N, D->F, R->T, E->G, N->P => EJKNFTGP."
+      },
+      {
+        "q": "If 'DELHI' can be coded as '73541' and 'CALCUTTA' as '82589662', how can 'CALICUT' be coded?",
+        "a": "Answer: A\n\nDirect letter substitution: C=8, A=2, L=5, I=1, C=8, U=9, T=6 => 8251896."
+      },
+      {
+        "q": "In a certain code language, 'pit dar na' means 'you are good', 'dar tok pa' means 'good and bad', and 'tim na tok' means 'they are bad'. What represents 'they'?",
+        "a": "Answer: A\n\nComparing 'na' is 'are', 'tok' is 'bad'. In 'tim na tok' ('they are bad'), 'tim' must represent 'they'."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-17-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What condition guarantees the convergence of both Gauss-Jacobi and Gauss-Seidel iterative methods for solving AX = B?",
+        "options": [
+          "Matrix A is skew-symmetric",
+          "Matrix A is Strictly Diagonally Dominant (|a_ii| > sum_{j!=i} |a_ij| for all rows)",
+          "det(A) < 1",
+          "All elements of A are negative"
+        ],
+        "correct_answer": "B",
+        "explanation": "Strict diagonal dominance guarantees that iterative approximations converge to the unique solution regardless of initial guess."
+      },
+      {
+        "id": "TEST-17-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does Gauss-Seidel iteration differ from the Gauss-Jacobi method?",
+        "options": [
+          "Gauss-Seidel uses the most freshly computed variable values immediately in the current iteration",
+          "Gauss-Jacobi converges twice as fast as Gauss-Seidel",
+          "Gauss-Seidel cannot be used for 3x3 systems",
+          "Gauss-Jacobi does not require matrix coefficients"
+        ],
+        "correct_answer": "A",
+        "explanation": "Gauss-Seidel updates variables in-place, using x_1^{(k+1)} immediately to calculate x_2^{(k+1)}, converging roughly twice as fast as Jacobi."
+      },
+      {
+        "id": "TEST-17-03",
+        "category": "Academic (Academic Theory)",
+        "question": "In iterative methods, what does the relaxation parameter omega represent in the Successive Over-Relaxation (SOR) method?",
+        "options": [
+          "Matrix inversion scale",
+          "An extrapolation factor where 1 < omega < 2 accelerates convergence compared to standard Gauss-Seidel",
+          "The number of CPU threads allocated",
+          "The floating point precision epsilon"
+        ],
+        "correct_answer": "B",
+        "explanation": "SOR accelerates Gauss-Seidel by weighting the new estimate with a relaxation factor (1 < omega < 2 for over-relaxation)."
+      },
+      {
+        "id": "TEST-17-04",
+        "category": "Academic (Academic Theory)",
+        "question": "If an iterative method computes x^{(k+1)} = [2.001, 3.999] and x^{(k)} = [2.000, 4.000], what is the absolute error norm ||x^{(k+1)} - x^{(k)}||_infinity?",
+        "options": [
+          "0.001",
+          "0.002",
+          "0.000",
+          "0.010"
+        ],
+        "correct_answer": "A",
+        "explanation": "The infinity norm is the maximum absolute difference across components: max(|2.001 - 2.000|, |3.999 - 4.000|) = 0.001."
+      },
+      {
+        "id": "TEST-17-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Why are iterative methods (Jacobi, Seidel) preferred over direct methods (Gauss Elimination) for very large sparse systems (e.g., 100,000 equations)?",
+        "options": [
+          "They require O(N) storage preserving zero entries and avoid massive O(N^3) matrix fill-in",
+          "They always produce exact solutions without rounding errors",
+          "They do not require initial guesses",
+          "They only use integer multiplication"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sparse systems from PDEs have mostly zero entries. Iterative methods avoid fill-in and have O(N) memory and per-iteration work."
+      },
+      {
+        "id": "TEST-17-06",
+        "category": "Placement Aptitude",
+        "question": "If in a certain code 'TEACHER' is written as 'VGCEJGT', how is 'CHILDREN' written in that code?",
+        "options": [
+          "EJKNFTGP",
+          "EJKNFUTP",
+          "EJKNFTHP",
+          "EJKNHTGP"
+        ],
+        "correct_answer": "A",
+        "explanation": "Each letter is shifted forward by +2 positions in the alphabet: C->E, H->J, I->K, L->N, D->F, R->T, E->G, N->P => EJKNFTGP."
+      },
+      {
+        "id": "TEST-17-07",
+        "category": "Placement Aptitude",
+        "question": "If 'DELHI' can be coded as '73541' and 'CALCUTTA' as '82589662', how can 'CALICUT' be coded?",
+        "options": [
+          "8251896",
+          "8251869",
+          "8258196",
+          "8521896"
+        ],
+        "correct_answer": "A",
+        "explanation": "Direct letter substitution: C=8, A=2, L=5, I=1, C=8, U=9, T=6 => 8251896."
+      },
+      {
+        "id": "TEST-17-08",
+        "category": "Placement Aptitude",
+        "question": "In a certain code language, 'pit dar na' means 'you are good', 'dar tok pa' means 'good and bad', and 'tim na tok' means 'they are bad'. What represents 'they'?",
+        "options": [
+          "tim",
+          "na",
+          "tok",
+          "dar"
+        ],
+        "correct_answer": "A",
+        "explanation": "Comparing 'na' is 'are', 'tok' is 'bad'. In 'tim na tok' ('they are bad'), 'tim' must represent 'they'."
+      },
+      {
+        "id": "TEST-17-09",
+        "category": "Placement Aptitude",
+        "question": "If 'ROSE' is coded as 6821, 'CHAIR' is 73456, and 'PREACH' is 961473, what is the code for 'SEARCH'?",
+        "options": [
+          "214673",
+          "214763",
+          "241673",
+          "214637"
+        ],
+        "correct_answer": "A",
+        "explanation": "Direct substitution: S=2, E=1, A=4, R=6, C=7, H=3 => 214673."
+      },
+      {
+        "id": "TEST-17-10",
+        "category": "Placement Aptitude",
+        "question": "In a certain code, 'MONKEY' is written as 'XDJMNL'. How is 'TIGER' written in that code?",
+        "options": [
+          "QDFHS",
+          "SDFHQ",
+          "QDFHR",
+          "SDFHS"
+        ],
+        "correct_answer": "A",
+        "explanation": "Reverse the word and subtract 1 from each letter: TIGER reversed is REGIT. R-1=Q, E-1=D, G-1=F, I-1=H, T-1=S => QDFHS."
+      },
+      {
+        "id": "TEST-17-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is the minimum frame size in standard 10Mbps Ethernet to guarantee collision detection?",
+        "options": [
+          "32 bytes",
+          "64 bytes",
+          "128 bytes",
+          "512 bytes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard Ethernet mandates a 64-byte (512-bit) minimum frame size."
+      },
+      {
+        "id": "TEST-17-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "In CSMA/CD, the condition ensuring a sender detects collision before finishing transmission is:",
+        "options": [
+          "T_tx >= T_prop",
+          "T_tx >= 2 * T_prop",
+          "T_prop >= 2 * T_tx",
+          "T_tx = 0"
+        ],
+        "correct_answer": "B",
+        "explanation": "Transmission time must exceed two times propagation delay to detect worst-case collision echo."
+      },
+      {
+        "id": "TEST-17-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "The mechanism used in IEEE 802.11 Wi-Fi to solve the Hidden Terminal problem is:",
+        "options": [
+          "Token Ring passing",
+          "RTS/CTS handshake",
+          "CSMA/CD Jam signals",
+          "CRC-32 checksums"
+        ],
+        "correct_answer": "B",
+        "explanation": "RTS/CTS reservations inform hidden nodes to defer transmission."
+      },
+      {
+        "id": "TEST-17-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "How many collision domains does an 8-port Ethernet Layer-2 Switch have?",
+        "options": [
+          "1",
+          "2",
+          "8",
+          "0"
+        ],
+        "correct_answer": "C",
+        "explanation": "Each switch port represents an isolated collision domain, so an 8-port switch has 8."
+      },
+      {
+        "id": "TEST-17-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "In the Binary Exponential Backoff algorithm, after 3 consecutive collisions, the random multiplier r is chosen from:",
+        "options": [
+          "0 to 3",
+          "0 to 7",
+          "0 to 15",
+          "0 to 8"
+        ],
+        "correct_answer": "B",
+        "explanation": "Range is [0, 2^k - 1] = [0, 2^3 - 1] = [0, 7]."
+      },
+      {
+        "id": "TEST-17-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Binary Search Tree (BST) Validation' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(H) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Binary Search Tree (BST) Validation' pattern operates with O(N) Time, O(H) Auxiliary Space: Passes down valid value bounds [low, high] that tighten as we descend into left and right subtrees.."
+      },
+      {
+        "id": "TEST-17-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Binary Search Tree (BST) Validation' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Single node.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Binary Search Tree (BST) Validation include Single node, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-17-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Validate Binary Search Tree', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(H) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(H) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-17-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Subscription Monetization, Webhook Reconciliation & Real Revenue Metrics'?",
+        "options": [
+          "104 paying subscribers generated approximately ₹1.11 lakh in revenue with automated license key provisioning.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: 104 paying subscribers generated approximately ₹1.11 lakh in revenue with automated license key provisioning.."
+      },
+      {
+        "id": "TEST-17-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How did you automate subscription renewals and access revocation in NSE2?'?",
+        "options": [
+          "We integrated Razorpay Subscriptions. When a user pays, Razorpay triggers a webhook containing the user's telegram ID in the payment notes. The backend verifies...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: We integrated Razorpay Subscriptions. When a user pays, Razorpay triggers a webhook containing the user's telegram ID in the payment notes. ."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-17",
+    "title": "Validate Binary Search Tree (Binary Search Tree (BST) Validation)",
+    "time_limit_minutes": 35,
+    "difficulty": "Medium",
+    "problem_statement": "Solve the core placement problem: Validate Binary Search Tree.\n\nGiven the root of a binary tree, determine if it is a valid binary search tree (BST).\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Binary Search Tree (BST) Validation\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(H) Auxiliary Space\n- Handle all edge cases: Single node, Duplicate values (invalid in strict BST), Integer.MIN_VALUE or MAX_VALUE bounds handled safely with Integer objects.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Binary Search Tree (BST) Validation\n    public boolean isValidBST(TreeNode root) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Binary Search Tree (BST) Validation\n    public boolean isValidBST(TreeNode root) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public boolean isValidBST(TreeNode root) {\n        return validate(root, null, null);\n    }\n    private boolean validate(TreeNode node, Integer low, Integer high) {\n        if (node == null) return true;\n        if ((low != null && node.val <= low) || (high != null && node.val >= high)) return false;\n        return validate(node.left, low, node.val) && validate(node.right, node.val, high);\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Binary Search Tree (BST) Validation logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Single node",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(H) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

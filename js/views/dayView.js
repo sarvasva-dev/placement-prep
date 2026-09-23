@@ -1,8 +1,46 @@
 /**
  * Complete Daily Study Operating System Page View (Day 1 to 30)
+ * Renders all 14 Multidisciplinary Preparation Streams with Interactive Capabilities
  */
 
 import { Storage } from '../storage.js';
+
+function safeText(value) {
+  if (value == null) return '';
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value)) return value.map(v => safeText(v)).join('\n');
+  if (typeof value === 'object') {
+    return Object.entries(value).map(([k, v]) => `${k}: ${safeText(v)}`).join('\n');
+  }
+  return String(value);
+}
+
+function formatMultiline(value) {
+  return safeText(value).replace(/\n/g, '<br>');
+}
+
+function formatParagraphs(value) {
+  const text = safeText(value);
+  if (!text) return '';
+  return text.split(/\n\s*\n/).map(p => `<p style="margin-bottom: var(--space-2);">${p.replace(/\n/g, '<br>')}</p>`).join('');
+}
+
+function normalizeOptions(options) {
+  if (!options) return [];
+  if (Array.isArray(options)) {
+    return options.map((opt, idx) => ({
+      letter: String.fromCharCode(65 + idx),
+      text: safeText(opt)
+    }));
+  }
+  if (typeof options === 'object') {
+    return Object.entries(options).map(([k, v]) => ({
+      letter: k.toUpperCase(),
+      text: safeText(v)
+    }));
+  }
+  return [];
+}
 
 export function renderDayView(container, dayNumber, daysIndex) {
   const dayNum = parseInt(dayNumber, 10);
@@ -11,7 +49,7 @@ export function renderDayView(container, dayNumber, daysIndex) {
   container.innerHTML = `
     <div style="text-align: center; padding: var(--space-8) 0;">
       <div class="badge badge-primary" style="margin-bottom: var(--space-2);">LOADING STUDY CHAPTER...</div>
-      <h2>Retrieving Day ${dayNum} Structured Content</h2>
+      <h2>Retrieving Day ${dayNum} 14-Stream Curriculum</h2>
     </div>
   `;
 
@@ -40,12 +78,23 @@ function buildDayPage(container, d, daysIndex) {
   const dayNum = d.day;
   const isDone = Storage.isDayComplete(dayNum);
   const checklist = Storage.getDayChecklist(dayNum);
-  const sem = d.sem_data || {};
-  const apt = d.apt_data || {};
-  const dsa = d.dsa_problems || [];
-  const cs = d.cs_core || {};
-  const proj = d.project_defense || {};
-  const test = d.daily_test || {};
+
+  // Extract stream data
+  const streams = d.streams || {};
+  const acad = streams.academic || d.sem_data || {};
+  const pyqs = streams.academic_pyqs || acad.pyqs || [];
+  const aptLesson = streams.aptitude_lesson || d.apt_data || {};
+  const aptSolved = streams.aptitude_solved || d.apt_data?.solved_examples || [];
+  const aptMcqs = streams.aptitude_mcqs || d.apt_data?.mcqs || [];
+  const dsaPattern = streams.dsa_pattern || d.dsa_pattern || {};
+  const codingProbs = streams.coding_problems || d.dsa_problems || [];
+  const coreCs = streams.core_cs || d.cs_core || {};
+  const proj = streams.project_preparation || d.project_defense || {};
+  const placementInterview = streams.placement_interview || d.placement_interview || [];
+  const revision = streams.daily_revision || d.daily_revision || {};
+  const mixedTest = streams.mixed_test || d.daily_test?.mcqs || [];
+  const codingTask = streams.daily_coding_task || d.daily_coding_task || {};
+  const scoreModel = streams.daily_score_model || d.daily_score_model || { total_points: 100, passing_threshold: 80 };
 
   container.innerHTML = `
     <!-- Top Action Navigation -->
@@ -69,94 +118,157 @@ function buildDayPage(container, d, daysIndex) {
       </div>
     </div>
 
-    <!-- Chapter Header -->
-    <div class="card" style="border-top: 4px solid var(--color-primary); margin-bottom: var(--space-6);">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-2);">
-        <div>
-          <div class="badge badge-primary">DAY ${dayNum} OF 30 STUDY CHAPTER</div>
+    <!-- Chapter Header & 100-Point Live Tracker -->
+    <div class="card" style="border-top: 4px solid var(--color-primary); margin-bottom: var(--space-5);">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-3);">
+        <div style="flex: 1; min-width: 280px;">
+          <div class="badge badge-primary">DAY ${dayNum} OF 30 • 14 PREPARATION STREAMS</div>
           <h1 style="margin: var(--space-2) 0 var(--space-1);">${d.title}</h1>
-          <p style="font-size: var(--font-size-sm); color: var(--text-secondary);">
-            Academic Focus: <strong>${sem.subject || 'General'}</strong> • Target: <strong>SGPA ≥ 9.0 Standard</strong>
+          <p style="font-size: var(--font-size-sm); color: var(--text-secondary); margin: 0;">
+            Academic Subject: <strong>${acad.subject_name || acad.subject || 'CSJM University'}</strong> • Daily Standard: <strong>SGPA ≥ 9.0 + Placement Ready</strong>
           </p>
+        </div>
+
+        <div style="background: var(--bg-surface-2); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border-color); text-align: right; min-width: 220px;">
+          <div style="font-size: var(--font-size-xs); color: var(--text-muted); font-weight: 700;">DAILY MASTERY SCORE</div>
+          <div style="font-size: 1.8rem; font-weight: 800; color: var(--color-primary); line-height: 1.2;">
+            <span id="live-day-score">0</span> / 100
+          </div>
+          <div style="font-size: var(--font-size-xs); color: var(--text-secondary); margin-top: 2px;">
+            Target Threshold: <strong style="color: var(--color-success);">80 Points (80%)</strong>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Table of Contents Quick Anchor Bar -->
-    <div class="tabs-header" style="position: sticky; top: var(--header-height); z-index: 80; background: var(--bg-primary); padding: var(--space-2) 0;">
-      <a href="#day/${dayNum}#sec-sem" class="tab-btn active">1. Academic Study</a>
-      <a href="#day/${dayNum}#sec-pyq" class="tab-btn">2. University PYQ</a>
-      <a href="#day/${dayNum}#sec-apt" class="tab-btn">3. Aptitude Drills</a>
-      <a href="#day/${dayNum}#sec-code" class="tab-btn">4. Python DSA</a>
-      <a href="#day/${dayNum}#sec-cs" class="tab-btn">5. Core CS</a>
-      <a href="#day/${dayNum}#sec-proj" class="tab-btn">6. Project Defense</a>
-      <a href="#day/${dayNum}#sec-test" class="tab-btn">7. Daily Test</a>
-      <a href="#day/${dayNum}#sec-check" class="tab-btn">8. Sign-Off</a>
+    <!-- Table of Contents Quick Anchor Bar (All 14 Streams) -->
+    <div class="tabs-header" style="position: sticky; top: var(--header-height); z-index: 80; background: var(--bg-primary); padding: var(--space-2) 0; overflow-x: auto; white-space: nowrap; display: flex; gap: var(--space-2);">
+      <a href="#day/${dayNum}#sec-acad" class="tab-btn active">1. Academic Theory</a>
+      <a href="#day/${dayNum}#sec-pyq" class="tab-btn">2. University PYQs</a>
+      <a href="#day/${dayNum}#sec-apt-lesson" class="tab-btn">3. Aptitude Lesson</a>
+      <a href="#day/${dayNum}#sec-apt-solved" class="tab-btn">4. Aptitude Solved (5)</a>
+      <a href="#day/${dayNum}#sec-apt-mcq" class="tab-btn">5. Aptitude MCQs (10)</a>
+      <a href="#day/${dayNum}#sec-dsa-pattern" class="tab-btn">6. DSA Pattern</a>
+      <a href="#day/${dayNum}#sec-coding-probs" class="tab-btn">7. Coding Problems (2)</a>
+      <a href="#day/${dayNum}#sec-core-cs" class="tab-btn">8. Core CS</a>
+      <a href="#day/${dayNum}#sec-proj-defense" class="tab-btn">9. Project Defense</a>
+      <a href="#day/${dayNum}#sec-interview-prep" class="tab-btn">10. Placement Interview (5)</a>
+      <a href="#day/${dayNum}#sec-revision" class="tab-btn">11. Daily Revision</a>
+      <a href="#day/${dayNum}#sec-mixed-test" class="tab-btn">12. Mixed Test (20 MCQs)</a>
+      <a href="#day/${dayNum}#sec-coding-task" class="tab-btn">13. Practical Task</a>
+      <a href="#day/${dayNum}#sec-sign-off" class="tab-btn">14. Sign-Off (100 Pts)</a>
     </div>
 
     <!-- ================================================================= -->
-    <!-- 1. SEMESTER ACADEMIC STUDY -->
+    <!-- 1. ACADEMIC THEORY LECTURE -->
     <!-- ================================================================= -->
-    <section id="sec-sem" class="card" style="margin-top: var(--space-4);">
+    <section id="sec-acad" class="card" style="margin-top: var(--space-4);">
       <div class="card-header">
-        <h2 class="card-title">📚 1. Semester 5 Deep Academic Lecture</h2>
-        <span class="badge badge-purple">${sem.subject || 'Academic'}</span>
+        <h2 class="card-title">📚 1. Semester 5 Academic Theory</h2>
+        <span class="badge badge-purple">${acad.subject_name || acad.subject || 'Academic'}</span>
       </div>
 
       <div style="background: var(--bg-surface); padding: var(--space-3); border-radius: var(--radius-md); margin-bottom: var(--space-4); border: 1px solid var(--border-color);">
-        <strong style="color: var(--color-primary); font-size: var(--font-size-sm);">Syllabus Module Focus:</strong>
-        <div style="font-size: var(--font-size-base); font-weight: 600; margin-top: 2px;">${sem.topic || ''}</div>
+        <strong style="color: var(--color-primary); font-size: var(--font-size-sm);">Syllabus Focus:</strong>
+        <div style="font-size: var(--font-size-base); font-weight: 600; margin-top: 2px;">${acad.topic || ''}</div>
       </div>
 
-      <!-- Detailed Notes -->
+      <!-- Objectives -->
+      ${acad.objectives && acad.objectives.length ? `
+        <div style="margin-bottom: var(--space-4); background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm);">
+          <strong style="font-size: var(--font-size-xs); text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px;">LEARNING OBJECTIVES:</strong>
+          <ul style="margin: 0; padding-left: 20px; font-size: var(--font-size-sm); line-height: 1.6;">
+            ${acad.objectives.map(obj => `<li>${obj}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+
+      <!-- Detailed Explanation -->
       <div class="academic-notes-body" style="font-size: var(--font-size-base); line-height: 1.7;">
-        ${(sem.detailed_notes || []).map(p => `<p style="margin-bottom: var(--space-3);">${p.replace(/\n/g, '<br>')}</p>`).join('')}
+        ${formatParagraphs(acad.explanation)}
       </div>
 
-      <!-- ASCII / System Architecture Diagram -->
-      ${sem.diagram_ascii ? `
-        <div style="margin: var(--space-5) 0;">
-          <h4 style="margin-bottom: var(--space-2); color: var(--color-primary);">Architecture & Flow Diagram</h4>
-          <div class="diagram-box">${sem.diagram_ascii}</div>
+      <!-- Subtopics -->
+      ${acad.subtopics && acad.subtopics.length ? `
+        <div style="margin: var(--space-4) 0;">
+          ${acad.subtopics.map(sub => `
+            <div style="background: var(--bg-surface); padding: var(--space-3); border-radius: var(--radius-sm); margin-bottom: var(--space-3); border-left: 3px solid var(--color-primary);">
+              <h4 style="margin: 0 0 var(--space-1); font-size: var(--font-size-base); color: var(--text-primary);">${sub.title}</h4>
+              <p style="margin: 0; font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.6;">${sub.content}</p>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      <!-- ASCII / Architecture Diagram -->
+      ${acad.diagram ? `
+        <div style="margin: var(--space-4) 0;">
+          <h4 style="margin-bottom: var(--space-2); color: var(--color-primary);">System Architecture & Conceptual Flow</h4>
+          <div class="diagram-box">${acad.diagram}</div>
         </div>
       ` : ''}
 
       <!-- Comparison Table -->
-      ${sem.comparison_table ? `
-        <div style="margin: var(--space-5) 0;">
+      ${acad.comparison_table ? `
+        <div style="margin: var(--space-4) 0;">
           <h4 style="margin-bottom: var(--space-2); color: var(--color-primary);">Key Comparative Analysis</h4>
           <div class="table-responsive">
             <table class="study-table">
               <thead>
-                <tr>${sem.comparison_table.headers.map(h => `<th>${h}</th>`).join('')}</tr>
+                <tr>${acad.comparison_table.headers.map(h => `<th>${h}</th>`).join('')}</tr>
               </thead>
               <tbody>
-                ${sem.comparison_table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+                ${acad.comparison_table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
               </tbody>
             </table>
           </div>
         </div>
       ` : ''}
 
-      <!-- Pedagogical Callouts -->
-      ${sem.memorize ? `
-        <div class="callout callout-memorize">
+      <!-- Callouts: Memorize / Understand / Mistakes -->
+      ${acad.memorize ? `
+        <div class="callout callout-memorize" style="margin-top: var(--space-3);">
           <div class="callout-header">🚨 WHAT TO MEMORIZE (DAY ${dayNum})</div>
-          <div>${sem.memorize}</div>
+          <div>${acad.memorize}</div>
         </div>
       ` : ''}
 
-      ${sem.understand ? `
-        <div class="callout callout-understand">
-          <div class="callout-header">💡 WHAT TO UNDERSTAND DEEPLY (DAY ${dayNum})</div>
-          <div>${sem.understand}</div>
+      ${acad.understand ? `
+        <div class="callout callout-understand" style="margin-top: var(--space-3);">
+          <div class="callout-header">💡 WHAT TO UNDERSTAND DEEPLY</div>
+          <div>${acad.understand}</div>
         </div>
       ` : ''}
 
-      ${sem.common_mistakes ? `
-        <div class="callout callout-mistake">
+      ${acad.common_mistakes ? `
+        <div class="callout callout-mistake" style="margin-top: var(--space-3);">
           <div class="callout-header">⚠️ COMMON EXAM MISTAKES TO AVOID</div>
-          <div>${sem.common_mistakes}</div>
+          <div>${acad.common_mistakes}</div>
+        </div>
+      ` : ''}
+
+      <!-- Academic Knowledge Check MCQs -->
+      ${(acad.mcqs && acad.mcqs.length) ? `
+        <h4 style="margin: var(--space-4) 0 var(--space-2); color: var(--color-primary);">Academic Concept Check (5 MCQs)</h4>
+        <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-3);">
+          ${acad.mcqs.map((mcq, idx) => {
+            const opts = normalizeOptions(mcq.options);
+            return `
+              <div class="quiz-card mcq-interactive-card" data-correct="${mcq.correct_answer}" data-id="${mcq.id || 'ACAD-' + idx}" style="padding: var(--space-3);">
+                <div style="font-weight: 600; font-size: var(--font-size-sm); margin-bottom: var(--space-2);">
+                  #${idx + 1}: ${mcq.question}
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-2); margin-bottom: var(--space-2);">
+                  ${opts.map(opt => `
+                    <button class="btn btn-secondary btn-sm mcq-opt-btn" data-letter="${opt.letter}" style="justify-content: flex-start; text-align: left; padding: 8px 12px;">
+                      <strong>${opt.letter})</strong>&nbsp;${opt.text}
+                    </button>
+                  `).join('')}
+                </div>
+                <div class="mcq-feedback-block" style="display: none; padding: var(--space-2); border-radius: var(--radius-sm); font-size: var(--font-size-xs);"></div>
+              </div>
+            `;
+          }).join('')}
         </div>
       ` : ''}
     </section>
@@ -166,279 +278,560 @@ function buildDayPage(container, d, daysIndex) {
     <!-- ================================================================= -->
     <section id="sec-pyq" class="card">
       <div class="card-header">
-        <h2 class="card-title">🏛️ 2. University PYQ Analysis & Model Answer</h2>
-        <span class="badge badge-danger">15-Mark Blueprint</span>
+        <h2 class="card-title">🏛️ 2. CSJM University PYQs & Model Answers</h2>
+        <span class="badge badge-danger">15-Mark University Standard</span>
       </div>
 
-      <div class="callout callout-exam-tip" style="margin-top: 0;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3); font-size: var(--font-size-xs);">
-          <div><strong>Exam Sessions:</strong> ${sem.pyq_year || 'CSJM University'}</div>
-          <div><strong>Recurrence:</strong> ${sem.pyq_freq || 'Verified Paper Theme'}</div>
+      ${pyqs.map((pyq, idx) => `
+        <div style="margin-bottom: var(--space-5); border-bottom: 1px solid var(--border-subtle); padding-bottom: var(--space-4);">
+          <div class="callout callout-exam-tip" style="margin-top: 0;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-2); font-size: var(--font-size-xs);">
+              <div><strong>Session / Year:</strong> ${pyq.year || 'CSJM University'}</div>
+              <div><strong>Paper Marks:</strong> ${pyq.marks || '15 Marks'}</div>
+              <div><strong>Question Type:</strong> ${pyq.type || 'Authentic University Question'}</div>
+            </div>
+            <div style="margin-top: var(--space-3); font-size: var(--font-size-base); font-weight: 700; color: var(--text-primary);">
+              Q${idx + 1}: ${pyq.question}
+            </div>
+            <div style="margin-top: var(--space-2); font-size: var(--font-size-xs); color: var(--text-muted);">
+              <strong>Examiner Marking Rubric:</strong> ${pyq.rubric || 'Definition (3m) + Diagram (4m) + Technical Depth (5m) + Summary (3m) = 15 Marks'}
+            </div>
+          </div>
+
+          <h4 style="margin: var(--space-3) 0 var(--space-2); color: var(--color-primary);">Full Model Answer (15/15 Presentation)</h4>
+          <div style="background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border-color); font-size: var(--font-size-sm); line-height: 1.7;">
+            ${formatParagraphs(pyq.model_answer)}
+          </div>
+
+          ${pyq.expected_examiner_points ? `
+            <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); margin-top: var(--space-3); font-size: var(--font-size-xs); color: var(--text-secondary);">
+              <strong>Key Points Evaluator Looks For:</strong> ${pyq.expected_examiner_points}
+            </div>
+          ` : ''}
         </div>
-        <div style="margin-top: var(--space-3); font-size: var(--font-size-base); font-weight: 700; color: var(--text-primary);">
-          Q: ${sem.pyq_question || 'Explain the core topic in detail with neat diagrams.'}
-        </div>
-        <div style="margin-top: var(--space-2); font-size: var(--font-size-xs); color: var(--text-muted);">
-          <strong>Marking Rubric:</strong> ${sem.pyq_rubric || 'Definition (3m) + Diagram (4m) + Technical Content (5m) + Comparison (3m) = 15 Marks'}
-        </div>
+      `).join('')}
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 3. PLACEMENT APTITUDE LESSON -->
+    <!-- ================================================================= -->
+    <section id="sec-apt-lesson" class="card">
+      <div class="card-header">
+        <h2 class="card-title">⚡ 3. Placement Aptitude Lesson</h2>
+        <span class="badge badge-warning">${aptLesson.category || 'Quantitative'}</span>
       </div>
 
-      <h3 style="margin: var(--space-4) 0 var(--space-3);">Model Answer (Full 15/15 Marks Presentation)</h3>
-      <div style="background: var(--bg-surface); padding: var(--space-5); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-        ${(sem.model_answer_paragraphs || []).map(([heading, body]) => `
-          <div style="margin-bottom: var(--space-4);">
-            <h4 style="color: var(--color-primary); margin-bottom: var(--space-2);">${heading}</h4>
-            <p style="font-size: var(--font-size-sm); line-height: 1.7;">${body.replace(/\n/g, '<br>')}</p>
+      <div style="font-weight: 700; font-size: var(--font-size-lg); color: var(--color-primary); margin-bottom: var(--space-2);">
+        ${aptLesson.topic || 'Quantitative Aptitude'}
+      </div>
+
+      ${(Array.isArray(aptLesson.tutorial) ? aptLesson.tutorial : [aptLesson.tutorial || '']).map(p => `<p style="font-size: var(--font-size-sm); line-height: 1.7;">${formatMultiline(p)}</p>`).join('')}
+
+      <div class="callout callout-memorize" style="margin-top: var(--space-3);">
+        <div class="callout-header">⚡ KEY FORMULAS & SPEED SHORTCUTS</div>
+        <div><strong>Essential Formulas:</strong><br>${formatMultiline(aptLesson.formulas)}</div>
+        ${aptLesson.shortcuts ? `<div style="margin-top: var(--space-2);"><strong>Speed Shortcut:</strong> ${aptLesson.shortcuts}</div>` : ''}
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 4. 5-TIER SOLVED APTITUDE PROBLEMS -->
+    <!-- ================================================================= -->
+    <section id="sec-apt-solved" class="card">
+      <div class="card-header">
+        <h2 class="card-title">🧮 4. Solved Aptitude Problems (${aptSolved.length} Worked Examples)</h2>
+        <span class="badge badge-success">4-Tier Progression</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+        ${aptSolved.map((ex, idx) => `
+          <div class="quiz-card" style="padding: var(--space-4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+              <span class="badge badge-primary">${ex.difficulty || 'Tier ' + (idx + 1)}: ${ex.source || 'Placement Exam Pattern'}</span>
+              <span style="font-size: var(--font-size-xs); color: var(--text-muted);">Target: ${ex.target_time_seconds || 45}s</span>
+            </div>
+            <div class="quiz-question" style="font-weight: 600; font-size: var(--font-size-sm); color: var(--text-primary); margin-bottom: var(--space-3);">
+              #${idx + 1}: ${ex.problem}
+            </div>
+            <button class="btn btn-secondary btn-sm toggle-ans-btn">Reveal Step-by-Step Solution</button>
+            <div class="quiz-answer-block" style="margin-top: var(--space-3); font-size: var(--font-size-sm); line-height: 1.6;">
+              <strong style="color: var(--color-success); display: block; margin-bottom: var(--space-1);">Final Answer: ${ex.final_answer}</strong>
+              <div>${formatMultiline(ex.step_by_step_solution)}</div>
+            </div>
           </div>
         `).join('')}
       </div>
     </section>
 
     <!-- ================================================================= -->
-    <!-- 3. PLACEMENT APTITUDE -->
+    <!-- 5. 10 INTERACTIVE APTITUDE MCQS -->
     <!-- ================================================================= -->
-    <section id="sec-apt" class="card">
+    <section id="sec-apt-mcq" class="card">
       <div class="card-header">
-        <h2 class="card-title">⚡ 3. Placement Aptitude Mastery</h2>
-        <span class="badge badge-warning">${apt.topic || 'Quantitative'}</span>
+        <h2 class="card-title">🎯 5. Interactive Aptitude MCQs (10 Questions)</h2>
+        <span class="badge badge-primary">Instant Evaluation</span>
       </div>
+      <p style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--space-4);">
+        Click your chosen option to check correctness immediately and view step-by-step mathematical reasoning.
+      </p>
 
-      ${(apt.tutorial || []).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')}
-
-      ${apt.formulas ? `
-        <div class="callout callout-memorize">
-          <div class="callout-header">⚡ KEY FORMULAS & SHORTCUT TRICKS</div>
-          <div><strong>Formulas:</strong> ${apt.formulas}</div>
-          <div style="margin-top: 4px;"><strong>Speed Shortcut:</strong> ${apt.shortcut || 'Unit digit elimination.'}</div>
-        </div>
-      ` : ''}
-
-      <h3 style="margin: var(--space-5) 0 var(--space-3);">4-Tier Progressively Challenging Solved Problems</h3>
-      
-      <!-- Tier 1 -->
-      ${apt.tier1_problem ? `
-        <div class="quiz-card">
-          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
-            <span class="badge badge-primary">Tier 1: Foundation</span>
-          </div>
-          <div class="quiz-question">${apt.tier1_problem.replace(/\n/g, '<br>')}</div>
-          <button class="btn btn-secondary btn-sm toggle-ans-btn">Reveal Solution</button>
-          <div class="quiz-answer-block">${apt.tier1_solution.replace(/\n/g, '<br>')}</div>
-        </div>
-      ` : ''}
-
-      <!-- Tier 2 -->
-      ${apt.tier2_problem ? `
-        <div class="quiz-card">
-          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
-            <span class="badge badge-primary">Tier 2: Standard Placement</span>
-          </div>
-          <div class="quiz-question">${apt.tier2_problem.replace(/\n/g, '<br>')}</div>
-          <button class="btn btn-secondary btn-sm toggle-ans-btn">Reveal Solution</button>
-          <div class="quiz-answer-block">${apt.tier2_solution.replace(/\n/g, '<br>')}</div>
-        </div>
-      ` : ''}
-
-      <!-- Tier 3 -->
-      ${apt.tier3_problem ? `
-        <div class="quiz-card">
-          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
-            <span class="badge badge-warning">Tier 3: TCS NQT / Infosys Pattern</span>
-          </div>
-          <div class="quiz-question">${apt.tier3_problem.replace(/\n/g, '<br>')}</div>
-          <button class="btn btn-secondary btn-sm toggle-ans-btn">Reveal Solution</button>
-          <div class="quiz-answer-block">${apt.tier3_solution.replace(/\n/g, '<br>')}</div>
-        </div>
-      ` : ''}
-
-      <!-- Tier 4 -->
-      ${apt.tier4_problem ? `
-        <div class="quiz-card">
-          <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2);">
-            <span class="badge badge-danger">Tier 4: Advanced Hard Traps</span>
-          </div>
-          <div class="quiz-question">${apt.tier4_problem.replace(/\n/g, '<br>')}</div>
-          <button class="btn btn-secondary btn-sm toggle-ans-btn">Reveal Solution</button>
-          <div class="quiz-answer-block">${apt.tier4_solution.replace(/\n/g, '<br>')}</div>
-        </div>
-      ` : ''}
-
-      <!-- 5 Speed Drills -->
-      ${(apt.speed_drills || []).length > 0 ? `
-        <h4 style="margin: var(--space-4) 0 var(--space-2); color: var(--color-warning);">5-Question Rapid Speed Drills (45s per problem)</h4>
-        ${apt.speed_drills.map((drill, idx) => `
-          <div class="quiz-card" style="padding: var(--space-3); margin-bottom: var(--space-2);">
-            <div style="font-weight: 600; font-size: var(--font-size-sm);">#${idx + 1}: ${drill.q}</div>
-            <button class="btn btn-secondary btn-sm toggle-ans-btn" style="margin-top: var(--space-2);">Check Answer</button>
-            <div class="quiz-answer-block" style="font-size: var(--font-size-sm);">${drill.a}</div>
-          </div>
-        `).join('')}
-      ` : ''}
+      <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+        ${aptMcqs.map((mcq, idx) => {
+          const opts = normalizeOptions(mcq.options);
+          return `
+            <div class="quiz-card mcq-interactive-card" data-correct="${mcq.correct_answer}" data-id="${mcq.id || 'APT-' + idx}" style="padding: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2); font-size: var(--font-size-xs); color: var(--text-muted);">
+                <span>QUESTION ${idx + 1} OF 10</span>
+                <span class="badge badge-secondary">${mcq.id || ''}</span>
+              </div>
+              <div style="font-weight: 700; font-size: var(--font-size-sm); color: var(--text-primary); margin-bottom: var(--space-3);">
+                ${mcq.question}
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-2); margin-bottom: var(--space-2);">
+                ${opts.map(opt => `
+                  <button class="btn btn-secondary btn-sm mcq-opt-btn" data-letter="${opt.letter}" style="justify-content: flex-start; text-align: left; padding: 8px 12px;">
+                    <strong>${opt.letter})</strong>&nbsp;${opt.text}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="mcq-feedback-block" style="display: none; padding: var(--space-3); border-radius: var(--radius-sm); margin-top: var(--space-2); font-size: var(--font-size-sm);"></div>
+            </div>
+          `;
+        }).join('')}
+      </div>
     </section>
 
     <!-- ================================================================= -->
-    <!-- 4. PYTHON CODING & DSA -->
+    <!-- 6. DSA PATTERN DEEP-DIVE -->
     <!-- ================================================================= -->
-    <section id="sec-code" class="card">
+    <section id="sec-dsa-pattern" class="card">
       <div class="card-header">
-        <h2 class="card-title">💻 4. Placement Coding & Data Structures (Python)</h2>
-        <span class="badge badge-success">${dsa.length} Problems Solved</span>
+        <h2 class="card-title">🧬 6. Algorithmic DSA Pattern Deep-Dive</h2>
+        <span class="badge badge-success">${dsaPattern.pattern_name || 'Pattern'}</span>
       </div>
 
-      ${dsa.map(p => `
-        <div style="margin-bottom: var(--space-6); border-bottom: 1px solid var(--border-subtle); padding-bottom: var(--space-5);">
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2);">
-            <h3>${p.title}</h3>
-            <span class="badge ${p.difficulty === 'Easy' ? 'badge-success' : 'badge-warning'}">${p.difficulty}</span>
+      <div style="margin-bottom: var(--space-4);">
+        <h3 style="margin: 0 0 var(--space-2);">${dsaPattern.pattern_name}</h3>
+        <p style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.6;">${dsaPattern.concept}</p>
+        <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-sm); border-left: 3px solid var(--color-primary); margin-top: var(--space-2);">
+          <strong>Why It Works:</strong> ${dsaPattern.why_it_works}
+        </div>
+      </div>
+
+      <!-- Visual Representation -->
+      ${dsaPattern.visual_explanation ? `
+        <div style="margin: var(--space-4) 0;">
+          <h4 style="margin-bottom: var(--space-2); color: var(--color-primary);">Visual Execution Trace</h4>
+          <div class="diagram-box">${dsaPattern.visual_explanation}</div>
+        </div>
+      ` : ''}
+
+      <!-- Code Container -->
+      <div class="code-container" style="margin: var(--space-4) 0;">
+        <div class="code-header">
+          <span>Java 17+ Pattern Implementation</span>
+          <button class="copy-code-btn" data-code="${encodeURIComponent(dsaPattern.java_code || dsaPattern.code || dsaPattern.python_code || '')}">Copy Code</button>
+        </div>
+        <pre class="code-pre"><code>${dsaPattern.java_code || dsaPattern.code || dsaPattern.python_code || ''}</code></pre>
+      </div>
+
+      <!-- Line-by-Line Walkthrough -->
+      ${dsaPattern.line_by_line_walkthrough && dsaPattern.line_by_line_walkthrough.length ? `
+        <div style="margin: var(--space-4) 0;">
+          <h4 style="margin-bottom: var(--space-2); color: var(--text-primary);">Line-by-Line Execution Logic</h4>
+          <ul style="margin: 0; padding-left: 20px; font-size: var(--font-size-sm); line-height: 1.6; color: var(--text-secondary);">
+            ${dsaPattern.line_by_line_walkthrough.map(line => `<li>${line}</li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+
+      <div style="display: flex; gap: var(--space-4); font-size: var(--font-size-xs); color: var(--text-secondary); margin-top: var(--space-3); flex-wrap: wrap;">
+        <div><strong>Complexity:</strong> ${dsaPattern.complexity || 'O(N) time, O(1) space'}</div>
+        ${dsaPattern.edge_cases ? `<div><strong>Edge Cases:</strong> ${dsaPattern.edge_cases}</div>` : ''}
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 7. PLACEMENT CODING PROBLEMS (2) -->
+    <!-- ================================================================= -->
+    <section id="sec-coding-probs" class="card">
+      <div class="card-header">
+        <h2 class="card-title">💻 7. Placement Coding Problems (2 Solved)</h2>
+        <span class="badge badge-primary">Java 17+ Implementation</span>
+      </div>
+
+      ${codingProbs.map((prob, idx) => `
+        <div style="margin-bottom: var(--space-6); border-bottom: 1px solid var(--border-subtle); padding-bottom: var(--space-4);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2);">
+            <h3 style="margin: 0;">${prob.title}</h3>
+            <span class="badge ${prob.difficulty === 'Easy' ? 'badge-success' : 'badge-warning'}">${prob.difficulty || 'Medium'}</span>
           </div>
-          <p style="font-size: var(--font-size-xs); color: var(--color-primary); font-weight: 600; margin-top: 2px;">${p.importance || ''}</p>
-          
+
           <div class="callout callout-understand" style="margin: var(--space-3) 0;">
-            <div class="callout-header">Problem Statement</div>
-            <div>${p.problem_statement}</div>
+            <div class="callout-header">Problem Statement & Constraints</div>
+            <div>${prob.problem_statement}</div>
+            ${prob.edge_cases ? `<div style="margin-top: var(--space-2); font-size: var(--font-size-xs); color: var(--text-muted);"><strong>Constraints:</strong> ${prob.edge_cases}</div>` : ''}
           </div>
 
-          <div style="font-size: var(--font-size-sm); margin-bottom: var(--space-3);">
-            <strong>Algorithmic Strategy:</strong> ${p.solution_approach ? p.solution_approach.replace(/\n/g, '<br>') : ''}
+          <div style="font-size: var(--font-size-sm); margin-bottom: var(--space-3); color: var(--text-secondary);">
+            <strong>Algorithmic Strategy:</strong> ${formatMultiline(prob.solution_approach)}
           </div>
 
-          <!-- Code Box -->
           <div class="code-container">
             <div class="code-header">
-              <span>Python 3.10 Implementation</span>
-              <button class="copy-code-btn" data-code="${encodeURIComponent(p.code || '')}">Copy Code</button>
+              <span>Java 17+ Solution</span>
+              <button class="copy-code-btn" data-code="${encodeURIComponent(prob.java_code || prob.code || prob.solution_python || '')}">Copy Code</button>
             </div>
-            <pre class="code-pre"><code>${p.code || ''}</code></pre>
+            <pre class="code-pre"><code>${prob.java_code || prob.code || prob.solution_python || ''}</code></pre>
           </div>
 
-          <div style="display: flex; gap: var(--space-4); font-size: var(--font-size-xs); color: var(--text-secondary); margin-top: var(--space-2); flex-wrap: wrap;">
-            <div><strong>Time Complexity:</strong> ${p.time_complexity || 'O(N)'}</div>
-            <div><strong>Space Complexity:</strong> ${p.space_complexity || 'O(1)'}</div>
-            ${p.edge_cases ? `<div><strong>Edge Cases:</strong> ${p.edge_cases}</div>` : ''}
+          <div style="display: flex; gap: var(--space-4); font-size: var(--font-size-xs); color: var(--text-secondary); margin-top: var(--space-2);">
+            <div><strong>Time Complexity:</strong> ${prob.time_complexity || 'O(N)'}</div>
+            <div><strong>Space Complexity:</strong> ${prob.space_complexity || 'O(1)'}</div>
           </div>
         </div>
       `).join('')}
     </section>
 
     <!-- ================================================================= -->
-    <!-- 5. CORE COMPUTER SCIENCE -->
+    <!-- 8. CORE COMPUTER SCIENCE -->
     <!-- ================================================================= -->
-    <section id="sec-cs" class="card">
+    <section id="sec-core-cs" class="card">
       <div class="card-header">
-        <h2 class="card-title">🖥️ 5. Core Computer Science Foundations</h2>
-        <span class="badge badge-primary">${cs.subject || 'CS Core'}</span>
+        <h2 class="card-title">🖥️ 8. Core Computer Science Foundations</h2>
+        <span class="badge badge-primary">${coreCs.subject || 'Core CS'}</span>
       </div>
 
-      <div style="font-size: var(--font-size-base); font-weight: 700; color: var(--color-primary); margin-bottom: var(--space-3);">
-        ${cs.topic || ''}
+      <div style="font-size: var(--font-size-lg); font-weight: 700; color: var(--color-primary); margin-bottom: var(--space-3);">
+        ${coreCs.topic || ''}
       </div>
 
-      ${(cs.detailed_notes || []).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('')}
+      <div style="font-size: var(--font-size-sm); line-height: 1.7; color: var(--text-secondary); margin-bottom: var(--space-4);">
+        ${formatParagraphs(coreCs.concept_lesson || (Array.isArray(coreCs.detailed_notes) ? coreCs.detailed_notes.join('\n\n') : coreCs.detailed_notes))}
+      </div>
 
-      ${(cs.interview_qa || []).map(qa => `
-        <div class="callout callout-understand" style="margin-top: var(--space-3);">
-          <div class="callout-header">🎯 TECHNICAL INTERVIEW QUESTION</div>
-          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: var(--space-2);">${qa.q}</div>
-          <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">${qa.a}</div>
+      <!-- Key Definitions -->
+      ${coreCs.key_definitions && coreCs.key_definitions.length ? `
+        <div style="margin-bottom: var(--space-4);">
+          <h4 style="margin-bottom: var(--space-2); color: var(--text-primary);">Must-Know Technical Definitions</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-2);">
+            ${coreCs.key_definitions.map(d => `
+              <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); border-left: 3px solid var(--color-primary);">
+                <strong style="color: var(--color-primary); font-size: var(--font-size-sm);">${d.term}</strong>
+                <p style="margin: 4px 0 0; font-size: var(--font-size-xs); color: var(--text-secondary);">${d.definition}</p>
+              </div>
+            `).join('')}
+          </div>
         </div>
-      `).join('')}
+      ` : ''}
+
+      <!-- 5 Interview Q&As -->
+      <h4 style="margin: var(--space-4) 0 var(--space-2); color: var(--color-primary);">Top 5 Core CS Technical Interview Questions</h4>
+      <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+        ${(coreCs.interview_questions || coreCs.interview_qa || []).map((qa, idx) => `
+          <div class="callout callout-understand" style="margin: 0;">
+            <div class="callout-header">Q${idx + 1}: ${qa.q}</div>
+            <div style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-top: var(--space-1);">${qa.a}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- 5 Core CS MCQs -->
+      ${coreCs.mcqs && coreCs.mcqs.length ? `
+        <h4 style="margin: var(--space-5) 0 var(--space-2); color: var(--color-primary);">Core CS Knowledge Check (5 MCQs)</h4>
+        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+          ${coreCs.mcqs.map((mcq, idx) => {
+            const opts = normalizeOptions(mcq.options);
+            return `
+              <div class="quiz-card mcq-interactive-card" data-correct="${mcq.correct_answer}" data-id="${mcq.id || 'CS-' + idx}" style="padding: var(--space-3);">
+                <div style="font-weight: 600; font-size: var(--font-size-sm); margin-bottom: var(--space-2);">
+                  #${idx + 1}: ${mcq.question}
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-2); margin-bottom: var(--space-2);">
+                  ${opts.map(opt => `
+                    <button class="btn btn-secondary btn-sm mcq-opt-btn" data-letter="${opt.letter}" style="justify-content: flex-start; text-align: left; padding: 8px 12px;">
+                      <strong>${opt.letter})</strong>&nbsp;${opt.text}
+                    </button>
+                  `).join('')}
+                </div>
+                <div class="mcq-feedback-block" style="display: none; padding: var(--space-2); border-radius: var(--radius-sm); font-size: var(--font-size-xs);"></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      ` : ''}
     </section>
 
     <!-- ================================================================= -->
-    <!-- 6. PROJECT DEFENSE -->
+    <!-- 9. REAL PROJECT ARCHITECTURE DEFENSE -->
     <!-- ================================================================= -->
-    <section id="sec-proj" class="card">
+    <section id="sec-proj-defense" class="card">
       <div class="card-header">
-        <h2 class="card-title">🛡️ 6. Project Architecture Defense</h2>
-        <span class="badge badge-success">${proj.project_name || 'Project'}</span>
+        <h2 class="card-title">🛡️ 9. Real Project Architecture Defense</h2>
+        <span class="badge badge-success">${proj.project_name || 'Project Defense'}</span>
       </div>
 
       <div style="font-weight: 700; color: var(--color-primary); margin-bottom: var(--space-2);">
-        Feature Focus: ${proj.feature_focus || 'Technical Architecture'}
+        Feature Focus: ${proj.topic || proj.feature_focus || 'System Architecture'}
+      </div>
+      <div style="font-size: var(--font-size-xs); color: var(--text-muted); font-family: var(--font-family-mono); margin-bottom: var(--space-3);">
+        Verified Workspace: <code>${proj.repo_path || 'D:\\Projects'}</code>
       </div>
 
       <div style="background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); font-size: var(--font-size-sm); line-height: 1.7; border: 1px solid var(--border-color); margin-bottom: var(--space-4);">
-        ${proj.architecture_deep_dive ? proj.architecture_deep_dive.replace(/\n/g, '<br>') : ''}
+        ${formatMultiline(proj.what_to_understand || proj.architecture_deep_dive || '')}
       </div>
 
-      ${(proj.interview_qa || []).map(qa => `
-        <div class="callout callout-memorize" style="margin-top: var(--space-3);">
-          <div class="callout-header">🎯 PROJECT INTERVIEW CHALLENGE</div>
-          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: var(--space-2);">${qa.q}</div>
-          <div style="font-size: var(--font-size-sm); color: var(--text-secondary);">${qa.a}</div>
+      ${proj.interview_pitch_exercise ? `
+        <div class="callout callout-exam-tip" style="margin-bottom: var(--space-4);">
+          <div class="callout-header">🎤 60-SECOND INTERVIEW ELEVATOR PITCH</div>
+          <div style="font-size: var(--font-size-sm); line-height: 1.6;">${proj.interview_pitch_exercise}</div>
         </div>
-      `).join('')}
+      ` : ''}
+
+      <!-- Project Interview Defense Q&As -->
+      <h4 style="margin: var(--space-3) 0 var(--space-2); color: var(--color-primary);">Technical Interview Defense Questions</h4>
+      <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+        ${(proj.interview_questions || proj.interview_qa || []).map(qa => `
+          <div class="callout callout-memorize" style="margin: 0;">
+            <div class="callout-header">🎯 ${qa.q}</div>
+            <div style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-top: var(--space-1);">${qa.a}</div>
+          </div>
+        `).join('')}
+      </div>
     </section>
 
     <!-- ================================================================= -->
-    <!-- 7. DAILY 8-QUESTION MASTERY TEST -->
+    <!-- 10. PLACEMENT & BEHAVIORAL INTERVIEW PREPARATION -->
     <!-- ================================================================= -->
-    <section id="sec-test" class="card" style="border-left: 4px solid var(--color-warning);">
+    <section id="sec-interview-prep" class="card">
       <div class="card-header">
-        <h2 class="card-title">📝 7. Day ${dayNum} Comprehensive 8-Question Test</h2>
-        <span class="badge badge-warning">Mastery Check</span>
+        <h2 class="card-title">👔 10. Placement Interview Preparation (5 Questions)</h2>
+        <span class="badge badge-primary">Technical + STAR + HR</span>
       </div>
-      <p style="font-size: var(--font-size-sm);">
-        Test your retention across all 4 streams before signing off for the day. Click each question to reveal and review the full solution.
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+        ${placementInterview.map((item, idx) => `
+          <div style="border-left: 3px solid var(--color-primary); padding-left: var(--space-3); background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-1);">
+              <span class="badge badge-secondary" style="font-size: 0.7rem;">${item.category}</span>
+              <span style="font-size: var(--font-size-xs); color: var(--text-muted);">Question ${idx + 1} of 5</span>
+            </div>
+            <strong style="font-size: var(--font-size-base); color: var(--text-primary); display: block; margin-bottom: var(--space-2);">
+              Q: ${item.question}
+            </strong>
+            <button class="btn btn-secondary btn-sm toggle-ans-btn" style="margin-bottom: var(--space-2);">Reveal Senior Model Answer</button>
+            <div class="quiz-answer-block" style="font-size: var(--font-size-sm); line-height: 1.7; color: var(--text-secondary);">
+              <div style="margin-bottom: var(--space-2);">${formatMultiline(item.model_answer)}</div>
+              ${item.key_talking_points && item.key_talking_points.length ? `
+                <div style="margin-top: var(--space-2); background: var(--bg-surface); padding: var(--space-2); border-radius: var(--radius-xs);">
+                  <strong style="color: var(--color-primary); font-size: var(--font-size-xs);">Key Talking Points:</strong>
+                  <ul style="margin: 4px 0 0; padding-left: 20px; font-size: var(--font-size-xs);">
+                    ${item.key_talking_points.map(pt => `<li>${pt}</li>`).join('')}
+                  </ul>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 11. DAILY ACTIVE REVISION & RAPID-FIRE FLASHCARDS -->
+    <!-- ================================================================= -->
+    <section id="sec-revision" class="card">
+      <div class="card-header">
+        <h2 class="card-title">🔄 11. Daily Active Recall & Rapid-Fire Drills</h2>
+        <span class="badge badge-warning">Nightly Consolidation</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-4);">
+        <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); border-left: 3px solid var(--color-warning);">
+          <strong style="color: var(--color-warning); font-size: var(--font-size-xs); text-transform: uppercase;">1. YESTERDAY RECALL:</strong>
+          <p style="margin: 4px 0 0; font-size: var(--font-size-sm); white-space: pre-line;">${revision.yesterday_recall || 'Review prior day principles.'}</p>
+        </div>
+        <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); border-left: 3px solid var(--color-primary);">
+          <strong style="color: var(--color-primary); font-size: var(--font-size-xs); text-transform: uppercase;">2. TODAY'S RECALL:</strong>
+          <p style="margin: 4px 0 0; font-size: var(--font-size-sm); white-space: pre-line;">${revision.today_recall || revision.today_summary || 'Master today\'s core syllabus.'}</p>
+        </div>
+        <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); border-left: 3px solid var(--color-purple);">
+          <strong style="color: var(--color-purple); font-size: var(--font-size-xs); text-transform: uppercase;">3. FORMULA RECALL:</strong>
+          <p style="margin: 4px 0 0; font-size: var(--font-size-sm); white-space: pre-line;">${revision.formula_recall || 'Speed calculation shortcuts and complexity bounds.'}</p>
+        </div>
+        <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); border-left: 3px solid var(--color-danger);">
+          <strong style="color: var(--color-danger); font-size: var(--font-size-xs); text-transform: uppercase;">4. PYQ RECALL:</strong>
+          <p style="margin: 4px 0 0; font-size: var(--font-size-sm); white-space: pre-line;">${revision.pyq_recall || '15-mark university presentation structure.'}</p>
+        </div>
+        <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); border-left: 3px solid var(--color-info);">
+          <strong style="color: var(--color-info); font-size: var(--font-size-xs); text-transform: uppercase;">5. DSA RECALL:</strong>
+          <p style="margin: 4px 0 0; font-size: var(--font-size-sm); white-space: pre-line;">${revision.dsa_recall || 'Algorithmic pattern invariants and pointers.'}</p>
+        </div>
+        <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); border-left: 3px solid var(--color-success);">
+          <strong style="color: var(--color-success); font-size: var(--font-size-xs); text-transform: uppercase;">6. PROJECT RECALL:</strong>
+          <p style="margin: 4px 0 0; font-size: var(--font-size-sm); white-space: pre-line;">${revision.project_recall || 'Production architecture defense & metrics.'}</p>
+        </div>
+      </div>
+
+      <h4 style="margin: var(--space-4) 0 var(--space-2); color: var(--color-primary);">10-Question Rapid-Fire Active Recall Flashcards</h4>
+      <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+        ${(revision.rapid_fire_questions || []).map((q, idx) => `
+          <div class="quiz-card" style="padding: var(--space-3);">
+            <div style="font-weight: 600; font-size: var(--font-size-sm);">#${idx + 1}: ${q.q}</div>
+            <button class="btn btn-secondary btn-sm toggle-ans-btn" style="margin-top: var(--space-1);">Reveal Answer</button>
+            <div class="quiz-answer-block" style="font-size: var(--font-size-sm); color: var(--color-success); font-weight: 600; margin-top: var(--space-2);">
+              ${q.a}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 12. MIXED DAILY MCQ TEST (20 MCQS) -->
+    <!-- ================================================================= -->
+    <section id="sec-mixed-test" class="card" style="border-left: 4px solid var(--color-warning);">
+      <div class="card-header">
+        <h2 class="card-title">📝 12. Mixed Daily Mastery Test (20 Questions)</h2>
+        <span class="badge badge-warning">All 4 Pillars</span>
+      </div>
+      <p style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--space-4);">
+        Balanced 20-question test: 5 Academic + 5 Placement Aptitude + 5 Core Computer Science + 5 Coding & Projects.
       </p>
 
-      ${(test.questions || []).map((q, idx) => `
-        <div class="quiz-card">
-          <div style="display: flex; justify-content: space-between; font-size: var(--font-size-xs); color: var(--text-muted); margin-bottom: var(--space-1);">
-            <span>QUESTION ${idx + 1} OF 8</span>
-          </div>
-          <div class="quiz-question">${q.q}</div>
-          <button class="btn btn-secondary btn-sm toggle-ans-btn">Reveal Full Answer</button>
-          <div class="quiz-answer-block">${q.a}</div>
-        </div>
-      `).join('')}
+      <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+        ${mixedTest.map((mcq, idx) => {
+          const opts = normalizeOptions(mcq.options);
+          return `
+            <div class="quiz-card mcq-interactive-card" data-correct="${mcq.correct_answer}" data-id="${mcq.id || 'TEST-' + idx}" style="padding: var(--space-4);">
+              <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-2); font-size: var(--font-size-xs); color: var(--text-muted);">
+                <span class="badge badge-secondary">${mcq.category || 'Mixed Test'}</span>
+                <span>QUESTION ${idx + 1} OF 20</span>
+              </div>
+              <div style="font-weight: 700; font-size: var(--font-size-sm); color: var(--text-primary); margin-bottom: var(--space-3);">
+                ${mcq.question}
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-2); margin-bottom: var(--space-2);">
+                ${opts.map(opt => `
+                  <button class="btn btn-secondary btn-sm mcq-opt-btn" data-letter="${opt.letter}" style="justify-content: flex-start; text-align: left; padding: 8px 12px;">
+                    <strong>${opt.letter})</strong>&nbsp;${opt.text}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="mcq-feedback-block" style="display: none; padding: var(--space-3); border-radius: var(--radius-sm); margin-top: var(--space-2); font-size: var(--font-size-sm);"></div>
+            </div>
+          `;
+        }).join('')}
+      </div>
     </section>
 
     <!-- ================================================================= -->
-    <!-- 8. DAY COMPLETION CHECKLIST & SIGN-OFF -->
+    <!-- 13. DAILY TIMED PRACTICAL CODING CHALLENGE -->
     <!-- ================================================================= -->
-    <section id="sec-check" class="card" style="border-top: 4px solid var(--color-success); background: var(--bg-surface);">
+    <section id="sec-coding-task" class="card">
       <div class="card-header">
-        <h2 class="card-title">✅ 8. Day ${dayNum} Execution Sign-Off</h2>
+        <h2 class="card-title">⏱️ 13. Timed Practical Coding Challenge</h2>
+        <span class="badge badge-danger">${codingTask.time_limit_minutes || 30} Minutes Limit</span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3);">
+        <div>
+          <h3 style="margin: 0 0 4px;">${codingTask.title || 'Daily Practical Task'}</h3>
+          <span class="badge ${codingTask.difficulty === 'Easy' ? 'badge-success' : 'badge-warning'}">${codingTask.difficulty || 'Medium'}</span>
+        </div>
+      </div>
+
+      <div class="callout callout-understand" style="margin-bottom: var(--space-4);">
+        <div class="callout-header">Task Description & Requirements</div>
+        <p style="margin: 0; font-size: var(--font-size-sm); line-height: 1.6;">${formatMultiline(codingTask.problem_statement)}</p>
+      </div>
+
+      <!-- Starter Code -->
+      <h4 style="margin: var(--space-3) 0 var(--space-2); color: var(--color-primary);">Starter Code Stub</h4>
+      <div class="code-container" style="margin-bottom: var(--space-4);">
+        <div class="code-header">
+          <span>Java 17+ Starter Stub</span>
+          <button class="copy-code-btn" data-code="${encodeURIComponent(codingTask.java_starter_code || codingTask.starter_code || '')}">Copy Starter Code</button>
+        </div>
+        <pre class="code-pre"><code>${codingTask.java_starter_code || codingTask.starter_code || ''}</code></pre>
+      </div>
+
+      <!-- Sample Test Cases -->
+      <h4 style="margin: var(--space-3) 0 var(--space-2); color: var(--color-primary);">Sample Test Cases</h4>
+      <div style="display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4);">
+        ${(codingTask.test_cases || []).map((tc, idx) => `
+          <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-xs);">
+            <div><strong>Test ${idx + 1} Input:</strong> <code>${tc.input}</code></div>
+            <div><strong>Expected Output:</strong> <code>${tc.expected_output}</code></div>
+            ${tc.explanation ? `<div style="color: var(--text-muted); margin-top: 2px;">${tc.explanation}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Solution Toggle -->
+      <button class="btn btn-secondary btn-sm toggle-ans-btn" style="margin-bottom: var(--space-2);">Reveal Full Production Solution</button>
+      <div class="quiz-answer-block">
+        <div class="code-container">
+          <div class="code-header">
+            <span>Official Java 17+ Solution</span>
+            <button class="copy-code-btn" data-code="${encodeURIComponent(codingTask.java_solution_code || codingTask.solution_code || '')}">Copy Solution</button>
+          </div>
+          <pre class="code-pre"><code>${codingTask.java_solution_code || codingTask.solution_code || ''}</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- 14. 100-POINT SCORE MODEL & SIGN-OFF CHECKLIST -->
+    <!-- ================================================================= -->
+    <section id="sec-sign-off" class="card" style="border-top: 4px solid var(--color-success); background: var(--bg-surface);">
+      <div class="card-header">
+        <h2 class="card-title">🏆 14. Daily 100-Point Model & Completion Sign-Off</h2>
         <span class="badge ${isDone ? 'badge-success' : 'badge-warning'}">${isDone ? 'COMPLETED' : 'IN PROGRESS'}</span>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-4);">
-        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
-          <input type="checkbox" id="page-chk-sem" ${checklist.sem ? 'checked' : ''}> Semester Lecture Studied
-        </label>
-        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
-          <input type="checkbox" id="page-chk-pyq" ${checklist.pyq ? 'checked' : ''}> 15-Mark PYQ Solved
-        </label>
-        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
-          <input type="checkbox" id="page-chk-apt" ${checklist.apt ? 'checked' : ''}> Aptitude Drills Solved
-        </label>
-        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
-          <input type="checkbox" id="page-chk-code" ${checklist.code ? 'checked' : ''}> Python DSA Implemented
-        </label>
-        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
-          <input type="checkbox" id="page-chk-cs" ${checklist.cs ? 'checked' : ''}> Core CS Concept Grasped
-        </label>
-        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
-          <input type="checkbox" id="page-chk-proj" ${checklist.proj ? 'checked' : ''}> Project Defense Reviewed
-        </label>
-        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
-          <input type="checkbox" id="page-chk-test" ${checklist.test ? 'checked' : ''}> Daily Test Attempted
-        </label>
-        <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
-          <input type="checkbox" id="page-chk-rev" ${checklist.rev ? 'checked' : ''}> Flashcards Revised
-        </label>
+      <div style="margin-bottom: var(--space-4);">
+        <h4 style="margin: 0 0 var(--space-2); color: var(--text-primary);">Daily Completion Checklist (Tick when fully studied):</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-3);">
+          <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
+            <input type="checkbox" id="page-chk-sem" class="score-contributor-chk" data-points="15" ${checklist.sem ? 'checked' : ''}> 1. Academic Theory & PYQs (15 pts)
+          </label>
+          <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
+            <input type="checkbox" id="page-chk-apt" class="score-contributor-chk" data-points="15" ${checklist.apt ? 'checked' : ''}> 2. Aptitude Solved & MCQs (15 pts)
+          </label>
+          <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
+            <input type="checkbox" id="page-chk-code" class="score-contributor-chk" data-points="20" ${checklist.code ? 'checked' : ''}> 3. DSA Pattern & Coding (20 pts)
+          </label>
+          <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
+            <input type="checkbox" id="page-chk-cs" class="score-contributor-chk" data-points="15" ${checklist.cs ? 'checked' : ''}> 4. Core CS Foundations (15 pts)
+          </label>
+          <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
+            <input type="checkbox" id="page-chk-proj" class="score-contributor-chk" data-points="10" ${checklist.proj ? 'checked' : ''}> 5. Project Architecture (10 pts)
+          </label>
+          <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
+            <input type="checkbox" id="page-chk-interview" class="score-contributor-chk" data-points="10" ${checklist.interview ? 'checked' : ''}> 6. Placement & STAR (10 pts)
+          </label>
+          <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
+            <input type="checkbox" id="page-chk-test" class="score-contributor-chk" data-points="10" ${checklist.test ? 'checked' : ''}> 7. Mixed Daily Test (10 pts)
+          </label>
+          <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--font-size-sm);">
+            <input type="checkbox" id="page-chk-task" class="score-contributor-chk" data-points="5" ${checklist.task ? 'checked' : ''}> 8. Practical Coding Task (5 pts)
+          </label>
+        </div>
       </div>
 
-      <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
-        <button id="final-day-complete-btn" class="btn ${isDone ? 'btn-success' : 'btn-primary'}" style="min-width: 200px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3); border-top: 1px solid var(--border-color); padding-top: var(--space-4);">
+        <div>
+          <span style="font-size: var(--font-size-sm); color: var(--text-secondary);">Score Required to Pass: <strong>80 / 100</strong></span>
+        </div>
+        <button id="final-day-complete-btn" class="btn ${isDone ? 'btn-success' : 'btn-primary'}" style="min-width: 240px;">
           <span>${isDone ? '✓ DAY MASTERED & COMPLETED' : 'COMPLETE DAY ' + dayNum}</span>
         </button>
       </div>
     </section>
   `;
 
-  // Attach interactivity
+  // Attach full interactivity
   attachDayInteractivity(d);
 }
 
@@ -467,6 +860,49 @@ function attachDayInteractivity(d) {
     });
   });
 
+  // Interactive MCQ selection with instant evaluation
+  document.querySelectorAll('.mcq-interactive-card').forEach(card => {
+    const correctLetter = card.dataset.correct;
+    const optButtons = card.querySelectorAll('.mcq-opt-btn');
+    const feedback = card.querySelector('.mcq-feedback-block');
+
+    optButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selectedLetter = btn.dataset.letter;
+
+        // Disable all buttons in this question
+        optButtons.forEach(b => {
+          b.disabled = true;
+          b.style.pointerEvents = 'none';
+          if (b.dataset.letter === correctLetter) {
+            b.style.backgroundColor = 'var(--color-success)';
+            b.style.color = '#fff';
+            b.style.borderColor = 'var(--color-success)';
+          }
+        });
+
+        if (feedback) {
+          feedback.style.display = 'block';
+          if (selectedLetter === correctLetter) {
+            btn.style.backgroundColor = 'var(--color-success)';
+            btn.style.color = '#fff';
+            feedback.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+            feedback.style.color = 'var(--color-success)';
+            feedback.innerHTML = `<strong>✓ Correct!</strong> Answer is option ${correctLetter}.`;
+          } else {
+            btn.style.backgroundColor = 'var(--color-danger)';
+            btn.style.color = '#fff';
+            feedback.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+            feedback.style.color = 'var(--color-danger)';
+            feedback.innerHTML = `<strong>✗ Incorrect.</strong> Selected ${selectedLetter}, correct answer is <strong>${correctLetter}</strong>.`;
+          }
+        }
+
+        recalculateLiveScore();
+      });
+    });
+  });
+
   // Print button
   document.getElementById('print-day-btn')?.addEventListener('click', () => {
     window.print();
@@ -477,24 +913,48 @@ function attachDayInteractivity(d) {
     document.body.classList.toggle('focus-mode');
   });
 
-  // Checkbox bindings
+  // Score Calculator
+  function recalculateLiveScore() {
+    let score = 0;
+    document.querySelectorAll('.score-contributor-chk').forEach(chk => {
+      if (chk.checked) {
+        score += parseInt(chk.dataset.points, 10) || 0;
+      }
+    });
+
+    const scoreDisplay = document.getElementById('live-day-score');
+    if (scoreDisplay) {
+      scoreDisplay.textContent = score;
+      if (score >= 80) {
+        scoreDisplay.style.color = 'var(--color-success)';
+      } else {
+        scoreDisplay.style.color = 'var(--color-primary)';
+      }
+    }
+  }
+
+  // Checkbox bindings & persistence
   const syncChecklist = () => {
     const updated = {
       sem: document.getElementById('page-chk-sem')?.checked || false,
-      pyq: document.getElementById('page-chk-pyq')?.checked || false,
       apt: document.getElementById('page-chk-apt')?.checked || false,
       code: document.getElementById('page-chk-code')?.checked || false,
       cs: document.getElementById('page-chk-cs')?.checked || false,
       proj: document.getElementById('page-chk-proj')?.checked || false,
+      interview: document.getElementById('page-chk-interview')?.checked || false,
       test: document.getElementById('page-chk-test')?.checked || false,
-      rev: document.getElementById('page-chk-rev')?.checked || false
+      task: document.getElementById('page-chk-task')?.checked || false
     };
     Storage.saveDayChecklist(dayNum, updated);
+    recalculateLiveScore();
   };
 
-  ['page-chk-sem', 'page-chk-pyq', 'page-chk-apt', 'page-chk-code', 'page-chk-cs', 'page-chk-proj', 'page-chk-test', 'page-chk-rev'].forEach(id => {
-    document.getElementById(id)?.addEventListener('change', syncChecklist);
+  document.querySelectorAll('.score-contributor-chk').forEach(chk => {
+    chk.addEventListener('change', syncChecklist);
   });
+
+  // Initial score calculation
+  recalculateLiveScore();
 
   // Complete Day Buttons
   const toggleComplete = () => {

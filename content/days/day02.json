@@ -1,159 +1,2393 @@
 {
   "day": 2,
-  "title": "Decision Support Systems, Two Pointers & Percentages Shortcuts",
-  "sem_data": {
-    "subject": "BCA-5001 Knowledge Management",
-    "topic": "Unit I \u2014 Decision Support Systems (DSS) Subsystems & MIS vs DSS",
-    "detailed_notes": [
-      "A Decision Support System (DSS) is an interactive, flexible, and adaptable computer-based information system specially developed for supporting the solution of non-structured management problems for improved decision making. It uses data, provides an easy-to-use interface, and allows for the decision maker's own insights.",
-      "Classical Management Information Systems (MIS) focus on structured, routine operational data (e.g., generating weekly sales registers, inventory balance sheets, or payroll summaries). In contrast, a DSS addresses semi-structured and unstructured problems where human judgment and mathematical forecasting must collaborate.",
-      "Architecture of a DSS comprises 3 primary interconnected subsystems:\n1. Data Management Subsystem: Contains the DSS database, which holds internal transaction logs, external market intelligence, and private historical records, managed by an enterprise DBMS.\n2. Model Management Subsystem: Contains quantitative models (financial forecasting, linear optimization, sensitivity models) managed by a Model Base Management System (MBMS).\n3. User Interface (Dialogue) Subsystem: Provides an intuitive graphical environment allowing decision makers to interact with models and data without technical programming expertise.",
-      "Group Decision Support Systems (GDSS): A specialized interactive environment designed to facilitate collaborative decision-making among groups. Key characteristics include anonymous brainstorming, parallel idea input, and electronic consensus ranking, which eliminate corporate groupthink and hierarchy intimidation."
+  "title": "Day 02: Decision Support Systems (DSS) Subsystems & Architecture (MIS vs DSS) & Sliding Window (Fixed Size)",
+  "streams": {
+    "academic": {
+      "unit": 1,
+      "topic": "Unit I — Decision Support Systems (DSS) Subsystems & Architecture (MIS vs DSS)",
+      "objectives": [
+        "Analyze the 3 core subsystems of DSS: DBMS, MBMS, and Dialogue/UI.",
+        "Contrast MIS and DSS across decision types, data sources, and analytical depth."
+      ],
+      "explanation": "A Decision Support System (DSS) is an interactive, computer-based information system that utilizes decision models and specialized databases to assist management decision makers in addressing semi-structured and unstructured problems. Unlike traditional transaction systems, a DSS emphasizes flexibility, user-friendliness, and mathematical simulation capabilities.",
+      "definitions": [
+        {
+          "term": "Model Base Management System (MBMS)",
+          "definition": "A software subsystem of a DSS that manages, stores, and executes quantitative, financial, and optimization mathematical models."
+        },
+        {
+          "term": "Management Information System (MIS)",
+          "definition": "A structured reporting system providing pre-defined summary reports on routine historical transactions to operational managers."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "DSS Core Subsystems",
+          "content": "1. Data Management Subsystem (Internal & External DBs, ETL, Query Engine); 2. Model Management Subsystem (Strategic, tactical, operational models, MBMS); 3. User Interface / Dialogue Subsystem (Interactive visual dashboards, natural language queries)."
+        },
+        {
+          "title": "MIS vs DSS Comparison",
+          "content": "MIS focuses on structured historical internal data with fixed scheduled reports. DSS focuses on semi-structured future-oriented what-if simulations combining internal and external data."
+        }
+      ],
+      "examples": [
+        "An executive running Monte Carlo risk simulation on capital expenditure in a DSS."
+      ],
+      "diagram": "+---------------------------------------------------+\n|             3-TIER DSS ARCHITECTURE               |\n| [Data Subsystem] <-> [Model Subsystem] <-> [UI]   |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Dimension",
+          "MIS (Management Information System)",
+          "DSS (Decision Support System)"
+        ],
+        "rows": [
+          [
+            "Primary Focus",
+            "Internal structured transaction reporting",
+            "Semi-structured and unstructured decision analysis"
+          ],
+          [
+            "Decision Type",
+            "Structured, repetitive, operational",
+            "Semi-structured, tactical, and strategic"
+          ],
+          [
+            "Time Horizon",
+            "Historical past and present transactions",
+            "Future forecasting, projections, and simulations"
+          ],
+          [
+            "Analytical Capability",
+            "Standard aggregation, sorting, summary",
+            "Advanced what-if, goal-seeking, Monte Carlo models"
+          ]
+        ]
+      },
+      "memorize": "DSS 3 Subsystems: Data Management (DBMS), Model Management (MBMS), User Interface (Dialogue). MIS is past-oriented; DSS is future what-if oriented.",
+      "understand": "The MBMS is the intellectual brain of a DSS, allowing dynamic swapping of mathematical and statistical models.",
+      "common_mistakes": "Confusing MIS and DSS or describing DSS as just a SQL database.",
+      "exam_writing_guidance": "Draw the 3-subsystem diagram, explain DBMS and MBMS functions, and provide a 4-column comparison table.",
+      "mini_practice": [
+        "List 4 types of mathematical models stored in an MBMS."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2024-25 (Q2)",
+          "marks": 15,
+          "question": "Define DSS. Explain its major components with an architectural diagram and differentiate between DSS and MIS. (15 Marks)",
+          "rubric": "Definition (2 marks) + Architectural Diagram (4 marks) + Detailed 3 Components (5 marks) + DSS vs MIS Comparison Table (4 marks) = 15 Marks.",
+          "model_answer": "A Decision Support System (DSS) is an interactive, computer-based information system that combines mathematical models and database management to support semi-structured decisions. Its 3 core subsystems are: 1. Data Management Subsystem (extracting and managing internal enterprise data and external market feeds); 2. Model Base Management System (MBMS, storing linear programming, financial, and statistical simulation models); 3. Dialogue Generation and Management Subsystem (providing visual graphs, menus, and what-if query inputs). While MIS provides routine historical reports for structured operational tasks, DSS delivers interactive predictive models for strategic decisions.",
+          "answer_structure": "Definition -> Diagram -> 3 Components -> Comparison Table -> Summary",
+          "important_points": [
+            "MBMS",
+            "Dialogue Subsystem",
+            "Semi-structured decisions",
+            "What-if simulation"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Clear distinction between MIS and DSS",
+            "Component architecture diagram"
+          ],
+          "common_mistakes": [
+            "Omitting MBMS explanation"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "What is a Model Base Management System (MBMS) in DSS? Explain its functions. (5 Marks)",
+          "rubric": "Definition (2 marks) + 3 Core Functions (3 marks) = 5 Marks.",
+          "model_answer": "A Model Base Management System (MBMS) is a software subsystem that stores, updates, catalogues, and executes mathematical models within a DSS. Its key functions include model creation and editing, model execution with input parameter mapping, model integration (linking output of a demand model into a production scheduling model), and model dictionary maintenance."
+        }
+      ],
+      "subject_code": "BCA-5001",
+      "subject_name": "Knowledge Management",
+      "mcqs": [
+        {
+          "id": "ACAD-02-01",
+          "question": "Which of the following is NOT one of the three primary architectural subsystems of a classical Decision Support System (DSS)?",
+          "options": [
+            "Database Management Subsystem (DBMS)",
+            "Model Base Management Subsystem (MBMS)",
+            "User Interface / Dialog Subsystem",
+            "Packet Switching Subsystem"
+          ],
+          "correct_answer": "D",
+          "explanation": "A DSS architecture consists of three fundamental components: Data Management (DBMS), Model Management (MBMS), and Dialog/User Interface."
+        },
+        {
+          "id": "ACAD-02-02",
+          "question": "How does a Management Information System (MIS) fundamentally differ from a Decision Support System (DSS)?",
+          "options": [
+            "MIS focuses on ad-hoc interactive simulation, while DSS provides static scheduled reports",
+            "MIS produces structured periodic summaries of past operational data, while DSS provides interactive 'what-if' modeling for semi-structured decisions",
+            "MIS is only used by top executives, while DSS is used by data entry clerks",
+            "MIS does not require a database, whereas DSS requires a data warehouse"
+          ],
+          "correct_answer": "B",
+          "explanation": "MIS supports structured, routine operations with fixed scheduled reports; DSS is designed for ad-hoc, flexible, what-if exploratory modeling of semi-structured problems."
+        },
+        {
+          "id": "ACAD-02-03",
+          "question": "What is the primary function of the Model Base Management Subsystem (MBMS) in a DSS?",
+          "options": [
+            "Storing raw SQL transaction tables",
+            "Managing, updating, and executing mathematical, financial, and simulation models",
+            "Rendering HTML CSS graphics on the client",
+            "Encrypting database disk partitions"
+          ],
+          "correct_answer": "B",
+          "explanation": "MBMS manages the catalog of quantitative models (statistical, financial, optimization, forecasting) and couples them with data to generate scenarios."
+        },
+        {
+          "id": "ACAD-02-04",
+          "question": "In DSS sensitivity analysis, what does a 'Goal Seeking' query determine?",
+          "options": [
+            "The output metric given fixed input parameters",
+            "The required value of an input variable needed to achieve a specified target output",
+            "The maximum bandwidth of the network connection",
+            "The number of concurrent database sessions"
+          ],
+          "correct_answer": "B",
+          "explanation": "Goal seeking (backward sensitivity analysis) calculates the input variable adjustments required to reach a specific desired target result."
+        },
+        {
+          "id": "ACAD-02-05",
+          "question": "Executive Information Systems (EIS) are distinguished from general DSS by their strong emphasis on:",
+          "options": [
+            "Low-level assembly language programming",
+            "High-level graphical KPI dashboards, drill-down capabilities, and internal/external critical success factors",
+            "Batch card punch processing",
+            "Hardware register allocation"
+          ],
+          "correct_answer": "B",
+          "explanation": "EIS is tailored for senior leadership, emphasizing intuitive visual interfaces, drill-down summaries, and status tracking of Critical Success Factors (CSFs)."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2024-25 (Q2)",
+        "marks": 15,
+        "question": "Define DSS. Explain its major components with an architectural diagram and differentiate between DSS and MIS. (15 Marks)",
+        "rubric": "Definition (2 marks) + Architectural Diagram (4 marks) + Detailed 3 Components (5 marks) + DSS vs MIS Comparison Table (4 marks) = 15 Marks.",
+        "model_answer": "A Decision Support System (DSS) is an interactive, computer-based information system that combines mathematical models and database management to support semi-structured decisions. Its 3 core subsystems are: 1. Data Management Subsystem (extracting and managing internal enterprise data and external market feeds); 2. Model Base Management System (MBMS, storing linear programming, financial, and statistical simulation models); 3. Dialogue Generation and Management Subsystem (providing visual graphs, menus, and what-if query inputs). While MIS provides routine historical reports for structured operational tasks, DSS delivers interactive predictive models for strategic decisions.",
+        "answer_structure": "Definition -> Diagram -> 3 Components -> Comparison Table -> Summary",
+        "important_points": [
+          "MBMS",
+          "Dialogue Subsystem",
+          "Semi-structured decisions",
+          "What-if simulation"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Clear distinction between MIS and DSS",
+          "Component architecture diagram"
+        ],
+        "common_mistakes": [
+          "Omitting MBMS explanation"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "What is a Model Base Management System (MBMS) in DSS? Explain its functions. (5 Marks)",
+        "rubric": "Definition (2 marks) + 3 Core Functions (3 marks) = 5 Marks.",
+        "model_answer": "A Model Base Management System (MBMS) is a software subsystem that stores, updates, catalogues, and executes mathematical models within a DSS. Its key functions include model creation and editing, model execution with input parameter mapping, model integration (linking output of a demand model into a production scheduling model), and model dictionary maintenance."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    DSS THREE-SUBSYSTEM ARCHITECTURE                     |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|   +-----------------------------------------------------------------+   |\n|   |             USER INTERFACE / DIALOGUE SUBSYSTEM                 |   |\n|   |     (Natural Language Query, Visualization Dashboards, UI)      |   |\n|   +-----------------------------------------------------------------+   |\n|                  ^                                   ^                  |\n|                  |                                   |                  |\n|                  v                                   v                  |\n|   +-----------------------------+     +-----------------------------+   |\n|   |   MODEL MANAGEMENT (MBMS)   | <-> |    DATA MANAGEMENT (DBMS)   |   |\n|   | - Financial Models          |     | - Relational Data           |   |\n|   | - Statistical Optimization  |     | - Data Warehouse Extract    |   |\n|   | - What-If & Goal Seeking    |     | - External Market Feeds     |   |\n|   +-----------------------------+     +-----------------------------+   |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-02-01",
+        "question": "Which of the following is NOT one of the three primary architectural subsystems of a classical Decision Support System (DSS)?",
+        "options": [
+          "Database Management Subsystem (DBMS)",
+          "Model Base Management Subsystem (MBMS)",
+          "User Interface / Dialog Subsystem",
+          "Packet Switching Subsystem"
+        ],
+        "correct_answer": "D",
+        "explanation": "A DSS architecture consists of three fundamental components: Data Management (DBMS), Model Management (MBMS), and Dialog/User Interface."
+      },
+      {
+        "id": "ACAD-02-02",
+        "question": "How does a Management Information System (MIS) fundamentally differ from a Decision Support System (DSS)?",
+        "options": [
+          "MIS focuses on ad-hoc interactive simulation, while DSS provides static scheduled reports",
+          "MIS produces structured periodic summaries of past operational data, while DSS provides interactive 'what-if' modeling for semi-structured decisions",
+          "MIS is only used by top executives, while DSS is used by data entry clerks",
+          "MIS does not require a database, whereas DSS requires a data warehouse"
+        ],
+        "correct_answer": "B",
+        "explanation": "MIS supports structured, routine operations with fixed scheduled reports; DSS is designed for ad-hoc, flexible, what-if exploratory modeling of semi-structured problems."
+      },
+      {
+        "id": "ACAD-02-03",
+        "question": "What is the primary function of the Model Base Management Subsystem (MBMS) in a DSS?",
+        "options": [
+          "Storing raw SQL transaction tables",
+          "Managing, updating, and executing mathematical, financial, and simulation models",
+          "Rendering HTML CSS graphics on the client",
+          "Encrypting database disk partitions"
+        ],
+        "correct_answer": "B",
+        "explanation": "MBMS manages the catalog of quantitative models (statistical, financial, optimization, forecasting) and couples them with data to generate scenarios."
+      },
+      {
+        "id": "ACAD-02-04",
+        "question": "In DSS sensitivity analysis, what does a 'Goal Seeking' query determine?",
+        "options": [
+          "The output metric given fixed input parameters",
+          "The required value of an input variable needed to achieve a specified target output",
+          "The maximum bandwidth of the network connection",
+          "The number of concurrent database sessions"
+        ],
+        "correct_answer": "B",
+        "explanation": "Goal seeking (backward sensitivity analysis) calculates the input variable adjustments required to reach a specific desired target result."
+      },
+      {
+        "id": "ACAD-02-05",
+        "question": "Executive Information Systems (EIS) are distinguished from general DSS by their strong emphasis on:",
+        "options": [
+          "Low-level assembly language programming",
+          "High-level graphical KPI dashboards, drill-down capabilities, and internal/external critical success factors",
+          "Batch card punch processing",
+          "Hardware register allocation"
+        ],
+        "correct_answer": "B",
+        "explanation": "EIS is tailored for senior leadership, emphasizing intuitive visual interfaces, drill-down summaries, and status tracking of Critical Success Factors (CSFs)."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Profit, Loss & Successive Discounts",
+      "category": "Quantitative",
+      "subtopic": "Profit & Loss",
+      "formulas": "1. Profit % = [(SP - CP) / CP] * 100\n2. Loss % = [(CP - SP) / CP] * 100\n3. Single Equivalent Discount for d1% and d2% = d1 + d2 - (d1 * d2 / 100)%.\n4. When two items sold at equal SP, one at x% profit and other at x% loss, overall loss is always (x^2 / 100)%.",
+      "shortcuts": "Multiplying Factor: 20% profit means SP = CP * 1.20. 15% loss means SP = CP * 0.85. CP = SP / Multiplying Factor.",
+      "tutorial": [
+        "Profit and loss are always computed with respect to Cost Price (CP) unless specifically referenced to Selling Price. In multi-step transactions, convert markups and discounts into successive factors: Final SP = CP * (1 + markup/100) * (1 - discount/100)."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Profit & Loss",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Profit & Loss",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Profit & Loss",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Profit & Loss",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Profit & Loss",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A shopkeeper sells an article for Rs. 840 making a profit of 20%. What was the cost price of the article?",
+        "options": {
+          "A": "Rs. 700",
+          "B": "Rs. 720",
+          "C": "Rs. 680",
+          "D": "Rs. 750"
+        },
+        "correct_answer": "A",
+        "explanation": "SP = CP * (1 + Profit%). 840 = CP * 1.20 => CP = 840 / 1.20 = Rs. 700."
+      },
+      {
+        "mcq_no": 2,
+        "question": "A person sells two wristwatches for Rs. 1,980 each. On one he gains 10% and on the other he loses 10%. What is his overall gain or loss percentage?",
+        "options": {
+          "A": "No profit, no loss",
+          "B": "1% loss",
+          "C": "1% gain",
+          "D": "2% loss"
+        },
+        "correct_answer": "B",
+        "explanation": "When two items are sold at the same SP, one at x% gain and other at x% loss, there is ALWAYS an overall loss of (x^2 / 100)% = (10^2 / 100)% = 1% loss."
+      },
+      {
+        "mcq_no": 3,
+        "question": "What single discount is equivalent to two successive discounts of 20% and 10%?",
+        "options": {
+          "A": "30%",
+          "B": "28%",
+          "C": "25%",
+          "D": "26%"
+        },
+        "correct_answer": "B",
+        "explanation": "Equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 20 + 10 - (200 / 100)% = 30 - 2 = 28%."
+      },
+      {
+        "mcq_no": 4,
+        "question": "By selling 33 meters of cloth, a shopkeeper gains the selling price of 11 meters. What is the gain percentage?",
+        "options": {
+          "A": "33.33%",
+          "B": "50%",
+          "C": "25%",
+          "D": "66.67%"
+        },
+        "correct_answer": "B",
+        "explanation": "Gain = 33 SP - 33 CP = 11 SP => 22 SP = 33 CP => SP / CP = 33 / 22 = 3 / 2. Gain % = [(3 - 2) / 2] * 100% = 50%."
+      },
+      {
+        "mcq_no": 5,
+        "question": "A dishonest dealer professes to sell his goods at cost price but uses a false weight of 900 grams for a 1 kg weight. What is his real gain percentage?",
+        "options": {
+          "A": "10%",
+          "B": "11.11%",
+          "C": "9.09%",
+          "D": "12.5%"
+        },
+        "correct_answer": "B",
+        "explanation": "Gain % = [Error / (True Value - Error)] * 100% = [100 / 900] * 100% = 1/9 * 100% = 11.11%."
+      },
+      {
+        "mcq_no": 6,
+        "question": "If the cost price of 15 articles is equal to the selling price of 12 articles, what is the profit percentage?",
+        "options": {
+          "A": "20%",
+          "B": "25%",
+          "C": "30%",
+          "D": "15%"
+        },
+        "correct_answer": "B",
+        "explanation": "15 CP = 12 SP => SP / CP = 15 / 12 = 5 / 4. Profit % = [(5 - 4) / 4] * 100% = 25%."
+      },
+      {
+        "mcq_no": 7,
+        "question": "A merchant marks his goods 40% above cost price and allows a discount of 25% on the marked price. What is his net profit percentage?",
+        "options": {
+          "A": "5%",
+          "B": "10%",
+          "C": "15%",
+          "D": "8%"
+        },
+        "correct_answer": "A",
+        "explanation": "Let CP = 100. Marked Price (MP) = 140. SP = MP * (1 - 0.25) = 140 * 0.75 = 105. Net Profit = 105 - 100 = 5%."
+      },
+      {
+        "mcq_no": 8,
+        "question": "An item is sold at a loss of 10%. If it had been sold for Rs. 90 more, there would have been a gain of 5%. What is the cost price?",
+        "options": {
+          "A": "Rs. 500",
+          "B": "Rs. 600",
+          "C": "Rs. 750",
+          "D": "Rs. 800"
+        },
+        "correct_answer": "B",
+        "explanation": "Difference between 5% gain and 10% loss = 15% of CP. 15% of CP = Rs. 90 => CP = 90 / 0.15 = Rs. 600."
+      },
+      {
+        "mcq_no": 9,
+        "question": "What is the single equivalent discount for three successive discounts of 20%, 10%, and 5%?",
+        "options": {
+          "A": "35%",
+          "B": "31.6%",
+          "C": "32.4%",
+          "D": "30.5%"
+        },
+        "correct_answer": "B",
+        "explanation": "Net multiplying factor = (1 - 0.20) * (1 - 0.10) * (1 - 0.05) = 0.80 * 0.90 * 0.95 = 0.684. Equivalent Discount = 1 - 0.684 = 0.316 = 31.6%."
+      },
+      {
+        "mcq_no": 10,
+        "question": "A manufacturer sells to a wholesaler at 10% profit, the wholesaler sells to a retailer at 20% profit, and the retailer sells to a customer at 25% profit. If the customer pays Rs. 3,300, what was the manufacturer's cost price?",
+        "options": {
+          "A": "Rs. 2,000",
+          "B": "Rs. 2,200",
+          "C": "Rs. 2,400",
+          "D": "Rs. 1,800"
+        },
+        "correct_answer": "A",
+        "explanation": "CP * 1.10 * 1.20 * 1.25 = 3,300 => CP * 1.65 = 3,300 => CP = 3,300 / 1.65 = Rs. 2,000."
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Profit & Loss (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Sliding Window (Fixed Size)",
+      "category": "Sliding Window",
+      "concept": "Maintains a contiguous subarray window of fixed length K. Slides the window one step at a time by adding the incoming element at the right and evicting the outgoing element at the left.",
+      "why_it_works": "Reuses the computational state of overlapping elements across adjacent windows in O(1) time instead of recomputing from scratch in O(K).",
+      "visual_explanation": "Array: [ 2, 1, 5, 1, 3, 2 ], K = 3\\nWindow 0: [ (2, 1, 5), 1, 3, 2 ]  Sum = 8\\nWindow 1: [ 2, (1, 5, 1), 3, 2 ]  Sum = 8 - 2 + 1 = 7\\nWindow 2: [ 2, 1, (5, 1, 3), 2 ]  Sum = 7 - 1 + 3 = 9 (Max)\\nWindow 3: [ 2, 1, 5, (1, 3, 2) ]  Sum = 9 - 5 + 2 = 6",
+      "language": "Java",
+      "java_code": "import java.util.*;\n\npublic class Solution {\n    public int maxSumSubarray(int[] nums, int k) {\n        if (nums == null || nums.length < k) return 0;\n        int windowSum = 0;\n        for (int i = 0; i < k; i++) {\n            windowSum += nums[i];\n        }\n        int maxSum = windowSum;\n        for (int i = k; i < nums.length; i++) {\n            windowSum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, windowSum);\n        }\n        return maxSum;\n    }\n}",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int maxSumSubarray(int[] nums, int k) {\n        if (nums == null || nums.length < k) return 0;\n        int windowSum = 0;\n        for (int i = 0; i < k; i++) {\n            windowSum += nums[i];\n        }\n        int maxSum = windowSum;\n        for (int i = k; i < nums.length; i++) {\n            windowSum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, windowSum);\n        }\n        return maxSum;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4: Guard check for null or array smaller than window size k.",
+        "Line 5-8: Compute baseline sum for the initial window of first k elements.",
+        "Line 9: Initialize maxSum with the sum of the first window.",
+        "Line 10-13: Iterate from k to end of array, adding nums[i] and subtracting nums[i - k].",
+        "Line 14: Return the maximum window sum found."
+      ],
+      "dry_run": "nums = [2, 1, 5, 1, 3, 2], k = 3. Init: sum([2,1,5])=8. i=3: window=8+1-2=7 (max=8). i=4: window=7+3-1=9 (max=9). i=5: window=9+2-5=6 (max=9). Return 9.",
+      "complexity": "O(N) Time, O(1) Auxiliary Space",
+      "edge_cases": "k == nums.length, Negative numbers in array, k == 1, All elements equal",
+      "edge_cases_list": [
+        "k == nums.length",
+        "Negative numbers in array",
+        "k == 1",
+        "All elements equal"
+      ],
+      "interview_variations": [
+        "Maximum Average Subarray I",
+        "Find All Anagrams in a String",
+        "Substrings of Size Three with Distinct Characters",
+        "Permutation in String"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-02-01",
+        "title": "Problem 1: Maximum Average Subarray I",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are given an integer array nums consisting of n elements, and an integer k. Find a contiguous subarray whose length is equal to k that has the maximum average value and return this value.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Sliding Window (Fixed Size) algorithmic technique.\n2. Maintains a contiguous subarray window of fixed length K. Slides the window one step at a time by adding the incoming element at the right and evicting the outgoing element at the left.\n3. Invariants: Reuses the computational state of overlapping elements across adjacent windows in O(1) time instead of recomputing from scratch in O(K).",
+        "solution_java": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+        "solution_python": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+        "code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+        "java_code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-02-02",
+        "title": "Problem 2: Find All Anagrams in a String",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Sliding Window (Fixed Size).\n2. Handle edge cases: k == nums.length, Negative numbers in array, k == 1, All elements equal.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Operating Systems",
+      "topic": "CPU Scheduling Algorithms (FCFS, SJF, SRTF, Round Robin & Priority)",
+      "concept_lesson": "CPU Scheduling is the process by which the short-term scheduler (CPU scheduler) allocates the CPU core to one of the ready processes. Schedulers operate in two modes: Non-preemptive (once allocated, the process retains CPU until it terminates or voluntarily yields for I/O) and Preemptive (the kernel can interrupt a running process when a higher-priority process arrives or its time slice expires).\n\nKey Algorithms:\n1. First-Come, First-Served (FCFS): Non-preemptive. Suffers from the Convoy Effect, where small I/O-bound processes queue behind a CPU-heavy process, drastically increasing average waiting time.\n2. Shortest Job First (SJF): Non-preemptive. Mathematically optimal in minimizing average waiting time, but impossible to implement perfectly in practice because future CPU burst lengths are unknown (estimated using exponential smoothing).\n3. Shortest Remaining Time First (SRTF): Preemptive version of SJF. Preempts current process if an incoming process has a shorter remaining burst. Can lead to starvation of long CPU bursts.\n4. Round Robin (RR): Preemptive, designed for time-sharing. Each process gets a fixed time quantum 'q'. If q is too small, context switch overhead dominates; if q is too large, RR degrades to FCFS.\n5. Priority Scheduling: Can be preemptive or non-preemptive. Can cause indefinite blocking (starvation), solved by Aging (gradually increasing the priority of processes that wait in the ready queue for long periods).",
+      "key_definitions": [
+        {
+          "term": "Turnaround Time",
+          "definition": "Total time interval from process submission to completion: Completion Time - Arrival Time."
+        },
+        {
+          "term": "Waiting Time",
+          "definition": "Total duration spent waiting in the Ready queue: Turnaround Time - Burst Time."
+        },
+        {
+          "term": "Convoy Effect",
+          "definition": "A phenomenon in FCFS where numerous short processes wait behind one long CPU-bound process."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What is the Convoy Effect in CPU scheduling, and which algorithm causes it?",
+          "a": "The Convoy Effect occurs in FCFS scheduling when a CPU-intensive process holds the processor for a long duration, forcing all shorter, I/O-bound processes to wait idle in the ready queue. This severely degrades CPU and device utilization and inflates average waiting times."
+        },
+        {
+          "q": "Why is Shortest Job First (SJF) considered optimal, and why is it hard to implement in real OS kernels?",
+          "a": "SJF is provably optimal because scheduling the shortest job first minimizes the waiting time for all subsequent jobs in the queue. However, an OS cannot know the exact length of a process's next CPU burst in advance. Kernels approximate it using exponential averaging of historical bursts (tau_{n+1} = alpha * t_n + (1 - alpha) * tau_n)."
+        },
+        {
+          "q": "How does the choice of Time Quantum impact Round Robin performance?",
+          "a": "If the time quantum is extremely small (e.g., 1 microsecond), the CPU spends a disproportionate amount of time on context switches rather than executing user code. If the quantum is extremely large, Round Robin degenerates into FCFS, causing poor interactive response times. Rule of thumb: 80% of CPU bursts should be shorter than the time quantum."
+        },
+        {
+          "q": "What is Starvation in Priority Scheduling, and how is it resolved?",
+          "a": "Starvation (indefinite blocking) occurs when low-priority processes never get CPU time because a steady stream of higher-priority processes keeps arriving. It is resolved using Aging: dynamically incrementing a waiting process's priority over elapsed time until it becomes high enough to execute."
+        },
+        {
+          "q": "Explain the difference between Preemptive and Non-Preemptive scheduling.",
+          "a": "In non-preemptive scheduling, once a process is in the running state, it holds the CPU until it terminates or blocks for I/O. In preemptive scheduling, the OS can forcibly interrupt and move a running process back to the ready state when a higher-priority process arrives, a timer interrupt fires, or a higher-priority I/O event completes."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-02-01",
+          "question": "Which CPU scheduling algorithm provides the theoretical minimum average waiting time for a given set of processes?",
+          "options": [
+            "First-Come, First-Served",
+            "Round Robin",
+            "Shortest Job First",
+            "Priority Scheduling"
+          ],
+          "correct_answer": "C",
+          "explanation": "SJF is provably optimal for minimizing average waiting time by executing shorter bursts first."
+        },
+        {
+          "id": "CS-02-02",
+          "question": "The technique of gradually increasing the priority of processes that wait in the system for a long time is called:",
+          "options": [
+            "Paging",
+            "Aging",
+            "Throttling",
+            "Belady's adjustment"
+          ],
+          "correct_answer": "B",
+          "explanation": "Aging prevents starvation in priority queues by systematically boosting waiting processes."
+        },
+        {
+          "id": "CS-02-03",
+          "question": "If the time quantum of a Round Robin scheduler is extremely large, it behaves identically to:",
+          "options": [
+            "SJF",
+            "SRTF",
+            "FCFS",
+            "Multilevel Feedback Queue"
+          ],
+          "correct_answer": "C",
+          "explanation": "When quantum exceeds the longest burst, every process completes in arrival order without preemption, mimicking FCFS."
+        },
+        {
+          "id": "CS-02-04",
+          "question": "Turnaround time of a process is calculated as:",
+          "options": [
+            "Waiting Time - Burst Time",
+            "Completion Time - Arrival Time",
+            "Completion Time - Burst Time",
+            "Arrival Time + Burst Time"
+          ],
+          "correct_answer": "B",
+          "explanation": "Turnaround time represents total elapsed lifetime: Completion Time minus Arrival Time."
+        },
+        {
+          "id": "CS-02-05",
+          "question": "Which algorithm is the preemptive variant of Shortest Job First?",
+          "options": [
+            "Round Robin",
+            "Priority Inversion",
+            "Shortest Remaining Time First (SRTF)",
+            "Multilevel Queue"
+          ],
+          "correct_answer": "C",
+          "explanation": "SRTF preempts the CPU if a newly arrived process has a remaining burst shorter than current execution."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "NSE2 / BulkBeat TV",
+      "repo_path": "D:\\Projects\\nse2",
+      "topic": "Real-Time Financial Media Ingestion & Concurrency Architecture (Python AsyncIO & aiohttp)",
+      "what_to_understand": "How event loops handle hundreds of concurrent WebSocket connections and polling workers.",
+      "what_to_memorize": "AsyncIO runs a single-threaded cooperative event loop where coroutines yield control via `await`, allowing thousands of idle I/O sockets without OS thread overhead.",
+      "interview_questions": [
+        {
+          "q": "How does the NSE2 ingestion engine achieve sub-50ms announcement processing?",
+          "a": "The engine uses a dedicated `aiohttp.ClientSession` pool with HTTP keep-alive to poll NSE corporate announcement feeds and market disclosure endpoints every 500ms. When a new filing payload arrives, it bypasses synchronous disk operations and pushes raw payloads into an in-memory `asyncio.Queue`. Worker coroutines parse the corporate action (dividends, splits, earnings results) and extract key financial metrics concurrently."
+        },
+        {
+          "q": "How do you handle sudden market open surges (9:15 AM IST) when hundreds of disclosures arrive simultaneously?",
+          "a": "We use a token-bucket rate limiter combined with backpressure handling on the asyncio queue. If the queue size exceeds 500 items, the poller backs off slightly while worker threads drain notifications in priority order (Price Sensitive Announcements first, routine filings second)."
+        }
+      ],
+      "interview_pitch_exercise": "BulkBeat TV / NSE2 is a real-time market disclosure alert engine built in Python. During earnings season, hundreds of market filings drop simultaneously. Using an async event-driven architecture with aiohttp and priority queues, the system processes and dispatches actionable trade alerts with sub-second latency across 6,000+ active users."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "What is the difference between Synchronous and Asynchronous execution? How does Python's event loop manage concurrent tasks?",
+        "model_answer": "In synchronous execution, operations execute sequentially; each instruction must complete before the next instruction starts. If an operation performs blocking I/O (like reading a file or waiting for an HTTP API response), the CPU core remains idle, blocking execution.\n\nIn asynchronous execution, non-blocking tasks are dispatched to execute cooperatively. While a task awaits an external I/O event, the executing thread yields control back to an Event Loop, which immediately executes another ready task.\n\nPython's `asyncio` manages concurrency on a single thread using an Event Loop. Coroutines defined with `async def` yield execution using `await`. When an I/O operation (e.g., `asyncio.sleep()` or async socket read) is awaiting completion, the coroutine pauses and registers a callback with OS polling mechanisms (epoll on Linux, kqueue on macOS, I/O Completion Ports on Windows). When the socket becomes readable, the event loop invokes the callback, resuming the coroutine with zero OS thread context-switch overhead.",
+        "key_talking_points": [
+          "Define blocking synchronous vs non-blocking asynchronous execution.",
+          "Explain asyncio's single-threaded event loop.",
+          "Highlight OS-level polling (epoll, IOCP) and cooperative coroutine suspension via await."
+        ],
+        "what_interviewer_evaluates": "Deep understanding of concurrency primitives and asynchronous event architectures."
+      },
+      {
+        "category": "Technical",
+        "question": "Explain the concept of SQL injection and demonstrate how parameterized queries prevent it.",
+        "model_answer": "SQL Injection (SQLi) occurs when untrusted user input is directly concatenated into a dynamic SQL query string, allowing an attacker to manipulate the query structure and execute arbitrary SQL commands (e.g., bypassing authentication via `' OR '1'='1`).\n\nParameterized queries (Prepared Statements) prevent SQL injection by strictly separating SQL code structure from user data. When a parameterized query is executed (e.g., `cursor.execute('SELECT * FROM users WHERE email = %s AND pass = %s', (email, password))`): 1. The database driver sends the query template with placeholders to the database engine first.\n2. The database parses, compiles, and optimizes the query execution plan.\n3. The user parameters are transmitted separately across the wire as literal values.\nBecause the query syntax has already been compiled, user input is treated strictly as data literals—even if input contains quotes or SQL keywords, it cannot alter the relational syntax tree.",
+        "key_talking_points": [
+          "Explain the root cause of SQL injection: string concatenation of untrusted data.",
+          "Explain how Prepared Statements compile the query tree before binding parameters.",
+          "Emphasize that user input is treated strictly as data literals, never executable code."
+        ],
+        "what_interviewer_evaluates": "Cybersecurity awareness, secure database coding practices, and driver mechanics."
+      },
+      {
+        "category": "Project Experience",
+        "question": "How did you design authentication and role-based access control (RBAC) in the College Student Management System?",
+        "model_answer": "In CSMS, we had to support four distinct institutional roles: HOD, Section Incharge, Faculty, and Students.\n\nIn `backend/routers/auth.py`, I implemented a dual-identity login pipeline. Administrators and faculty log in using an email address, which queries the `admins` table. Students log in using their University Enrollment Number (e.g., `CSJMA24000004738`), querying the `students` table. Passwords are cryptographically hashed and verified using `bcrypt`.\n\nTo enforce Role-Based Access Control, protected FastAPI endpoints utilize dependency injection (`Depends(get_current_active_user)`). The dependency decodes the session, verifies user status, and checks the user's role against endpoint permissions. For example, circular posting and student deletion are restricted strictly to `HOD`; grade entry is restricted to `Faculty` and `HOD`; while students are restricted to read-only access to their own attendance and grade rosters.",
+        "key_talking_points": [
+          "Dual-identity lookup: Email for staff, University Enrollment Number for students.",
+          "Bcrypt password hashing for cryptographic protection.",
+          "FastAPI dependency injection enforcing RBAC across endpoints."
+        ],
+        "what_interviewer_evaluates": "Security architecture, authentication flows, and authorization design."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a situation where you had to debug a complex, elusive issue in code. How did you resolve it?",
+        "model_answer": "Situation: While developing our CSMS API, the frontend was receiving HTTP 500 errors during attendance batch submission, but only for certain student rosters.\n\nTask: I needed to identify the root cause of the intermittent failure and ensure 100% reliable attendance submissions across all class sections.\n\nAction: Instead of making random guesses, I inspected the backend Uvicorn logs and enabled detailed PostgreSQL query logging. I observed an `IntegrityError` triggered by a unique constraint violation on `(student_id, record_date)`. Tracing the frontend JavaScript payload, I discovered that if faculty clicked the submit button twice before the Fetch request completed, two concurrent POST requests were dispatched. The first succeeded, and the second failed the unique constraint.\n\nI implemented a two-part fix: on the frontend, I disabled the submit button immediately upon click and displayed a loading spinner. On the backend, I wrapped the insertion in an `ON CONFLICT (student_id, record_date) DO UPDATE` clause in SQL, making the attendance submission fully idempotent.\n\nResult: The intermittent 500 errors disappeared completely, and attendance submission became robust and idempotent.",
+        "key_talking_points": [
+          "Situation: Intermittent HTTP 500 on batch attendance submission.",
+          "Task: Root-cause debugging without guesswork.",
+          "Action: Log inspection, diagnosing race conditions and unique constraint conflicts, fixing with UI debouncing and SQL upsert idempotency.",
+          "Result: Total elimination of errors and idempotent endpoint architecture."
+        ],
+        "what_interviewer_evaluates": "Methodical debugging discipline, root-cause analysis, and idempotent systems design."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "Why do you want to join our company specifically, and what are your career aspirations?",
+        "model_answer": "I want to join your engineering team because of your company's high engineering standards and culture of building robust, scalable products. Through my academic curriculum and hands-on projects, I have discovered that I am passionate about backend systems, database performance, and distributed architectures. Your organization works on mission-critical platforms with large user bases, which is the exact environment where I can contribute my strong fundamentals in Python, SQL, and APIs while learning from senior architects.\n\nIn the next three years, my goal is to develop into a high-impact software engineer who can independently own complex system modules, optimize high-throughput pipelines, and mentor junior developers. I believe joining your team is the ideal place to begin that journey.",
+        "key_talking_points": [
+          "Genuine alignment with engineering standards and scale.",
+          "Connection between personal passion (backend/DB) and company domain.",
+          "Clear, ambitious, and realistic 3-year professional roadmap."
+        ],
+        "what_interviewer_evaluates": "Company research, professional maturity, and long-term career intentionality."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Herbert Simon's 4 stages: Intelligence, Design, Choice, Implementation.\n• Satisficing vs Optimizing under bounded rationality.\n• Two Pointers opposite direction pattern on sorted arrays (O(N) time, O(1) space).\n• Process Control Block (PCB) segments: Text, Data, BSS, Heap, Stack.",
+      "today_recall": "• Mastered Decision Support Systems (DSS) Subsystems: Data Management, Model Management, Knowledge-Based subsystem, and User Interface Dialog subsystem.\n• Analyzed MIS vs DSS: MIS provides structured periodic reports for operational managers; DSS supports semi-structured/unstructured decisions for strategic executives.\n• Examined coupling between mathematical models and live relational data.",
+      "formula_recall": "• Profit % = [(SP - CP) / CP] * 100%\n• Loss % = [(CP - SP) / CP] * 100%\n• Single Equivalent Discount: d = d1 + d2 - (d1 * d2 / 100)%\n• Equal SP with x% profit and x% loss: Net outcome is ALWAYS a loss of (x^2 / 100)%\n• Fixed Sliding Window: Window size K remains invariant; compute new sum in O(1) via sum = sum - arr[i-K] + arr[i].",
+      "pyq_recall": "• University PYQ: CSJM University 2021 (Section B, 15 Marks) — 'Define DSS. Detail the four subsystems of DSS and contrast MIS with DSS with an architectural comparison table.'\n• Blueprint: 1. Definition (2m) -> 2. Subsystem Block Diagram (4m) -> 3. Subsystem Breakdown (5m) -> 4. MIS vs DSS Table (2m) -> 5. Summary (2m).",
+      "dsa_recall": "• Pattern: Sliding Window (Fixed Size K).\n• Invariant: Window size remains exactly K. Slide forward by subtracting the element exiting the left and adding the element entering the right.\n• Edge Cases: Array length smaller than K, all negative integers, K = 1.",
+      "project_recall": "• Project: BulkBeat TV (Real-Time Market Intelligence Engine, bulkbeattv.com).\n• Architecture: Python AsyncIO backend, SQLite in WAL mode (30s busy-timeout), Telegram bot webhooks, and Tesseract OCR.\n• Defense Pitch: 'Architected real-time streaming market alerts with sub-5s latency on a 1GB VPS; 22-rule deterministic AI filters 90%+ noise, with zero database locks under heavy burst traffic.'",
+      "rapid_fire_questions": [
+        {
+          "q": "What are the four core subsystems of a Decision Support System (DSS)?",
+          "a": "Data Management, Model Management, Knowledge-Based subsystem, and User Interface (Dialog) subsystem."
+        },
+        {
+          "q": "What is the primary difference between MIS and DSS?",
+          "a": "MIS provides structured scheduled reports from past operational data; DSS provides interactive analytical modeling for semi-structured executive decisions."
+        },
+        {
+          "q": "What is the formula for Single Equivalent Discount of two successive discounts d1% and d2%?",
+          "a": "d1 + d2 - (d1 * d2 / 100)%."
+        },
+        {
+          "q": "If two items are sold at equal SP, one at 20% gain and other at 20% loss, what is the net result?",
+          "a": "Net loss of 4% (Formula: (20^2 / 100)% = 4% loss)."
+        },
+        {
+          "q": "What phenomenon in FCFS CPU scheduling occurs when short processes wait behind a long CPU-bound process?",
+          "a": "The Convoy Effect."
+        },
+        {
+          "q": "Which CPU scheduling algorithm gives the theoretical minimum average waiting time?",
+          "a": "Shortest Job First (SJF) / Shortest Remaining Time First (SRTF)."
+        },
+        {
+          "q": "What technique eliminates starvation in Priority CPU scheduling?",
+          "a": "Aging (gradually increasing waiting process priority over time)."
+        },
+        {
+          "q": "What is the time complexity of finding the maximum sum subarray of fixed size K using Sliding Window?",
+          "a": "O(N) time with O(1) auxiliary space."
+        },
+        {
+          "q": "In BulkBeat TV, why was SQLite configured in Write-Ahead Logging (WAL) mode?",
+          "a": "To allow concurrent readers to read without blocking the single writer queue, preventing database locked errors."
+        },
+        {
+          "q": "What is the typical alert latency achieved by BulkBeat TV on a low-resource VPS?",
+          "a": "Sub-5 seconds end-to-end alert delivery."
+        }
+      ],
+      "today_summary": "• Mastered Decision Support Systems (DSS) Subsystems: Data Management, Model Management, Knowledge-Based subsystem, and User Interface Dialog subsystem.\n• Analyzed MIS vs DSS: MIS provides structured periodic reports for operational managers; DSS supports semi-structured/unstructured decisions for strategic executives.\n• Examined coupling between mathematical models and live relational data.",
+      "formulas_and_shortcuts": [
+        "• Profit % = [(SP - CP) / CP] * 100%\n• Loss % = [(CP - SP) / CP] * 100%\n• Single Equivalent Discount: d = d1 + d2 - (d1 * d2 / 100)%\n• Equal SP with x% profit and x% loss: Net outcome is ALWAYS a loss of (x^2 / 100)%\n• Fixed Sliding Window: Window size K remains invariant; compute new sum in O(1) via sum = sum - arr[i-K] + arr[i]."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered Decision Support Systems (DSS) Subsystems: Data Management, Model Management, Knowledge-Based subsystem, and User Interface Dialog subsystem."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Profit % = [(SP - CP) / CP] * 100%"
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Sliding Window (Fixed Size K)."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: BulkBeat TV (Real-Time Market Intelligence Engine, bulkbeattv.com)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-02-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which of the following is NOT one of the three primary architectural subsystems of a classical Decision Support System (DSS)?",
+        "options": [
+          "Database Management Subsystem (DBMS)",
+          "Model Base Management Subsystem (MBMS)",
+          "User Interface / Dialog Subsystem",
+          "Packet Switching Subsystem"
+        ],
+        "correct_answer": "D",
+        "explanation": "A DSS architecture consists of three fundamental components: Data Management (DBMS), Model Management (MBMS), and Dialog/User Interface."
+      },
+      {
+        "id": "TEST-02-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does a Management Information System (MIS) fundamentally differ from a Decision Support System (DSS)?",
+        "options": [
+          "MIS focuses on ad-hoc interactive simulation, while DSS provides static scheduled reports",
+          "MIS produces structured periodic summaries of past operational data, while DSS provides interactive 'what-if' modeling for semi-structured decisions",
+          "MIS is only used by top executives, while DSS is used by data entry clerks",
+          "MIS does not require a database, whereas DSS requires a data warehouse"
+        ],
+        "correct_answer": "B",
+        "explanation": "MIS supports structured, routine operations with fixed scheduled reports; DSS is designed for ad-hoc, flexible, what-if exploratory modeling of semi-structured problems."
+      },
+      {
+        "id": "TEST-02-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary function of the Model Base Management Subsystem (MBMS) in a DSS?",
+        "options": [
+          "Storing raw SQL transaction tables",
+          "Managing, updating, and executing mathematical, financial, and simulation models",
+          "Rendering HTML CSS graphics on the client",
+          "Encrypting database disk partitions"
+        ],
+        "correct_answer": "B",
+        "explanation": "MBMS manages the catalog of quantitative models (statistical, financial, optimization, forecasting) and couples them with data to generate scenarios."
+      },
+      {
+        "id": "TEST-02-04",
+        "category": "Academic (Academic Theory)",
+        "question": "In DSS sensitivity analysis, what does a 'Goal Seeking' query determine?",
+        "options": [
+          "The output metric given fixed input parameters",
+          "The required value of an input variable needed to achieve a specified target output",
+          "The maximum bandwidth of the network connection",
+          "The number of concurrent database sessions"
+        ],
+        "correct_answer": "B",
+        "explanation": "Goal seeking (backward sensitivity analysis) calculates the input variable adjustments required to reach a specific desired target result."
+      },
+      {
+        "id": "TEST-02-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Executive Information Systems (EIS) are distinguished from general DSS by their strong emphasis on:",
+        "options": [
+          "Low-level assembly language programming",
+          "High-level graphical KPI dashboards, drill-down capabilities, and internal/external critical success factors",
+          "Batch card punch processing",
+          "Hardware register allocation"
+        ],
+        "correct_answer": "B",
+        "explanation": "EIS is tailored for senior leadership, emphasizing intuitive visual interfaces, drill-down summaries, and status tracking of Critical Success Factors (CSFs)."
+      },
+      {
+        "id": "TEST-02-06",
+        "category": "Placement Aptitude",
+        "question": "A vendor bought lemons at 6 for Rs. 10 and sold them at 4 for Rs. 9. Find his gain or loss percentage.",
+        "options": [
+          "35% gain",
+          "25% gain",
+          "20% loss",
+          "30% gain"
+        ],
+        "correct_answer": "A",
+        "explanation": "CP of 1 lemon = 10/6 = Rs. 5/3. SP of 1 lemon = 9/4 = Rs. 2.25. Gain = 9/4 - 5/3 = (27 - 20) / 12 = 7/12. Gain % = (7/12) / (5/3) * 100% = (7/20) * 100% = 35%."
+      },
+      {
+        "id": "TEST-02-07",
+        "category": "Placement Aptitude",
+        "question": "A grocer marks an article at Rs. 500. After allowing two successive discounts of 20% and 10%, what is the final selling price?",
+        "options": [
+          "Rs. 360",
+          "Rs. 350",
+          "Rs. 380",
+          "Rs. 340"
+        ],
+        "correct_answer": "A",
+        "explanation": "SP = 500 * (1 - 0.20) * (1 - 0.10) = 500 * 0.80 * 0.90 = 500 * 0.72 = Rs. 360."
+      },
+      {
+        "id": "TEST-02-08",
+        "category": "Placement Aptitude",
+        "question": "If a trader sells an article at Rs. 450, he incurs a 10% loss. At what price should he sell it to gain 20%?",
+        "options": [
+          "Rs. 600",
+          "Rs. 580",
+          "Rs. 620",
+          "Rs. 550"
+        ],
+        "correct_answer": "A",
+        "explanation": "CP = 450 / 0.90 = Rs. 500. To gain 20%, target SP = 500 * 1.20 = Rs. 600."
+      },
+      {
+        "id": "TEST-02-09",
+        "category": "Placement Aptitude",
+        "question": "By selling 33 meters of cloth, a merchant gains the selling price of 11 meters. What is his gain percentage?",
+        "options": [
+          "50%",
+          "33.33%",
+          "25%",
+          "66.67"
+        ],
+        "correct_answer": "A",
+        "explanation": "Profit = 11 SP => 33 SP - 33 CP = 11 SP => 22 SP = 33 CP => SP/CP = 33/22 = 3/2. Gain % = [(3 - 2)/2] * 100% = 50%."
+      },
+      {
+        "id": "TEST-02-10",
+        "category": "Placement Aptitude",
+        "question": "A watch was sold at 5% loss. Had it been sold for Rs. 56 more, there would have been a gain of 9%. What is the cost price of the watch?",
+        "options": [
+          "Rs. 400",
+          "Rs. 450",
+          "Rs. 380",
+          "Rs. 500"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total percentage difference = 9% - (-5%) = 14%. 14% of CP = 56 => CP = 56 / 0.14 = Rs. 400."
+      },
+      {
+        "id": "TEST-02-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which CPU scheduling algorithm provides the theoretical minimum average waiting time for a given set of processes?",
+        "options": [
+          "First-Come, First-Served",
+          "Round Robin",
+          "Shortest Job First",
+          "Priority Scheduling"
+        ],
+        "correct_answer": "C",
+        "explanation": "SJF is provably optimal for minimizing average waiting time by executing shorter bursts first."
+      },
+      {
+        "id": "TEST-02-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "The technique of gradually increasing the priority of processes that wait in the system for a long time is called:",
+        "options": [
+          "Paging",
+          "Aging",
+          "Throttling",
+          "Belady's adjustment"
+        ],
+        "correct_answer": "B",
+        "explanation": "Aging prevents starvation in priority queues by systematically boosting waiting processes."
+      },
+      {
+        "id": "TEST-02-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "If the time quantum of a Round Robin scheduler is extremely large, it behaves identically to:",
+        "options": [
+          "SJF",
+          "SRTF",
+          "FCFS",
+          "Multilevel Feedback Queue"
+        ],
+        "correct_answer": "C",
+        "explanation": "When quantum exceeds the longest burst, every process completes in arrival order without preemption, mimicking FCFS."
+      },
+      {
+        "id": "TEST-02-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "Turnaround time of a process is calculated as:",
+        "options": [
+          "Waiting Time - Burst Time",
+          "Completion Time - Arrival Time",
+          "Completion Time - Burst Time",
+          "Arrival Time + Burst Time"
+        ],
+        "correct_answer": "B",
+        "explanation": "Turnaround time represents total elapsed lifetime: Completion Time minus Arrival Time."
+      },
+      {
+        "id": "TEST-02-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which algorithm is the preemptive variant of Shortest Job First?",
+        "options": [
+          "Round Robin",
+          "Priority Inversion",
+          "Shortest Remaining Time First (SRTF)",
+          "Multilevel Queue"
+        ],
+        "correct_answer": "C",
+        "explanation": "SRTF preempts the CPU if a newly arrived process has a remaining burst shorter than current execution."
+      },
+      {
+        "id": "TEST-02-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Sliding Window (Fixed Size)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Sliding Window (Fixed Size)' pattern operates with O(N) Time, O(1) Auxiliary Space: Reuses the computational state of overlapping elements across adjacent windows in O(1) time instead of recomputing from scratch in O(K).."
+      },
+      {
+        "id": "TEST-02-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Sliding Window (Fixed Size)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: k == nums.length.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Sliding Window (Fixed Size) include k == nums.length, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-02-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Maximum Average Subarray I', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-02-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Real-Time Financial Media Ingestion & Concurrency Architecture (Python AsyncIO & aiohttp)'?",
+        "options": [
+          "AsyncIO runs a single-threaded cooperative event loop where coroutines yield control via `await`, allowing thousands of idle I/O sockets without OS thread overhead.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: AsyncIO runs a single-threaded cooperative event loop where coroutines yield control via `await`, allowing thousands of idle I/O sockets without OS thread overhead.."
+      },
+      {
+        "id": "TEST-02-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How does the NSE2 ingestion engine achieve sub-50ms announcement processing?'?",
+        "options": [
+          "The engine uses a dedicated `aiohttp.ClientSession` pool with HTTP keep-alive to poll NSE corporate announcement feeds and market disclosure endpoints every 500...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: The engine uses a dedicated `aiohttp.ClientSession` pool with HTTP keep-alive to poll NSE corporate announcement feeds and market disclosure."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-02",
+      "title": "Maximum Average Subarray I (Sliding Window (Fixed Size))",
+      "time_limit_minutes": 25,
+      "difficulty": "Easy",
+      "problem_statement": "Solve the core placement problem: Maximum Average Subarray I.\n\nYou are given an integer array nums consisting of n elements, and an integer k. Find a contiguous subarray whose length is equal to k that has the maximum average value and return this value.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Sliding Window (Fixed Size)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: k == nums.length, Negative numbers in array, k == 1, All elements equal.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Sliding Window (Fixed Size)\n    public double findMaxAverage(int[] nums, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Sliding Window (Fixed Size)\n    public double findMaxAverage(int[] nums, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Sliding Window (Fixed Size) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: k == nums.length",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Knowledge Management",
+    "subject_code": "BCA-5001",
+    "unit": 1,
+    "topic": "Unit I — Decision Support Systems (DSS) Subsystems & Architecture (MIS vs DSS)",
+    "objectives": [
+      "Analyze the 3 core subsystems of DSS: DBMS, MBMS, and Dialogue/UI.",
+      "Contrast MIS and DSS across decision types, data sources, and analytical depth."
+    ],
+    "detailed_notes": [
+      "A Decision Support System (DSS) is an interactive, computer-based information system that utilizes decision models and specialized databases to assist management decision makers in addressing semi-structured and unstructured problems. Unlike traditional transaction systems, a DSS emphasizes flexibility, user-friendliness, and mathematical simulation capabilities.",
+      "1. Data Management Subsystem (Internal & External DBs, ETL, Query Engine); 2. Model Management Subsystem (Strategic, tactical, operational models, MBMS); 3. User Interface / Dialogue Subsystem (Interactive visual dashboards, natural language queries).",
+      "MIS focuses on structured historical internal data with fixed scheduled reports. DSS focuses on semi-structured future-oriented what-if simulations combining internal and external data."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|             3-TIER DSS ARCHITECTURE               |\n| [Data Subsystem] <-> [Model Subsystem] <-> [UI]   |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Comparison Parameter",
-        "Management Information System (MIS)",
-        "Decision Support System (DSS)"
+        "Dimension",
+        "MIS (Management Information System)",
+        "DSS (Decision Support System)"
       ],
       "rows": [
         [
           "Primary Focus",
-          "Operational efficiency and structured reporting",
-          "Strategic effectiveness and ad-hoc decision analysis"
+          "Internal structured transaction reporting",
+          "Semi-structured and unstructured decision analysis"
         ],
         [
-          "Target Problems",
-          "Structured, repetitive business problems",
-          "Semi-structured and unstructured executive problems"
+          "Decision Type",
+          "Structured, repetitive, operational",
+          "Semi-structured, tactical, and strategic"
         ],
         [
-          "Decision Level",
-          "Operational and Middle Management",
-          "Senior Executives and Tactical Decision Makers"
+          "Time Horizon",
+          "Historical past and present transactions",
+          "Future forecasting, projections, and simulations"
         ],
         [
-          "Data Flow",
-          "Fixed periodic reports, tabular data summaries",
-          "Interactive querying, what-if simulations, sensitivity analysis"
-        ],
-        [
-          "Analytical Engine",
-          "Basic aggregation (Sum, Count, Average)",
-          "Advanced quantitative, statistical, and optimization models (MBMS)"
+          "Analytical Capability",
+          "Standard aggregation, sorting, summary",
+          "Advanced what-if, goal-seeking, Monte Carlo models"
         ]
       ]
     },
-    "memorize": "3 Subsystems of DSS: Data Management (DBMS), Model Management (MBMS), Dialogue / UI Subsystem. Difference between MIS (routine structured) and DSS (ad-hoc analytical). GDSS eliminates groupthink via anonymous input.",
-    "understand": "Operational software calculates payroll because the rules are 100% fixed (structured). A CEO deciding whether to launch a new product line faces uncertainty (unstructured); DSS provides mathematical scenario simulations to illuminate that choice.",
-    "common_mistakes": "1. Saying DSS makes decisions autonomously; DSS only supports human decision makers. 2. Confusing MBMS with DBMS; DBMS manages rows and tables, while MBMS manages mathematical algorithms and equations.",
-    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2024-25)",
-    "pyq_freq": "3 University Sessions: 2021 (Q2 - 15 marks), 2022-23 (Q1c - 15 marks), 2024-25 (Q2 - 15 marks)",
+    "memorize": "DSS 3 Subsystems: Data Management (DBMS), Model Management (MBMS), User Interface (Dialogue). MIS is past-oriented; DSS is future what-if oriented.",
+    "understand": "The MBMS is the intellectual brain of a DSS, allowing dynamic swapping of mathematical and statistical models.",
+    "common_mistakes": "Confusing MIS and DSS or describing DSS as just a SQL database.",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2024-25 (Q2)",
+        "marks": 15,
+        "question": "Define DSS. Explain its major components with an architectural diagram and differentiate between DSS and MIS. (15 Marks)",
+        "rubric": "Definition (2 marks) + Architectural Diagram (4 marks) + Detailed 3 Components (5 marks) + DSS vs MIS Comparison Table (4 marks) = 15 Marks.",
+        "model_answer": "A Decision Support System (DSS) is an interactive, computer-based information system that combines mathematical models and database management to support semi-structured decisions. Its 3 core subsystems are: 1. Data Management Subsystem (extracting and managing internal enterprise data and external market feeds); 2. Model Base Management System (MBMS, storing linear programming, financial, and statistical simulation models); 3. Dialogue Generation and Management Subsystem (providing visual graphs, menus, and what-if query inputs). While MIS provides routine historical reports for structured operational tasks, DSS delivers interactive predictive models for strategic decisions.",
+        "answer_structure": "Definition -> Diagram -> 3 Components -> Comparison Table -> Summary",
+        "important_points": [
+          "MBMS",
+          "Dialogue Subsystem",
+          "Semi-structured decisions",
+          "What-if simulation"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Clear distinction between MIS and DSS",
+          "Component architecture diagram"
+        ],
+        "common_mistakes": [
+          "Omitting MBMS explanation"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "What is a Model Base Management System (MBMS) in DSS? Explain its functions. (5 Marks)",
+        "rubric": "Definition (2 marks) + 3 Core Functions (3 marks) = 5 Marks.",
+        "model_answer": "A Model Base Management System (MBMS) is a software subsystem that stores, updates, catalogues, and executes mathematical models within a DSS. Its key functions include model creation and editing, model execution with input parameter mapping, model integration (linking output of a demand model into a production scheduling model), and model dictionary maintenance."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-02-01",
+        "question": "Which of the following is NOT one of the three primary architectural subsystems of a classical Decision Support System (DSS)?",
+        "options": [
+          "Database Management Subsystem (DBMS)",
+          "Model Base Management Subsystem (MBMS)",
+          "User Interface / Dialog Subsystem",
+          "Packet Switching Subsystem"
+        ],
+        "correct_answer": "D",
+        "explanation": "A DSS architecture consists of three fundamental components: Data Management (DBMS), Model Management (MBMS), and Dialog/User Interface."
+      },
+      {
+        "id": "ACAD-02-02",
+        "question": "How does a Management Information System (MIS) fundamentally differ from a Decision Support System (DSS)?",
+        "options": [
+          "MIS focuses on ad-hoc interactive simulation, while DSS provides static scheduled reports",
+          "MIS produces structured periodic summaries of past operational data, while DSS provides interactive 'what-if' modeling for semi-structured decisions",
+          "MIS is only used by top executives, while DSS is used by data entry clerks",
+          "MIS does not require a database, whereas DSS requires a data warehouse"
+        ],
+        "correct_answer": "B",
+        "explanation": "MIS supports structured, routine operations with fixed scheduled reports; DSS is designed for ad-hoc, flexible, what-if exploratory modeling of semi-structured problems."
+      },
+      {
+        "id": "ACAD-02-03",
+        "question": "What is the primary function of the Model Base Management Subsystem (MBMS) in a DSS?",
+        "options": [
+          "Storing raw SQL transaction tables",
+          "Managing, updating, and executing mathematical, financial, and simulation models",
+          "Rendering HTML CSS graphics on the client",
+          "Encrypting database disk partitions"
+        ],
+        "correct_answer": "B",
+        "explanation": "MBMS manages the catalog of quantitative models (statistical, financial, optimization, forecasting) and couples them with data to generate scenarios."
+      },
+      {
+        "id": "ACAD-02-04",
+        "question": "In DSS sensitivity analysis, what does a 'Goal Seeking' query determine?",
+        "options": [
+          "The output metric given fixed input parameters",
+          "The required value of an input variable needed to achieve a specified target output",
+          "The maximum bandwidth of the network connection",
+          "The number of concurrent database sessions"
+        ],
+        "correct_answer": "B",
+        "explanation": "Goal seeking (backward sensitivity analysis) calculates the input variable adjustments required to reach a specific desired target result."
+      },
+      {
+        "id": "ACAD-02-05",
+        "question": "Executive Information Systems (EIS) are distinguished from general DSS by their strong emphasis on:",
+        "options": [
+          "Low-level assembly language programming",
+          "High-level graphical KPI dashboards, drill-down capabilities, and internal/external critical success factors",
+          "Batch card punch processing",
+          "Hardware register allocation"
+        ],
+        "correct_answer": "B",
+        "explanation": "EIS is tailored for senior leadership, emphasizing intuitive visual interfaces, drill-down summaries, and status tracking of Critical Success Factors (CSFs)."
+      }
+    ],
+    "pyq_year": "2024-25 (Q2)",
+    "pyq_freq": "Verified University Paper Question",
     "pyq_question": "Define DSS. Explain its major components with an architectural diagram and differentiate between DSS and MIS. (15 Marks)",
     "pyq_rubric": "Definition (2 marks) + Architectural Diagram (4 marks) + Detailed 3 Components (5 marks) + DSS vs MIS Comparison Table (4 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Formal Definition of DSS:",
-        "A Decision Support System (DSS) is an interactive, computer-based information system that utilizes decision models and specialized databases to assist management decision makers in addressing semi-structured and unstructured problems. Unlike traditional transaction systems, a DSS emphasizes flexibility, user-friendliness, and mathematical simulation capabilities."
+        "1. Model Answer & Technical Presentation",
+        "A Decision Support System (DSS) is an interactive, computer-based information system that combines mathematical models and database management to support semi-structured decisions. Its 3 core subsystems are: 1. Data Management Subsystem (extracting and managing internal enterprise data and external market feeds); 2. Model Base Management System (MBMS, storing linear programming, financial, and statistical simulation models); 3. Dialogue Generation and Management Subsystem (providing visual graphs, menus, and what-if query inputs). While MIS provides routine historical reports for structured operational tasks, DSS delivers interactive predictive models for strategic decisions."
       ],
       [
-        "2. Detailed Component Architecture:",
-        "A comprehensive DSS consists of three core subsystems:\n\u2022 Data Management Subsystem: Contains the DSS database, an interconnected repository containing internal operational data, historical data warehouses, external market data, and private executive heuristics. It is managed by a full-featured Database Management System (DBMS) capable of complex queries and data extraction.\n\u2022 Model Management Subsystem: Contains quantitative models that provide analytical capabilities. These include strategic models, tactical models, operational models, and statistical building blocks. The Model Base Management System (MBMS) manages, updates, and links these models, executing routines such as sensitivity analysis and Monte Carlo simulations.\n\u2022 User Interface (Dialogue) Subsystem: Acts as the gateway between the executive and the system. It handles user command translation, interactive data visualization, drill-down tables, and natural language querying."
-      ],
-      [
-        "3. Comparative Analysis: DSS vs MIS:",
-        "The distinction between MIS and DSS is fundamental in organizational theory. MIS is data-oriented, generating standardized periodic reports (e.g. monthly sales summaries) for operational control. DSS is decision-oriented, supporting strategic, non-routine planning. While MIS provides information about past and present internal performance, DSS provides predictive projections and what-if simulations of future scenarios."
-      ],
-      [
-        "4. Conclusion & Organizational Impact:",
-        "In modern enterprises, DSS has evolved into Business Intelligence (BI) and AI-driven decision engines. By separating data management from mathematical model management and connecting them through an intuitive interface, DSS enables leaders to navigate volatile market environments with quantitative rigor."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Explain the architecture and key features of Group Decision Support Systems (GDSS). (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2022):",
-        "What is Model Base Management System (MBMS) and what functions does it perform in a DSS? (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Clear distinction between MIS and DSS",
+          "Component architecture diagram"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master DSS Components & MIS vs DSS Comparison Table.",
-    "milestone": "Ensure complete 15/15 marks on University Question 2 (DSS Architecture)."
-  },
   "apt_data": {
-    "topic": "Percentages \u2014 Successive Percentage Changes, Net Effective Rates & Area Impact",
+    "topic": "Profit, Loss & Successive Discounts",
+    "category": "Quantitative",
+    "subtopic": "Profit & Loss",
+    "formulas": "1. Profit % = [(SP - CP) / CP] * 100\n2. Loss % = [(CP - SP) / CP] * 100\n3. Single Equivalent Discount for d1% and d2% = d1 + d2 - (d1 * d2 / 100)%.\n4. When two items sold at equal SP, one at x% profit and other at x% loss, overall loss is always (x^2 / 100)%.",
+    "shortcut": "Multiplying Factor: 20% profit means SP = CP * 1.20. 15% loss means SP = CP * 0.85. CP = SP / Multiplying Factor.",
     "tutorial": [
-      "Successive percentage change occurs when an initial value changes by a%, and the resulting value subsequently changes by b%.",
-      "The Net Effective Percentage Change Formula: Net % = [a + b + (a * b) / 100]%.",
-      "Sign Convention: Use positive values for increase/profit and negative values for decrease/discount/loss.",
-      "Geometric & Two-Dimensional Impact: Since Area = Length * Breadth, if length changes by a% and breadth changes by b%, the net percentage change in area is precisely [a + b + (ab)/100]%.",
-      "Three Successive Changes (e.g. Volume = L * B * H): First calculate the net change of the first two dimensions, then combine that effective rate with the third dimension."
+      "Profit and loss are always computed with respect to Cost Price (CP) unless specifically referenced to Selling Price. In multi-step transactions, convert markups and discounts into successive factors: Final SP = CP * (1 + markup/100) * (1 - discount/100)."
     ],
-    "formulas": "1. Net Effective % = [a + b + (a * b) / 100]%\n2. Equal Increase and Decrease: Net Change = -(x^2 / 100)% (Always a net decrease)\n3. Volume Impact (3 Dimensions): Combine effective (a, b) with c using the formula again.",
-    "shortcut": "Mental Decimal Multiplication for Successive Changes:\nInstead of long formulas, convert to multiplying factors:\n+10% = 1.1, +20% = 1.2 ==> Net = 1.1 * 1.2 = 1.32 ==> +32%.\n+20%, -10% ==> 1.2 * 0.9 = 1.08 ==> +8%.",
-    "recognition": "Look for 'successive discounts of x% and y%', 'length increased by x% while breadth decreased by y%', or 'price first increased by x% then decreased by y%'.",
-    "p1_q": "[Foundation] A retailer offers two successive discounts of 20% and 10% on a wristwatch. Find the single equivalent discount percentage.",
-    "p1_s": "Step 1: Identify rates with discounts as negative changes: a = -20, b = -10.\nStep 2: Apply successive formula:\nNet % = [-20 - 10 + (-20 * -10) / 100]% = [-30 + 200 / 100]% = [-30 + 2]% = -28%.\nStep 3: Verification with baseline: Let Marked Price = Rs. 100.\nAfter 20% discount: 100 - 20 = Rs. 80.\nAfter 10% discount on Rs. 80: 80 - 10% of 80 = 80 - 8 = Rs. 72.\nTotal Discount = 100 - 72 = Rs. 28 (which is 28% of 100).\nAnswer: Single equivalent discount of 28%.",
-    "p2_q": "[Standard Placement] The length of a rectangular plot is increased by 30% while its breadth is decreased by 20%. What is the net percentage change in the area of the plot?",
-    "p2_s": "Step 1: Let Length change a = +30%, Breadth change b = -20%.\nStep 2: Area = Length * Breadth. Net Area Change % = [a + b + (ab) / 100]%.\nNet % = [30 - 20 + (30 * -20) / 100]% = [10 - 600 / 100]% = 10 - 6 = +4%.\nStep 3: Positive sign indicates an increase.\nAnswer: The area increases by 4%.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys Reasoning & Numerical Ability]",
-    "p3_q": "The radius of a circular cylinder is increased by 20% while its height is decreased by 25%. Find the percentage change in the volume of the cylinder.",
-    "p3_s": "Step 1: Formula for volume of a cylinder: V = pi * r^2 * h = pi * (r * r * h).\nStep 2: Notice that the radius r occurs twice (squared), and height h occurs once.\nRadius changes: r1 = +20%, r2 = +20%.\nNet change in r^2 = [20 + 20 + (20 * 20) / 100]% = [40 + 4]% = +44%.\nStep 3: Now combine the effective radius factor (+44%) with the height factor (-25%):\nNet Volume % = [44 - 25 + (44 * -25) / 100]%\n= [19 - 1100 / 100]% = 19 - 11 = +8%.\nAlternative Factor Method: (1.2)^2 * 0.75 = 1.44 * 0.75 = 1.08 ==> +8%.\nAnswer: Volume increases by 8%.",
-    "p4_q": "[Hard / Time-Pressure] In a library, 20% of the books are in Hindi, 50% of the remaining are in English, and 30% of the remaining are in French. If the remaining 6,300 books are in regional languages, find the total number of books in the library.",
-    "p4_s": "Step 1: Use the Successive Remaining Factor Method.\nLet total books = B.\n- After Hindi books (20% gone), remaining = (1 - 0.20) = 80% = 4/5.\n- After English books (50% of remaining gone), remaining = (1 - 0.50) = 50% = 1/2.\n- After French books (30% of remaining gone), remaining = (1 - 0.30) = 70% = 7/10.\nStep 2: Formulate the total remaining equation:\nB * (4/5) * (1/2) * (7/10) = 6300\nB * (28 / 100) = 6300 ==> B * (7 / 25) = 6300\nB = (6300 * 25) / 7 = 900 * 25 = 22,500 books.\nAnswer: 22,500 total books.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "Find the single discount equivalent to three successive discounts of 20%, 10%, and 5%."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "If the side of a square is increased by 25%, by what percent does its area increase?"
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "A number is increased by 10% and then reduced by 10%. Find the net percentage change."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "The price of petrol rose by 10%. By what percentage must a car owner reduce fuel consumption to keep monthly expenditure constant?"
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "A man spends 35% of his income on food, 25% on children's education, and 80% of the remaining on house rent. If he is left with Rs. 2,140, find his total income."
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Profit & Loss",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Profit & Loss",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Profit & Loss",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Profit & Loss",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Profit & Loss",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A shopkeeper sells an article for Rs. 840 making a profit of 20%. What was the cost price of the article?",
+        "options": {
+          "A": "Rs. 700",
+          "B": "Rs. 720",
+          "C": "Rs. 680",
+          "D": "Rs. 750"
+        },
+        "correct_answer": "A",
+        "explanation": "SP = CP * (1 + Profit%). 840 = CP * 1.20 => CP = 840 / 1.20 = Rs. 700."
+      },
+      {
+        "mcq_no": 2,
+        "question": "A person sells two wristwatches for Rs. 1,980 each. On one he gains 10% and on the other he loses 10%. What is his overall gain or loss percentage?",
+        "options": {
+          "A": "No profit, no loss",
+          "B": "1% loss",
+          "C": "1% gain",
+          "D": "2% loss"
+        },
+        "correct_answer": "B",
+        "explanation": "When two items are sold at the same SP, one at x% gain and other at x% loss, there is ALWAYS an overall loss of (x^2 / 100)% = (10^2 / 100)% = 1% loss."
+      },
+      {
+        "mcq_no": 3,
+        "question": "What single discount is equivalent to two successive discounts of 20% and 10%?",
+        "options": {
+          "A": "30%",
+          "B": "28%",
+          "C": "25%",
+          "D": "26%"
+        },
+        "correct_answer": "B",
+        "explanation": "Equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 20 + 10 - (200 / 100)% = 30 - 2 = 28%."
+      },
+      {
+        "mcq_no": 4,
+        "question": "By selling 33 meters of cloth, a shopkeeper gains the selling price of 11 meters. What is the gain percentage?",
+        "options": {
+          "A": "33.33%",
+          "B": "50%",
+          "C": "25%",
+          "D": "66.67%"
+        },
+        "correct_answer": "B",
+        "explanation": "Gain = 33 SP - 33 CP = 11 SP => 22 SP = 33 CP => SP / CP = 33 / 22 = 3 / 2. Gain % = [(3 - 2) / 2] * 100% = 50%."
+      },
+      {
+        "mcq_no": 5,
+        "question": "A dishonest dealer professes to sell his goods at cost price but uses a false weight of 900 grams for a 1 kg weight. What is his real gain percentage?",
+        "options": {
+          "A": "10%",
+          "B": "11.11%",
+          "C": "9.09%",
+          "D": "12.5%"
+        },
+        "correct_answer": "B",
+        "explanation": "Gain % = [Error / (True Value - Error)] * 100% = [100 / 900] * 100% = 1/9 * 100% = 11.11%."
+      },
+      {
+        "mcq_no": 6,
+        "question": "If the cost price of 15 articles is equal to the selling price of 12 articles, what is the profit percentage?",
+        "options": {
+          "A": "20%",
+          "B": "25%",
+          "C": "30%",
+          "D": "15%"
+        },
+        "correct_answer": "B",
+        "explanation": "15 CP = 12 SP => SP / CP = 15 / 12 = 5 / 4. Profit % = [(5 - 4) / 4] * 100% = 25%."
+      },
+      {
+        "mcq_no": 7,
+        "question": "A merchant marks his goods 40% above cost price and allows a discount of 25% on the marked price. What is his net profit percentage?",
+        "options": {
+          "A": "5%",
+          "B": "10%",
+          "C": "15%",
+          "D": "8%"
+        },
+        "correct_answer": "A",
+        "explanation": "Let CP = 100. Marked Price (MP) = 140. SP = MP * (1 - 0.25) = 140 * 0.75 = 105. Net Profit = 105 - 100 = 5%."
+      },
+      {
+        "mcq_no": 8,
+        "question": "An item is sold at a loss of 10%. If it had been sold for Rs. 90 more, there would have been a gain of 5%. What is the cost price?",
+        "options": {
+          "A": "Rs. 500",
+          "B": "Rs. 600",
+          "C": "Rs. 750",
+          "D": "Rs. 800"
+        },
+        "correct_answer": "B",
+        "explanation": "Difference between 5% gain and 10% loss = 15% of CP. 15% of CP = Rs. 90 => CP = 90 / 0.15 = Rs. 600."
+      },
+      {
+        "mcq_no": 9,
+        "question": "What is the single equivalent discount for three successive discounts of 20%, 10%, and 5%?",
+        "options": {
+          "A": "35%",
+          "B": "31.6%",
+          "C": "32.4%",
+          "D": "30.5%"
+        },
+        "correct_answer": "B",
+        "explanation": "Net multiplying factor = (1 - 0.20) * (1 - 0.10) * (1 - 0.05) = 0.80 * 0.90 * 0.95 = 0.684. Equivalent Discount = 1 - 0.684 = 0.316 = 31.6%."
+      },
+      {
+        "mcq_no": 10,
+        "question": "A manufacturer sells to a wholesaler at 10% profit, the wholesaler sells to a retailer at 20% profit, and the retailer sells to a customer at 25% profit. If the customer pays Rs. 3,300, what was the manufacturer's cost price?",
+        "options": {
+          "A": "Rs. 2,000",
+          "B": "Rs. 2,200",
+          "C": "Rs. 2,400",
+          "D": "Rs. 1,800"
+        },
+        "correct_answer": "A",
+        "explanation": "CP * 1.10 * 1.20 * 1.25 = 3,300 => CP * 1.65 = 3,300 => CP = 3,300 / 1.65 = Rs. 2,000."
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Profit & Loss (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "First two: 20 and 10 ==> 28%. Then 28 and 5: 28 + 5 - (28*5)/100 = 33 - 1.4 = 31.6%. Answer: 31.6%."
-      ],
-      [
-        "Solution Q2:",
-        "Area = s^2. Net % = 25 + 25 + (25*25)/100 = 50 + 6.25 = 56.25%. Answer: 56.25%."
-      ],
-      [
-        "Solution Q3:",
-        "Equal increase and decrease of 10%: Loss = 10^2 / 100 = 1% decrease. Answer: 1% decrease."
-      ],
-      [
-        "Solution Q4:",
-        "+10% = +1/10. By Fraction Rule, required reduction = 1/(10 + 1) = 1/11 = 9.09%. Answer: 9.09%."
-      ],
-      [
-        "Solution Q5:",
-        "Food + Education = 60%. Remaining = 40%. Rent = 80% of 40% = 32%. Final savings = 40% - 32% = 8%. 8% of Income = 2140 ==> Income = 2140 / 0.08 = Rs. 26,750. Answer: Rs. 26,750."
-      ]
-    ],
-    "trap": "Do not simply add successive percentage discounts! 20% + 10% is NEVER 30%. It is 28% because the second discount is applied to the reduced amount."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Maximum Average Subarray I",
+      "difficulty": "Easy",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "You are given an integer array nums consisting of n elements, and an integer k. Find a contiguous subarray whose length is equal to k that has the maximum average value and return this value.",
+      "solution_approach": "1. Apply Sliding Window (Fixed Size) algorithmic technique.\n2. Maintains a contiguous subarray window of fixed length K. Slides the window one step at a time by adding the incoming element at the right and evicting the outgoing element at the left.\n3. Invariants: Reuses the computational state of overlapping elements across adjacent windows in O(1) time instead of recomputing from scratch in O(K).",
+      "code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+      "java_solution": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+      "solution_java": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Find All Anagrams in a String",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order.",
+      "solution_approach": "1. Identify interview variation of Sliding Window (Fixed Size).\n2. Handle edge cases: k == nums.length, Negative numbers in array, k == 1, All elements equal.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Sliding Window (Fixed Size)",
+    "category": "Sliding Window",
+    "concept": "Maintains a contiguous subarray window of fixed length K. Slides the window one step at a time by adding the incoming element at the right and evicting the outgoing element at the left.",
+    "why_it_works": "Reuses the computational state of overlapping elements across adjacent windows in O(1) time instead of recomputing from scratch in O(K).",
+    "visual_explanation": "Array: [ 2, 1, 5, 1, 3, 2 ], K = 3\\nWindow 0: [ (2, 1, 5), 1, 3, 2 ]  Sum = 8\\nWindow 1: [ 2, (1, 5, 1), 3, 2 ]  Sum = 8 - 2 + 1 = 7\\nWindow 2: [ 2, 1, (5, 1, 3), 2 ]  Sum = 7 - 1 + 3 = 9 (Max)\\nWindow 3: [ 2, 1, 5, (1, 3, 2) ]  Sum = 9 - 5 + 2 = 6",
+    "java_code": "import java.util.*;\n\npublic class Solution {\n    public int maxSumSubarray(int[] nums, int k) {\n        if (nums == null || nums.length < k) return 0;\n        int windowSum = 0;\n        for (int i = 0; i < k; i++) {\n            windowSum += nums[i];\n        }\n        int maxSum = windowSum;\n        for (int i = k; i < nums.length; i++) {\n            windowSum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, windowSum);\n        }\n        return maxSum;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Solution {\n    public int maxSumSubarray(int[] nums, int k) {\n        if (nums == null || nums.length < k) return 0;\n        int windowSum = 0;\n        for (int i = 0; i < k; i++) {\n            windowSum += nums[i];\n        }\n        int maxSum = windowSum;\n        for (int i = k; i < nums.length; i++) {\n            windowSum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, windowSum);\n        }\n        return maxSum;\n    }\n}",
+    "python_code": "import java.util.*;\n\npublic class Solution {\n    public int maxSumSubarray(int[] nums, int k) {\n        if (nums == null || nums.length < k) return 0;\n        int windowSum = 0;\n        for (int i = 0; i < k; i++) {\n            windowSum += nums[i];\n        }\n        int maxSum = windowSum;\n        for (int i = k; i < nums.length; i++) {\n            windowSum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, windowSum);\n        }\n        return maxSum;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4: Guard check for null or array smaller than window size k.",
+      "Line 5-8: Compute baseline sum for the initial window of first k elements.",
+      "Line 9: Initialize maxSum with the sum of the first window.",
+      "Line 10-13: Iterate from k to end of array, adding nums[i] and subtracting nums[i - k].",
+      "Line 14: Return the maximum window sum found."
+    ],
+    "dry_run": "nums = [2, 1, 5, 1, 3, 2], k = 3. Init: sum([2,1,5])=8. i=3: window=8+1-2=7 (max=8). i=4: window=7+3-1=9 (max=9). i=5: window=9+2-5=6 (max=9). Return 9.",
+    "complexity": "O(N) Time, O(1) Auxiliary Space",
+    "edge_cases": [
+      "k == nums.length",
+      "Negative numbers in array",
+      "k == 1",
+      "All elements equal"
+    ],
+    "interview_variations": [
+      "Maximum Average Subarray I",
+      "Find All Anagrams in a String",
+      "Substrings of Size Three with Distinct Characters",
+      "Permutation in String"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-02-01",
+        "title": "Problem 1: Maximum Average Subarray I",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are given an integer array nums consisting of n elements, and an integer k. Find a contiguous subarray whose length is equal to k that has the maximum average value and return this value.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Sliding Window (Fixed Size) algorithmic technique.\n2. Maintains a contiguous subarray window of fixed length K. Slides the window one step at a time by adding the incoming element at the right and evicting the outgoing element at the left.\n3. Invariants: Reuses the computational state of overlapping elements across adjacent windows in O(1) time instead of recomputing from scratch in O(K).",
+        "solution_java": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+        "solution_python": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+        "code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+        "java_code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-02-02",
+        "title": "Problem 2: Find All Anagrams in a String",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Sliding Window (Fixed Size).\n2. Handle edge cases: k == nums.length, Negative numbers in array, k == 1, All elements equal.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<Integer> findAnagrams(String s, String p) {\n        List<Integer> res = new ArrayList<>();\n        if (s.length() < p.length()) return res;\n        int[] pCount = new int[26];\n        int[] sCount = new int[26];\n        for (int i = 0; i < p.length(); i++) {\n            pCount[p.charAt(i) - 'a']++;\n            sCount[s.charAt(i) - 'a']++;\n        }\n        if (Arrays.equals(pCount, sCount)) res.add(0);\n        for (int i = p.length(); i < s.length(); i++) {\n            sCount[s.charAt(i) - 'a']++;\n            sCount[s.charAt(i - p.length()) - 'a']--;\n            if (Arrays.equals(pCount, sCount)) res.add(i - p.length() + 1);\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "Operating Systems",
+    "topic": "CPU Scheduling Algorithms (FCFS, SJF, SRTF, Round Robin & Priority)",
+    "detailed_notes": [
+      "CPU Scheduling is the process by which the short-term scheduler (CPU scheduler) allocates the CPU core to one of the ready processes. Schedulers operate in two modes: Non-preemptive (once allocated, the process retains CPU until it terminates or voluntarily yields for I/O) and Preemptive (the kernel can interrupt a running process when a higher-priority process arrives or its time slice expires).\n\nKey Algorithms:\n1. First-Come, First-Served (FCFS): Non-preemptive. Suffers from the Convoy Effect, where small I/O-bound processes queue behind a CPU-heavy process, drastically increasing average waiting time.\n2. Shortest Job First (SJF): Non-preemptive. Mathematically optimal in minimizing average waiting time, but impossible to implement perfectly in practice because future CPU burst lengths are unknown (estimated using exponential smoothing).\n3. Shortest Remaining Time First (SRTF): Preemptive version of SJF. Preempts current process if an incoming process has a shorter remaining burst. Can lead to starvation of long CPU bursts.\n4. Round Robin (RR): Preemptive, designed for time-sharing. Each process gets a fixed time quantum 'q'. If q is too small, context switch overhead dominates; if q is too large, RR degrades to FCFS.\n5. Priority Scheduling: Can be preemptive or non-preemptive. Can cause indefinite blocking (starvation), solved by Aging (gradually increasing the priority of processes that wait in the ready queue for long periods)."
+    ],
+    "key_definitions": [
+      {
+        "term": "Turnaround Time",
+        "definition": "Total time interval from process submission to completion: Completion Time - Arrival Time."
+      },
+      {
+        "term": "Waiting Time",
+        "definition": "Total duration spent waiting in the Ready queue: Turnaround Time - Burst Time."
+      },
+      {
+        "term": "Convoy Effect",
+        "definition": "A phenomenon in FCFS where numerous short processes wait behind one long CPU-bound process."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "What is the Convoy Effect in CPU scheduling, and which algorithm causes it?",
+        "a": "The Convoy Effect occurs in FCFS scheduling when a CPU-intensive process holds the processor for a long duration, forcing all shorter, I/O-bound processes to wait idle in the ready queue. This severely degrades CPU and device utilization and inflates average waiting times."
+      },
+      {
+        "q": "Why is Shortest Job First (SJF) considered optimal, and why is it hard to implement in real OS kernels?",
+        "a": "SJF is provably optimal because scheduling the shortest job first minimizes the waiting time for all subsequent jobs in the queue. However, an OS cannot know the exact length of a process's next CPU burst in advance. Kernels approximate it using exponential averaging of historical bursts (tau_{n+1} = alpha * t_n + (1 - alpha) * tau_n)."
+      },
+      {
+        "q": "How does the choice of Time Quantum impact Round Robin performance?",
+        "a": "If the time quantum is extremely small (e.g., 1 microsecond), the CPU spends a disproportionate amount of time on context switches rather than executing user code. If the quantum is extremely large, Round Robin degenerates into FCFS, causing poor interactive response times. Rule of thumb: 80% of CPU bursts should be shorter than the time quantum."
+      },
+      {
+        "q": "What is Starvation in Priority Scheduling, and how is it resolved?",
+        "a": "Starvation (indefinite blocking) occurs when low-priority processes never get CPU time because a steady stream of higher-priority processes keeps arriving. It is resolved using Aging: dynamically incrementing a waiting process's priority over elapsed time until it becomes high enough to execute."
+      },
+      {
+        "q": "Explain the difference between Preemptive and Non-Preemptive scheduling.",
+        "a": "In non-preemptive scheduling, once a process is in the running state, it holds the CPU until it terminates or blocks for I/O. In preemptive scheduling, the OS can forcibly interrupt and move a running process back to the ready state when a higher-priority process arrives, a timer interrupt fires, or a higher-priority I/O event completes."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-02-01",
+        "question": "Which CPU scheduling algorithm provides the theoretical minimum average waiting time for a given set of processes?",
+        "options": [
+          "First-Come, First-Served",
+          "Round Robin",
+          "Shortest Job First",
+          "Priority Scheduling"
+        ],
+        "correct_answer": "C",
+        "explanation": "SJF is provably optimal for minimizing average waiting time by executing shorter bursts first."
+      },
+      {
+        "id": "CS-02-02",
+        "question": "The technique of gradually increasing the priority of processes that wait in the system for a long time is called:",
+        "options": [
+          "Paging",
+          "Aging",
+          "Throttling",
+          "Belady's adjustment"
+        ],
+        "correct_answer": "B",
+        "explanation": "Aging prevents starvation in priority queues by systematically boosting waiting processes."
+      },
+      {
+        "id": "CS-02-03",
+        "question": "If the time quantum of a Round Robin scheduler is extremely large, it behaves identically to:",
+        "options": [
+          "SJF",
+          "SRTF",
+          "FCFS",
+          "Multilevel Feedback Queue"
+        ],
+        "correct_answer": "C",
+        "explanation": "When quantum exceeds the longest burst, every process completes in arrival order without preemption, mimicking FCFS."
+      },
+      {
+        "id": "CS-02-04",
+        "question": "Turnaround time of a process is calculated as:",
+        "options": [
+          "Waiting Time - Burst Time",
+          "Completion Time - Arrival Time",
+          "Completion Time - Burst Time",
+          "Arrival Time + Burst Time"
+        ],
+        "correct_answer": "B",
+        "explanation": "Turnaround time represents total elapsed lifetime: Completion Time minus Arrival Time."
+      },
+      {
+        "id": "CS-02-05",
+        "question": "Which algorithm is the preemptive variant of Shortest Job First?",
+        "options": [
+          "Round Robin",
+          "Priority Inversion",
+          "Shortest Remaining Time First (SRTF)",
+          "Multilevel Queue"
+        ],
+        "correct_answer": "C",
+        "explanation": "SRTF preempts the CPU if a newly arrived process has a remaining burst shorter than current execution."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "NSE2 / BulkBeat TV",
+    "repo_path": "D:\\Projects\\nse2",
+    "feature_focus": "Real-Time Financial Media Ingestion & Concurrency Architecture (Python AsyncIO & aiohttp)",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nHow event loops handle hundreds of concurrent WebSocket connections and polling workers.\n\nWHAT TO MEMORIZE:\nAsyncIO runs a single-threaded cooperative event loop where coroutines yield control via `await`, allowing thousands of idle I/O sockets without OS thread overhead.\n\n60-SECOND INTERVIEW PITCH:\nBulkBeat TV / NSE2 is a real-time market disclosure alert engine built in Python. During earnings season, hundreds of market filings drop simultaneously. Using an async event-driven architecture with aiohttp and priority queues, the system processes and dispatches actionable trade alerts with sub-second latency across 6,000+ active users.",
+    "interview_qa": [
+      {
+        "q": "How does the NSE2 ingestion engine achieve sub-50ms announcement processing?",
+        "a": "The engine uses a dedicated `aiohttp.ClientSession` pool with HTTP keep-alive to poll NSE corporate announcement feeds and market disclosure endpoints every 500ms. When a new filing payload arrives, it bypasses synchronous disk operations and pushes raw payloads into an in-memory `asyncio.Queue`. Worker coroutines parse the corporate action (dividends, splits, earnings results) and extract key financial metrics concurrently."
+      },
+      {
+        "q": "How do you handle sudden market open surges (9:15 AM IST) when hundreds of disclosures arrive simultaneously?",
+        "a": "We use a token-bucket rate limiter combined with backpressure handling on the asyncio queue. If the queue size exceeds 500 items, the poller backs off slightly while worker threads drain notifications in priority order (Price Sensitive Announcements first, routine filings second)."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "What is the difference between Synchronous and Asynchronous execution? How does Python's event loop manage concurrent tasks?",
+      "model_answer": "In synchronous execution, operations execute sequentially; each instruction must complete before the next instruction starts. If an operation performs blocking I/O (like reading a file or waiting for an HTTP API response), the CPU core remains idle, blocking execution.\n\nIn asynchronous execution, non-blocking tasks are dispatched to execute cooperatively. While a task awaits an external I/O event, the executing thread yields control back to an Event Loop, which immediately executes another ready task.\n\nPython's `asyncio` manages concurrency on a single thread using an Event Loop. Coroutines defined with `async def` yield execution using `await`. When an I/O operation (e.g., `asyncio.sleep()` or async socket read) is awaiting completion, the coroutine pauses and registers a callback with OS polling mechanisms (epoll on Linux, kqueue on macOS, I/O Completion Ports on Windows). When the socket becomes readable, the event loop invokes the callback, resuming the coroutine with zero OS thread context-switch overhead.",
+      "key_talking_points": [
+        "Define blocking synchronous vs non-blocking asynchronous execution.",
+        "Explain asyncio's single-threaded event loop.",
+        "Highlight OS-level polling (epoll, IOCP) and cooperative coroutine suspension via await."
+      ],
+      "what_interviewer_evaluates": "Deep understanding of concurrency primitives and asynchronous event architectures."
+    },
+    {
+      "category": "Technical",
+      "question": "Explain the concept of SQL injection and demonstrate how parameterized queries prevent it.",
+      "model_answer": "SQL Injection (SQLi) occurs when untrusted user input is directly concatenated into a dynamic SQL query string, allowing an attacker to manipulate the query structure and execute arbitrary SQL commands (e.g., bypassing authentication via `' OR '1'='1`).\n\nParameterized queries (Prepared Statements) prevent SQL injection by strictly separating SQL code structure from user data. When a parameterized query is executed (e.g., `cursor.execute('SELECT * FROM users WHERE email = %s AND pass = %s', (email, password))`): 1. The database driver sends the query template with placeholders to the database engine first.\n2. The database parses, compiles, and optimizes the query execution plan.\n3. The user parameters are transmitted separately across the wire as literal values.\nBecause the query syntax has already been compiled, user input is treated strictly as data literals—even if input contains quotes or SQL keywords, it cannot alter the relational syntax tree.",
+      "key_talking_points": [
+        "Explain the root cause of SQL injection: string concatenation of untrusted data.",
+        "Explain how Prepared Statements compile the query tree before binding parameters.",
+        "Emphasize that user input is treated strictly as data literals, never executable code."
+      ],
+      "what_interviewer_evaluates": "Cybersecurity awareness, secure database coding practices, and driver mechanics."
+    },
+    {
+      "category": "Project Experience",
+      "question": "How did you design authentication and role-based access control (RBAC) in the College Student Management System?",
+      "model_answer": "In CSMS, we had to support four distinct institutional roles: HOD, Section Incharge, Faculty, and Students.\n\nIn `backend/routers/auth.py`, I implemented a dual-identity login pipeline. Administrators and faculty log in using an email address, which queries the `admins` table. Students log in using their University Enrollment Number (e.g., `CSJMA24000004738`), querying the `students` table. Passwords are cryptographically hashed and verified using `bcrypt`.\n\nTo enforce Role-Based Access Control, protected FastAPI endpoints utilize dependency injection (`Depends(get_current_active_user)`). The dependency decodes the session, verifies user status, and checks the user's role against endpoint permissions. For example, circular posting and student deletion are restricted strictly to `HOD`; grade entry is restricted to `Faculty` and `HOD`; while students are restricted to read-only access to their own attendance and grade rosters.",
+      "key_talking_points": [
+        "Dual-identity lookup: Email for staff, University Enrollment Number for students.",
+        "Bcrypt password hashing for cryptographic protection.",
+        "FastAPI dependency injection enforcing RBAC across endpoints."
+      ],
+      "what_interviewer_evaluates": "Security architecture, authentication flows, and authorization design."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a situation where you had to debug a complex, elusive issue in code. How did you resolve it?",
+      "model_answer": "Situation: While developing our CSMS API, the frontend was receiving HTTP 500 errors during attendance batch submission, but only for certain student rosters.\n\nTask: I needed to identify the root cause of the intermittent failure and ensure 100% reliable attendance submissions across all class sections.\n\nAction: Instead of making random guesses, I inspected the backend Uvicorn logs and enabled detailed PostgreSQL query logging. I observed an `IntegrityError` triggered by a unique constraint violation on `(student_id, record_date)`. Tracing the frontend JavaScript payload, I discovered that if faculty clicked the submit button twice before the Fetch request completed, two concurrent POST requests were dispatched. The first succeeded, and the second failed the unique constraint.\n\nI implemented a two-part fix: on the frontend, I disabled the submit button immediately upon click and displayed a loading spinner. On the backend, I wrapped the insertion in an `ON CONFLICT (student_id, record_date) DO UPDATE` clause in SQL, making the attendance submission fully idempotent.\n\nResult: The intermittent 500 errors disappeared completely, and attendance submission became robust and idempotent.",
+      "key_talking_points": [
+        "Situation: Intermittent HTTP 500 on batch attendance submission.",
+        "Task: Root-cause debugging without guesswork.",
+        "Action: Log inspection, diagnosing race conditions and unique constraint conflicts, fixing with UI debouncing and SQL upsert idempotency.",
+        "Result: Total elimination of errors and idempotent endpoint architecture."
+      ],
+      "what_interviewer_evaluates": "Methodical debugging discipline, root-cause analysis, and idempotent systems design."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "Why do you want to join our company specifically, and what are your career aspirations?",
+      "model_answer": "I want to join your engineering team because of your company's high engineering standards and culture of building robust, scalable products. Through my academic curriculum and hands-on projects, I have discovered that I am passionate about backend systems, database performance, and distributed architectures. Your organization works on mission-critical platforms with large user bases, which is the exact environment where I can contribute my strong fundamentals in Python, SQL, and APIs while learning from senior architects.\n\nIn the next three years, my goal is to develop into a high-impact software engineer who can independently own complex system modules, optimize high-throughput pipelines, and mentor junior developers. I believe joining your team is the ideal place to begin that journey.",
+      "key_talking_points": [
+        "Genuine alignment with engineering standards and scale.",
+        "Connection between personal passion (backend/DB) and company domain.",
+        "Clear, ambitious, and realistic 3-year professional roadmap."
+      ],
+      "what_interviewer_evaluates": "Company research, professional maturity, and long-term career intentionality."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Herbert Simon's 4 stages: Intelligence, Design, Choice, Implementation.\n• Satisficing vs Optimizing under bounded rationality.\n• Two Pointers opposite direction pattern on sorted arrays (O(N) time, O(1) space).\n• Process Control Block (PCB) segments: Text, Data, BSS, Heap, Stack.",
+    "today_recall": "• Mastered Decision Support Systems (DSS) Subsystems: Data Management, Model Management, Knowledge-Based subsystem, and User Interface Dialog subsystem.\n• Analyzed MIS vs DSS: MIS provides structured periodic reports for operational managers; DSS supports semi-structured/unstructured decisions for strategic executives.\n• Examined coupling between mathematical models and live relational data.",
+    "formula_recall": "• Profit % = [(SP - CP) / CP] * 100%\n• Loss % = [(CP - SP) / CP] * 100%\n• Single Equivalent Discount: d = d1 + d2 - (d1 * d2 / 100)%\n• Equal SP with x% profit and x% loss: Net outcome is ALWAYS a loss of (x^2 / 100)%\n• Fixed Sliding Window: Window size K remains invariant; compute new sum in O(1) via sum = sum - arr[i-K] + arr[i].",
+    "pyq_recall": "• University PYQ: CSJM University 2021 (Section B, 15 Marks) — 'Define DSS. Detail the four subsystems of DSS and contrast MIS with DSS with an architectural comparison table.'\n• Blueprint: 1. Definition (2m) -> 2. Subsystem Block Diagram (4m) -> 3. Subsystem Breakdown (5m) -> 4. MIS vs DSS Table (2m) -> 5. Summary (2m).",
+    "dsa_recall": "• Pattern: Sliding Window (Fixed Size K).\n• Invariant: Window size remains exactly K. Slide forward by subtracting the element exiting the left and adding the element entering the right.\n• Edge Cases: Array length smaller than K, all negative integers, K = 1.",
+    "project_recall": "• Project: BulkBeat TV (Real-Time Market Intelligence Engine, bulkbeattv.com).\n• Architecture: Python AsyncIO backend, SQLite in WAL mode (30s busy-timeout), Telegram bot webhooks, and Tesseract OCR.\n• Defense Pitch: 'Architected real-time streaming market alerts with sub-5s latency on a 1GB VPS; 22-rule deterministic AI filters 90%+ noise, with zero database locks under heavy burst traffic.'",
+    "rapid_fire_questions": [
+      {
+        "q": "What are the four core subsystems of a Decision Support System (DSS)?",
+        "a": "Data Management, Model Management, Knowledge-Based subsystem, and User Interface (Dialog) subsystem."
+      },
+      {
+        "q": "What is the primary difference between MIS and DSS?",
+        "a": "MIS provides structured scheduled reports from past operational data; DSS provides interactive analytical modeling for semi-structured executive decisions."
+      },
+      {
+        "q": "What is the formula for Single Equivalent Discount of two successive discounts d1% and d2%?",
+        "a": "d1 + d2 - (d1 * d2 / 100)%."
+      },
+      {
+        "q": "If two items are sold at equal SP, one at 20% gain and other at 20% loss, what is the net result?",
+        "a": "Net loss of 4% (Formula: (20^2 / 100)% = 4% loss)."
+      },
+      {
+        "q": "What phenomenon in FCFS CPU scheduling occurs when short processes wait behind a long CPU-bound process?",
+        "a": "The Convoy Effect."
+      },
+      {
+        "q": "Which CPU scheduling algorithm gives the theoretical minimum average waiting time?",
+        "a": "Shortest Job First (SJF) / Shortest Remaining Time First (SRTF)."
+      },
+      {
+        "q": "What technique eliminates starvation in Priority CPU scheduling?",
+        "a": "Aging (gradually increasing waiting process priority over time)."
+      },
+      {
+        "q": "What is the time complexity of finding the maximum sum subarray of fixed size K using Sliding Window?",
+        "a": "O(N) time with O(1) auxiliary space."
+      },
+      {
+        "q": "In BulkBeat TV, why was SQLite configured in Write-Ahead Logging (WAL) mode?",
+        "a": "To allow concurrent readers to read without blocking the single writer queue, preventing database locked errors."
+      },
+      {
+        "q": "What is the typical alert latency achieved by BulkBeat TV on a low-resource VPS?",
+        "a": "Sub-5 seconds end-to-end alert delivery."
+      }
+    ],
+    "today_summary": "• Mastered Decision Support Systems (DSS) Subsystems: Data Management, Model Management, Knowledge-Based subsystem, and User Interface Dialog subsystem.\n• Analyzed MIS vs DSS: MIS provides structured periodic reports for operational managers; DSS supports semi-structured/unstructured decisions for strategic executives.\n• Examined coupling between mathematical models and live relational data.",
+    "formulas_and_shortcuts": [
+      "• Profit % = [(SP - CP) / CP] * 100%\n• Loss % = [(CP - SP) / CP] * 100%\n• Single Equivalent Discount: d = d1 + d2 - (d1 * d2 / 100)%\n• Equal SP with x% profit and x% loss: Net outcome is ALWAYS a loss of (x^2 / 100)%\n• Fixed Sliding Window: Window size K remains invariant; compute new sum in O(1) via sum = sum - arr[i-K] + arr[i]."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered Decision Support Systems (DSS) Subsystems: Data Management, Model Management, Knowledge-Based subsystem, and User Interface Dialog subsystem."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Profit % = [(SP - CP) / CP] * 100%"
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Sliding Window (Fixed Size K)."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: BulkBeat TV (Real-Time Market Intelligence Engine, bulkbeattv.com)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 02 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "Which of the following is NOT one of the three primary architectural subsystems of a classical Decision Support System (DSS)?",
+        "a": "Answer: D\n\nA DSS architecture consists of three fundamental components: Data Management (DBMS), Model Management (MBMS), and Dialog/User Interface."
+      },
+      {
+        "q": "How does a Management Information System (MIS) fundamentally differ from a Decision Support System (DSS)?",
+        "a": "Answer: B\n\nMIS supports structured, routine operations with fixed scheduled reports; DSS is designed for ad-hoc, flexible, what-if exploratory modeling of semi-structured problems."
+      },
+      {
+        "q": "What is the primary function of the Model Base Management Subsystem (MBMS) in a DSS?",
+        "a": "Answer: B\n\nMBMS manages the catalog of quantitative models (statistical, financial, optimization, forecasting) and couples them with data to generate scenarios."
+      },
+      {
+        "q": "In DSS sensitivity analysis, what does a 'Goal Seeking' query determine?",
+        "a": "Answer: B\n\nGoal seeking (backward sensitivity analysis) calculates the input variable adjustments required to reach a specific desired target result."
+      },
+      {
+        "q": "Executive Information Systems (EIS) are distinguished from general DSS by their strong emphasis on:",
+        "a": "Answer: B\n\nEIS is tailored for senior leadership, emphasizing intuitive visual interfaces, drill-down summaries, and status tracking of Critical Success Factors (CSFs)."
+      },
+      {
+        "q": "A vendor bought lemons at 6 for Rs. 10 and sold them at 4 for Rs. 9. Find his gain or loss percentage.",
+        "a": "Answer: A\n\nCP of 1 lemon = 10/6 = Rs. 5/3. SP of 1 lemon = 9/4 = Rs. 2.25. Gain = 9/4 - 5/3 = (27 - 20) / 12 = 7/12. Gain % = (7/12) / (5/3) * 100% = (7/20) * 100% = 35%."
+      },
+      {
+        "q": "A grocer marks an article at Rs. 500. After allowing two successive discounts of 20% and 10%, what is the final selling price?",
+        "a": "Answer: A\n\nSP = 500 * (1 - 0.20) * (1 - 0.10) = 500 * 0.80 * 0.90 = 500 * 0.72 = Rs. 360."
+      },
+      {
+        "q": "If a trader sells an article at Rs. 450, he incurs a 10% loss. At what price should he sell it to gain 20%?",
+        "a": "Answer: A\n\nCP = 450 / 0.90 = Rs. 500. To gain 20%, target SP = 500 * 1.20 = Rs. 600."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-02-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which of the following is NOT one of the three primary architectural subsystems of a classical Decision Support System (DSS)?",
+        "options": [
+          "Database Management Subsystem (DBMS)",
+          "Model Base Management Subsystem (MBMS)",
+          "User Interface / Dialog Subsystem",
+          "Packet Switching Subsystem"
+        ],
+        "correct_answer": "D",
+        "explanation": "A DSS architecture consists of three fundamental components: Data Management (DBMS), Model Management (MBMS), and Dialog/User Interface."
+      },
+      {
+        "id": "TEST-02-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does a Management Information System (MIS) fundamentally differ from a Decision Support System (DSS)?",
+        "options": [
+          "MIS focuses on ad-hoc interactive simulation, while DSS provides static scheduled reports",
+          "MIS produces structured periodic summaries of past operational data, while DSS provides interactive 'what-if' modeling for semi-structured decisions",
+          "MIS is only used by top executives, while DSS is used by data entry clerks",
+          "MIS does not require a database, whereas DSS requires a data warehouse"
+        ],
+        "correct_answer": "B",
+        "explanation": "MIS supports structured, routine operations with fixed scheduled reports; DSS is designed for ad-hoc, flexible, what-if exploratory modeling of semi-structured problems."
+      },
+      {
+        "id": "TEST-02-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary function of the Model Base Management Subsystem (MBMS) in a DSS?",
+        "options": [
+          "Storing raw SQL transaction tables",
+          "Managing, updating, and executing mathematical, financial, and simulation models",
+          "Rendering HTML CSS graphics on the client",
+          "Encrypting database disk partitions"
+        ],
+        "correct_answer": "B",
+        "explanation": "MBMS manages the catalog of quantitative models (statistical, financial, optimization, forecasting) and couples them with data to generate scenarios."
+      },
+      {
+        "id": "TEST-02-04",
+        "category": "Academic (Academic Theory)",
+        "question": "In DSS sensitivity analysis, what does a 'Goal Seeking' query determine?",
+        "options": [
+          "The output metric given fixed input parameters",
+          "The required value of an input variable needed to achieve a specified target output",
+          "The maximum bandwidth of the network connection",
+          "The number of concurrent database sessions"
+        ],
+        "correct_answer": "B",
+        "explanation": "Goal seeking (backward sensitivity analysis) calculates the input variable adjustments required to reach a specific desired target result."
+      },
+      {
+        "id": "TEST-02-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Executive Information Systems (EIS) are distinguished from general DSS by their strong emphasis on:",
+        "options": [
+          "Low-level assembly language programming",
+          "High-level graphical KPI dashboards, drill-down capabilities, and internal/external critical success factors",
+          "Batch card punch processing",
+          "Hardware register allocation"
+        ],
+        "correct_answer": "B",
+        "explanation": "EIS is tailored for senior leadership, emphasizing intuitive visual interfaces, drill-down summaries, and status tracking of Critical Success Factors (CSFs)."
+      },
+      {
+        "id": "TEST-02-06",
+        "category": "Placement Aptitude",
+        "question": "A vendor bought lemons at 6 for Rs. 10 and sold them at 4 for Rs. 9. Find his gain or loss percentage.",
+        "options": [
+          "35% gain",
+          "25% gain",
+          "20% loss",
+          "30% gain"
+        ],
+        "correct_answer": "A",
+        "explanation": "CP of 1 lemon = 10/6 = Rs. 5/3. SP of 1 lemon = 9/4 = Rs. 2.25. Gain = 9/4 - 5/3 = (27 - 20) / 12 = 7/12. Gain % = (7/12) / (5/3) * 100% = (7/20) * 100% = 35%."
+      },
+      {
+        "id": "TEST-02-07",
+        "category": "Placement Aptitude",
+        "question": "A grocer marks an article at Rs. 500. After allowing two successive discounts of 20% and 10%, what is the final selling price?",
+        "options": [
+          "Rs. 360",
+          "Rs. 350",
+          "Rs. 380",
+          "Rs. 340"
+        ],
+        "correct_answer": "A",
+        "explanation": "SP = 500 * (1 - 0.20) * (1 - 0.10) = 500 * 0.80 * 0.90 = 500 * 0.72 = Rs. 360."
+      },
+      {
+        "id": "TEST-02-08",
+        "category": "Placement Aptitude",
+        "question": "If a trader sells an article at Rs. 450, he incurs a 10% loss. At what price should he sell it to gain 20%?",
+        "options": [
+          "Rs. 600",
+          "Rs. 580",
+          "Rs. 620",
+          "Rs. 550"
+        ],
+        "correct_answer": "A",
+        "explanation": "CP = 450 / 0.90 = Rs. 500. To gain 20%, target SP = 500 * 1.20 = Rs. 600."
+      },
+      {
+        "id": "TEST-02-09",
+        "category": "Placement Aptitude",
+        "question": "By selling 33 meters of cloth, a merchant gains the selling price of 11 meters. What is his gain percentage?",
+        "options": [
+          "50%",
+          "33.33%",
+          "25%",
+          "66.67"
+        ],
+        "correct_answer": "A",
+        "explanation": "Profit = 11 SP => 33 SP - 33 CP = 11 SP => 22 SP = 33 CP => SP/CP = 33/22 = 3/2. Gain % = [(3 - 2)/2] * 100% = 50%."
+      },
+      {
+        "id": "TEST-02-10",
+        "category": "Placement Aptitude",
+        "question": "A watch was sold at 5% loss. Had it been sold for Rs. 56 more, there would have been a gain of 9%. What is the cost price of the watch?",
+        "options": [
+          "Rs. 400",
+          "Rs. 450",
+          "Rs. 380",
+          "Rs. 500"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total percentage difference = 9% - (-5%) = 14%. 14% of CP = 56 => CP = 56 / 0.14 = Rs. 400."
+      },
+      {
+        "id": "TEST-02-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which CPU scheduling algorithm provides the theoretical minimum average waiting time for a given set of processes?",
+        "options": [
+          "First-Come, First-Served",
+          "Round Robin",
+          "Shortest Job First",
+          "Priority Scheduling"
+        ],
+        "correct_answer": "C",
+        "explanation": "SJF is provably optimal for minimizing average waiting time by executing shorter bursts first."
+      },
+      {
+        "id": "TEST-02-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "The technique of gradually increasing the priority of processes that wait in the system for a long time is called:",
+        "options": [
+          "Paging",
+          "Aging",
+          "Throttling",
+          "Belady's adjustment"
+        ],
+        "correct_answer": "B",
+        "explanation": "Aging prevents starvation in priority queues by systematically boosting waiting processes."
+      },
+      {
+        "id": "TEST-02-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "If the time quantum of a Round Robin scheduler is extremely large, it behaves identically to:",
+        "options": [
+          "SJF",
+          "SRTF",
+          "FCFS",
+          "Multilevel Feedback Queue"
+        ],
+        "correct_answer": "C",
+        "explanation": "When quantum exceeds the longest burst, every process completes in arrival order without preemption, mimicking FCFS."
+      },
+      {
+        "id": "TEST-02-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "Turnaround time of a process is calculated as:",
+        "options": [
+          "Waiting Time - Burst Time",
+          "Completion Time - Arrival Time",
+          "Completion Time - Burst Time",
+          "Arrival Time + Burst Time"
+        ],
+        "correct_answer": "B",
+        "explanation": "Turnaround time represents total elapsed lifetime: Completion Time minus Arrival Time."
+      },
+      {
+        "id": "TEST-02-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which algorithm is the preemptive variant of Shortest Job First?",
+        "options": [
+          "Round Robin",
+          "Priority Inversion",
+          "Shortest Remaining Time First (SRTF)",
+          "Multilevel Queue"
+        ],
+        "correct_answer": "C",
+        "explanation": "SRTF preempts the CPU if a newly arrived process has a remaining burst shorter than current execution."
+      },
+      {
+        "id": "TEST-02-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Sliding Window (Fixed Size)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Sliding Window (Fixed Size)' pattern operates with O(N) Time, O(1) Auxiliary Space: Reuses the computational state of overlapping elements across adjacent windows in O(1) time instead of recomputing from scratch in O(K).."
+      },
+      {
+        "id": "TEST-02-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Sliding Window (Fixed Size)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: k == nums.length.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Sliding Window (Fixed Size) include k == nums.length, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-02-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Maximum Average Subarray I', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-02-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Real-Time Financial Media Ingestion & Concurrency Architecture (Python AsyncIO & aiohttp)'?",
+        "options": [
+          "AsyncIO runs a single-threaded cooperative event loop where coroutines yield control via `await`, allowing thousands of idle I/O sockets without OS thread overhead.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: AsyncIO runs a single-threaded cooperative event loop where coroutines yield control via `await`, allowing thousands of idle I/O sockets without OS thread overhead.."
+      },
+      {
+        "id": "TEST-02-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How does the NSE2 ingestion engine achieve sub-50ms announcement processing?'?",
+        "options": [
+          "The engine uses a dedicated `aiohttp.ClientSession` pool with HTTP keep-alive to poll NSE corporate announcement feeds and market disclosure endpoints every 500...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: The engine uses a dedicated `aiohttp.ClientSession` pool with HTTP keep-alive to poll NSE corporate announcement feeds and market disclosure."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-02",
+    "title": "Maximum Average Subarray I (Sliding Window (Fixed Size))",
+    "time_limit_minutes": 25,
+    "difficulty": "Easy",
+    "problem_statement": "Solve the core placement problem: Maximum Average Subarray I.\n\nYou are given an integer array nums consisting of n elements, and an integer k. Find a contiguous subarray whose length is equal to k that has the maximum average value and return this value.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Sliding Window (Fixed Size)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: k == nums.length, Negative numbers in array, k == 1, All elements equal.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Sliding Window (Fixed Size)\n    public double findMaxAverage(int[] nums, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Sliding Window (Fixed Size)\n    public double findMaxAverage(int[] nums, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public double findMaxAverage(int[] nums, int k) {\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += nums[i];\n        double maxSum = sum;\n        for (int i = k; i < nums.length; i++) {\n            sum += nums[i] - nums[i - k];\n            maxSum = Math.max(maxSum, sum);\n        }\n        return maxSum / k;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Sliding Window (Fixed Size) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: k == nums.length",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

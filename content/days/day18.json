@@ -1,273 +1,2446 @@
 {
   "day": 18,
-  "title": "Sliding Window Protocols (GBN & SR), Syllogisms & Number of Islands",
-  "sem_data": {
-    "subject": "BCA-5003 Computer Network",
-    "topic": "Unit III \u2014 Sliding Window Protocols: Stop-and-Wait, Go-Back-N (GBN) & Selective Repeat (SR)",
-    "detailed_notes": [
-      "Sliding window protocols are data link layer and transport layer flow control and error control protocols that allow the sender to transmit multiple frames before receiving an acknowledgment (ACK), dramatically improving channel utilization over high-latency links.",
-      "1. Stop-and-Wait ARQ:\n\u2022 Sender transmits a single frame (sequence number 0 or 1), starts a retransmission timer, and stops. It waits until an ACK arrives before sending the next frame.\n\u2022 If ACK is lost or frame is corrupted, timer expires and sender retransmits the frame.\n\u2022 Efficiency: eta = 1 / (1 + 2a), where a = Propagation Delay (Tp) / Transmission Delay (Tt). For satellite or high bandwidth-delay product links (large a), channel efficiency collapses below 10%.",
-      "2. Go-Back-N (GBN) ARQ:\n\u2022 Sender window size is N = 2^m - 1 (where m is sequence number bits). Receiver window size is strictly 1.\n\u2022 Sender can transmit up to N frames consecutively without waiting for individual ACKs.\n\u2022 Cumulative ACKs: Receiver sends ACK(n) indicating all frames up to n-1 were correctly received, expecting frame n.\n\u2022 Error Handling (Go-Back-N): Receiver accepts frames strictly IN ORDER. If frame i is corrupted or lost, receiver discards frame i AND all subsequent out-of-order frames (i+1, i+2, ...). When sender's timer for frame i expires, sender must retransmit ALL frames from i to the current send window edge. This causes wasteful retransmissions on noisy channels.\n\u2022 Window Size Constraint: Sender window cannot exceed 2^m - 1. If N = 2^m, and all ACKs are lost, sender cannot distinguish whether an ACK is for the current window or previous window.",
-      "3. Selective Repeat (SR) ARQ:\n\u2022 Sender window size = Receiver window size = 2^(m-1).\n\u2022 Receiver maintains a buffer and accepts frames OUT OF ORDER as long as they fall within its window. Corrupted frames are ignored or explicitly rejected via Negative ACK (NAK).\n\u2022 Independent Retransmission: Sender retransmits ONLY the specific unacknowledged frame when its individual timer expires. Frames already buffered at receiver are not retransmitted.\n\u2022 Window Size Constraint: To avoid window overlap ambiguity between new sequence numbers and old sequence numbers, Sender Window + Receiver Window <= 2^m. Since Ws = Wr, Ws <= 2^(m-1).",
-      "Mathematical Derivations of Channel Efficiency (eta):\n\u2022 Let Tt = Frame Transmission Time = Frame Size / Bandwidth.\n\u2022 Let Tp = Propagation Time = Distance / Propagation Speed.\n\u2022 Parameter a = Tp / Tt.\n\u2022 Total Round Trip Time = Tt + 2*Tp (ignoring negligible ACK transmission time and processing time).\n\u2022 Stop-and-Wait Efficiency: eta = Tt / (Tt + 2*Tp) = 1 / (1 + 2a).\n\u2022 Go-Back-N Efficiency: eta = (N * Tt) / (Tt + 2*Tp) = N / (1 + 2a) (capped at 100% when N >= 1 + 2a).\n\u2022 Selective Repeat Efficiency: eta = N / (1 + 2a), but maintains this efficiency without the retransmission penalty of discarding good frames."
+  "title": "Day 18: Sliding Window Flow Control Protocols: Stop-and-Wait, Go-Back-N & Selective Repeat & Lowest Common Ancestor (LCA) in Binary Trees",
+  "streams": {
+    "academic": {
+      "unit": 2,
+      "topic": "Unit II — Sliding Window Flow Control Protocols: Stop-and-Wait, Go-Back-N & Selective Repeat",
+      "objectives": [
+        "Understand flow control and channel efficiency.",
+        "Compare Go-Back-N and Selective Repeat ARQ window sizes and retransmission mechanisms."
+      ],
+      "explanation": "Flow control prevents a fast sender from overwhelming a slow receiver with packets. In Sliding Window protocols, multiple frames can be transmitted before waiting for acknowledgments (ACKs):\n1. Stop-and-Wait ARQ: Sender transmits 1 frame, starts a timer, and waits for ACK before sending the next. Low channel utilization (`U = 1 / (1 + 2a)`, where `a = Tp / Tt`).\n2. Go-Back-N (GBN) ARQ: Sender can transmit up to `N` frames before receiving an ACK (`Sender Window = 2^m - 1`). Receiver has a window of size 1 (accepts only the exact expected in-order frame). If a frame is lost, receiver discards all subsequent frames; sender timer expires and retransmits all `N` frames starting from the lost frame ('Go Back N').\n3. Selective Repeat (SR) ARQ: Receiver maintains a buffer window equal to sender window size (`Sender Window = Receiver Window = 2^{m-1}`). Receiver buffers out-of-order packets and sends negative acknowledgments (NAK). Sender retransmits ONLY the specific lost or damaged frame, achieving maximum bandwidth efficiency.",
+      "definitions": [
+        {
+          "term": "Propagation Delay (Tp)",
+          "definition": "The time required for a signal bit to travel from sender to receiver: Tp = Distance / Propagation Speed."
+        },
+        {
+          "term": "Transmission Delay (Tt)",
+          "definition": "The time required to push all packet bits onto the wire: Tt = Packet Size (L) / Bandwidth (B)."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Window Size Constraints",
+          "content": "GBN: Sender = 2^m - 1, Receiver = 1. Selective Repeat: Sender = Receiver = 2^(m-1) to prevent sequence number wrap-around ambiguity."
+        },
+        {
+          "title": "Cumulative vs Individual ACKs",
+          "content": "GBN uses cumulative ACKs (ACK n confirms all frames up to n-1). Selective Repeat uses individual or selective ACKs."
+        }
+      ],
+      "examples": [
+        "Satellite communication links with high propagation delay (high 'a') requiring large window sizes to achieve high throughput."
+      ],
+      "diagram": "+---------------------------------------------------+\n|           SLIDING WINDOW PROTOCOLS                |\n| GBN: Sender Window = 2^m - 1 | Receiver Window = 1|\n| SR:  Sender Window = 2^(m-1) | Receiver = 2^(m-1) |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Parameter",
+          "Stop-and-Wait ARQ",
+          "Go-Back-N (GBN) ARQ",
+          "Selective Repeat (SR) ARQ"
+        ],
+        "rows": [
+          [
+            "Sender Window Size",
+            "1",
+            "2^m - 1 (where m is sequence bits)",
+            "2^{m-1}"
+          ],
+          [
+            "Receiver Window Size",
+            "1",
+            "1 (No receiver buffering)",
+            "2^{m-1} (Buffers out-of-order frames)"
+          ],
+          [
+            "Retransmission Scope",
+            "Only the single unacknowledged frame",
+            "Retransmits all N frames in the window",
+            "Retransmits ONLY the single lost frame"
+          ],
+          [
+            "Receiver Buffering",
+            "Not required",
+            "Not required (discards out-of-order)",
+            "Mandatory (stores out-of-order packets)"
+          ],
+          [
+            "Protocol Complexity",
+            "Simplest logic",
+            "Moderate complexity",
+            "Highest logic & memory complexity"
+          ]
+        ]
+      },
+      "memorize": "GBN: Sender = 2^m - 1, Receiver = 1. Retransmits all frames from lost frame. SR: Sender = Receiver = 2^(m-1). Retransmits ONLY lost frame.",
+      "understand": "If window size in Selective Repeat exceeds 2^(m-1), new frames and retransmitted frames share identical sequence numbers, causing silent data corruption.",
+      "common_mistakes": "Writing that GBN receiver buffers out-of-order packets (GBN receiver strictly discards all out-of-order packets).",
+      "exam_writing_guidance": "Draw timeline diagrams showing frame loss recovery for both GBN and SR, prove why SR window size is 2^(m-1), and provide the 5-column comparison table.",
+      "mini_practice": [
+        "In a 3-bit sequence system, calculate the maximum sender window for GBN and Selective Repeat."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2024-25 (Q2)",
+          "marks": 15,
+          "question": "Differentiate between Go-Back-N ARQ and Selective Repeat ARQ protocols with timeline diagrams. Why is the receiver window size in Go-Back-N equal to 1, while in Selective Repeat it is greater than 1? (15 Marks)",
+          "rubric": "GBN vs SR Comparison Table (4 marks) + GBN & SR Timeline Diagrams showing frame loss (5 marks) + Mathematical proof of window size limits (4 marks) + Efficiency formula (2 marks) = 15 Marks.",
+          "model_answer": "Sliding window protocols achieve continuous pipelined transmission over high-latency channels. The differences between Go-Back-N and Selective Repeat are:\n1. Window Size Allocation: In Go-Back-N (GBN), for an m-bit sequence number, Sender Window = 2^m - 1, while Receiver Window = 1. Because the receiver window is 1, it can only accept the exact in-order frame. If frame k is lost, any subsequent arriving frames (k+1, k+2...) are discarded without buffering. When the sender's timer expires for frame k, the sender must 'go back' and retransmit all N frames currently in flight. In Selective Repeat (SR), the receiver maintains a buffer window equal to the sender window: Sender Window = Receiver Window = 2^(m-1). The receiver buffers correctly received out-of-order frames and returns a NAK for the missing frame. The sender selectively retransmits only the specific corrupted packet.\n2. Why GBN Receiver Window = 1: GBN was designed for systems with constrained hardware memory; by forcing receiver window = 1, the receiver needs zero buffering memory and simpler logic.\n3. Why SR Window <= 2^(m-1): If the window size exceeded half the sequence number space, an overlapping ambiguity arises where the receiver cannot distinguish whether an incoming frame is a fresh new frame or a duplicate retransmission of an older frame from the previous cycle.",
+          "answer_structure": "Pipelining Concept -> GBN vs SR Comparison Table -> Timeline Diagrams showing Frame Loss -> Window Proof",
+          "important_points": [
+            "GBN receiver = 1",
+            "SR receiver = 2^(m-1)",
+            "GBN retransmits all N frames",
+            "SR buffers out-of-order and retransmits only lost frame"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Timeline diagrams showing packet transmission, loss, and retransmission",
+            "Window size formula proof"
+          ],
+          "common_mistakes": [
+            "Drawing receiver buffer for Go-Back-N"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2023 / Model",
+          "marks": 5,
+          "question": "Derive the link utilization efficiency formula for Stop-and-Wait protocol. (5 Marks)",
+          "rubric": "Definition of Tt, Tp (2 marks) + Step-by-step efficiency derivation U = 1/(1+2a) (3 marks) = 5 Marks.",
+          "model_answer": "Let Transmission Time = Tt = L/B, and Propagation Time = Tp. Total cycle time to transmit 1 frame and receive ACK = Tt + 2*Tp. Link Utilization Efficiency U = Useful Time / Total Time = Tt / (Tt + 2*Tp). Dividing numerator and denominator by Tt: U = 1 / (1 + 2*(Tp/Tt)). Defining parameter a = Tp/Tt (the ratio of propagation delay to transmission delay), the efficiency simplifies to: U = 1 / (1 + 2a). When propagation delay is very large compared to packet transmission time (a >> 1), utilization drops close to zero, necessitating pipelined sliding window protocols."
+        }
+      ],
+      "subject_code": "BCA-5003",
+      "subject_name": "Computer Networks",
+      "mcqs": [
+        {
+          "id": "ACAD-18-01",
+          "question": "Which JDBC driver type is known as the 'Pure Java Native Protocol Driver' (Type 4) and communicates directly with the database engine without client libraries?",
+          "options": [
+            "Type 1 (JDBC-ODBC Bridge)",
+            "Type 2 (Native-API Driver)",
+            "Type 3 (Network-Protocol Driver)",
+            "Type 4 (Direct Native-Protocol Pure Java Driver)"
+          ],
+          "correct_answer": "D",
+          "explanation": "Type 4 drivers are 100% pure Java, converting JDBC calls directly into vendor-specific network socket protocols without middleware."
+        },
+        {
+          "id": "ACAD-18-02",
+          "question": "Why is PreparedStatement preferred over standard Statement in JDBC for executing parameterized queries?",
+          "options": [
+            "PreparedStatement compiles SQL once on the database server, improves execution speed, and inherently prevents SQL Injection",
+            "PreparedStatement allows executing non-SQL Python scripts",
+            "PreparedStatement does not require a database connection",
+            "Standard Statement cannot execute SELECT queries"
+          ],
+          "correct_answer": "A",
+          "explanation": "PreparedStatement pre-compiles SQL plans and treats parameters as strictly typed literals, neutralizing SQL injection attacks."
+        },
+        {
+          "id": "ACAD-18-03",
+          "question": "What JDBC interface method must be called to process the tabular rows returned by an `executeQuery()` statement?",
+          "options": [
+            "ResultSet.next()",
+            "ResultSet.fetch()",
+            "Connection.commit()",
+            "Statement.scroll()"
+          ],
+          "correct_answer": "A",
+          "explanation": "ResultSet.next() moves the cursor forward one row from its initial position before the first row, returning false when exhausted."
+        },
+        {
+          "id": "ACAD-18-04",
+          "question": "How does database Connection Pooling improve enterprise web application performance?",
+          "options": [
+            "It permanently encrypts all database tables",
+            "It reuses an existing pool of pre-established physical connections, avoiding the expensive overhead of TCP handshakes and authentication on every request",
+            "It eliminates the need for SQL transactions",
+            "It compresses all JPEG images in the database"
+          ],
+          "correct_answer": "B",
+          "explanation": "Opening a DB connection takes 50-200ms. Pooling keeps open connections ready for checkout, reducing acquisition latency to <1ms."
+        },
+        {
+          "id": "ACAD-18-05",
+          "question": "To execute multiple transactional SQL updates atomically, what method must be called on the JDBC Connection before executing queries?",
+          "options": [
+            "connection.setAutoCommit(false)",
+            "connection.close()",
+            "connection.rollback()",
+            "connection.setReadOnly(true)"
+          ],
+          "correct_answer": "A",
+          "explanation": "Disabling auto-commit (`setAutoCommit(false)`) groups operations into an atomic transaction concluded with `commit()` or `rollback()`."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2024-25 (Q2)",
+        "marks": 15,
+        "question": "Differentiate between Go-Back-N ARQ and Selective Repeat ARQ protocols with timeline diagrams. Why is the receiver window size in Go-Back-N equal to 1, while in Selective Repeat it is greater than 1? (15 Marks)",
+        "rubric": "GBN vs SR Comparison Table (4 marks) + GBN & SR Timeline Diagrams showing frame loss (5 marks) + Mathematical proof of window size limits (4 marks) + Efficiency formula (2 marks) = 15 Marks.",
+        "model_answer": "Sliding window protocols achieve continuous pipelined transmission over high-latency channels. The differences between Go-Back-N and Selective Repeat are:\n1. Window Size Allocation: In Go-Back-N (GBN), for an m-bit sequence number, Sender Window = 2^m - 1, while Receiver Window = 1. Because the receiver window is 1, it can only accept the exact in-order frame. If frame k is lost, any subsequent arriving frames (k+1, k+2...) are discarded without buffering. When the sender's timer expires for frame k, the sender must 'go back' and retransmit all N frames currently in flight. In Selective Repeat (SR), the receiver maintains a buffer window equal to the sender window: Sender Window = Receiver Window = 2^(m-1). The receiver buffers correctly received out-of-order frames and returns a NAK for the missing frame. The sender selectively retransmits only the specific corrupted packet.\n2. Why GBN Receiver Window = 1: GBN was designed for systems with constrained hardware memory; by forcing receiver window = 1, the receiver needs zero buffering memory and simpler logic.\n3. Why SR Window <= 2^(m-1): If the window size exceeded half the sequence number space, an overlapping ambiguity arises where the receiver cannot distinguish whether an incoming frame is a fresh new frame or a duplicate retransmission of an older frame from the previous cycle.",
+        "answer_structure": "Pipelining Concept -> GBN vs SR Comparison Table -> Timeline Diagrams showing Frame Loss -> Window Proof",
+        "important_points": [
+          "GBN receiver = 1",
+          "SR receiver = 2^(m-1)",
+          "GBN retransmits all N frames",
+          "SR buffers out-of-order and retransmits only lost frame"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Timeline diagrams showing packet transmission, loss, and retransmission",
+          "Window size formula proof"
+        ],
+        "common_mistakes": [
+          "Drawing receiver buffer for Go-Back-N"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Derive the link utilization efficiency formula for Stop-and-Wait protocol. (5 Marks)",
+        "rubric": "Definition of Tt, Tp (2 marks) + Step-by-step efficiency derivation U = 1/(1+2a) (3 marks) = 5 Marks.",
+        "model_answer": "Let Transmission Time = Tt = L/B, and Propagation Time = Tp. Total cycle time to transmit 1 frame and receive ACK = Tt + 2*Tp. Link Utilization Efficiency U = Useful Time / Total Time = Tt / (Tt + 2*Tp). Dividing numerator and denominator by Tt: U = 1 / (1 + 2*(Tp/Tt)). Defining parameter a = Tp/Tt (the ratio of propagation delay to transmission delay), the efficiency simplifies to: U = 1 / (1 + 2a). When propagation delay is very large compared to packet transmission time (a >> 1), utilization drops close to zero, necessitating pipelined sliding window protocols."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                   SLIDING WINDOW PROTOCOLS COMPARISON                   |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|  1. GO-BACK-N ARQ (Receiver Window = 1, Discards Out-of-Order Frames)    |\n|     Sender:   [0]  [1]  [2]  [3]  [4]  [5]                              |\n|                |    |    |    |                                         |\n|                v    X (Frame 1 Lost)                                    |\n|     Receiver: [0]       [2 discarded] [3 discarded]                     |\n|     Timeout: Sender retransmits: [1], [2], [3], [4] (Wasteful)          |\n|                                                                         |\n|  2. SELECTIVE REPEAT ARQ (Receiver Window = 2^(m-1), Buffers Valid)     |\n|     Sender:   [0]  [1]  [2]  [3]  [4]  [5]                              |\n|                |    |    |    |                                         |\n|                v    X (Frame 1 Lost)                                    |\n|     Receiver: [0]       [2 buffered]  [3 buffered]                      |\n|     Timeout: Sender retransmits ONLY: [1] (Optimal)                     |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-18-01",
+        "question": "Which JDBC driver type is known as the 'Pure Java Native Protocol Driver' (Type 4) and communicates directly with the database engine without client libraries?",
+        "options": [
+          "Type 1 (JDBC-ODBC Bridge)",
+          "Type 2 (Native-API Driver)",
+          "Type 3 (Network-Protocol Driver)",
+          "Type 4 (Direct Native-Protocol Pure Java Driver)"
+        ],
+        "correct_answer": "D",
+        "explanation": "Type 4 drivers are 100% pure Java, converting JDBC calls directly into vendor-specific network socket protocols without middleware."
+      },
+      {
+        "id": "ACAD-18-02",
+        "question": "Why is PreparedStatement preferred over standard Statement in JDBC for executing parameterized queries?",
+        "options": [
+          "PreparedStatement compiles SQL once on the database server, improves execution speed, and inherently prevents SQL Injection",
+          "PreparedStatement allows executing non-SQL Python scripts",
+          "PreparedStatement does not require a database connection",
+          "Standard Statement cannot execute SELECT queries"
+        ],
+        "correct_answer": "A",
+        "explanation": "PreparedStatement pre-compiles SQL plans and treats parameters as strictly typed literals, neutralizing SQL injection attacks."
+      },
+      {
+        "id": "ACAD-18-03",
+        "question": "What JDBC interface method must be called to process the tabular rows returned by an `executeQuery()` statement?",
+        "options": [
+          "ResultSet.next()",
+          "ResultSet.fetch()",
+          "Connection.commit()",
+          "Statement.scroll()"
+        ],
+        "correct_answer": "A",
+        "explanation": "ResultSet.next() moves the cursor forward one row from its initial position before the first row, returning false when exhausted."
+      },
+      {
+        "id": "ACAD-18-04",
+        "question": "How does database Connection Pooling improve enterprise web application performance?",
+        "options": [
+          "It permanently encrypts all database tables",
+          "It reuses an existing pool of pre-established physical connections, avoiding the expensive overhead of TCP handshakes and authentication on every request",
+          "It eliminates the need for SQL transactions",
+          "It compresses all JPEG images in the database"
+        ],
+        "correct_answer": "B",
+        "explanation": "Opening a DB connection takes 50-200ms. Pooling keeps open connections ready for checkout, reducing acquisition latency to <1ms."
+      },
+      {
+        "id": "ACAD-18-05",
+        "question": "To execute multiple transactional SQL updates atomically, what method must be called on the JDBC Connection before executing queries?",
+        "options": [
+          "connection.setAutoCommit(false)",
+          "connection.close()",
+          "connection.rollback()",
+          "connection.setReadOnly(true)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Disabling auto-commit (`setAutoCommit(false)`) groups operations into an atomic transaction concluded with `commit()` or `rollback()`."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Series Completion & Pattern Recognition",
+      "category": "Logical Reasoning",
+      "subtopic": "Series Completion",
+      "formulas": "1. Types of Series: Arithmetic (+d), Geometric (*r), Difference of Differences, Squares/Cubes (n^2 +- k, n^3 +- k), Alternating/Twin series.\n2. Prime Number Series: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31...\n3. Fibonacci-type Additive Series: Tn = T(n-1) + T(n-2).",
+      "shortcuts": "Step-Difference Technique: Compute consecutive differences. If not constant, compute differences of differences. A quadratic sequence achieves constant values at second differences.",
+      "tutorial": [
+        "When numbers grow rapidly, test for multiplication or powers. When numbers grow slowly, test for addition. If a series fluctuates up and down, it is almost certainly two alternating sub-series interwoven into one."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Series Completion",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Series Completion",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Series Completion",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Series Completion",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Series Completion",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Find the next number in the series: 3, 7, 15, 31, 63, ?",
+        "options": {
+          "A": "127",
+          "B": "126",
+          "C": "125",
+          "D": "128"
+        },
+        "correct_answer": "A",
+        "explanation": "Each term follows the rule: next = 2 * prev + 1. 2 * 63 + 1 = 127.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "What is the next term in the sequence: 2, 5, 10, 17, 26, 37, ?",
+        "options": {
+          "A": "50",
+          "B": "48",
+          "C": "49",
+          "D": "52"
+        },
+        "correct_answer": "A",
+        "explanation": "Differences between consecutive terms are odd numbers: +3, +5, +7, +9, +11, +13. 37 + 13 = 50 (or n^2 + 1: 7^2 + 1 = 50).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Find the missing number: 4, 9, 25, 49, 121, ?",
+        "options": {
+          "A": "169",
+          "B": "144",
+          "C": "196",
+          "D": "225"
+        },
+        "correct_answer": "A",
+        "explanation": "The series consists of squares of prime numbers: 2^2, 3^2, 5^2, 7^2, 11^2, 13^2 = 169.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Identify the next term in the series: 1, 8, 27, 64, 125, ?",
+        "options": {
+          "A": "216",
+          "B": "343",
+          "C": "256",
+          "D": "225"
+        },
+        "correct_answer": "A",
+        "explanation": "Cubes of consecutive integers: 1^3, 2^3, 3^3, 4^3, 5^3, 6^3 = 216.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "What is the next number in the series: 6, 12, 21, 33, ?",
+        "options": {
+          "A": "48",
+          "B": "45",
+          "C": "46",
+          "D": "50"
+        },
+        "correct_answer": "A",
+        "explanation": "Differences between terms increase by 3: 12-6=6, 21-12=9, 33-21=12, next difference = 15. 33 + 15 = 48.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Complete the alphanumeric series: A2, C4, E8, G16, ?",
+        "options": {
+          "A": "I32",
+          "B": "H32",
+          "C": "I30",
+          "D": "J32"
+        },
+        "correct_answer": "A",
+        "explanation": "Letters advance by +2 (A, C, E, G, I). Numbers double each step (2, 4, 8, 16, 32) => I32.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Find the wrong number in the series: 8, 27, 64, 100, 125, 216, 343",
+        "options": {
+          "A": "100",
+          "B": "27",
+          "C": "64",
+          "D": "125"
+        },
+        "correct_answer": "A",
+        "explanation": "All numbers are perfect cubes (2^3, 3^3, 4^3, 5^3, 6^3, 7^3) except 100, which is 10^2 instead of 5^3 = 125.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Find the next term in the alternating series: 2, 3, 4, 9, 16, 27, 256, ?",
+        "options": {
+          "A": "81",
+          "B": "64",
+          "C": "243",
+          "D": "128"
+        },
+        "correct_answer": "A",
+        "explanation": "Two interleaved series: powers of 2 (2, 4, 16, 256 where each is squared) and powers of 3 (3, 9, 27, 81 where each is multiplied by 3). Next term is 81.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Find the next term: 0, 6, 24, 60, 120, 210, ?",
+        "options": {
+          "A": "336",
+          "B": "343",
+          "C": "320",
+          "D": "350"
+        },
+        "correct_answer": "A",
+        "explanation": "Pattern is n^3 - n: 1^3-1=0, 2^3-2=6, 3^3-3=24, 4^3-4=60, 5^3-5=120, 6^3-6=210, 7^3-7 = 343 - 7 = 336.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Find the next number: 11, 13, 17, 19, 23, 29, 31, ?",
+        "options": {
+          "A": "37",
+          "B": "33",
+          "C": "35",
+          "D": "39"
+        },
+        "correct_answer": "A",
+        "explanation": "Sequence of consecutive prime numbers. The prime immediately following 31 is 37.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Series Completion (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Lowest Common Ancestor (LCA) in Binary Trees",
+      "category": "Tree / Recursion",
+      "concept": "Finds the lowest common ancestor of two nodes p and q by searching left and right subtrees recursively.",
+      "why_it_works": "If p and q are found in different subtrees of node N, N is their LCA. If both lie in the same subtree, that subtree's root returns the LCA.",
+      "visual_explanation": "Tree:\\n        3\\n       / \\\\\\n      5   1\\n     / \\\\ / \\\\\\n    6  2 0  8\\nNodes 5 and 1: 5 is in left subtree, 1 is in right subtree ==> LCA is 3!",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode left = lowestCommonAncestor(root.left, p, q);\n        TreeNode right = lowestCommonAncestor(root.right, p, q);\n        if (left != null && right != null) return root;\n        return left != null ? left : right;\n    }\n}",
+      "code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode left = lowestCommonAncestor(root.left, p, q);\n        TreeNode right = lowestCommonAncestor(root.right, p, q);\n        if (left != null && right != null) return root;\n        return left != null ? left : right;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 2: Base case: if root is null or matches p or q, return root.",
+        "Line 3-4: Recursively search for p and q in left and right subtrees.",
+        "Line 5: If both left and right return non-null, p and q are in separate branches; root is their LCA.",
+        "Line 6: Otherwise return the non-null branch."
+      ],
+      "dry_run": "Find LCA of 5 and 4. 5 matches immediately. Left returns 5. Right returns null. LCA returns node 5.",
+      "complexity": "O(N) Time, O(H) Auxiliary Space",
+      "edge_cases": "p is direct parent of q, p and q on leaf levels, Binary Search Tree variation uses value comparison",
+      "edge_cases_list": [
+        "p is direct parent of q",
+        "p and q on leaf levels",
+        "Binary Search Tree variation uses value comparison"
+      ],
+      "interview_variations": [
+        "Lowest Common Ancestor of a Binary Search Tree",
+        "Lowest Common Ancestor of Deepest Leaves"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-18-01",
+        "title": "Problem 1: Lowest Common Ancestor of a Binary Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Lowest Common Ancestor (LCA) in Binary Trees algorithmic technique.\n2. Finds the lowest common ancestor of two nodes p and q by searching left and right subtrees recursively.\n3. Invariants: If p and q are found in different subtrees of node N, N is their LCA. If both lie in the same subtree, that subtree's root returns the LCA.",
+        "solution_java": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+        "solution_python": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+        "code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+        "java_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-18-02",
+        "title": "Problem 2: Lowest Common Ancestor of a Binary Search Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Lowest Common Ancestor (LCA) in Binary Trees.\n2. Handle edge cases: p is direct parent of q, p and q on leaf levels, Binary Search Tree variation uses value comparison.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+        "solution_python": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+        "code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+        "java_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Computer Networks",
+      "topic": "Network Layer: IPv4 Addressing, CIDR Subnetting, ARP, ICMP & NAT",
+      "concept_lesson": "The Network Layer is responsible for host-to-host packet routing and logical IP addressing across internetworks.\n\nIPv4 Addressing & CIDR:\nIPv4 uses 32-bit addresses (4 octets). Historically divided into Classes: Class A (/8, 0.0.0.0 to 127.255.255.255), Class B (/16, 128.0.0.0 to 191.255.255.255), Class C (/24, 192.0.0.0 to 223.255.255.255), Class D (Multicast), Class E (Reserved).\nClassless Inter-Domain Routing (CIDR) replaced classful networks: an address is written as IP/prefix (e.g., 192.168.1.0/26). Prefix bits denote Network ID; remaining (32 - prefix) bits denote Host ID. Usable hosts = 2^(32 - prefix) - 2 (subtracting Network Address where host bits are all 0s, and Broadcast Address where host bits are all 1s).\n\nAuxiliary Protocols:\n- ARP (Address Resolution Protocol): Resolves a known 32-bit IPv4 address to a 48-bit physical MAC address. Broadcasts ARP Request ('Who has IP X?'); target replies with Unicast ARP Reply containing its MAC.\n- ICMP (Internet Control Message Protocol): Diagnostics and error reporting (Ping uses Echo Request/Reply; Traceroute uses ICMP Time Exceeded when TTL expires).\n- NAT (Network Address Translation): Translates private IP addresses (RFC 1918: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) into public routable IPs, using Port Address Translation (PAT/NAPT) to multiplex thousands of internal hosts over a single public IP.",
+      "key_definitions": [
+        {
+          "term": "CIDR",
+          "definition": "Classless Inter-Domain Routing: variable-length subnet masking allowing flexible IP allocation without rigid class boundaries."
+        },
+        {
+          "term": "ARP",
+          "definition": "Address Resolution Protocol: translates logical IPv4 addresses to local hardware MAC addresses via broadcast/unicast."
+        },
+        {
+          "term": "NAT",
+          "definition": "Network Address Translation: mapping private RFC 1918 addresses to public routable IP addresses to conserve IPv4 space."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "Given the IP address 172.16.10.45/28, find the Network Address, Broadcast Address, and number of usable host addresses.",
+          "a": "Prefix is /28. Host bits = 32 - 28 = 4 bits. Block size = 2^4 = 16. In the 4th octet, 45 falls into the block [32 to 47]. Network Address = 172.16.10.32. Broadcast Address = 172.16.10.47. Usable Host range = 172.16.10.33 to 172.16.10.46. Number of usable hosts = 2^4 - 2 = 14 hosts."
+        },
+        {
+          "q": "How does Traceroute work under the hood using IP TTL and ICMP?",
+          "a": "Traceroute sends packets (UDP or ICMP) starting with IP Time-To-Live TTL = 1. The first router decrements TTL to 0, drops the packet, and returns an ICMP Type 11 'Time-to-Live Exceeded' message; traceroute records the router's IP and round-trip time. It then sends a packet with TTL = 2 to discover the second router, incrementing TTL sequentially until the packet reaches the destination, which responds with ICMP Echo Reply or Port Unreachable."
+        },
+        {
+          "q": "What is the difference between ARP and RARP?",
+          "a": "ARP (Address Resolution Protocol) resolves a known logical IP address to an unknown physical hardware MAC address. RARP (Reverse ARP) allowed a diskless workstation that knows only its physical MAC address to request and discover its assigned IP address from a central server on boot (now superseded by DHCP)."
+        },
+        {
+          "q": "What are RFC 1918 Private IP ranges and why can't they be routed on the public Internet?",
+          "a": "The three private ranges are: 10.0.0.0/8 (10.0.0.0 - 10.255.255.255), 172.16.0.0/12 (172.16.0.0 - 172.31.255.255), and 192.168.0.0/16 (192.168.0.0 - 192.168.255.255). Public Internet backbone routers are configured to drop packets with private destination addresses because they are reused across millions of internal private LANs globally and lack globally unique routing paths."
+        },
+        {
+          "q": "How does Port Address Translation (PAT / NAT Overload) allow multiple devices to share one public IP?",
+          "a": "The NAT router maintains a stateful translation table: (Private IP, Private Port <-> Public IP, Translated Port). When an internal host (192.168.1.10:5000) requests an external site, the router rewrites the source IP to its public IP and assigns a unique temporary source port (203.0.113.1:40001). When the response arrives at port 40001, the router matches the entry in its table and forwards the packet back to 192.168.1.10:5000."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-18-01",
+          "question": "How many usable host IP addresses are available in a /26 subnet?",
+          "options": [
+            "64",
+            "62",
+            "30",
+            "126"
+          ],
+          "correct_answer": "B",
+          "explanation": "Host bits = 32 - 26 = 6 bits. Usable hosts = 2^6 - 2 = 64 - 2 = 62."
+        },
+        {
+          "id": "CS-18-02",
+          "question": "Which protocol resolves an IPv4 address to a physical MAC address on a local Ethernet segment?",
+          "options": [
+            "DNS",
+            "DHCP",
+            "ARP",
+            "BGP"
+          ],
+          "correct_answer": "C",
+          "explanation": "ARP maps 32-bit IP addresses to 48-bit MAC addresses."
+        },
+        {
+          "id": "CS-18-03",
+          "question": "Traceroute discovers intermediate routers along a network path by manipulating which IP header field?",
+          "options": [
+            "Header Checksum",
+            "Time To Live (TTL)",
+            "Type of Service",
+            "Identification"
+          ],
+          "correct_answer": "B",
+          "explanation": "Traceroute increments TTL from 1 upward, receiving ICMP Time Exceeded packets from each hop."
+        },
+        {
+          "id": "CS-18-04",
+          "question": "Which of the following is an RFC 1918 Private IP address?",
+          "options": [
+            "8.8.8.8",
+            "172.20.14.5",
+            "169.254.1.1",
+            "203.0.113.50"
+          ],
+          "correct_answer": "B",
+          "explanation": "172.20.14.5 falls within the private Class B range (172.16.0.0 to 172.31.255.255)."
+        },
+        {
+          "id": "CS-18-05",
+          "question": "What is the broadcast address for the subnet 192.168.5.0/24?",
+          "options": [
+            "192.168.5.0",
+            "192.168.5.1",
+            "192.168.5.255",
+            "192.168.5.254"
+          ],
+          "correct_answer": "C",
+          "explanation": "In a /24 subnet, setting all 8 host bits to 1 yields .255, the broadcast address."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "Caloriv",
+      "repo_path": "D:\\Projects\\Caloriv",
+      "topic": "Offline-First Mobile Synchronization & SQLite Local Storage",
+      "what_to_understand": "Local data persistence, offline meal logging, and background server sync.",
+      "what_to_memorize": "Mobile apps must function reliably in low-connectivity gym or outdoor environments.",
+      "interview_questions": [
+        {
+          "q": "How does Caloriv allow users to log meals without an internet connection?",
+          "a": "All daily meal logs, food databases, and calorie tallies are written immediately to a local SQLite database using React Native's SQLite library. Each record carries a `sync_status` flag ('SYNCED', 'PENDING_UPLOAD', 'PENDING_DELETE'). When network connectivity is restored, an asynchronous sync manager batches pending records and pushes them to the cloud backend via idempotent REST calls."
+        },
+        {
+          "q": "How do you handle conflict resolution if a user modifies their meal on two devices?",
+          "a": "We use a 'Last-Write-Wins' (LWW) strategy backed by UTC millisecond timestamps (`updated_at`). The record with the later timestamp overwrites the earlier record on the cloud server, and the resolved state syncs back to the client."
+        }
+      ],
+      "interview_pitch_exercise": "In fitness tracking, offline access is essential. I architected Caloriv with an offline-first SQLite cache. Users can log meals, check daily macros, and view charts without internet access, with automated two-way synchronization occurring seamlessly whenever a network connection is detected."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 18 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 18 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'DevQBX & Sitekraft Engineering', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In DevQBX & Sitekraft Engineering (Project Management, Client Web Architecture, Microservices), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of DevQBX & Sitekraft Engineering.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 17 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5002 — JDBC Architecture, PreparedStatement & ACID Pooling.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Series Completion & Pattern Recognition.\n• Algorithmic Invariant: Optimal time and space complexity rules for Lowest Common Ancestor (LCA) in Binary Trees.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Layer Routing: RIP, OSPF & BGP.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on JDBC Architecture, PreparedStatement & ACID Pooling.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Lowest Common Ancestor (LCA) in Binary Trees.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Biometric Electronic Voting System (BEVM).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 18 Q1: What is the primary academic thesis of JDBC Architecture, PreparedStatement & ACID Pooling?",
+          "a": "Core theoretical and practical mastery of JDBC Architecture, PreparedStatement & ACID Pooling under the CSJM University BCA-5002 syllabus."
+        },
+        {
+          "q": "Day 18 Q2: What is the key speed calculation formula applied in Series Completion & Pattern Recognition?",
+          "a": "High-speed corporate placement arithmetic shortcut for Series Completion & Pattern Recognition in campus recruitment exams."
+        },
+        {
+          "q": "Day 18 Q3: What is the time complexity of Lowest Common Ancestor (LCA) in Binary Trees?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 18 Q4: What is the central architectural principle of Network Layer Routing: RIP, OSPF & BGP?",
+          "a": "Foundational systems engineering rule governing Network Layer Routing: RIP, OSPF & BGP in production environments."
+        },
+        {
+          "q": "Day 18 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 18 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 18 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 18 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 18 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 18 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5002 — JDBC Architecture, PreparedStatement & ACID Pooling.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Series Completion & Pattern Recognition.\n• Algorithmic Invariant: Optimal time and space complexity rules for Lowest Common Ancestor (LCA) in Binary Trees.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Layer Routing: RIP, OSPF & BGP."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5002 — JDBC Architecture, PreparedStatement & ACID Pooling."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Series Completion & Pattern Recognition."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Lowest Common Ancestor (LCA) in Binary Trees."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: Biometric Electronic Voting System (BEVM)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-18-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which JDBC driver type is known as the 'Pure Java Native Protocol Driver' (Type 4) and communicates directly with the database engine without client libraries?",
+        "options": [
+          "Type 1 (JDBC-ODBC Bridge)",
+          "Type 2 (Native-API Driver)",
+          "Type 3 (Network-Protocol Driver)",
+          "Type 4 (Direct Native-Protocol Pure Java Driver)"
+        ],
+        "correct_answer": "D",
+        "explanation": "Type 4 drivers are 100% pure Java, converting JDBC calls directly into vendor-specific network socket protocols without middleware."
+      },
+      {
+        "id": "TEST-18-02",
+        "category": "Academic (Academic Theory)",
+        "question": "Why is PreparedStatement preferred over standard Statement in JDBC for executing parameterized queries?",
+        "options": [
+          "PreparedStatement compiles SQL once on the database server, improves execution speed, and inherently prevents SQL Injection",
+          "PreparedStatement allows executing non-SQL Python scripts",
+          "PreparedStatement does not require a database connection",
+          "Standard Statement cannot execute SELECT queries"
+        ],
+        "correct_answer": "A",
+        "explanation": "PreparedStatement pre-compiles SQL plans and treats parameters as strictly typed literals, neutralizing SQL injection attacks."
+      },
+      {
+        "id": "TEST-18-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What JDBC interface method must be called to process the tabular rows returned by an `executeQuery()` statement?",
+        "options": [
+          "ResultSet.next()",
+          "ResultSet.fetch()",
+          "Connection.commit()",
+          "Statement.scroll()"
+        ],
+        "correct_answer": "A",
+        "explanation": "ResultSet.next() moves the cursor forward one row from its initial position before the first row, returning false when exhausted."
+      },
+      {
+        "id": "TEST-18-04",
+        "category": "Academic (Academic Theory)",
+        "question": "How does database Connection Pooling improve enterprise web application performance?",
+        "options": [
+          "It permanently encrypts all database tables",
+          "It reuses an existing pool of pre-established physical connections, avoiding the expensive overhead of TCP handshakes and authentication on every request",
+          "It eliminates the need for SQL transactions",
+          "It compresses all JPEG images in the database"
+        ],
+        "correct_answer": "B",
+        "explanation": "Opening a DB connection takes 50-200ms. Pooling keeps open connections ready for checkout, reducing acquisition latency to <1ms."
+      },
+      {
+        "id": "TEST-18-05",
+        "category": "Academic (Academic Theory)",
+        "question": "To execute multiple transactional SQL updates atomically, what method must be called on the JDBC Connection before executing queries?",
+        "options": [
+          "connection.setAutoCommit(false)",
+          "connection.close()",
+          "connection.rollback()",
+          "connection.setReadOnly(true)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Disabling auto-commit (`setAutoCommit(false)`) groups operations into an atomic transaction concluded with `commit()` or `rollback()`."
+      },
+      {
+        "id": "TEST-18-06",
+        "category": "Placement Aptitude",
+        "question": "What is the next number in the sequence: 3, 7, 15, 31, 63, ?",
+        "options": [
+          "127",
+          "128",
+          "125",
+          "126"
+        ],
+        "correct_answer": "A",
+        "explanation": "Each term is 2x + 1: 63 * 2 + 1 = 127."
+      },
+      {
+        "id": "TEST-18-07",
+        "category": "Placement Aptitude",
+        "question": "Find the missing number in the series: 4, 9, 25, 49, 121, ?",
+        "options": [
+          "169",
+          "144",
+          "196",
+          "225"
+        ],
+        "correct_answer": "A",
+        "explanation": "Squares of consecutive prime numbers: 2^2, 3^2, 5^2, 7^2, 11^2, 13^2 = 169."
+      },
+      {
+        "id": "TEST-18-08",
+        "category": "Placement Aptitude",
+        "question": "Find the next term: 1, 4, 27, 256, ?",
+        "options": [
+          "3,125",
+          "1,024",
+          "4,096",
+          "625"
+        ],
+        "correct_answer": "A",
+        "explanation": "Pattern is n^n: 1^1=1, 2^2=4, 3^3=27, 4^4=256, 5^5 = 3,125."
+      },
+      {
+        "id": "TEST-18-09",
+        "category": "Placement Aptitude",
+        "question": "Find the wrong number in the series: 1, 2, 6, 15, 31, 56, 91",
+        "options": [
+          "91",
+          "31",
+          "56",
+          "15"
+        ],
+        "correct_answer": "A",
+        "explanation": "Differences are squares: +1, +4, +9, +16, +25, +36. 56 + 36 = 92, but series has 91."
+      },
+      {
+        "id": "TEST-18-10",
+        "category": "Placement Aptitude",
+        "question": "What is the next number in the Fibonacci-style series: 2, 3, 5, 8, 13, 21, ?",
+        "options": [
+          "34",
+          "32",
+          "35",
+          "33"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sum of preceding two terms: 13 + 21 = 34."
+      },
+      {
+        "id": "TEST-18-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "How many usable host IP addresses are available in a /26 subnet?",
+        "options": [
+          "64",
+          "62",
+          "30",
+          "126"
+        ],
+        "correct_answer": "B",
+        "explanation": "Host bits = 32 - 26 = 6 bits. Usable hosts = 2^6 - 2 = 64 - 2 = 62."
+      },
+      {
+        "id": "TEST-18-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which protocol resolves an IPv4 address to a physical MAC address on a local Ethernet segment?",
+        "options": [
+          "DNS",
+          "DHCP",
+          "ARP",
+          "BGP"
+        ],
+        "correct_answer": "C",
+        "explanation": "ARP maps 32-bit IP addresses to 48-bit MAC addresses."
+      },
+      {
+        "id": "TEST-18-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "Traceroute discovers intermediate routers along a network path by manipulating which IP header field?",
+        "options": [
+          "Header Checksum",
+          "Time To Live (TTL)",
+          "Type of Service",
+          "Identification"
+        ],
+        "correct_answer": "B",
+        "explanation": "Traceroute increments TTL from 1 upward, receiving ICMP Time Exceeded packets from each hop."
+      },
+      {
+        "id": "TEST-18-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which of the following is an RFC 1918 Private IP address?",
+        "options": [
+          "8.8.8.8",
+          "172.20.14.5",
+          "169.254.1.1",
+          "203.0.113.50"
+        ],
+        "correct_answer": "B",
+        "explanation": "172.20.14.5 falls within the private Class B range (172.16.0.0 to 172.31.255.255)."
+      },
+      {
+        "id": "TEST-18-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is the broadcast address for the subnet 192.168.5.0/24?",
+        "options": [
+          "192.168.5.0",
+          "192.168.5.1",
+          "192.168.5.255",
+          "192.168.5.254"
+        ],
+        "correct_answer": "C",
+        "explanation": "In a /24 subnet, setting all 8 host bits to 1 yields .255, the broadcast address."
+      },
+      {
+        "id": "TEST-18-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Lowest Common Ancestor (LCA) in Binary Trees' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(H) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Lowest Common Ancestor (LCA) in Binary Trees' pattern operates with O(N) Time, O(H) Auxiliary Space: If p and q are found in different subtrees of node N, N is their LCA. If both lie in the same subtree, that subtree's root returns the LCA.."
+      },
+      {
+        "id": "TEST-18-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Lowest Common Ancestor (LCA) in Binary Trees' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: p is direct parent of q.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Lowest Common Ancestor (LCA) in Binary Trees include p is direct parent of q, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-18-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Lowest Common Ancestor of a Binary Tree', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(H) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(H) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-18-19",
+        "category": "Projects (Caloriv)",
+        "question": "In Sarthak's project 'Caloriv', what is the core architectural principle regarding 'Offline-First Mobile Synchronization & SQLite Local Storage'?",
+        "options": [
+          "Mobile apps must function reliably in low-connectivity gym or outdoor environments.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For Caloriv, the architectural invariant is: Mobile apps must function reliably in low-connectivity gym or outdoor environments.."
+      },
+      {
+        "id": "TEST-18-20",
+        "category": "Projects (Caloriv)",
+        "question": "Regarding 'Caloriv', how should you defend this design decision in a technical interview: 'How does Caloriv allow users to log meals without an internet connection?'?",
+        "options": [
+          "All daily meal logs, food databases, and calorie tallies are written immediately to a local SQLite database using React Native's SQLite library. Each record car...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: All daily meal logs, food databases, and calorie tallies are written immediately to a local SQLite database using React Native's SQLite libr."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-18",
+      "title": "Lowest Common Ancestor of a Binary Tree (Lowest Common Ancestor (LCA) in Binary Trees)",
+      "time_limit_minutes": 35,
+      "difficulty": "Medium",
+      "problem_statement": "Solve the core placement problem: Lowest Common Ancestor of a Binary Tree.\n\nGiven a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Lowest Common Ancestor (LCA) in Binary Trees\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(H) Auxiliary Space\n- Handle all edge cases: p is direct parent of q, p and q on leaf levels, Binary Search Tree variation uses value comparison.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Lowest Common Ancestor (LCA) in Binary Trees\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Lowest Common Ancestor (LCA) in Binary Trees\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Lowest Common Ancestor (LCA) in Binary Trees logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: p is direct parent of q",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(H) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Computer Networks",
+    "subject_code": "BCA-5003",
+    "unit": 2,
+    "topic": "Unit II — Sliding Window Flow Control Protocols: Stop-and-Wait, Go-Back-N & Selective Repeat",
+    "objectives": [
+      "Understand flow control and channel efficiency.",
+      "Compare Go-Back-N and Selective Repeat ARQ window sizes and retransmission mechanisms."
+    ],
+    "detailed_notes": [
+      "Flow control prevents a fast sender from overwhelming a slow receiver with packets. In Sliding Window protocols, multiple frames can be transmitted before waiting for acknowledgments (ACKs):\n1. Stop-and-Wait ARQ: Sender transmits 1 frame, starts a timer, and waits for ACK before sending the next. Low channel utilization (`U = 1 / (1 + 2a)`, where `a = Tp / Tt`).\n2. Go-Back-N (GBN) ARQ: Sender can transmit up to `N` frames before receiving an ACK (`Sender Window = 2^m - 1`). Receiver has a window of size 1 (accepts only the exact expected in-order frame). If a frame is lost, receiver discards all subsequent frames; sender timer expires and retransmits all `N` frames starting from the lost frame ('Go Back N').\n3. Selective Repeat (SR) ARQ: Receiver maintains a buffer window equal to sender window size (`Sender Window = Receiver Window = 2^{m-1}`). Receiver buffers out-of-order packets and sends negative acknowledgments (NAK). Sender retransmits ONLY the specific lost or damaged frame, achieving maximum bandwidth efficiency.",
+      "GBN: Sender = 2^m - 1, Receiver = 1. Selective Repeat: Sender = Receiver = 2^(m-1) to prevent sequence number wrap-around ambiguity.",
+      "GBN uses cumulative ACKs (ACK n confirms all frames up to n-1). Selective Repeat uses individual or selective ACKs."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|           SLIDING WINDOW PROTOCOLS                |\n| GBN: Sender Window = 2^m - 1 | Receiver Window = 1|\n| SR:  Sender Window = 2^(m-1) | Receiver = 2^(m-1) |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
         "Parameter",
-        "Stop-and-Wait",
-        "Go-Back-N (GBN)",
-        "Selective Repeat (SR)"
+        "Stop-and-Wait ARQ",
+        "Go-Back-N (GBN) ARQ",
+        "Selective Repeat (SR) ARQ"
       ],
       "rows": [
         [
-          "Sender Window Size (Ws)",
+          "Sender Window Size",
           "1",
-          "2^m - 1",
-          "2^(m - 1)"
+          "2^m - 1 (where m is sequence bits)",
+          "2^{m-1}"
         ],
         [
-          "Receiver Window Size (Wr)",
+          "Receiver Window Size",
           "1",
-          "1 (No buffering)",
-          "2^(m - 1) (Requires buffer)"
-        ],
-        [
-          "Acknowledgment Type",
-          "Individual ACK for each frame",
-          "Cumulative ACK (ACK n acknowledges all < n)",
-          "Individual / Selective ACK"
-        ],
-        [
-          "Out-of-Order Frames",
-          "Cannot occur",
-          "Discarded immediately by receiver",
-          "Buffered in receiver window"
+          "1 (No receiver buffering)",
+          "2^{m-1} (Buffers out-of-order frames)"
         ],
         [
           "Retransmission Scope",
-          "Single frame",
-          "Entire window starting from lost frame",
-          "Only the specific lost/damaged frame"
+          "Only the single unacknowledged frame",
+          "Retransmits all N frames in the window",
+          "Retransmits ONLY the single lost frame"
         ],
         [
-          "Receiver Complexity",
-          "Minimal (no memory buffer)",
-          "Low (only 1 frame buffer needed)",
-          "High (sorting buffer, timers, logic)"
+          "Receiver Buffering",
+          "Not required",
+          "Not required (discards out-of-order)",
+          "Mandatory (stores out-of-order packets)"
         ],
         [
-          "Channel Utilization",
-          "Very Poor: 1 / (1 + 2a)",
-          "Good: N / (1 + 2a)",
-          "Highest on noisy channels"
+          "Protocol Complexity",
+          "Simplest logic",
+          "Moderate complexity",
+          "Highest logic & memory complexity"
         ]
       ]
     },
-    "memorize": "Window sizes: GBN: Ws = 2^m - 1, Wr = 1. Selective Repeat: Ws = 2^(m-1), Wr = 2^(m-1). GBN uses cumulative ACKs; SR uses individual ACKs. Channel efficiency parameter a = Tp / Tt. Optimal window size for 100% efficiency: N >= 1 + 2a.",
-    "understand": "Why must Ws + Wr <= 2^m in Selective Repeat? If Ws = Wr = 2^(m-1) + 1, the sequence numbers wrap around. If all ACKs are lost, the sender retransmits old frames, but the receiver's advanced window sees the same sequence numbers and misinterprets the duplicates as brand-new frames, corrupting user data!",
-    "common_mistakes": "1. Stating GBN sender window size is 2^m (it must be 2^m - 1 to prevent sequence number wrap ambiguity). 2. Confusing propagation delay (Tp = distance / speed) with transmission delay (Tt = length / bandwidth).",
-    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "High-Frequency 15-Mark Core Question: 2021 (Q6 - 15m), 2022-23 (Q5 - 15m), 2023-24 (Q6 - 15m), 2024-25 (Q5 - 15m)",
-    "pyq_question": "Explain Sliding Window Protocols in detail. Compare Stop-and-Wait, Go-Back-N, and Selective Repeat ARQ protocols with neat diagrams. Derive the channel efficiency for Go-Back-N and explain why the sender window size in GBN cannot exceed 2^m - 1. (15 Marks)",
-    "pyq_rubric": "Concept of Sliding Window & Window sliding mechanics (4 marks) + GBN vs SR architecture & window size proofs (5 marks) + Channel efficiency derivation (3 marks) + Comparison table (3 marks) = 15 Marks.",
+    "memorize": "GBN: Sender = 2^m - 1, Receiver = 1. Retransmits all frames from lost frame. SR: Sender = Receiver = 2^(m-1). Retransmits ONLY lost frame.",
+    "understand": "If window size in Selective Repeat exceeds 2^(m-1), new frames and retransmitted frames share identical sequence numbers, causing silent data corruption.",
+    "common_mistakes": "Writing that GBN receiver buffers out-of-order packets (GBN receiver strictly discards all out-of-order packets).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2024-25 (Q2)",
+        "marks": 15,
+        "question": "Differentiate between Go-Back-N ARQ and Selective Repeat ARQ protocols with timeline diagrams. Why is the receiver window size in Go-Back-N equal to 1, while in Selective Repeat it is greater than 1? (15 Marks)",
+        "rubric": "GBN vs SR Comparison Table (4 marks) + GBN & SR Timeline Diagrams showing frame loss (5 marks) + Mathematical proof of window size limits (4 marks) + Efficiency formula (2 marks) = 15 Marks.",
+        "model_answer": "Sliding window protocols achieve continuous pipelined transmission over high-latency channels. The differences between Go-Back-N and Selective Repeat are:\n1. Window Size Allocation: In Go-Back-N (GBN), for an m-bit sequence number, Sender Window = 2^m - 1, while Receiver Window = 1. Because the receiver window is 1, it can only accept the exact in-order frame. If frame k is lost, any subsequent arriving frames (k+1, k+2...) are discarded without buffering. When the sender's timer expires for frame k, the sender must 'go back' and retransmit all N frames currently in flight. In Selective Repeat (SR), the receiver maintains a buffer window equal to the sender window: Sender Window = Receiver Window = 2^(m-1). The receiver buffers correctly received out-of-order frames and returns a NAK for the missing frame. The sender selectively retransmits only the specific corrupted packet.\n2. Why GBN Receiver Window = 1: GBN was designed for systems with constrained hardware memory; by forcing receiver window = 1, the receiver needs zero buffering memory and simpler logic.\n3. Why SR Window <= 2^(m-1): If the window size exceeded half the sequence number space, an overlapping ambiguity arises where the receiver cannot distinguish whether an incoming frame is a fresh new frame or a duplicate retransmission of an older frame from the previous cycle.",
+        "answer_structure": "Pipelining Concept -> GBN vs SR Comparison Table -> Timeline Diagrams showing Frame Loss -> Window Proof",
+        "important_points": [
+          "GBN receiver = 1",
+          "SR receiver = 2^(m-1)",
+          "GBN retransmits all N frames",
+          "SR buffers out-of-order and retransmits only lost frame"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Timeline diagrams showing packet transmission, loss, and retransmission",
+          "Window size formula proof"
+        ],
+        "common_mistakes": [
+          "Drawing receiver buffer for Go-Back-N"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Derive the link utilization efficiency formula for Stop-and-Wait protocol. (5 Marks)",
+        "rubric": "Definition of Tt, Tp (2 marks) + Step-by-step efficiency derivation U = 1/(1+2a) (3 marks) = 5 Marks.",
+        "model_answer": "Let Transmission Time = Tt = L/B, and Propagation Time = Tp. Total cycle time to transmit 1 frame and receive ACK = Tt + 2*Tp. Link Utilization Efficiency U = Useful Time / Total Time = Tt / (Tt + 2*Tp). Dividing numerator and denominator by Tt: U = 1 / (1 + 2*(Tp/Tt)). Defining parameter a = Tp/Tt (the ratio of propagation delay to transmission delay), the efficiency simplifies to: U = 1 / (1 + 2a). When propagation delay is very large compared to packet transmission time (a >> 1), utilization drops close to zero, necessitating pipelined sliding window protocols."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-18-01",
+        "question": "Which JDBC driver type is known as the 'Pure Java Native Protocol Driver' (Type 4) and communicates directly with the database engine without client libraries?",
+        "options": [
+          "Type 1 (JDBC-ODBC Bridge)",
+          "Type 2 (Native-API Driver)",
+          "Type 3 (Network-Protocol Driver)",
+          "Type 4 (Direct Native-Protocol Pure Java Driver)"
+        ],
+        "correct_answer": "D",
+        "explanation": "Type 4 drivers are 100% pure Java, converting JDBC calls directly into vendor-specific network socket protocols without middleware."
+      },
+      {
+        "id": "ACAD-18-02",
+        "question": "Why is PreparedStatement preferred over standard Statement in JDBC for executing parameterized queries?",
+        "options": [
+          "PreparedStatement compiles SQL once on the database server, improves execution speed, and inherently prevents SQL Injection",
+          "PreparedStatement allows executing non-SQL Python scripts",
+          "PreparedStatement does not require a database connection",
+          "Standard Statement cannot execute SELECT queries"
+        ],
+        "correct_answer": "A",
+        "explanation": "PreparedStatement pre-compiles SQL plans and treats parameters as strictly typed literals, neutralizing SQL injection attacks."
+      },
+      {
+        "id": "ACAD-18-03",
+        "question": "What JDBC interface method must be called to process the tabular rows returned by an `executeQuery()` statement?",
+        "options": [
+          "ResultSet.next()",
+          "ResultSet.fetch()",
+          "Connection.commit()",
+          "Statement.scroll()"
+        ],
+        "correct_answer": "A",
+        "explanation": "ResultSet.next() moves the cursor forward one row from its initial position before the first row, returning false when exhausted."
+      },
+      {
+        "id": "ACAD-18-04",
+        "question": "How does database Connection Pooling improve enterprise web application performance?",
+        "options": [
+          "It permanently encrypts all database tables",
+          "It reuses an existing pool of pre-established physical connections, avoiding the expensive overhead of TCP handshakes and authentication on every request",
+          "It eliminates the need for SQL transactions",
+          "It compresses all JPEG images in the database"
+        ],
+        "correct_answer": "B",
+        "explanation": "Opening a DB connection takes 50-200ms. Pooling keeps open connections ready for checkout, reducing acquisition latency to <1ms."
+      },
+      {
+        "id": "ACAD-18-05",
+        "question": "To execute multiple transactional SQL updates atomically, what method must be called on the JDBC Connection before executing queries?",
+        "options": [
+          "connection.setAutoCommit(false)",
+          "connection.close()",
+          "connection.rollback()",
+          "connection.setReadOnly(true)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Disabling auto-commit (`setAutoCommit(false)`) groups operations into an atomic transaction concluded with `commit()` or `rollback()`."
+      }
+    ],
+    "pyq_year": "2024-25 (Q2)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Differentiate between Go-Back-N ARQ and Selective Repeat ARQ protocols with timeline diagrams. Why is the receiver window size in Go-Back-N equal to 1, while in Selective Repeat it is greater than 1? (15 Marks)",
+    "pyq_rubric": "GBN vs SR Comparison Table (4 marks) + GBN & SR Timeline Diagrams showing frame loss (5 marks) + Mathematical proof of window size limits (4 marks) + Efficiency formula (2 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Principle of Sliding Window Protocols:",
-        "Sliding window protocols are point-to-point flow and error control mechanisms operating at the Data Link Layer (OSI Layer 2) and Transport Layer (TCP). In contrast to naive Stop-and-Wait protocols where the sender idles waiting for an acknowledgment after every frame, a sliding window protocol allows the sender to transmit up to W frames (the 'window') without waiting for an acknowledgment, keeping high-latency pipes full."
+        "1. Model Answer & Technical Presentation",
+        "Sliding window protocols achieve continuous pipelined transmission over high-latency channels. The differences between Go-Back-N and Selective Repeat are:\n1. Window Size Allocation: In Go-Back-N (GBN), for an m-bit sequence number, Sender Window = 2^m - 1, while Receiver Window = 1. Because the receiver window is 1, it can only accept the exact in-order frame. If frame k is lost, any subsequent arriving frames (k+1, k+2...) are discarded without buffering. When the sender's timer expires for frame k, the sender must 'go back' and retransmit all N frames currently in flight. In Selective Repeat (SR), the receiver maintains a buffer window equal to the sender window: Sender Window = Receiver Window = 2^(m-1). The receiver buffers correctly received out-of-order frames and returns a NAK for the missing frame. The sender selectively retransmits only the specific corrupted packet.\n2. Why GBN Receiver Window = 1: GBN was designed for systems with constrained hardware memory; by forcing receiver window = 1, the receiver needs zero buffering memory and simpler logic.\n3. Why SR Window <= 2^(m-1): If the window size exceeded half the sequence number space, an overlapping ambiguity arises where the receiver cannot distinguish whether an incoming frame is a fresh new frame or a duplicate retransmission of an older frame from the previous cycle."
       ],
       [
-        "2. Go-Back-N ARQ Architecture & Window Proof:",
-        "In Go-Back-N, the sender maintains a window of size Ws = 2^m - 1, while the receiver has a window size Wr = 1.\n\u2022 Mathematical Proof of Ws <= 2^m - 1: Suppose sequence numbers are represented by m bits (range 0 to 2^m - 1). If Ws = 2^m, the sender could transmit frames 0, 1, ..., 2^m - 1 in one burst. Suppose all frames arrive safely at the receiver, and the receiver sends an ACK acknowledging all frames up to 0 (next expected frame 0 of the next cycle). If all ACKs are lost in transit, the sender's timer expires and it retransmits frame 0. The receiver, expecting frame 0 of the next batch, cannot determine whether this frame 0 is a duplicate of the old batch or the new frame 0! By restricting Ws <= 2^m - 1, the new window and old window cannot overlap, completely resolving ambiguity."
-      ],
-      [
-        "3. Selective Repeat ARQ Architecture:",
-        "Selective Repeat solves the wasteful retransmissions of GBN on lossy channels by setting Wr = Ws = 2^(m-1). The receiver maintains an individual buffer for out-of-order frames that fall within its window. When frame i is lost, receiver buffers frames i+1, i+2... and sends a NAK(i). The sender retransmits ONLY frame i. Once received, the receiver delivers all buffered frames in order to the network layer."
-      ],
-      [
-        "4. Mathematical Derivation of Efficiency (eta):",
-        "Let Tt be frame transmission time and Tp be one-way propagation delay.\nTime to send 1 frame and receive ACK = Tt + 2*Tp.\nIn Go-Back-N with window size N, the sender transmits N frames in one round trip time.\nTotal Useful Transmission Time = N * Tt.\nTotal Elapsed Time = Tt + 2*Tp.\nEfficiency eta = (N * Tt) / (Tt + 2*Tp) = N / (1 + 2*(Tp/Tt)) = N / (1 + 2a), where a = Tp / Tt.\nMaximum channel utilization (eta = 1.0 or 100%) is achieved when N >= 1 + 2a."
+        "2. Expected Examiner Criteria",
+        [
+          "Timeline diagrams showing packet transmission, loss, and retransmission",
+          "Window size formula proof"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Sliding Window Mathematical Proofs & Efficiency Derivation",
-    "milestone": "Full 15/15 on Networks Unit III Exam Question"
-  },
   "apt_data": {
-    "topic": "Logical Reasoning \u2014 Syllogisms & Venn Deduction",
+    "topic": "Series Completion & Pattern Recognition",
+    "category": "Logical Reasoning",
+    "subtopic": "Series Completion",
+    "formulas": "1. Types of Series: Arithmetic (+d), Geometric (*r), Difference of Differences, Squares/Cubes (n^2 +- k, n^3 +- k), Alternating/Twin series.\n2. Prime Number Series: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31...\n3. Fibonacci-type Additive Series: Tn = T(n-1) + T(n-2).",
+    "shortcut": "Step-Difference Technique: Compute consecutive differences. If not constant, compute differences of differences. A quadratic sequence achieves constant values at second differences.",
     "tutorial": [
-      "Syllogisms test deductive reasoning through statements and conclusions that must be accepted as 100% true regardless of real-world facts.",
-      "Standard Categorical Propositions:\n1. Universal Positive (A): 'All A are B' (Venn: Circle A is completely inside Circle B).\n2. Universal Negative (E): 'No A is B' (Venn: Circle A and Circle B are completely disjoint with cross line).\n3. Particular Positive (I): 'Some A are B' (Venn: Circles A and B overlap; at least one common element).\n4. Particular Negative (O): 'Some A are not B' (Venn: At least one part of Circle A is strictly outside Circle B).",
-      "Definite Conclusion vs Possibility Rules:\n\u2022 A definite conclusion must be TRUE in ALL possible Venn diagram representations.\n\u2022 A possibility conclusion is TRUE if it is valid in AT LEAST ONE valid Venn diagram representation.",
-      "Either-Or Complementary Pairs (Must satisfy ALL 3 conditions):\n1. Both individual conclusions must be independently doubtful (false as definite conclusions).\n2. Both conclusions must have the EXACT SAME subject and predicate.\n3. The statements must form a complementary pair: (Some + No) OR (All + Some Not)."
+      "When numbers grow rapidly, test for multiplication or powers. When numbers grow slowly, test for addition. If a series fluctuates up and down, it is almost certainly two alternating sub-series interwoven into one."
     ],
-    "formulas": "A + A = A (All A are B + All B are C ==> All A are C).\nA + E = E (All A are B + No B are C ==> No A are C).\nI + A = I (Some A are B + All B are C ==> Some A are C).\nI + E = O (Some A are B + No B are C ==> Some A are not C).",
-    "shortcut": "Golden Rule of Negatives: If all statements are positive, NO definite negative conclusion can follow. If any conclusion contains 'possibility', draw the maximal overlapping Venn diagram.",
-    "recognition": "Look for 'Statements: All pens are books... Conclusions: I. Some books are pens...' in TCS NQT, Wipro, and Infosys reasoning rounds.",
-    "tier1_problem": "Statements:\n1. All lions are predators.\n2. All predators are hunters.\nConclusions:\nI. All lions are hunters.\nII. Some hunters are lions.",
-    "tier1_solution": "Venn analysis: Lions circle is inside Predators circle, which is inside Hunters circle.\nConclusion I: All lions are inside Hunters circle ==> Definite TRUE.\nConclusion II: The region occupied by Lions is part of Hunters ==> Some hunters are lions is Definite TRUE.\nAnswer: Both Conclusion I and II follow.",
-    "tier2_problem": "Statements:\n1. Some doctors are surgeons.\n2. All surgeons are specialists.\n3. No specialist is an intern.\nConclusions:\nI. No surgeon is an intern.\nII. Some doctors are specialists.\nIII. Some doctors are not interns.",
-    "tier2_solution": "1. Since All surgeons are specialists and No specialist is an intern, Surgeons and Interns are completely disjoint ==> Conclusion I follows.\n2. Surgeons overlap with Doctors, and all Surgeons are Specialists, so that overlapping portion represents Doctors who are Specialists ==> Conclusion II follows.\n3. The doctors who are surgeons are specialists, and no specialist can be an intern. Therefore, those specific doctors can never be interns ==> Conclusion III follows.\nAnswer: All Conclusions I, II, and III follow.",
-    "tier3_problem": "[Infosys Reasoning Round Pattern]\nStatements:\n1. Some laptops are tablets.\n2. All tablets are phones.\n3. No phone is a desktop.\nConclusions:\nI. Some laptops are not desktops.\nII. All tablets being desktops is a possibility.\nIII. Some phones are laptops.",
-    "tier3_solution": "Step-by-step evaluation:\n\u2022 Laptops overlap with Tablets. All Tablets are within Phones. Hence, some Laptops are inside Phones (Conclusion III follows).\n\u2022 The laptops that are inside Phones cannot be Desktops because No Phone is a Desktop. Thus, there exists a definite portion of Laptops that cannot be Desktops ==> Conclusion I follows.\n\u2022 All Tablets are strictly inside Phones, and No Phone can ever touch Desktops. Therefore, Tablets can NEVER touch Desktops under any possibility ==> Conclusion II is definitively FALSE.\nAnswer: Only Conclusions I and III follow.",
-    "tier4_problem": "[Either-Or Complementary Case \u2014 TCS Digital / Cognizant GenC Next]\nStatements:\n1. Some clouds are rains.\n2. Some rains are storms.\n3. No storm is snow.\nConclusions:\nI. Some clouds are snow.\nII. No cloud is snow.",
-    "tier4_solution": "Check 3 conditions for Either-Or:\n1. Definite validity: Clouds and Snow have no direct negative or positive constraint. Thus, Conclusion I ('Some clouds are snow') is doubtful. Conclusion II ('No cloud is snow') is also doubtful.\n2. Same elements: Both conclusions have Subject = Cloud, Predicate = Snow.\n3. Complementary pair: Statement I is 'Some' (I) and Statement II is 'No' (E). This forms a valid complementary pair.\nHence, either clouds will share an element with snow, or they will be disjoint.\nAnswer: Either Conclusion I or Conclusion II follows.",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "Statements: All cars are vehicles. No vehicle is an airplane. Conclusions: I. No car is an airplane. II. No airplane is a car.",
-        "a": "Both follow. Since Car is inside Vehicle and Vehicle is disjoint from Airplane, Car is disjoint from Airplane. Symmetric relation holds."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "Statements: Some cups are mugs. Some mugs are glasses. Conclusions: I. Some cups are glasses. II. No cup is a glass.",
-        "a": "Either I or II follows. Cups and Glasses have no link (both doubtful), same terms, Some + No pair."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "Statements: All stars are moons. All moons are planets. Conclusions: I. Some planets are stars. II. All planets are stars.",
-        "a": "Only I follows. Stars is inside Planets, so Some planets are stars is true. But All planets are stars is false."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "Statements: No cat is a dog. No dog is a horse. Conclusions: I. No cat is a horse. II. Some cats being horses is a possibility.",
-        "a": "Only II follows. Negative statements with disjoint intermediate terms permit any possibility between extreme terms."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "Statements: Only a few books are papers (Means: Some books are papers AND Some books are NOT papers). All papers are files. Conclusions: I. All books being files is a possibility.",
-        "a": "False. Since 'Only a few books are papers', some books can never be papers, but they COULD all potentially be files as long as files is larger than papers."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Series Completion",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Series Completion",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Series Completion",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Series Completion",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Series Completion",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Find the next number in the series: 3, 7, 15, 31, 63, ?",
+        "options": {
+          "A": "127",
+          "B": "126",
+          "C": "125",
+          "D": "128"
+        },
+        "correct_answer": "A",
+        "explanation": "Each term follows the rule: next = 2 * prev + 1. 2 * 63 + 1 = 127.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "What is the next term in the sequence: 2, 5, 10, 17, 26, 37, ?",
+        "options": {
+          "A": "50",
+          "B": "48",
+          "C": "49",
+          "D": "52"
+        },
+        "correct_answer": "A",
+        "explanation": "Differences between consecutive terms are odd numbers: +3, +5, +7, +9, +11, +13. 37 + 13 = 50 (or n^2 + 1: 7^2 + 1 = 50).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Find the missing number: 4, 9, 25, 49, 121, ?",
+        "options": {
+          "A": "169",
+          "B": "144",
+          "C": "196",
+          "D": "225"
+        },
+        "correct_answer": "A",
+        "explanation": "The series consists of squares of prime numbers: 2^2, 3^2, 5^2, 7^2, 11^2, 13^2 = 169.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Identify the next term in the series: 1, 8, 27, 64, 125, ?",
+        "options": {
+          "A": "216",
+          "B": "343",
+          "C": "256",
+          "D": "225"
+        },
+        "correct_answer": "A",
+        "explanation": "Cubes of consecutive integers: 1^3, 2^3, 3^3, 4^3, 5^3, 6^3 = 216.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "What is the next number in the series: 6, 12, 21, 33, ?",
+        "options": {
+          "A": "48",
+          "B": "45",
+          "C": "46",
+          "D": "50"
+        },
+        "correct_answer": "A",
+        "explanation": "Differences between terms increase by 3: 12-6=6, 21-12=9, 33-21=12, next difference = 15. 33 + 15 = 48.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Complete the alphanumeric series: A2, C4, E8, G16, ?",
+        "options": {
+          "A": "I32",
+          "B": "H32",
+          "C": "I30",
+          "D": "J32"
+        },
+        "correct_answer": "A",
+        "explanation": "Letters advance by +2 (A, C, E, G, I). Numbers double each step (2, 4, 8, 16, 32) => I32.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Find the wrong number in the series: 8, 27, 64, 100, 125, 216, 343",
+        "options": {
+          "A": "100",
+          "B": "27",
+          "C": "64",
+          "D": "125"
+        },
+        "correct_answer": "A",
+        "explanation": "All numbers are perfect cubes (2^3, 3^3, 4^3, 5^3, 6^3, 7^3) except 100, which is 10^2 instead of 5^3 = 125.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Find the next term in the alternating series: 2, 3, 4, 9, 16, 27, 256, ?",
+        "options": {
+          "A": "81",
+          "B": "64",
+          "C": "243",
+          "D": "128"
+        },
+        "correct_answer": "A",
+        "explanation": "Two interleaved series: powers of 2 (2, 4, 16, 256 where each is squared) and powers of 3 (3, 9, 27, 81 where each is multiplied by 3). Next term is 81.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Find the next term: 0, 6, 24, 60, 120, 210, ?",
+        "options": {
+          "A": "336",
+          "B": "343",
+          "C": "320",
+          "D": "350"
+        },
+        "correct_answer": "A",
+        "explanation": "Pattern is n^3 - n: 1^3-1=0, 2^3-2=6, 3^3-3=24, 4^3-4=60, 5^3-5=120, 6^3-6=210, 7^3-7 = 343 - 7 = 336.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Find the next number: 11, 13, 17, 19, 23, 29, 31, ?",
+        "options": {
+          "A": "37",
+          "B": "33",
+          "C": "35",
+          "D": "39"
+        },
+        "correct_answer": "A",
+        "explanation": "Sequence of consecutive prime numbers. The prime immediately following 31 is 37.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Series Completion (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "Number of Islands (LeetCode 200 - Medium)",
+      "title": "Problem 1: Lowest Common Ancestor of a Binary Tree",
       "difficulty": "Medium",
-      "importance": "Top 5 Most Asked Placement Graph Problem (Amazon, Microsoft, TCS Digital)",
-      "problem_statement": "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.",
-      "solution_approach": "Algorithm (Connected Components via In-Place Grid DFS/BFS):\n1. Iterate through every cell (r, c) in the grid.\n2. When we encounter a '1', we increment our island count by 1 and trigger a traversal (DFS or BFS).\n3. The DFS visits all 4 adjacent neighbors (up, down, left, right). To avoid infinite loops and extra O(M*N) memory for a visited set, we sink the island in-place by flipping visited '1's to '0's (or '2').\n4. Base cases for DFS: If row or col is out of bounds, or grid[r][c] == '0', return immediately.",
-      "code": "def numIslands(grid: list[list[str]]) -> int:\n    if not grid or not grid[0]:\n        return 0\n    \n    rows, cols = len(grid), len(grid[0])\n    island_count = 0\n    \n    def dfs(r: int, c: int):\n        # Boundary check and water check\n        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != '1':\n            return\n        \n        # Sink land cell to avoid re-visiting\n        grid[r][c] = '0'\n        \n        # Visit all 4 cardinal directions\n        dfs(r + 1, c) # Down\n        dfs(r - 1, c) # Up\n        dfs(r, c + 1) # Right\n        dfs(r, c - 1) # Left\n    \n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] == '1':\n                island_count += 1\n                dfs(r, c)\n                \n    return island_count",
-      "line_by_line": [
-        [
-          "rows, cols = len(grid), len(grid[0])",
-          "Extract grid dimensions for constant-time boundary checking."
-        ],
-        [
-          "if grid[r][c] == '1':",
-          "Discovered unvisited land cell, signaling a new connected component."
-        ],
-        [
-          "island_count += 1",
-          "Increment global island tally."
-        ],
-        [
-          "grid[r][c] = '0'",
-          "Mutate cell in-place to '0' ('sink the island'), preventing duplicate visits without O(M*N) auxiliary visited hash set."
-        ],
-        [
-          "dfs(r + dr, c + dc)",
-          "Recursively flood-fill all 4 orthogonal neighbors."
-        ]
-      ],
-      "time_complexity": "O(M * N) where M is rows and N is columns. Every cell is visited at most a constant number of times.",
-      "space_complexity": "O(M * N) in the worst case (grid full of land) for recursion call stack.",
-      "edge_cases": "All '0's (returns 0); all '1's (returns 1); 1x1 grid; empty grid."
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.",
+      "solution_approach": "1. Apply Lowest Common Ancestor (LCA) in Binary Trees algorithmic technique.\n2. Finds the lowest common ancestor of two nodes p and q by searching left and right subtrees recursively.\n3. Invariants: If p and q are found in different subtrees of node N, N is their LCA. If both lie in the same subtree, that subtree's root returns the LCA.",
+      "code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+      "java_solution": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+      "solution_java": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(H) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
     },
     {
-      "title": "Clone Graph (LeetCode 133 - Medium)",
+      "title": "Problem 2: Lowest Common Ancestor of a Binary Search Tree",
       "difficulty": "Medium",
-      "importance": "High-Frequency System & Object Graph Deep-Copy Placement Problem",
-      "problem_statement": "Given a reference of a node in a connected undirected graph, return a deep copy (clone) of the graph. Each node in the graph contains a value (int) and a list of its neighbors (List[Node]).",
-      "solution_approach": "Deep copying a graph requires handling cycles to prevent infinite recursion.\n1. Use a Hash Map `clones = {}` mapping `original_node -> cloned_node`.\n2. Perform DFS/BFS. For the current node, if it is already in `clones`, return its cloned instance.\n3. Otherwise, create a new Node with `node.val` and record it in `clones[node]`.\n4. Iterate through all neighbors of `node`, recursively cloning each neighbor and appending it to `copy.neighbors`.",
-      "code": "class Node:\n    def __init__(self, val = 0, neighbors = None):\n        self.val = val\n        self.neighbors = neighbors if neighbors is not None else []\n\ndef cloneGraph(node: 'Node') -> 'Node':\n    if not node:\n        return None\n    \n    cloned_map = {}\n    \n    def dfs(curr: 'Node') -> 'Node':\n        if curr in cloned_map:\n            return cloned_map[curr]\n        \n        # Create clone\n        copy = Node(curr.val)\n        cloned_map[curr] = copy\n        \n        # Recursively clone all neighbors\n        for neighbor in curr.neighbors:\n            copy.neighbors.append(dfs(neighbor))\n            \n        return copy\n    \n    return dfs(node)",
-      "line_by_line": [
-        [
-          "cloned_map = {}",
-          "Hash table storing mapping from original Node pointers to newly cloned Node instances to handle cycles."
-        ],
-        [
-          "if curr in cloned_map: return cloned_map[curr]",
-          "Cycle-breaking base case: if node is already copied, return existing clone immediately."
-        ],
-        [
-          "copy = Node(curr.val); cloned_map[curr] = copy",
-          "Instantiate new Node and register in hash map BEFORE traversing neighbors to prevent cycle recursion traps."
-        ],
-        [
-          "for neighbor in curr.neighbors: copy.neighbors.append(dfs(neighbor))",
-          "Deep-copy and attach all incident edges."
-        ]
-      ],
-      "time_complexity": "O(V + E) where V is number of vertices (nodes) and E is number of edges in the graph.",
-      "space_complexity": "O(V) to store the clone map and recursion stack frames.",
-      "edge_cases": "node is None (returns None); single node with no neighbors; fully cyclic graph."
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.",
+      "solution_approach": "1. Identify interview variation of Lowest Common Ancestor (LCA) in Binary Trees.\n2. Handle edge cases: p is direct parent of q, p and q on leaf levels, Binary Search Tree variation uses value comparison.\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+      "java_solution": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+      "solution_java": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(H) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Lowest Common Ancestor (LCA) in Binary Trees",
+    "category": "Tree / Recursion",
+    "concept": "Finds the lowest common ancestor of two nodes p and q by searching left and right subtrees recursively.",
+    "why_it_works": "If p and q are found in different subtrees of node N, N is their LCA. If both lie in the same subtree, that subtree's root returns the LCA.",
+    "visual_explanation": "Tree:\\n        3\\n       / \\\\\\n      5   1\\n     / \\\\ / \\\\\\n    6  2 0  8\\nNodes 5 and 1: 5 is in left subtree, 1 is in right subtree ==> LCA is 3!",
+    "java_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode left = lowestCommonAncestor(root.left, p, q);\n        TreeNode right = lowestCommonAncestor(root.right, p, q);\n        if (left != null && right != null) return root;\n        return left != null ? left : right;\n    }\n}",
+    "code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode left = lowestCommonAncestor(root.left, p, q);\n        TreeNode right = lowestCommonAncestor(root.right, p, q);\n        if (left != null && right != null) return root;\n        return left != null ? left : right;\n    }\n}",
+    "python_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode left = lowestCommonAncestor(root.left, p, q);\n        TreeNode right = lowestCommonAncestor(root.right, p, q);\n        if (left != null && right != null) return root;\n        return left != null ? left : right;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 2: Base case: if root is null or matches p or q, return root.",
+      "Line 3-4: Recursively search for p and q in left and right subtrees.",
+      "Line 5: If both left and right return non-null, p and q are in separate branches; root is their LCA.",
+      "Line 6: Otherwise return the non-null branch."
+    ],
+    "dry_run": "Find LCA of 5 and 4. 5 matches immediately. Left returns 5. Right returns null. LCA returns node 5.",
+    "complexity": "O(N) Time, O(H) Auxiliary Space",
+    "edge_cases": [
+      "p is direct parent of q",
+      "p and q on leaf levels",
+      "Binary Search Tree variation uses value comparison"
+    ],
+    "interview_variations": [
+      "Lowest Common Ancestor of a Binary Search Tree",
+      "Lowest Common Ancestor of Deepest Leaves"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-18-01",
+        "title": "Problem 1: Lowest Common Ancestor of a Binary Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Lowest Common Ancestor (LCA) in Binary Trees algorithmic technique.\n2. Finds the lowest common ancestor of two nodes p and q by searching left and right subtrees recursively.\n3. Invariants: If p and q are found in different subtrees of node N, N is their LCA. If both lie in the same subtree, that subtree's root returns the LCA.",
+        "solution_java": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+        "solution_python": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+        "code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+        "java_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-18-02",
+        "title": "Problem 2: Lowest Common Ancestor of a Binary Search Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Lowest Common Ancestor (LCA) in Binary Trees.\n2. Handle edge cases: p is direct parent of q, p and q on leaf levels, Binary Search Tree variation uses value comparison.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+        "solution_python": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+        "code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+        "java_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root.val > p.val && root.val > q.val) return lowestCommonAncestor(root.left, p, q);\n        if (root.val < p.val && root.val < q.val) return lowestCommonAncestor(root.right, p, q);\n        return root;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space"
+      }
+    ]
+  },
   "cs_core": {
-    "subject": "Database Management Systems (DBMS)",
-    "topic": "Query Optimization & Index Scans vs Sequential Scans",
+    "subject": "Computer Networks",
+    "topic": "Network Layer: IPv4 Addressing, CIDR Subnetting, ARP, ICMP & NAT",
     "detailed_notes": [
-      "The Query Execution Engine transforms a declarative SQL query into an optimized physical execution plan:\n1. Parser: Converts raw SQL text into an Abstract Syntax Tree (AST), checking syntax and semantic validity (tables/columns exist).\n2. Query Rewriter: Applies relational algebra equivalences (pushing selections down, eliminating subqueries via joins).\n3. Cost-Based Optimizer (CBO): Estimates the cost (disk I/O + CPU cycles) of various candidate execution plans using table statistics stored in catalog tables (pg_statistic / sqlite_stat1).",
-      "Scan Types Analyzed:\n\u2022 Sequential Scan (Table Scan): Reads every block from disk sequentially from start to end. Fast for small tables (<1000 rows) or when returning >20% of table rows due to sequential read caching.\n\u2022 Index Scan: Traverses B+ tree from root to leaf to locate matching row pointers (TIDs/RIDs), then fetches individual heap pages. High random I/O overhead if selectivity is poor.\n\u2022 Bitmap Index Scan: Gathers all matching tuple pointers from B+ tree into a bitmap in memory, sorts pointers by physical block order, and performs sequential I/O on heap pages. Combines efficiency of indexes with sequential disk reads.",
-      "EXPLAIN & EXPLAIN ANALYZE:\n\u2022 EXPLAIN shows the optimizer's estimated cost (cost=0.00..45.12 rows=100 width=16).\n\u2022 EXPLAIN ANALYZE actually executes the query on the database engine, returning exact execution times (in ms) and buffer hit counts."
+      "The Network Layer is responsible for host-to-host packet routing and logical IP addressing across internetworks.\n\nIPv4 Addressing & CIDR:\nIPv4 uses 32-bit addresses (4 octets). Historically divided into Classes: Class A (/8, 0.0.0.0 to 127.255.255.255), Class B (/16, 128.0.0.0 to 191.255.255.255), Class C (/24, 192.0.0.0 to 223.255.255.255), Class D (Multicast), Class E (Reserved).\nClassless Inter-Domain Routing (CIDR) replaced classful networks: an address is written as IP/prefix (e.g., 192.168.1.0/26). Prefix bits denote Network ID; remaining (32 - prefix) bits denote Host ID. Usable hosts = 2^(32 - prefix) - 2 (subtracting Network Address where host bits are all 0s, and Broadcast Address where host bits are all 1s).\n\nAuxiliary Protocols:\n- ARP (Address Resolution Protocol): Resolves a known 32-bit IPv4 address to a 48-bit physical MAC address. Broadcasts ARP Request ('Who has IP X?'); target replies with Unicast ARP Reply containing its MAC.\n- ICMP (Internet Control Message Protocol): Diagnostics and error reporting (Ping uses Echo Request/Reply; Traceroute uses ICMP Time Exceeded when TTL expires).\n- NAT (Network Address Translation): Translates private IP addresses (RFC 1918: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) into public routable IPs, using Port Address Translation (PAT/NAPT) to multiplex thousands of internal hosts over a single public IP."
+    ],
+    "key_definitions": [
+      {
+        "term": "CIDR",
+        "definition": "Classless Inter-Domain Routing: variable-length subnet masking allowing flexible IP allocation without rigid class boundaries."
+      },
+      {
+        "term": "ARP",
+        "definition": "Address Resolution Protocol: translates logical IPv4 addresses to local hardware MAC addresses via broadcast/unicast."
+      },
+      {
+        "term": "NAT",
+        "definition": "Network Address Translation: mapping private RFC 1918 addresses to public routable IP addresses to conserve IPv4 space."
+      }
     ],
     "interview_qa": [
       {
-        "q": "Why does a database optimizer sometimes choose a Sequential Scan over an Index Scan even when an index exists on the searched column?",
-        "a": "Because the Cost-Based Optimizer estimates that sequential scanning will consume fewer total I/O cycles. When a query has low selectivity (e.g., retrieving 30% or more of table rows), an index scan requires numerous random I/O disk seeks to hop between index leaf nodes and scattered physical table heap blocks. Sequential scans read contiguous multi-block chunks using operating system read-ahead buffers, making sequential reads orders of magnitude faster than thousands of scattered random lookups."
+        "q": "Given the IP address 172.16.10.45/28, find the Network Address, Broadcast Address, and number of usable host addresses.",
+        "a": "Prefix is /28. Host bits = 32 - 28 = 4 bits. Block size = 2^4 = 16. In the 4th octet, 45 falls into the block [32 to 47]. Network Address = 172.16.10.32. Broadcast Address = 172.16.10.47. Usable Host range = 172.16.10.33 to 172.16.10.46. Number of usable hosts = 2^4 - 2 = 14 hosts."
       },
       {
-        "q": "What is the difference between a Filter condition and an Index Condition in an EXPLAIN output?",
-        "a": "An 'Index Cond' represents predicates evaluated directly inside the B+ Tree during traversal (e.g., `user_id = 42`), preventing non-matching table blocks from ever being fetched from disk. A 'Filter' condition represents predicates evaluated in memory AFTER table rows have already been read from disk blocks. High filter counts with low output rows indicate missing composite indexes or non-sargable expressions (like `WHERE YEAR(created_at) = 2024`)."
+        "q": "How does Traceroute work under the hood using IP TTL and ICMP?",
+        "a": "Traceroute sends packets (UDP or ICMP) starting with IP Time-To-Live TTL = 1. The first router decrements TTL to 0, drops the packet, and returns an ICMP Type 11 'Time-to-Live Exceeded' message; traceroute records the router's IP and round-trip time. It then sends a packet with TTL = 2 to discover the second router, incrementing TTL sequentially until the packet reaches the destination, which responds with ICMP Echo Reply or Port Unreachable."
+      },
+      {
+        "q": "What is the difference between ARP and RARP?",
+        "a": "ARP (Address Resolution Protocol) resolves a known logical IP address to an unknown physical hardware MAC address. RARP (Reverse ARP) allowed a diskless workstation that knows only its physical MAC address to request and discover its assigned IP address from a central server on boot (now superseded by DHCP)."
+      },
+      {
+        "q": "What are RFC 1918 Private IP ranges and why can't they be routed on the public Internet?",
+        "a": "The three private ranges are: 10.0.0.0/8 (10.0.0.0 - 10.255.255.255), 172.16.0.0/12 (172.16.0.0 - 172.31.255.255), and 192.168.0.0/16 (192.168.0.0 - 192.168.255.255). Public Internet backbone routers are configured to drop packets with private destination addresses because they are reused across millions of internal private LANs globally and lack globally unique routing paths."
+      },
+      {
+        "q": "How does Port Address Translation (PAT / NAT Overload) allow multiple devices to share one public IP?",
+        "a": "The NAT router maintains a stateful translation table: (Private IP, Private Port <-> Public IP, Translated Port). When an internal host (192.168.1.10:5000) requests an external site, the router rewrites the source IP to its public IP and assigns a unique temporary source port (203.0.113.1:40001). When the response arrives at port 40001, the router matches the entry in its table and forwards the packet back to 192.168.1.10:5000."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-18-01",
+        "question": "How many usable host IP addresses are available in a /26 subnet?",
+        "options": [
+          "64",
+          "62",
+          "30",
+          "126"
+        ],
+        "correct_answer": "B",
+        "explanation": "Host bits = 32 - 26 = 6 bits. Usable hosts = 2^6 - 2 = 64 - 2 = 62."
+      },
+      {
+        "id": "CS-18-02",
+        "question": "Which protocol resolves an IPv4 address to a physical MAC address on a local Ethernet segment?",
+        "options": [
+          "DNS",
+          "DHCP",
+          "ARP",
+          "BGP"
+        ],
+        "correct_answer": "C",
+        "explanation": "ARP maps 32-bit IP addresses to 48-bit MAC addresses."
+      },
+      {
+        "id": "CS-18-03",
+        "question": "Traceroute discovers intermediate routers along a network path by manipulating which IP header field?",
+        "options": [
+          "Header Checksum",
+          "Time To Live (TTL)",
+          "Type of Service",
+          "Identification"
+        ],
+        "correct_answer": "B",
+        "explanation": "Traceroute increments TTL from 1 upward, receiving ICMP Time Exceeded packets from each hop."
+      },
+      {
+        "id": "CS-18-04",
+        "question": "Which of the following is an RFC 1918 Private IP address?",
+        "options": [
+          "8.8.8.8",
+          "172.20.14.5",
+          "169.254.1.1",
+          "203.0.113.50"
+        ],
+        "correct_answer": "B",
+        "explanation": "172.20.14.5 falls within the private Class B range (172.16.0.0 to 172.31.255.255)."
+      },
+      {
+        "id": "CS-18-05",
+        "question": "What is the broadcast address for the subnet 192.168.5.0/24?",
+        "options": [
+          "192.168.5.0",
+          "192.168.5.1",
+          "192.168.5.255",
+          "192.168.5.254"
+        ],
+        "correct_answer": "C",
+        "explanation": "In a /24 subnet, setting all 8 host bits to 1 yields .255, the broadcast address."
       }
     ]
   },
   "project_defense": {
-    "project_name": "CSMS \u2014 Car Showroom Management System",
-    "feature_focus": "Database Migrations with Alembic & Zero-Downtime Schema Evolution",
-    "architecture_deep_dive": "In CSMS, database evolution across development and production environments is strictly automated using Alembic integrated with SQLAlchemy ORM.\n\n1. Migration Lifecycle & Revision Generation:\nInstead of executing ad-hoc DDL `ALTER TABLE` statements directly on PostgreSQL, developers modify declarative models in Python (`models/car.py`, `models/order.py`). Alembic detects schema diffs via `alembic revision --autogenerate -m 'add_vin_index'` by comparing SQLAlchemy `target_metadata` against live database catalog tables.\n\n2. Two-Way Reversible Operations:\nEvery migration file provides explicit `upgrade()` and `downgrade()` functions. For instance, creating a nullable column `vin_number = Column(String(17), unique=True, index=True)` in upgrade() is paired with `drop_index` and `drop_column` in downgrade(), guaranteeing fast rollbacks during deployment failures.\n\n3. Safe Production Migrations:\nTo prevent table locking under traffic: 1. Columns are always added with NULL defaults first. 2. Data backfills run in micro-batches. 3. NOT NULL constraints are applied only after backfill completion.",
+    "project_name": "Caloriv",
+    "repo_path": "D:\\Projects\\Caloriv",
+    "feature_focus": "Offline-First Mobile Synchronization & SQLite Local Storage",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nLocal data persistence, offline meal logging, and background server sync.\n\nWHAT TO MEMORIZE:\nMobile apps must function reliably in low-connectivity gym or outdoor environments.\n\n60-SECOND INTERVIEW PITCH:\nIn fitness tracking, offline access is essential. I architected Caloriv with an offline-first SQLite cache. Users can log meals, check daily macros, and view charts without internet access, with automated two-way synchronization occurring seamlessly whenever a network connection is detected.",
     "interview_qa": [
       {
-        "q": "How did you manage database schema changes in CSMS when deploying new features?",
-        "a": "I used Alembic for database version control. Every schema change is tracked as an immutable Python revision script with an explicit upgrade() and downgrade() path. When CI/CD runs, `alembic upgrade head` applies pending migrations atomically inside a database transaction before the FastAPI web server processes new requests. This eliminated manual DDL scripts and enabled instant rollbacks."
+        "q": "How does Caloriv allow users to log meals without an internet connection?",
+        "a": "All daily meal logs, food databases, and calorie tallies are written immediately to a local SQLite database using React Native's SQLite library. Each record carries a `sync_status` flag ('SYNCED', 'PENDING_UPLOAD', 'PENDING_DELETE'). When network connectivity is restored, an asynchronous sync manager batches pending records and pushes them to the cloud backend via idempotent REST calls."
       },
       {
-        "q": "What happens if a database migration fails halfway through execution in production?",
-        "a": "Because PostgreSQL supports Transactional DDL, Alembic wraps migration steps inside `BEGIN ... COMMIT`. If any DDL statement fails (e.g., a unique constraint violation during backfill), PostgreSQL automatically rolls back the entire transaction, leaving the database in its original clean state and keeping `alembic_version` at the previous revision hash, preventing schema corruption."
+        "q": "How do you handle conflict resolution if a user modifies their meal on two devices?",
+        "a": "We use a 'Last-Write-Wins' (LWW) strategy backed by UTC millisecond timestamps (`updated_at`). The record with the later timestamp overwrites the earlier record on the cloud server, and the resolved state syncs back to the client."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 18 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 18 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'DevQBX & Sitekraft Engineering', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In DevQBX & Sitekraft Engineering (Project Management, Client Web Architecture, Microservices), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of DevQBX & Sitekraft Engineering.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 17 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5002 — JDBC Architecture, PreparedStatement & ACID Pooling.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Series Completion & Pattern Recognition.\n• Algorithmic Invariant: Optimal time and space complexity rules for Lowest Common Ancestor (LCA) in Binary Trees.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Layer Routing: RIP, OSPF & BGP.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on JDBC Architecture, PreparedStatement & ACID Pooling.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Lowest Common Ancestor (LCA) in Binary Trees.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Biometric Electronic Voting System (BEVM).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 18 Q1: What is the primary academic thesis of JDBC Architecture, PreparedStatement & ACID Pooling?",
+        "a": "Core theoretical and practical mastery of JDBC Architecture, PreparedStatement & ACID Pooling under the CSJM University BCA-5002 syllabus."
+      },
+      {
+        "q": "Day 18 Q2: What is the key speed calculation formula applied in Series Completion & Pattern Recognition?",
+        "a": "High-speed corporate placement arithmetic shortcut for Series Completion & Pattern Recognition in campus recruitment exams."
+      },
+      {
+        "q": "Day 18 Q3: What is the time complexity of Lowest Common Ancestor (LCA) in Binary Trees?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 18 Q4: What is the central architectural principle of Network Layer Routing: RIP, OSPF & BGP?",
+        "a": "Foundational systems engineering rule governing Network Layer Routing: RIP, OSPF & BGP in production environments."
+      },
+      {
+        "q": "Day 18 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 18 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 18 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 18 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 18 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 18 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5002 — JDBC Architecture, PreparedStatement & ACID Pooling.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Series Completion & Pattern Recognition.\n• Algorithmic Invariant: Optimal time and space complexity rules for Lowest Common Ancestor (LCA) in Binary Trees.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Layer Routing: RIP, OSPF & BGP."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5002 — JDBC Architecture, PreparedStatement & ACID Pooling."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Series Completion & Pattern Recognition."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Lowest Common Ancestor (LCA) in Binary Trees."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: Biometric Electronic Voting System (BEVM)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 18,
+    "title": "Day 18 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "Why is the receiver window size in Go-Back-N protocol equal to 1?",
-        "a": "Because the GBN receiver is designed to accept frames strictly in sequential order. It does not buffer out-of-order frames; any frame with a sequence number other than the next expected frame is discarded immediately, requiring only a single frame buffer."
+        "q": "Which JDBC driver type is known as the 'Pure Java Native Protocol Driver' (Type 4) and communicates directly with the database engine without client libraries?",
+        "a": "Answer: D\n\nType 4 drivers are 100% pure Java, converting JDBC calls directly into vendor-specific network socket protocols without middleware."
       },
       {
-        "q": "What is the maximum sender window size in Selective Repeat protocol if 4 bits are used for sequence numbers?",
-        "a": "With m = 4 bits, the sequence number space is 2^4 = 16. The maximum sender window size in Selective Repeat is 2^(m-1) = 2^(4-1) = 2^3 = 8."
+        "q": "Why is PreparedStatement preferred over standard Statement in JDBC for executing parameterized queries?",
+        "a": "Answer: A\n\nPreparedStatement pre-compiles SQL plans and treats parameters as strictly typed literals, neutralizing SQL injection attacks."
       },
       {
-        "q": "Statements: All routers are switches. No switch is a hub. Conclusion: Can any router be a hub? Explain.",
-        "a": "No. Since all routers are inside switches, and switches are completely disjoint from hubs, routers are also completely disjoint from hubs. Definite conclusion: No router is a hub."
+        "q": "What JDBC interface method must be called to process the tabular rows returned by an `executeQuery()` statement?",
+        "a": "Answer: A\n\nResultSet.next() moves the cursor forward one row from its initial position before the first row, returning false when exhausted."
       },
       {
-        "q": "In LeetCode 200 (Number of Islands), why do we mutate visited land cells '1' to '0' during DFS?",
-        "a": "To 'sink' the visited land in-place. This marks the cell as visited without requiring an auxiliary O(M*N) hash set, saving memory while preventing infinite recursive cycles."
+        "q": "How does database Connection Pooling improve enterprise web application performance?",
+        "a": "Answer: B\n\nOpening a DB connection takes 50-200ms. Pooling keeps open connections ready for checkout, reducing acquisition latency to <1ms."
       },
       {
-        "q": "What is the primary difference between Stop-and-Wait ARQ efficiency and Go-Back-N efficiency?",
-        "a": "Stop-and-Wait efficiency is eta = 1 / (1 + 2a). Go-Back-N transmits N frames per round trip, achieving efficiency eta = N / (1 + 2a). GBN improves channel throughput by up to N times."
+        "q": "To execute multiple transactional SQL updates atomically, what method must be called on the JDBC Connection before executing queries?",
+        "a": "Answer: A\n\nDisabling auto-commit (`setAutoCommit(false)`) groups operations into an atomic transaction concluded with `commit()` or `rollback()`."
       },
       {
-        "q": "Why does LeetCode 133 (Clone Graph) require registering a newly created cloned node into a hash map before copying its neighbors?",
-        "a": "Because undirected graphs contain cycles. If the node is not registered in the lookup map first, traversing a cyclic neighbor will attempt to clone the original node again, creating an infinite recursive loop that overflows the call stack."
+        "q": "What is the next number in the sequence: 3, 7, 15, 31, 63, ?",
+        "a": "Answer: A\n\nEach term is 2x + 1: 63 * 2 + 1 = 127."
       },
       {
-        "q": "What is a 'Bitmap Index Scan' in PostgreSQL / DBMS query execution?",
-        "a": "It is a hybrid scanning method that scans a B+ tree to construct an in-memory bitmap of matching heap page block numbers, sorts them sequentially, and then performs sequential physical I/O to retrieve table rows, eliminating random disk thrashing."
+        "q": "Find the missing number in the series: 4, 9, 25, 49, 121, ?",
+        "a": "Answer: A\n\nSquares of consecutive prime numbers: 2^2, 3^2, 5^2, 7^2, 11^2, 13^2 = 169."
       },
       {
-        "q": "In Alembic migrations, why must schema additions on high-traffic production databases avoid adding columns with non-null defaults directly?",
-        "a": "Because older database engines lock the entire table exclusively while rewriting all existing physical table rows with the default value, causing request timeouts. Best practice is to add nullable columns first, backfill data asynchronously, and then add constraints."
+        "q": "Find the next term: 1, 4, 27, 256, ?",
+        "a": "Answer: A\n\nPattern is n^n: 1^1=1, 2^2=4, 3^3=27, 4^4=256, 5^5 = 3,125."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-18-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which JDBC driver type is known as the 'Pure Java Native Protocol Driver' (Type 4) and communicates directly with the database engine without client libraries?",
+        "options": [
+          "Type 1 (JDBC-ODBC Bridge)",
+          "Type 2 (Native-API Driver)",
+          "Type 3 (Network-Protocol Driver)",
+          "Type 4 (Direct Native-Protocol Pure Java Driver)"
+        ],
+        "correct_answer": "D",
+        "explanation": "Type 4 drivers are 100% pure Java, converting JDBC calls directly into vendor-specific network socket protocols without middleware."
+      },
+      {
+        "id": "TEST-18-02",
+        "category": "Academic (Academic Theory)",
+        "question": "Why is PreparedStatement preferred over standard Statement in JDBC for executing parameterized queries?",
+        "options": [
+          "PreparedStatement compiles SQL once on the database server, improves execution speed, and inherently prevents SQL Injection",
+          "PreparedStatement allows executing non-SQL Python scripts",
+          "PreparedStatement does not require a database connection",
+          "Standard Statement cannot execute SELECT queries"
+        ],
+        "correct_answer": "A",
+        "explanation": "PreparedStatement pre-compiles SQL plans and treats parameters as strictly typed literals, neutralizing SQL injection attacks."
+      },
+      {
+        "id": "TEST-18-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What JDBC interface method must be called to process the tabular rows returned by an `executeQuery()` statement?",
+        "options": [
+          "ResultSet.next()",
+          "ResultSet.fetch()",
+          "Connection.commit()",
+          "Statement.scroll()"
+        ],
+        "correct_answer": "A",
+        "explanation": "ResultSet.next() moves the cursor forward one row from its initial position before the first row, returning false when exhausted."
+      },
+      {
+        "id": "TEST-18-04",
+        "category": "Academic (Academic Theory)",
+        "question": "How does database Connection Pooling improve enterprise web application performance?",
+        "options": [
+          "It permanently encrypts all database tables",
+          "It reuses an existing pool of pre-established physical connections, avoiding the expensive overhead of TCP handshakes and authentication on every request",
+          "It eliminates the need for SQL transactions",
+          "It compresses all JPEG images in the database"
+        ],
+        "correct_answer": "B",
+        "explanation": "Opening a DB connection takes 50-200ms. Pooling keeps open connections ready for checkout, reducing acquisition latency to <1ms."
+      },
+      {
+        "id": "TEST-18-05",
+        "category": "Academic (Academic Theory)",
+        "question": "To execute multiple transactional SQL updates atomically, what method must be called on the JDBC Connection before executing queries?",
+        "options": [
+          "connection.setAutoCommit(false)",
+          "connection.close()",
+          "connection.rollback()",
+          "connection.setReadOnly(true)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Disabling auto-commit (`setAutoCommit(false)`) groups operations into an atomic transaction concluded with `commit()` or `rollback()`."
+      },
+      {
+        "id": "TEST-18-06",
+        "category": "Placement Aptitude",
+        "question": "What is the next number in the sequence: 3, 7, 15, 31, 63, ?",
+        "options": [
+          "127",
+          "128",
+          "125",
+          "126"
+        ],
+        "correct_answer": "A",
+        "explanation": "Each term is 2x + 1: 63 * 2 + 1 = 127."
+      },
+      {
+        "id": "TEST-18-07",
+        "category": "Placement Aptitude",
+        "question": "Find the missing number in the series: 4, 9, 25, 49, 121, ?",
+        "options": [
+          "169",
+          "144",
+          "196",
+          "225"
+        ],
+        "correct_answer": "A",
+        "explanation": "Squares of consecutive prime numbers: 2^2, 3^2, 5^2, 7^2, 11^2, 13^2 = 169."
+      },
+      {
+        "id": "TEST-18-08",
+        "category": "Placement Aptitude",
+        "question": "Find the next term: 1, 4, 27, 256, ?",
+        "options": [
+          "3,125",
+          "1,024",
+          "4,096",
+          "625"
+        ],
+        "correct_answer": "A",
+        "explanation": "Pattern is n^n: 1^1=1, 2^2=4, 3^3=27, 4^4=256, 5^5 = 3,125."
+      },
+      {
+        "id": "TEST-18-09",
+        "category": "Placement Aptitude",
+        "question": "Find the wrong number in the series: 1, 2, 6, 15, 31, 56, 91",
+        "options": [
+          "91",
+          "31",
+          "56",
+          "15"
+        ],
+        "correct_answer": "A",
+        "explanation": "Differences are squares: +1, +4, +9, +16, +25, +36. 56 + 36 = 92, but series has 91."
+      },
+      {
+        "id": "TEST-18-10",
+        "category": "Placement Aptitude",
+        "question": "What is the next number in the Fibonacci-style series: 2, 3, 5, 8, 13, 21, ?",
+        "options": [
+          "34",
+          "32",
+          "35",
+          "33"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sum of preceding two terms: 13 + 21 = 34."
+      },
+      {
+        "id": "TEST-18-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "How many usable host IP addresses are available in a /26 subnet?",
+        "options": [
+          "64",
+          "62",
+          "30",
+          "126"
+        ],
+        "correct_answer": "B",
+        "explanation": "Host bits = 32 - 26 = 6 bits. Usable hosts = 2^6 - 2 = 64 - 2 = 62."
+      },
+      {
+        "id": "TEST-18-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which protocol resolves an IPv4 address to a physical MAC address on a local Ethernet segment?",
+        "options": [
+          "DNS",
+          "DHCP",
+          "ARP",
+          "BGP"
+        ],
+        "correct_answer": "C",
+        "explanation": "ARP maps 32-bit IP addresses to 48-bit MAC addresses."
+      },
+      {
+        "id": "TEST-18-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "Traceroute discovers intermediate routers along a network path by manipulating which IP header field?",
+        "options": [
+          "Header Checksum",
+          "Time To Live (TTL)",
+          "Type of Service",
+          "Identification"
+        ],
+        "correct_answer": "B",
+        "explanation": "Traceroute increments TTL from 1 upward, receiving ICMP Time Exceeded packets from each hop."
+      },
+      {
+        "id": "TEST-18-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which of the following is an RFC 1918 Private IP address?",
+        "options": [
+          "8.8.8.8",
+          "172.20.14.5",
+          "169.254.1.1",
+          "203.0.113.50"
+        ],
+        "correct_answer": "B",
+        "explanation": "172.20.14.5 falls within the private Class B range (172.16.0.0 to 172.31.255.255)."
+      },
+      {
+        "id": "TEST-18-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is the broadcast address for the subnet 192.168.5.0/24?",
+        "options": [
+          "192.168.5.0",
+          "192.168.5.1",
+          "192.168.5.255",
+          "192.168.5.254"
+        ],
+        "correct_answer": "C",
+        "explanation": "In a /24 subnet, setting all 8 host bits to 1 yields .255, the broadcast address."
+      },
+      {
+        "id": "TEST-18-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Lowest Common Ancestor (LCA) in Binary Trees' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(H) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Lowest Common Ancestor (LCA) in Binary Trees' pattern operates with O(N) Time, O(H) Auxiliary Space: If p and q are found in different subtrees of node N, N is their LCA. If both lie in the same subtree, that subtree's root returns the LCA.."
+      },
+      {
+        "id": "TEST-18-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Lowest Common Ancestor (LCA) in Binary Trees' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: p is direct parent of q.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Lowest Common Ancestor (LCA) in Binary Trees include p is direct parent of q, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-18-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Lowest Common Ancestor of a Binary Tree', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(H) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(H) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-18-19",
+        "category": "Projects (Caloriv)",
+        "question": "In Sarthak's project 'Caloriv', what is the core architectural principle regarding 'Offline-First Mobile Synchronization & SQLite Local Storage'?",
+        "options": [
+          "Mobile apps must function reliably in low-connectivity gym or outdoor environments.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For Caloriv, the architectural invariant is: Mobile apps must function reliably in low-connectivity gym or outdoor environments.."
+      },
+      {
+        "id": "TEST-18-20",
+        "category": "Projects (Caloriv)",
+        "question": "Regarding 'Caloriv', how should you defend this design decision in a technical interview: 'How does Caloriv allow users to log meals without an internet connection?'?",
+        "options": [
+          "All daily meal logs, food databases, and calorie tallies are written immediately to a local SQLite database using React Native's SQLite library. Each record car...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: All daily meal logs, food databases, and calorie tallies are written immediately to a local SQLite database using React Native's SQLite libr."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-18",
+    "title": "Lowest Common Ancestor of a Binary Tree (Lowest Common Ancestor (LCA) in Binary Trees)",
+    "time_limit_minutes": 35,
+    "difficulty": "Medium",
+    "problem_statement": "Solve the core placement problem: Lowest Common Ancestor of a Binary Tree.\n\nGiven a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Lowest Common Ancestor (LCA) in Binary Trees\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(H) Auxiliary Space\n- Handle all edge cases: p is direct parent of q, p and q on leaf levels, Binary Search Tree variation uses value comparison.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Lowest Common Ancestor (LCA) in Binary Trees\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Lowest Common Ancestor (LCA) in Binary Trees\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        if (root == null || root == p || root == q) return root;\n        TreeNode l = lowestCommonAncestor(root.left, p, q);\n        TreeNode r = lowestCommonAncestor(root.right, p, q);\n        if (l != null && r != null) return root;\n        return l != null ? l : r;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Lowest Common Ancestor (LCA) in Binary Trees logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: p is direct parent of q",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(H) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }

@@ -1,156 +1,2441 @@
 {
   "day": 4,
-  "title": "Computer Networks OSI 7-Layer Model, Sliding Window & Marked Price",
-  "sem_data": {
-    "subject": "BCA-5003 Computer Network",
-    "topic": "Unit I \u2014 OSI 7-Layer Reference Model vs TCP/IP Protocol Suite",
-    "detailed_notes": [
-      "The Open Systems Interconnection (OSI) Reference Model was established by the International Organization for Standardization (ISO) in 1984 as a conceptual framework for computer-to-computer network communications. It divides network communication into seven distinct hierarchical layers, each providing services to the layer above and consuming services from the layer below.",
-      "Layer-by-Layer Architectural Responsibilities:\n1. Physical Layer (Layer 1): Transmits raw, unstructured bitstreams over a physical transmission medium. Defines electrical, optical, and mechanical specifications (cables, voltages, pinouts, hubs, bit-rate).\n2. Data Link Layer (Layer 2): Responsible for node-to-node (hop-by-hop) reliable data transfer across a physical link. Packages bits into Frames, manages physical addressing (MAC addresses), handles flow control, and performs error detection (CRC).\n3. Network Layer (Layer 3): Responsible for host-to-host packet delivery across heterogeneous networks. Handles logical addressing (IPv4/IPv6), routing table maintenance, packet forwarding, and congestion control (Routers operate here).\n4. Transport Layer (Layer 4): Delivers end-to-end (process-to-process) communication between applications. Handles port addressing, segmentation and reassembly, connection control (TCP 3-way handshake), flow control (sliding window), and error recovery.\n5. Session Layer (Layer 5): Establishes, manages, synchronizes, and terminates communication dialogues and sessions between cooperating applications. Inserts synchronization checkpoints.\n6. Presentation Layer (Layer 6): Handles data syntax, representation, and semantics. Manages character encoding (ASCII, UTF-8), data compression, and cryptographic encryption/decryption (SSL/TLS).\n7. Application Layer (Layer 7): Provides network services directly to end-user software applications. Protocols: HTTP, HTTPS, FTP, DNS, SMTP, SSH."
+  "title": "Day 04: OSI 7-Layer Reference Model vs TCP/IP Protocol Suite & Encapsulation & Fast & Slow Pointers (Floyd's Tortoise and Hare)",
+  "streams": {
+    "academic": {
+      "unit": 1,
+      "topic": "Unit I — OSI 7-Layer Reference Model vs TCP/IP Protocol Suite & Encapsulation",
+      "objectives": [
+        "Master the 7 layers of the OSI reference model.",
+        "Understand Data Encapsulation, Decapsulation, and Protocol Data Units (PDUs)."
+      ],
+      "explanation": "The Open Systems Interconnection (OSI) reference model, developed by the ISO in 1984, is a conceptual 7-layer framework that standardizes network communication. The 7 layers (from top to bottom) are:\n7. Application: User interface, network services (HTTP, FTP, DNS);\n6. Presentation: Data syntax formatting, encryption, compression (TLS, JPEG, ASCII);\n5. Session: Dialogue control, token management, session establishment and teardown (RPC, NetBIOS);\n4. Transport: End-to-end reliability, flow control, port addressing, segmentation (TCP, UDP);\n3. Network: Logical addressing, packet routing, path determination (IPv4, IPv6, ICMP, OSPF);\n2. Data Link: Physical addressing (MAC), framing, hop-to-hop error detection (Ethernet, Wi-Fi, CRC);\n1. Physical: Transmission of raw binary bit streams over physical media (Cables, Fiber, Radio).\n\nData Encapsulation is the process where each layer wraps the payload from the layer above with its own header: Data -> Segment (Transport) -> Packet (Network) -> Frame (Data Link) -> Bits (Physical).",
+      "definitions": [
+        {
+          "term": "Protocol Data Unit (PDU)",
+          "definition": "The formal unit of data specified at a given layer: Application (Data), Transport (Segment), Network (Packet), Data Link (Frame), Physical (Bits)."
+        },
+        {
+          "term": "Encapsulation",
+          "definition": "The process of prepending protocol header information to data as it traverses down the protocol stack."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "The 7 OSI Layers",
+          "content": "All People Seem To Need Data Processing: Application, Presentation, Session, Transport, Network, Data Link, Physical."
+        },
+        {
+          "title": "OSI vs TCP/IP",
+          "content": "OSI has 7 strict layers (theoretical standard); TCP/IP has 4 or 5 pragmatic layers (Application, Transport, Internet, Network Access) that drive the global Internet."
+        }
+      ],
+      "examples": [
+        "A web browser HTTP request being segmented by TCP, addressed with IP, framed with MAC addresses, and modulated into laser pulses over fiber."
+      ],
+      "diagram": "+---------------------------------------------------+\n|                OSI 7-LAYER MODEL                  |\n| 7. Application (Data)    | 6. Presentation (Data) |\n| 5. Session (Data)        | 4. Transport (Segment) |\n| 3. Network (Packet)      | 2. Data Link (Frame)   |\n| 1. Physical (Bits)                                |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "OSI Layer",
+          "Protocol Data Unit (PDU)",
+          "Addressing Used",
+          "Core Protocols & Hardware"
+        ],
+        "rows": [
+          [
+            "7. Application",
+            "Data / Message",
+            "User identifiers",
+            "HTTP, HTTPS, DNS, SMTP, FTP"
+          ],
+          [
+            "6. Presentation",
+            "Data",
+            "Character encoding",
+            "SSL/TLS, ASCII, UTF-8, JPEG, gzip"
+          ],
+          [
+            "5. Session",
+            "Data",
+            "Session IDs",
+            "RPC, NetBIOS, PPTP, Sockets"
+          ],
+          [
+            "4. Transport",
+            "Segment (TCP) / Datagram (UDP)",
+            "Port Numbers (16-bit)",
+            "TCP, UDP (Layer 4 Firewalls)"
+          ],
+          [
+            "3. Network",
+            "Packet",
+            "IP Addresses (32-bit / 128-bit)",
+            "IPv4, IPv6, ICMP, Routers"
+          ],
+          [
+            "2. Data Link",
+            "Frame",
+            "MAC Addresses (48-bit hex)",
+            "Ethernet 802.3, Wi-Fi 802.11, Switches, Bridges"
+          ],
+          [
+            "1. Physical",
+            "Bits (0s and 1s)",
+            "Physical electrical/optical signal",
+            "Cables, Hubs, Repeaters, Fiber Optics"
+          ]
+        ]
+      },
+      "memorize": "Mnemonic: 'Please Do Not Throw Sausage Pizza Away' (Physical to Application). PDUs: Bits -> Frames -> Packets -> Segments -> Data.",
+      "understand": "Routers operate up to Layer 3 (IP); Switches operate at Layer 2 (MAC); Hubs operate at Layer 1 (Electrical).",
+      "common_mistakes": "Mixing up the order of Presentation and Session layers.",
+      "exam_writing_guidance": "Draw the 7-layer stack, state the PDU and primary responsibilities for every layer, and illustrate data encapsulation with headers.",
+      "mini_practice": [
+        "At which OSI layers do Routers, Switches, and Repeaters operate?"
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2024-25 (Q1)",
+          "marks": 15,
+          "question": "Explain the architecture and functions of all seven layers of the OSI reference model with a neat diagram. Discuss the concept of Data Encapsulation. (15 Marks)",
+          "rubric": "OSI 7-Layer Diagram (4 marks) + Detailed explanation of all 7 layers (7 marks) + Data Encapsulation flow & PDUs (4 marks) = 15 Marks.",
+          "model_answer": "The Open Systems Interconnection (OSI) model is a conceptual 7-layer architectural framework developed by ISO for standardized telecommunications. The seven layers from bottom to top are:\n1. Physical Layer: Transmits raw, unstructured bit streams over physical transmission media (cables, optical fibers, radio). Defines voltages, pinouts, and bit timing.\n2. Data Link Layer: Provides node-to-node reliable delivery across a local physical link. Handles physical MAC addressing (48-bit), data framing, flow control, and error detection (CRC).\n3. Network Layer: Manages logical host-to-host addressing (IPv4/IPv6) and packet routing across heterogeneous intermediate networks using shortest-path algorithms.\n4. Transport Layer: Delivers end-to-end process-to-process message transfer using 16-bit Port numbers. Provides connection-oriented reliability (TCP), segmentation, flow control, and error recovery.\n5. Session Layer: Manages dialogues, establishing, maintaining, synchronizing, and terminating communication sessions between applications.\n6. Presentation Layer: Formats data syntax and semantics, providing character code translation (ASCII to EBCDIC), data compression, and cryptographic encryption (TLS).\n7. Application Layer: The topmost interface providing direct network services to end-user software applications (HTTP, DNS, SMTP, FTP).\n\nData Encapsulation:\nAs application data descends the stack, each layer prepends a header containing layer-specific metadata: Application Data -> Transport Segment (adds Port header) -> Network Packet (adds IP header) -> Data Link Frame (adds MAC header and CRC trailer) -> Physical Bits. On the receiving host, the inverse process (Decapsulation) occurs.",
+          "answer_structure": "Introduction -> 7-Layer Architecture Diagram -> Layer-by-Layer Functions -> Encapsulation Flow -> Summary",
+          "important_points": [
+            "All 7 layers in exact order",
+            "PDUs: Bits, Frame, Packet, Segment, Data",
+            "Encapsulation vs Decapsulation",
+            "Layer devices"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Correct hierarchical layer order",
+            "PDUs and header additions explicitly drawn"
+          ],
+          "common_mistakes": [
+            "Listing layers in random or inverted order"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "Compare the OSI Model with the TCP/IP Model. (5 Marks)",
+          "rubric": "Comparison table across Layers, Approach, and Protocol dependence (5 marks).",
+          "model_answer": "1. Layer Count: OSI has 7 layers; TCP/IP has 4 layers (Application, Transport, Internet, Network Access); 2. Approach: OSI is a theoretical, protocol-independent reference model created before protocols were designed; TCP/IP is a practical, implementation-driven model designed around the core ARPANET protocols; 3. Upper Layers: In TCP/IP, the Application layer combines the functions of OSI's Application, Presentation, and Session layers; 4. Transport: OSI supports both connectionless and connection-oriented communication in the network layer; TCP/IP supports only connectionless IP in the network layer."
+        }
+      ],
+      "subject_code": "BCA-5003",
+      "subject_name": "Computer Networks",
+      "mcqs": [
+        {
+          "id": "ACAD-04-01",
+          "question": "In the ISO-OSI 7-Layer Reference Model, which layer is responsible for dialog control, token management, and session checkpointing?",
+          "options": [
+            "Transport Layer",
+            "Session Layer",
+            "Presentation Layer",
+            "Data Link Layer"
+          ],
+          "correct_answer": "B",
+          "explanation": "Layer 5 (Session Layer) establishes, manages, synchronizes, and terminates sessions between end-user applications with checkpoints."
+        },
+        {
+          "id": "ACAD-04-02",
+          "question": "What is the Protocol Data Unit (PDU) name at the Network Layer of the OSI model?",
+          "options": [
+            "Frame",
+            "Segment",
+            "Packet",
+            "Bit"
+          ],
+          "correct_answer": "C",
+          "explanation": "PDU names across layers: Physical = Bit, Data Link = Frame, Network = Packet, Transport = Segment, Application = Data/Message."
+        },
+        {
+          "id": "ACAD-04-03",
+          "question": "Which layer in the OSI reference model handles data syntax conversion, compression, and encryption/decryption (e.g., ASN.1, SSL/TLS)?",
+          "options": [
+            "Presentation Layer",
+            "Application Layer",
+            "Session Layer",
+            "Network Layer"
+          ],
+          "correct_answer": "A",
+          "explanation": "Layer 6 (Presentation Layer) standardizes data formats, handles character set translations (ASCII/EBCDIC), data compression, and cryptographic encryption."
+        },
+        {
+          "id": "ACAD-04-04",
+          "question": "How does the TCP/IP architectural suite map the top three layers of the OSI reference model (Session, Presentation, Application)?",
+          "options": [
+            "They are split across Network Access and Internet layers",
+            "They are combined into a single unified Application Layer",
+            "They are moved into operating system kernel device drivers",
+            "They are replaced by the Transport Layer"
+          ],
+          "correct_answer": "B",
+          "explanation": "The 4-layer TCP/IP model consolidates OSI's Application, Presentation, and Session layers into a single top-level Application Layer."
+        },
+        {
+          "id": "ACAD-04-05",
+          "question": "Which layer provides true end-to-end reliability and process-to-process communication using port numbers?",
+          "options": [
+            "Network Layer",
+            "Transport Layer",
+            "Data Link Layer",
+            "Physical Layer"
+          ],
+          "correct_answer": "B",
+          "explanation": "The Transport Layer (TCP/UDP) uses 16-bit port addresses to deliver data process-to-process with end-to-end flow and error control."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2024-25 (Q1)",
+        "marks": 15,
+        "question": "Explain the architecture and functions of all seven layers of the OSI reference model with a neat diagram. Discuss the concept of Data Encapsulation. (15 Marks)",
+        "rubric": "OSI 7-Layer Diagram (4 marks) + Detailed explanation of all 7 layers (7 marks) + Data Encapsulation flow & PDUs (4 marks) = 15 Marks.",
+        "model_answer": "The Open Systems Interconnection (OSI) model is a conceptual 7-layer architectural framework developed by ISO for standardized telecommunications. The seven layers from bottom to top are:\n1. Physical Layer: Transmits raw, unstructured bit streams over physical transmission media (cables, optical fibers, radio). Defines voltages, pinouts, and bit timing.\n2. Data Link Layer: Provides node-to-node reliable delivery across a local physical link. Handles physical MAC addressing (48-bit), data framing, flow control, and error detection (CRC).\n3. Network Layer: Manages logical host-to-host addressing (IPv4/IPv6) and packet routing across heterogeneous intermediate networks using shortest-path algorithms.\n4. Transport Layer: Delivers end-to-end process-to-process message transfer using 16-bit Port numbers. Provides connection-oriented reliability (TCP), segmentation, flow control, and error recovery.\n5. Session Layer: Manages dialogues, establishing, maintaining, synchronizing, and terminating communication sessions between applications.\n6. Presentation Layer: Formats data syntax and semantics, providing character code translation (ASCII to EBCDIC), data compression, and cryptographic encryption (TLS).\n7. Application Layer: The topmost interface providing direct network services to end-user software applications (HTTP, DNS, SMTP, FTP).\n\nData Encapsulation:\nAs application data descends the stack, each layer prepends a header containing layer-specific metadata: Application Data -> Transport Segment (adds Port header) -> Network Packet (adds IP header) -> Data Link Frame (adds MAC header and CRC trailer) -> Physical Bits. On the receiving host, the inverse process (Decapsulation) occurs.",
+        "answer_structure": "Introduction -> 7-Layer Architecture Diagram -> Layer-by-Layer Functions -> Encapsulation Flow -> Summary",
+        "important_points": [
+          "All 7 layers in exact order",
+          "PDUs: Bits, Frame, Packet, Segment, Data",
+          "Encapsulation vs Decapsulation",
+          "Layer devices"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Correct hierarchical layer order",
+          "PDUs and header additions explicitly drawn"
+        ],
+        "common_mistakes": [
+          "Listing layers in random or inverted order"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Compare the OSI Model with the TCP/IP Model. (5 Marks)",
+        "rubric": "Comparison table across Layers, Approach, and Protocol dependence (5 marks).",
+        "model_answer": "1. Layer Count: OSI has 7 layers; TCP/IP has 4 layers (Application, Transport, Internet, Network Access); 2. Approach: OSI is a theoretical, protocol-independent reference model created before protocols were designed; TCP/IP is a practical, implementation-driven model designed around the core ARPANET protocols; 3. Upper Layers: In TCP/IP, the Application layer combines the functions of OSI's Application, Presentation, and Session layers; 4. Transport: OSI supports both connectionless and connection-oriented communication in the network layer; TCP/IP supports only connectionless IP in the network layer."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|               OSI 7-LAYER MODEL & DATA ENCAPSULATION PDU                |\n+-------------------------------------------------------------------------+\n|  Layer Name            Protocol Data Unit (PDU)     Key Protocols       |\n|  --------------------------------------------------------------------   |\n|  7. Application  -->   Data / Message               HTTP, DNS, SMTP     |\n|  6. Presentation -->   Formatted Data               SSL/TLS, JPEG, ASCII|\n|  5. Session      -->   Synchronized Data            NetBIOS, RPC, Sockets|\n|  4. Transport    -->   Segment (TCP) / Datagram     TCP, UDP            |\n|  3. Network      -->   Packet                       IPv4, IPv6, ICMP, IPsec|\n|  2. Data Link    -->   Frame (Header + Data + CRC)  Ethernet, 802.11, ARP|\n|  1. Physical     -->   Bits (0s and 1s)             Cables, RJ45, Fiber |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-04-01",
+        "question": "In the ISO-OSI 7-Layer Reference Model, which layer is responsible for dialog control, token management, and session checkpointing?",
+        "options": [
+          "Transport Layer",
+          "Session Layer",
+          "Presentation Layer",
+          "Data Link Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "Layer 5 (Session Layer) establishes, manages, synchronizes, and terminates sessions between end-user applications with checkpoints."
+      },
+      {
+        "id": "ACAD-04-02",
+        "question": "What is the Protocol Data Unit (PDU) name at the Network Layer of the OSI model?",
+        "options": [
+          "Frame",
+          "Segment",
+          "Packet",
+          "Bit"
+        ],
+        "correct_answer": "C",
+        "explanation": "PDU names across layers: Physical = Bit, Data Link = Frame, Network = Packet, Transport = Segment, Application = Data/Message."
+      },
+      {
+        "id": "ACAD-04-03",
+        "question": "Which layer in the OSI reference model handles data syntax conversion, compression, and encryption/decryption (e.g., ASN.1, SSL/TLS)?",
+        "options": [
+          "Presentation Layer",
+          "Application Layer",
+          "Session Layer",
+          "Network Layer"
+        ],
+        "correct_answer": "A",
+        "explanation": "Layer 6 (Presentation Layer) standardizes data formats, handles character set translations (ASCII/EBCDIC), data compression, and cryptographic encryption."
+      },
+      {
+        "id": "ACAD-04-04",
+        "question": "How does the TCP/IP architectural suite map the top three layers of the OSI reference model (Session, Presentation, Application)?",
+        "options": [
+          "They are split across Network Access and Internet layers",
+          "They are combined into a single unified Application Layer",
+          "They are moved into operating system kernel device drivers",
+          "They are replaced by the Transport Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "The 4-layer TCP/IP model consolidates OSI's Application, Presentation, and Session layers into a single top-level Application Layer."
+      },
+      {
+        "id": "ACAD-04-05",
+        "question": "Which layer provides true end-to-end reliability and process-to-process communication using port numbers?",
+        "options": [
+          "Network Layer",
+          "Transport Layer",
+          "Data Link Layer",
+          "Physical Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Transport Layer (TCP/UDP) uses 16-bit port addresses to deliver data process-to-process with end-to-end flow and error control."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Ratio, Proportion & Variations",
+      "category": "Quantitative",
+      "subtopic": "Ratio & Proportion",
+      "formulas": "1. If a/b = c/d, then ad = bc.\n2. Duplicate ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b).\n3. Inverted Ratio: If a:b:c, inverse ratio is (1/a):(1/b):(1/c) = bc:ca:ab.\n4. Compound Ratio of (a:b) and (c:d) = ac:bd.",
+      "shortcuts": "Direct Constant Ratio Method: If a ratio changes from 3:4 to 5:6 upon adding a constant k to both, the difference between terms remains equal. Match units directly.",
+      "tutorial": [
+        "A ratio expresses relative magnitude. When quantities are divided in ratio a:b:c, total parts equal (a+b+c). The value of 1 unit equals Total Quantity / (a+b+c). In partnership problems, profit is partitioned in proportion to (Investment * Time Period)."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Ratio & Proportion",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Ratio & Proportion",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Ratio & Proportion",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Ratio & Proportion",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Ratio & Proportion",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "If A : B = 2 : 3 and B : C = 4 : 5, what is the combined ratio A : B : C?",
+        "options": {
+          "A": "8 : 12 : 15",
+          "B": "2 : 4 : 5",
+          "C": "6 : 9 : 15",
+          "D": "8 : 10 : 15"
+        },
+        "correct_answer": "A",
+        "explanation": "Multiply first ratio by 4 and second by 3 to equalize B: A : B = 8 : 12 and B : C = 12 : 15. Hence A : B : C = 8 : 12 : 15."
+      },
+      {
+        "mcq_no": 2,
+        "question": "A sum of Rs. 4,200 is divided among A, B, and C in the ratio 2 : 3 : 5. What is the share of C?",
+        "options": {
+          "A": "Rs. 840",
+          "B": "Rs. 1,260",
+          "C": "Rs. 2,100",
+          "D": "Rs. 1,800"
+        },
+        "correct_answer": "C",
+        "explanation": "Total ratio units = 2 + 3 + 5 = 10. Value per unit = 4,200 / 10 = Rs. 420. C's share = 5 * 420 = Rs. 2,100."
+      },
+      {
+        "mcq_no": 3,
+        "question": "Two numbers are in the ratio 3 : 5. If 9 is subtracted from both numbers, their ratio becomes 12 : 23. What is the smaller number?",
+        "options": {
+          "A": "27",
+          "B": "33",
+          "C": "45",
+          "D": "55"
+        },
+        "correct_answer": "B",
+        "explanation": "(3x - 9) / (5x - 9) = 12 / 23 => 23*(3x - 9) = 12*(5x - 9) => 69x - 207 = 60x - 108 => 9x = 99 => x = 11. Smaller number = 3 * 11 = 33."
+      },
+      {
+        "mcq_no": 4,
+        "question": "In a 60-liter mixture of milk and water, the ratio of milk to water is 2 : 1. How much water must be added to make the ratio 1 : 2?",
+        "options": {
+          "A": "40 liters",
+          "B": "50 liters",
+          "C": "60 liters",
+          "D": "30 liters"
+        },
+        "correct_answer": "C",
+        "explanation": "Initial: Milk = 40 L, Water = 20 L. Let added water be W. 40 / (20 + W) = 1 / 2 => 20 + W = 80 => W = 60 liters."
+      },
+      {
+        "mcq_no": 5,
+        "question": "A and B enter into a partnership. A invests Rs. 50,000 for 8 months and B invests Rs. 60,000 for 10 months. In what ratio should the annual profit of Rs. 50,000 be divided?",
+        "options": {
+          "A": "2 : 3",
+          "B": "1 : 2",
+          "C": "4 : 5",
+          "D": "3 : 4"
+        },
+        "correct_answer": "A",
+        "explanation": "Profit ratio = (A's Capital * Time) : (B's Capital * Time) = (50,000 * 8) : (60,000 * 10) = 400,000 : 600,000 = 2 : 3."
+      },
+      {
+        "mcq_no": 6,
+        "question": "What is the third proportional to 9 and 12?",
+        "options": {
+          "A": "15",
+          "B": "16",
+          "C": "18",
+          "D": "14"
+        },
+        "correct_answer": "B",
+        "explanation": "If x is third proportional to a and b, then a / b = b / x => 9 / 12 = 12 / x => x = (12 * 12) / 9 = 144 / 9 = 16."
+      },
+      {
+        "mcq_no": 7,
+        "question": "What is the mean proportional between 4 and 64?",
+        "options": {
+          "A": "16",
+          "B": "24",
+          "C": "32",
+          "D": "12"
+        },
+        "correct_answer": "A",
+        "explanation": "Mean proportional = sqrt(a * b) = sqrt(4 * 64) = sqrt(256) = 16."
+      },
+      {
+        "mcq_no": 8,
+        "question": "The salaries of A, B, and C are in the ratio 1 : 2 : 3. If increments of 5%, 10%, and 15% are granted respectively, what is the new ratio of their salaries?",
+        "options": {
+          "A": "21 : 44 : 69",
+          "B": "19 : 42 : 65",
+          "C": "20 : 40 : 60",
+          "D": "23 : 45 : 71"
+        },
+        "correct_answer": "A",
+        "explanation": "Take base salaries 100, 200, 300. Incremented: A = 105, B = 220, C = 345. Ratio = 105 : 220 : 345. Divide by 5: 21 : 44 : 69."
+      },
+      {
+        "mcq_no": 9,
+        "question": "A bag contains 50p, 25p, and 10p coins in the ratio 5 : 9 : 4, amounting to Rs. 206. How many 50p coins are in the bag?",
+        "options": {
+          "A": "150",
+          "B": "200",
+          "C": "250",
+          "D": "300"
+        },
+        "correct_answer": "B",
+        "explanation": "Value per unit = (5 * 0.50) + (9 * 0.25) + (4 * 0.10) = 2.50 + 2.25 + 0.40 = Rs. 5.15. Units = 206 / 5.15 = 40. Number of 50p coins = 5 * 40 = 200."
+      },
+      {
+        "mcq_no": 10,
+        "question": "If 4 men or 6 women can earn Rs. 360 per day, how much will 6 men and 8 women earn per day?",
+        "options": {
+          "A": "Rs. 900",
+          "B": "Rs. 1,020",
+          "C": "Rs. 840",
+          "D": "Rs. 960"
+        },
+        "correct_answer": "B",
+        "explanation": "1 man earns 360 / 4 = Rs. 90. 1 woman earns 360 / 6 = Rs. 60. 6 men + 8 women = (6 * 90) + (8 * 60) = 540 + 480 = Rs. 1,020."
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Ratio & Proportion (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Fast & Slow Pointers (Floyd's Tortoise and Hare)",
+      "category": "Two Pointers",
+      "concept": "Uses two pointers moving at different speeds (slow by 1 node, fast by 2 nodes). If a cycle exists in the sequence, the fast pointer will catch and collide with the slow pointer.",
+      "why_it_works": "In a cycle of length C, the relative distance between slow and fast decreases by exactly 1 in each step. Hence, fast must overtake slow within C iterations without using extra memory.",
+      "visual_explanation": "List: 1 -> 2 -> 3 -> 4 -> 5 -> [points back to 3]\\nStep 0: Slow = 1, Fast = 1\\nStep 1: Slow = 2, Fast = 3\\nStep 2: Slow = 3, Fast = 5\\nStep 3: Slow = 4, Fast = 4 (Collision at node 4 ==> Cycle Proven!)",
+      "language": "Java",
+      "java_code": "class ListNode {\n    int val;\n    ListNode next;\n    ListNode(int x) { val = x; next = null; }\n}\n\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        if (head == null || head.next == null) return false;\n        ListNode slow = head;\n        ListNode fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                return true;\n            }\n        }\n        return false;\n    }\n}",
+      "code": "class ListNode {\n    int val;\n    ListNode next;\n    ListNode(int x) { val = x; next = null; }\n}\n\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        if (head == null || head.next == null) return false;\n        ListNode slow = head;\n        ListNode fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                return true;\n            }\n        }\n        return false;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 7: Guard check for empty list or single node without cycle.",
+        "Line 8-9: Initialize slow and fast pointers at the head of the list.",
+        "Line 10: Loop while fast and fast.next are non-null.",
+        "Line 11-12: Advance slow pointer by 1 step and fast pointer by 2 steps.",
+        "Line 13-15: If slow equals fast, pointers have collided in a cycle; return true.",
+        "Line 17: If fast reaches null, list terminates without a cycle; return false."
+      ],
+      "dry_run": "List: 3 -> 2 -> 0 -> -4 -> 2. Step 1: slow=2, fast=0. Step 2: slow=0, fast=2. Step 3: slow=-4, fast=-4 (COLLISION -> true).",
+      "complexity": "O(N) Time, O(1) Auxiliary Space",
+      "edge_cases": "Empty list (null head), Single node pointing to null, Single node self-loop, Two-node cycle",
+      "edge_cases_list": [
+        "Empty list (null head)",
+        "Single node pointing to null",
+        "Single node self-loop",
+        "Two-node cycle"
+      ],
+      "interview_variations": [
+        "Middle of the Linked List",
+        "Linked List Cycle II (Find Entry Point)",
+        "Happy Number",
+        "Find the Duplicate Number (Array as Linked List)"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-04-01",
+        "title": "Problem 1: Middle of the Linked List",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given the head of a singly linked list, return the middle node of the linked list. If there are two middle nodes, return the second middle node.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Fast & Slow Pointers (Floyd's Tortoise and Hare) algorithmic technique.\n2. Uses two pointers moving at different speeds (slow by 1 node, fast by 2 nodes). If a cycle exists in the sequence, the fast pointer will catch and collide with the slow pointer.\n3. Invariants: In a cycle of length C, the relative distance between slow and fast decreases by exactly 1 in each step. Hence, fast must overtake slow within C iterations without using extra memory.",
+        "solution_java": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+        "solution_python": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+        "code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+        "java_code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-04-02",
+        "title": "Problem 2: Linked List Cycle II",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given the head of a linked list, return the node where the cycle begins. If there is no cycle, return null.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Fast & Slow Pointers (Floyd's Tortoise and Hare).\n2. Handle edge cases: Empty list (null head), Single node pointing to null, Single node self-loop, Two-node cycle.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+        "solution_python": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+        "code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+        "java_code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Operating Systems",
+      "topic": "Classical Synchronization Problems (Producer-Consumer, Dining Philosophers, Readers-Writers)",
+      "concept_lesson": "Classical synchronization problems serve as universal test cases for evaluating concurrency paradigms.\n\n1. Producer-Consumer Problem (Bounded Buffer):\nProducers generate items and append to a fixed-size buffer (size N); Consumers remove items. Three synchronization primitives are needed:\n- `mutex = 1`: Enforces mutual exclusion on buffer insert/delete.\n- `empty = N`: Counting semaphore tracking available empty slots. Producer calls `wait(empty)`.\n- `full = 0`: Counting semaphore tracking populated slots. Consumer calls `wait(full)`.\n\n2. Readers-Writers Problem:\nMultiple readers can concurrently read data without conflict, but a writer requires exclusive access. First Readers-Writers variation prioritizes readers, risking writer starvation; Second variation prioritizes writers to ensure write updates are not starved by a continuous stream of readers.\n\n3. Dining Philosophers Problem:\nFive philosophers sit around a circular table with 5 chopsticks; each alternates between thinking and eating. To eat, a philosopher requires both left and right chopsticks. If every philosopher picks up their left chopstick simultaneously, a circular wait occurs, resulting in total Deadlock. Solutions include: asymmetric pickup (odd philosophers pick left first, even pick right first), limiting table capacity to 4, or using an atomic monitor condition.",
+      "key_definitions": [
+        {
+          "term": "Bounded Buffer",
+          "definition": "A shared circular queue of fixed capacity accessible by concurrent producer and consumer threads."
+        },
+        {
+          "term": "Reader-Writer Lock",
+          "definition": "A concurrency lock allowing shared access for multiple readers or exclusive access for one writer."
+        },
+        {
+          "term": "Asymmetric Allocation",
+          "definition": "Breaking symmetry in resource acquisition order to eliminate circular wait conditions."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "How does the Producer-Consumer problem avoid race conditions and deadlocks using semaphores?",
+          "a": "It uses three semaphores: a binary semaphore 'mutex' (1) to protect buffer modifications, a counting semaphore 'empty' (initialized to buffer capacity N), and a counting semaphore 'full' (initialized to 0). The producer does wait(empty), wait(mutex), writes, signal(mutex), signal(full). The consumer does wait(full), wait(mutex), reads, signal(mutex), signal(empty). Swapping wait(empty) and wait(mutex) would cause a deadlock if the buffer is full."
+        },
+        {
+          "q": "Why does the naive Dining Philosophers implementation deadlock, and how is it solved?",
+          "a": "Deadlock occurs because if all 5 philosophers get hungry at the same moment and pick up their left chopstick, all chopsticks are taken, and every philosopher blocks waiting for the right chopstick (Circular Wait). Solutions include: 1) Asymmetric strategy: odd-numbered philosophers pick left then right, even pick right then left; 2) Allow at most 4 philosophers to sit at the table simultaneously; 3) Pick both chopsticks atomically inside a critical section."
+        },
+        {
+          "q": "Explain the difference between Reader-Preference and Writer-Preference in the Readers-Writers problem.",
+          "a": "In Reader-Preference, if at least one reader is actively reading, incoming readers are immediately granted access, which can starve waiting writers indefinitely. In Writer-Preference, once a writer signals its intention to write, no new readers are allowed to start reading; existing readers finish, and the writer acquires the lock, preventing writer starvation."
+        },
+        {
+          "q": "What is the consequence of reversing wait(empty) and wait(mutex) in Producer-Consumer?",
+          "a": "If the producer executes wait(mutex) first when the buffer is full (empty = 0), it locks the mutex and then blocks on wait(empty). The consumer needs to acquire the mutex to consume an item and signal empty, but cannot do so because the producer holds the mutex. Both threads block forever in a deadlock."
+        },
+        {
+          "q": "How can Java or Python Monitors simplify synchronization compared to semaphores?",
+          "a": "Monitors encapsulate shared state, locks, and condition variables within an object class. Only one thread can execute an object's synchronized method at a time. Programmers do not need to manually pair wait() and signal() across multiple semaphores, dramatically reducing human locking bugs like forgotten unlocks or out-of-order acquisitions."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-04-01",
+          "question": "In the Bounded Buffer problem of size N, what are the initial values of semaphores empty, full, and mutex?",
+          "options": [
+            "empty = 0, full = N, mutex = 0",
+            "empty = N, full = 0, mutex = 1",
+            "empty = 1, full = 1, mutex = N",
+            "empty = N, full = N, mutex = 1"
+          ],
+          "correct_answer": "B",
+          "explanation": "Initially all N slots are empty (empty = N), 0 slots are filled (full = 0), and mutex is unlocked (1)."
+        },
+        {
+          "id": "CS-04-02",
+          "question": "If all philosophers pick up their left chopstick simultaneously in Dining Philosophers, the system experiences:",
+          "options": [
+            "Thrashing",
+            "Deadlock",
+            "High throughput",
+            "Cache invalidation"
+          ],
+          "correct_answer": "B",
+          "explanation": "All philosophers hold one chopstick and wait for the other, forming an unbreakable circular wait deadlock."
+        },
+        {
+          "id": "CS-04-03",
+          "question": "Which Readers-Writers solution policy risks writer starvation?",
+          "options": [
+            "Writer-preference",
+            "Fair FIFO queue",
+            "Reader-preference",
+            "Strict alternating"
+          ],
+          "correct_answer": "C",
+          "explanation": "In reader-preference, as long as readers keep arriving, writers are indefinitely postponed."
+        },
+        {
+          "id": "CS-04-04",
+          "question": "In the Bounded Buffer solution, reversing wait(mutex) and wait(empty) in the producer causes:",
+          "options": [
+            "Faster throughput",
+            "Buffer overflow",
+            "Potential deadlock when buffer is full",
+            "Data corruption"
+          ],
+          "correct_answer": "C",
+          "explanation": "Holding mutex while blocked on empty prevents the consumer from entering to free up buffer space, causing deadlock."
+        },
+        {
+          "id": "CS-04-05",
+          "question": "An asymmetric solution to the Dining Philosophers problem specifies that:",
+          "options": [
+            "Philosophers eat with only one chopstick",
+            "Odd philosophers pick left first, even philosophers pick right first",
+            "All philosophers pick right first",
+            "Philosophers never release chopsticks"
+          ],
+          "correct_answer": "B",
+          "explanation": "Alternating the pickup order breaks the circular wait condition necessary for deadlock."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "TerraStract",
+      "repo_path": "D:\\Projects\\terra_extract",
+      "topic": "Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture",
+      "what_to_understand": "Combining PyMuPDF native vector stream parsing with OpenCV image binarization and Tesseract OCR.",
+      "what_to_memorize": "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
+      "interview_questions": [
+        {
+          "q": "How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?",
+          "a": "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular coordinates and text streams in &lt;10ms; 3. If the page is a scanned bitmap or has font glyph corruption, it routes to an OpenCV pipeline that applies grayscale conversion, Otsu's adaptive thresholding, and morphological opening to clean noise before invoking Tesseract OCR with `--oem 1 --psm 6`."
+        },
+        {
+          "q": "How do you handle Devanagari Unicode characters and ligature rendering in OCR?",
+          "a": "Standard Tesseract struggles with conjunct Hindi characters (Matras). We load the `hin` traineddata pack and post-process raw text with custom regex normalization rules that correct common OCR segmentation errors in regional land records (e.g., Khasra and Khatauni numbers)."
+        }
+      ],
+      "interview_pitch_exercise": "TerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 4 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 4 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of Caloriv.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• JVM Architecture: ClassLoader, Execution Engine, Heap, Stack, Method Area.\n• CI vs SI 2-year difference formula: P * (R/100)^2.\n• Dynamic Sliding Window with frequency map for substring invariants.\n• Critical section conditions: Mutual Exclusion, Progress, Bounded Waiting.",
+      "today_recall": "• Mastered OSI 7-Layer Reference Model vs TCP/IP Protocol Suite.\n• Detailed layer duties: Application, Presentation, Session, Transport, Network, Data Link, Physical.\n• Traced Packet Encapsulation and Decapsulation across protocol data units (Data -> Segment -> Packet -> Frame -> Bits).",
+      "formula_recall": "• Compounded Ratio of (a:b) and (c:d) = ac:bd\n• Duplicate Ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b)\n• Direct Proportion: x1 / y1 = x2 / y2; Inverse Proportion: x1 * y1 = x2 * y2\n• Floyd's Cycle Detection: Fast pointer advances by 2, slow by 1. Distance from head to cycle start = distance from meeting point to cycle start.",
+      "pyq_recall": "• University PYQ: CSJM University 2022 (Section B, 15 Marks) — 'Compare OSI reference model and TCP/IP protocol suite. Explain data encapsulation with layer-by-layer headers.'\n• Blueprint: 1. Definition (2m) -> 2. 7-Layer vs 4-Layer Diagram (4m) -> 3. Layer Functionalities (5m) -> 4. Architectural Comparison Table (2m) -> 5. Summary (2m).",
+      "dsa_recall": "• Pattern: Fast & Slow Pointers (Floyd's Tortoise and Hare).\n• Invariant: Slow pointer moves 1 step; fast pointer moves 2 steps. If a cycle exists, they must meet within the loop. To find cycle origin, reset slow to head and advance both by 1 step.\n• Edge Cases: Empty list, single node without loop, single node with self-loop, two nodes.",
+      "project_recall": "• Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline).\n• Architecture: FastAPI service, PyMuPDF vector extraction, Tesseract OCR fallback, and asynchronous background worker queues.\n• Defense Pitch: 'Engineered high-throughput document extraction API in FastAPI, parsing digital PDFs in <50ms with PyMuPDF and boosting noisy Hindi scan accuracy by 35% using OpenCV preprocessing.'",
+      "rapid_fire_questions": [
+        {
+          "q": "What are the 7 layers of the OSI reference model from bottom to top?",
+          "a": "Physical, Data Link, Network, Transport, Session, Presentation, Application."
+        },
+        {
+          "q": "Which OSI layer handles encryption, compression, and character syntax translation?",
+          "a": "Presentation Layer (Layer 6)."
+        },
+        {
+          "q": "What is the Protocol Data Unit (PDU) at the Transport, Network, and Data Link layers?",
+          "a": "Transport = Segment; Network = Packet; Data Link = Frame."
+        },
+        {
+          "q": "If a:b = 2:3 and b:c = 4:5, what is the combined ratio a:b:c?",
+          "a": "8 : 12 : 15 (Multiply to equate b to 12)."
+        },
+        {
+          "q": "In partnership accounting, in what ratio are profits partitioned among partners?",
+          "a": "In proportion to the product of (Investment * Time Period)."
+        },
+        {
+          "q": "What are the 3 classical process synchronization problems?",
+          "a": "Producer-Consumer (Bounded Buffer), Readers-Writers, and Dining Philosophers."
+        },
+        {
+          "q": "In the Dining Philosophers problem, what condition causes circular deadlock?",
+          "a": "Each philosopher picking up their left fork simultaneously and waiting indefinitely for the right fork."
+        },
+        {
+          "q": "Why does Floyd's Tortoise and Hare algorithm detect cycles in O(N) time?",
+          "a": "Because the distance between fast and slow decreases by 1 node in every iteration once both enter the loop."
+        },
+        {
+          "q": "In TerraStract, why are background worker queues used for PDF processing?",
+          "a": "To return an immediate HTTP 202 Accepted token, decoupling heavy OCR compute from client HTTP request lifecycles."
+        },
+        {
+          "q": "What OCR engine is utilized in TerraStract as a fallback for scanned pages?",
+          "a": "Tesseract OCR with OpenCV contrast preprocessing."
+        }
+      ],
+      "today_summary": "• Mastered OSI 7-Layer Reference Model vs TCP/IP Protocol Suite.\n• Detailed layer duties: Application, Presentation, Session, Transport, Network, Data Link, Physical.\n• Traced Packet Encapsulation and Decapsulation across protocol data units (Data -> Segment -> Packet -> Frame -> Bits).",
+      "formulas_and_shortcuts": [
+        "• Compounded Ratio of (a:b) and (c:d) = ac:bd\n• Duplicate Ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b)\n• Direct Proportion: x1 / y1 = x2 / y2; Inverse Proportion: x1 * y1 = x2 * y2\n• Floyd's Cycle Detection: Fast pointer advances by 2, slow by 1. Distance from head to cycle start = distance from meeting point to cycle start."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered OSI 7-Layer Reference Model vs TCP/IP Protocol Suite."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Compounded Ratio of (a:b) and (c:d) = ac:bd"
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Fast & Slow Pointers (Floyd's Tortoise and Hare)."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-04-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In the ISO-OSI 7-Layer Reference Model, which layer is responsible for dialog control, token management, and session checkpointing?",
+        "options": [
+          "Transport Layer",
+          "Session Layer",
+          "Presentation Layer",
+          "Data Link Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "Layer 5 (Session Layer) establishes, manages, synchronizes, and terminates sessions between end-user applications with checkpoints."
+      },
+      {
+        "id": "TEST-04-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the Protocol Data Unit (PDU) name at the Network Layer of the OSI model?",
+        "options": [
+          "Frame",
+          "Segment",
+          "Packet",
+          "Bit"
+        ],
+        "correct_answer": "C",
+        "explanation": "PDU names across layers: Physical = Bit, Data Link = Frame, Network = Packet, Transport = Segment, Application = Data/Message."
+      },
+      {
+        "id": "TEST-04-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which layer in the OSI reference model handles data syntax conversion, compression, and encryption/decryption (e.g., ASN.1, SSL/TLS)?",
+        "options": [
+          "Presentation Layer",
+          "Application Layer",
+          "Session Layer",
+          "Network Layer"
+        ],
+        "correct_answer": "A",
+        "explanation": "Layer 6 (Presentation Layer) standardizes data formats, handles character set translations (ASCII/EBCDIC), data compression, and cryptographic encryption."
+      },
+      {
+        "id": "TEST-04-04",
+        "category": "Academic (Academic Theory)",
+        "question": "How does the TCP/IP architectural suite map the top three layers of the OSI reference model (Session, Presentation, Application)?",
+        "options": [
+          "They are split across Network Access and Internet layers",
+          "They are combined into a single unified Application Layer",
+          "They are moved into operating system kernel device drivers",
+          "They are replaced by the Transport Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "The 4-layer TCP/IP model consolidates OSI's Application, Presentation, and Session layers into a single top-level Application Layer."
+      },
+      {
+        "id": "TEST-04-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Which layer provides true end-to-end reliability and process-to-process communication using port numbers?",
+        "options": [
+          "Network Layer",
+          "Transport Layer",
+          "Data Link Layer",
+          "Physical Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Transport Layer (TCP/UDP) uses 16-bit port addresses to deliver data process-to-process with end-to-end flow and error control."
+      },
+      {
+        "id": "TEST-04-06",
+        "category": "Placement Aptitude",
+        "question": "If A : B = 2 : 3 and B : C = 4 : 5, find the compound ratio A : B : C.",
+        "options": [
+          "8 : 12 : 15",
+          "6 : 9 : 15",
+          "8 : 10 : 15",
+          "2 : 4 : 5"
+        ],
+        "correct_answer": "A",
+        "explanation": "A : B = 8 : 12 (multiplying by 4). B : C = 12 : 15 (multiplying by 3). Hence A : B : C = 8 : 12 : 15."
+      },
+      {
+        "id": "TEST-04-07",
+        "category": "Placement Aptitude",
+        "question": "Divide Rs. 1,050 among A, B, and C in the ratio 2 : 3 : 5. What is C's share?",
+        "options": [
+          "Rs. 525",
+          "Rs. 450",
+          "Rs. 500",
+          "Rs. 550"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total ratio units = 2 + 3 + 5 = 10 units. Value of 1 unit = 1,050 / 10 = Rs. 105. C's share = 5 * 105 = Rs. 525."
+      },
+      {
+        "id": "TEST-04-08",
+        "category": "Placement Aptitude",
+        "question": "Two numbers are in the ratio 3 : 5. If 9 is subtracted from each, the new ratio becomes 12 : 23. What is the smaller number?",
+        "options": [
+          "33",
+          "27",
+          "30",
+          "36"
+        ],
+        "correct_answer": "A",
+        "explanation": "Let numbers be 3x and 5x. (3x - 9)/(5x - 9) = 12/23 => 23(3x - 9) = 12(5x - 9) => 69x - 207 = 60x - 108 => 9x = 99 => x = 11. Smaller = 3 * 11 = 33."
+      },
+      {
+        "id": "TEST-04-09",
+        "category": "Placement Aptitude",
+        "question": "What is the fourth proportional to 4, 9, and 12?",
+        "options": [
+          "27",
+          "24",
+          "28",
+          "30"
+        ],
+        "correct_answer": "A",
+        "explanation": "4 / 9 = 12 / x => 4x = 108 => x = 27."
+      },
+      {
+        "id": "TEST-04-10",
+        "category": "Placement Aptitude",
+        "question": "Three partners A, B, and C invest capital in the ratio 5 : 7 : 6. If their profit sharing ratio at the end of the year is 5 : 7 : 6, what is their investment duration ratio?",
+        "options": [
+          "1 : 1 : 1",
+          "2 : 3 : 4",
+          "5 : 7 : 6",
+          "6 : 7 : 5"
+        ],
+        "correct_answer": "A",
+        "explanation": "Profit = Capital * Time. Since profit ratio equals capital ratio, Time ratio must be 1 : 1 : 1."
+      },
+      {
+        "id": "TEST-04-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "In the Bounded Buffer problem of size N, what are the initial values of semaphores empty, full, and mutex?",
+        "options": [
+          "empty = 0, full = N, mutex = 0",
+          "empty = N, full = 0, mutex = 1",
+          "empty = 1, full = 1, mutex = N",
+          "empty = N, full = N, mutex = 1"
+        ],
+        "correct_answer": "B",
+        "explanation": "Initially all N slots are empty (empty = N), 0 slots are filled (full = 0), and mutex is unlocked (1)."
+      },
+      {
+        "id": "TEST-04-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "If all philosophers pick up their left chopstick simultaneously in Dining Philosophers, the system experiences:",
+        "options": [
+          "Thrashing",
+          "Deadlock",
+          "High throughput",
+          "Cache invalidation"
+        ],
+        "correct_answer": "B",
+        "explanation": "All philosophers hold one chopstick and wait for the other, forming an unbreakable circular wait deadlock."
+      },
+      {
+        "id": "TEST-04-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which Readers-Writers solution policy risks writer starvation?",
+        "options": [
+          "Writer-preference",
+          "Fair FIFO queue",
+          "Reader-preference",
+          "Strict alternating"
+        ],
+        "correct_answer": "C",
+        "explanation": "In reader-preference, as long as readers keep arriving, writers are indefinitely postponed."
+      },
+      {
+        "id": "TEST-04-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "In the Bounded Buffer solution, reversing wait(mutex) and wait(empty) in the producer causes:",
+        "options": [
+          "Faster throughput",
+          "Buffer overflow",
+          "Potential deadlock when buffer is full",
+          "Data corruption"
+        ],
+        "correct_answer": "C",
+        "explanation": "Holding mutex while blocked on empty prevents the consumer from entering to free up buffer space, causing deadlock."
+      },
+      {
+        "id": "TEST-04-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "An asymmetric solution to the Dining Philosophers problem specifies that:",
+        "options": [
+          "Philosophers eat with only one chopstick",
+          "Odd philosophers pick left first, even philosophers pick right first",
+          "All philosophers pick right first",
+          "Philosophers never release chopsticks"
+        ],
+        "correct_answer": "B",
+        "explanation": "Alternating the pickup order breaks the circular wait condition necessary for deadlock."
+      },
+      {
+        "id": "TEST-04-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Fast & Slow Pointers (Floyd's Tortoise and Hare)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Fast & Slow Pointers (Floyd's Tortoise and Hare)' pattern operates with O(N) Time, O(1) Auxiliary Space: In a cycle of length C, the relative distance between slow and fast decreases by exactly 1 in each step. Hence, fast must overtake slow within C iterations without using extra memory.."
+      },
+      {
+        "id": "TEST-04-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Fast & Slow Pointers (Floyd's Tortoise and Hare)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty list (null head).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Fast & Slow Pointers (Floyd's Tortoise and Hare) include Empty list (null head), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-04-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Middle of the Linked List', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-04-19",
+        "category": "Projects (TerraStract)",
+        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture'?",
+        "options": [
+          "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For TerraStract, the architectural invariant is: Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.."
+      },
+      {
+        "id": "TEST-04-20",
+        "category": "Projects (TerraStract)",
+        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?'?",
+        "options": [
+          "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present,."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-04",
+      "title": "Middle of the Linked List (Fast & Slow Pointers (Floyd's Tortoise and Hare))",
+      "time_limit_minutes": 25,
+      "difficulty": "Easy",
+      "problem_statement": "Solve the core placement problem: Middle of the Linked List.\n\nGiven the head of a singly linked list, return the middle node of the linked list. If there are two middle nodes, return the second middle node.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Fast & Slow Pointers (Floyd's Tortoise and Hare)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: Empty list (null head), Single node pointing to null, Single node self-loop, Two-node cycle.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Fast & Slow Pointers (Floyd's Tortoise and Hare)\n    public ListNode middleNode(ListNode head) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Fast & Slow Pointers (Floyd's Tortoise and Hare)\n    public ListNode middleNode(ListNode head) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Fast & Slow Pointers (Floyd's Tortoise and Hare) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Empty list (null head)",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Computer Networks",
+    "subject_code": "BCA-5003",
+    "unit": 1,
+    "topic": "Unit I — OSI 7-Layer Reference Model vs TCP/IP Protocol Suite & Encapsulation",
+    "objectives": [
+      "Master the 7 layers of the OSI reference model.",
+      "Understand Data Encapsulation, Decapsulation, and Protocol Data Units (PDUs)."
+    ],
+    "detailed_notes": [
+      "The Open Systems Interconnection (OSI) reference model, developed by the ISO in 1984, is a conceptual 7-layer framework that standardizes network communication. The 7 layers (from top to bottom) are:\n7. Application: User interface, network services (HTTP, FTP, DNS);\n6. Presentation: Data syntax formatting, encryption, compression (TLS, JPEG, ASCII);\n5. Session: Dialogue control, token management, session establishment and teardown (RPC, NetBIOS);\n4. Transport: End-to-end reliability, flow control, port addressing, segmentation (TCP, UDP);\n3. Network: Logical addressing, packet routing, path determination (IPv4, IPv6, ICMP, OSPF);\n2. Data Link: Physical addressing (MAC), framing, hop-to-hop error detection (Ethernet, Wi-Fi, CRC);\n1. Physical: Transmission of raw binary bit streams over physical media (Cables, Fiber, Radio).\n\nData Encapsulation is the process where each layer wraps the payload from the layer above with its own header: Data -> Segment (Transport) -> Packet (Network) -> Frame (Data Link) -> Bits (Physical).",
+      "All People Seem To Need Data Processing: Application, Presentation, Session, Transport, Network, Data Link, Physical.",
+      "OSI has 7 strict layers (theoretical standard); TCP/IP has 4 or 5 pragmatic layers (Application, Transport, Internet, Network Access) that drive the global Internet."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|                OSI 7-LAYER MODEL                  |\n| 7. Application (Data)    | 6. Presentation (Data) |\n| 5. Session (Data)        | 4. Transport (Segment) |\n| 3. Network (Packet)      | 2. Data Link (Frame)   |\n| 1. Physical (Bits)                                |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Dimension",
-        "OSI 7-Layer Reference Model",
-        "TCP/IP Protocol Suite"
+        "OSI Layer",
+        "Protocol Data Unit (PDU)",
+        "Addressing Used",
+        "Core Protocols & Hardware"
       ],
       "rows": [
         [
-          "Origins",
-          "Theoretical standard developed by ISO",
-          "Practical protocol developed by ARPANET / DoD"
+          "7. Application",
+          "Data / Message",
+          "User identifiers",
+          "HTTP, HTTPS, DNS, SMTP, FTP"
         ],
         [
-          "Number of Layers",
-          "7 distinct layers",
-          "4 layers (Network Access, Internet, Transport, Application)"
+          "6. Presentation",
+          "Data",
+          "Character encoding",
+          "SSL/TLS, ASCII, UTF-8, JPEG, gzip"
         ],
         [
-          "Design Approach",
-          "Clean conceptual separation before protocols existed",
-          "Protocols were implemented first, model followed"
+          "5. Session",
+          "Data",
+          "Session IDs",
+          "RPC, NetBIOS, PPTP, Sockets"
         ],
         [
-          "Transport Support",
-          "Connection-oriented & connectionless in Network layer",
-          "Connectionless in Internet layer (IP); Transport provides TCP/UDP choice"
+          "4. Transport",
+          "Segment (TCP) / Datagram (UDP)",
+          "Port Numbers (16-bit)",
+          "TCP, UDP (Layer 4 Firewalls)"
         ],
         [
-          "Adoption Status",
-          "Academic and conceptual benchmark reference",
-          "The de-facto operational protocol of the global Internet"
+          "3. Network",
+          "Packet",
+          "IP Addresses (32-bit / 128-bit)",
+          "IPv4, IPv6, ICMP, Routers"
+        ],
+        [
+          "2. Data Link",
+          "Frame",
+          "MAC Addresses (48-bit hex)",
+          "Ethernet 802.3, Wi-Fi 802.11, Switches, Bridges"
+        ],
+        [
+          "1. Physical",
+          "Bits (0s and 1s)",
+          "Physical electrical/optical signal",
+          "Cables, Hubs, Repeaters, Fiber Optics"
         ]
       ]
     },
-    "memorize": "7 Layers in order from bottom to top: Physical, Data Link, Network, Transport, Session, Presentation, Application (Mnemonic: 'Please Do Not Throw Sausage Pizza Away'). PDUs: Bits -> Frames -> Packets -> Segments -> Data.",
-    "understand": "Data Encapsulation: As data descends from Layer 7 to Layer 1, each layer wraps the payload with its own protocol header. At the receiving host, decapsulation strips headers layer-by-layer.",
-    "common_mistakes": "1. Inverting layer numbering (Physical is Layer 1; Application is Layer 7). 2. Calling Transport Layer PDU a 'packet' (Transport is Segment; Network is Packet; Data Link is Frame).",
-    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2024-25, 2025-26)",
-    "pyq_freq": "4 University Sessions: 2021 (Q1 - 15m), 2022-23 (Q1b - 15m), 2024-25 (Q1 - 15m), 2025-26 (Q2 - 15m)",
-    "pyq_question": "Explain the 7 layers of the OSI reference model with their primary functions. Differentiate between OSI and TCP/IP models. (15 Marks)",
-    "pyq_rubric": "Layer diagram with PDUs (4 marks) + Functions of 7 layers (7 marks) + OSI vs TCP/IP comparison table (4 marks) = 15 Marks.",
+    "memorize": "Mnemonic: 'Please Do Not Throw Sausage Pizza Away' (Physical to Application). PDUs: Bits -> Frames -> Packets -> Segments -> Data.",
+    "understand": "Routers operate up to Layer 3 (IP); Switches operate at Layer 2 (MAC); Hubs operate at Layer 1 (Electrical).",
+    "common_mistakes": "Mixing up the order of Presentation and Session layers.",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2024-25 (Q1)",
+        "marks": 15,
+        "question": "Explain the architecture and functions of all seven layers of the OSI reference model with a neat diagram. Discuss the concept of Data Encapsulation. (15 Marks)",
+        "rubric": "OSI 7-Layer Diagram (4 marks) + Detailed explanation of all 7 layers (7 marks) + Data Encapsulation flow & PDUs (4 marks) = 15 Marks.",
+        "model_answer": "The Open Systems Interconnection (OSI) model is a conceptual 7-layer architectural framework developed by ISO for standardized telecommunications. The seven layers from bottom to top are:\n1. Physical Layer: Transmits raw, unstructured bit streams over physical transmission media (cables, optical fibers, radio). Defines voltages, pinouts, and bit timing.\n2. Data Link Layer: Provides node-to-node reliable delivery across a local physical link. Handles physical MAC addressing (48-bit), data framing, flow control, and error detection (CRC).\n3. Network Layer: Manages logical host-to-host addressing (IPv4/IPv6) and packet routing across heterogeneous intermediate networks using shortest-path algorithms.\n4. Transport Layer: Delivers end-to-end process-to-process message transfer using 16-bit Port numbers. Provides connection-oriented reliability (TCP), segmentation, flow control, and error recovery.\n5. Session Layer: Manages dialogues, establishing, maintaining, synchronizing, and terminating communication sessions between applications.\n6. Presentation Layer: Formats data syntax and semantics, providing character code translation (ASCII to EBCDIC), data compression, and cryptographic encryption (TLS).\n7. Application Layer: The topmost interface providing direct network services to end-user software applications (HTTP, DNS, SMTP, FTP).\n\nData Encapsulation:\nAs application data descends the stack, each layer prepends a header containing layer-specific metadata: Application Data -> Transport Segment (adds Port header) -> Network Packet (adds IP header) -> Data Link Frame (adds MAC header and CRC trailer) -> Physical Bits. On the receiving host, the inverse process (Decapsulation) occurs.",
+        "answer_structure": "Introduction -> 7-Layer Architecture Diagram -> Layer-by-Layer Functions -> Encapsulation Flow -> Summary",
+        "important_points": [
+          "All 7 layers in exact order",
+          "PDUs: Bits, Frame, Packet, Segment, Data",
+          "Encapsulation vs Decapsulation",
+          "Layer devices"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Correct hierarchical layer order",
+          "PDUs and header additions explicitly drawn"
+        ],
+        "common_mistakes": [
+          "Listing layers in random or inverted order"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Compare the OSI Model with the TCP/IP Model. (5 Marks)",
+        "rubric": "Comparison table across Layers, Approach, and Protocol dependence (5 marks).",
+        "model_answer": "1. Layer Count: OSI has 7 layers; TCP/IP has 4 layers (Application, Transport, Internet, Network Access); 2. Approach: OSI is a theoretical, protocol-independent reference model created before protocols were designed; TCP/IP is a practical, implementation-driven model designed around the core ARPANET protocols; 3. Upper Layers: In TCP/IP, the Application layer combines the functions of OSI's Application, Presentation, and Session layers; 4. Transport: OSI supports both connectionless and connection-oriented communication in the network layer; TCP/IP supports only connectionless IP in the network layer."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-04-01",
+        "question": "In the ISO-OSI 7-Layer Reference Model, which layer is responsible for dialog control, token management, and session checkpointing?",
+        "options": [
+          "Transport Layer",
+          "Session Layer",
+          "Presentation Layer",
+          "Data Link Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "Layer 5 (Session Layer) establishes, manages, synchronizes, and terminates sessions between end-user applications with checkpoints."
+      },
+      {
+        "id": "ACAD-04-02",
+        "question": "What is the Protocol Data Unit (PDU) name at the Network Layer of the OSI model?",
+        "options": [
+          "Frame",
+          "Segment",
+          "Packet",
+          "Bit"
+        ],
+        "correct_answer": "C",
+        "explanation": "PDU names across layers: Physical = Bit, Data Link = Frame, Network = Packet, Transport = Segment, Application = Data/Message."
+      },
+      {
+        "id": "ACAD-04-03",
+        "question": "Which layer in the OSI reference model handles data syntax conversion, compression, and encryption/decryption (e.g., ASN.1, SSL/TLS)?",
+        "options": [
+          "Presentation Layer",
+          "Application Layer",
+          "Session Layer",
+          "Network Layer"
+        ],
+        "correct_answer": "A",
+        "explanation": "Layer 6 (Presentation Layer) standardizes data formats, handles character set translations (ASCII/EBCDIC), data compression, and cryptographic encryption."
+      },
+      {
+        "id": "ACAD-04-04",
+        "question": "How does the TCP/IP architectural suite map the top three layers of the OSI reference model (Session, Presentation, Application)?",
+        "options": [
+          "They are split across Network Access and Internet layers",
+          "They are combined into a single unified Application Layer",
+          "They are moved into operating system kernel device drivers",
+          "They are replaced by the Transport Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "The 4-layer TCP/IP model consolidates OSI's Application, Presentation, and Session layers into a single top-level Application Layer."
+      },
+      {
+        "id": "ACAD-04-05",
+        "question": "Which layer provides true end-to-end reliability and process-to-process communication using port numbers?",
+        "options": [
+          "Network Layer",
+          "Transport Layer",
+          "Data Link Layer",
+          "Physical Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Transport Layer (TCP/UDP) uses 16-bit port addresses to deliver data process-to-process with end-to-end flow and error control."
+      }
+    ],
+    "pyq_year": "2024-25 (Q1)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Explain the architecture and functions of all seven layers of the OSI reference model with a neat diagram. Discuss the concept of Data Encapsulation. (15 Marks)",
+    "pyq_rubric": "OSI 7-Layer Diagram (4 marks) + Detailed explanation of all 7 layers (7 marks) + Data Encapsulation flow & PDUs (4 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Architectural Overview & ISO Philosophy:",
-        "The Open Systems Interconnection (OSI) reference model, published by ISO in 1984, provides a standardized abstract framework enabling disparate computing systems to communicate. It decomposes the immense complexity of network protocols into seven modular layers, enforcing clean boundaries where each layer relies exclusively on services provided by lower layers."
+        "1. Model Answer & Technical Presentation",
+        "The Open Systems Interconnection (OSI) model is a conceptual 7-layer architectural framework developed by ISO for standardized telecommunications. The seven layers from bottom to top are:\n1. Physical Layer: Transmits raw, unstructured bit streams over physical transmission media (cables, optical fibers, radio). Defines voltages, pinouts, and bit timing.\n2. Data Link Layer: Provides node-to-node reliable delivery across a local physical link. Handles physical MAC addressing (48-bit), data framing, flow control, and error detection (CRC).\n3. Network Layer: Manages logical host-to-host addressing (IPv4/IPv6) and packet routing across heterogeneous intermediate networks using shortest-path algorithms.\n4. Transport Layer: Delivers end-to-end process-to-process message transfer using 16-bit Port numbers. Provides connection-oriented reliability (TCP), segmentation, flow control, and error recovery.\n5. Session Layer: Manages dialogues, establishing, maintaining, synchronizing, and terminating communication sessions between applications.\n6. Presentation Layer: Formats data syntax and semantics, providing character code translation (ASCII to EBCDIC), data compression, and cryptographic encryption (TLS).\n7. Application Layer: The topmost interface providing direct network services to end-user software applications (HTTP, DNS, SMTP, FTP).\n\nData Encapsulation:\nAs application data descends the stack, each layer prepends a header containing layer-specific metadata: Application Data -> Transport Segment (adds Port header) -> Network Packet (adds IP header) -> Data Link Frame (adds MAC header and CRC trailer) -> Physical Bits. On the receiving host, the inverse process (Decapsulation) occurs."
       ],
       [
-        "2. Detailed 7-Layer Functionality:",
-        "\u2022 Layer 1 \u2014 Physical: Transmits raw bits over physical media (copper twisted pair, coaxial cable, optical fiber, radio frequencies). Defines pin layouts, voltage levels, signaling rates, and physical topology.\n\u2022 Layer 2 \u2014 Data Link: Ensures hop-by-hop transmission between directly adjacent network nodes. Packages raw bits into Frames, arbitrates media access (MAC layer), detects transmission errors via Cyclic Redundancy Checks (CRC), and enforces frame-level flow control.\n\u2022 Layer 3 \u2014 Network: Handles end-to-end routing of Packets across multiple intermediate network hops. Assigns logical addresses (IPv4/IPv6), calculates optimal paths via routing algorithms (Dijkstra, Bellman-Ford), and manages packet fragmentation.\n\u2022 Layer 4 \u2014 Transport: Provides reliable or best-effort process-to-process communication. Manages port numbers (0-65535), segments byte streams, performs error recovery via sequence/acknowledgment numbers (TCP), and regulates transmission speed via sliding window flow control.\n\u2022 Layer 5 \u2014 Session: Manages application dialogue sessions, providing simplex, half-duplex, or full-duplex communication and embedding synchronization checkpoints to prevent re-transmitting entire files upon connection loss.\n\u2022 Layer 6 \u2014 Presentation: Translates network data formats. Performs character encoding (ASCII to UTF-8), cryptographic encryption/decryption (TLS/SSL), and compression/decompression algorithms.\n\u2022 Layer 7 \u2014 Application: The user interface layer providing network services to end-user applications. Implements protocols like HTTP/HTTPS (web), DNS (name resolution), SMTP (mail), and SSH (secure shell)."
-      ],
-      [
-        "3. Encapsulation and Protocol Data Units (PDUs):",
-        "At the sender, data travels downwards from Application to Physical. Each layer attaches its specific protocol header (and trailer at Data Link), transforming the PDU: Application Data --> Segments (Transport) --> Packets (Network) --> Frames (Data Link) --> Bits (Physical). At the receiver, decapsulation peels off headers in reverse."
-      ],
-      [
-        "4. Comparison: OSI Reference Model vs TCP/IP Protocol Suite:",
-        "While OSI is a conceptual model with 7 strict layers, TCP/IP is a practical 4-layer architecture that powers the global Internet. TCP/IP collapses Session, Presentation, and Application into a single Application layer, and merges Physical and Data Link into a Network Access layer. TCP/IP protocols were built first and standardized, whereas OSI standardized the model before creating commercial protocols."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Explain the concept of Data Encapsulation and Decapsulation in computer networks with a neat diagram. (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "What is the role of the Data Link Layer? Differentiate between MAC address and IP address. (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Correct hierarchical layer order",
+          "PDUs and header additions explicitly drawn"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master OSI 7-Layer Model, PDUs, and OSI vs TCP/IP Comparison.",
-    "milestone": "Secure full 15/15 marks on University Question 1 (BCA-5003 Networks)."
-  },
   "apt_data": {
-    "topic": "Profit & Loss \u2014 Marked Price, Trade Discount, Cash Discount & Markup Formulas",
+    "topic": "Ratio, Proportion & Variations",
+    "category": "Quantitative",
+    "subtopic": "Ratio & Proportion",
+    "formulas": "1. If a/b = c/d, then ad = bc.\n2. Duplicate ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b).\n3. Inverted Ratio: If a:b:c, inverse ratio is (1/a):(1/b):(1/c) = bc:ca:ab.\n4. Compound Ratio of (a:b) and (c:d) = ac:bd.",
+    "shortcut": "Direct Constant Ratio Method: If a ratio changes from 3:4 to 5:6 upon adding a constant k to both, the difference between terms remains equal. Match units directly.",
     "tutorial": [
-      "Marked Price (MP) or List Price: The price printed on the label or catalog of an article.",
-      "Discount is ALWAYS calculated on the Marked Price (MP), never on Cost Price:\n\u2022 Discount = MP - SP    ==> Discount % = (Discount / MP) * 100\n\u2022 Selling Price SP = MP * [1 - (Discount% / 100)]",
-      "Markup %: The percentage by which the retailer increases the Cost Price to arrive at the Marked Price:\n\u2022 Markup = MP - CP      ==> Markup % = (Markup / CP) * 100\n\u2022 MP = CP * [1 + (Markup% / 100)]",
-      "The Master Golden Equation connecting CP, MP, Profit% and Discount%:\nSP = CP * [(100 + Profit%) / 100] = MP * [(100 - Discount%) / 100]\n==> CP / MP = (100 - Discount%) / (100 + Profit%)"
+      "A ratio expresses relative magnitude. When quantities are divided in ratio a:b:c, total parts equal (a+b+c). The value of 1 unit equals Total Quantity / (a+b+c). In partnership problems, profit is partitioned in proportion to (Investment * Time Period)."
     ],
-    "formulas": "1. CP / MP = (100 - D%) / (100 + P%)\n2. MP = CP * [(100 + Profit%) / (100 - Discount%)]\n3. Single Equivalent Discount of d1% and d2%: D_net = [d1 + d2 - (d1 * d2) / 100]%",
-    "shortcut": "The CP-MP Ratio Bridge (Instant Placement Solver):\nIf Discount = 10% and Profit = 20%, then:\nCP / MP = (100 - 10) / (100 + 20) = 90 / 120 = 3 / 4.\nIf CP is Rs. 300, MP is instantly Rs. 400 without setting up multi-step equations!",
-    "recognition": "Look for 'after allowing a discount of x%, the trader makes a profit of y%', 'by how much percent should he mark his goods above CP to gain z% after giving a discount'.",
-    "p1_q": "[Foundation] A shopkeeper marks an article at Rs. 800 and offers a discount of 15%. What is the selling price of the article?",
-    "p1_s": "Step 1: MP = Rs. 800, Discount = 15%.\nStep 2: SP = MP * (1 - 0.15) = 800 * 0.85.\nStep 3: Fast mental calculation: 800 * 0.85 = 8 * 85 = 8 * (80 + 5) = 640 + 40 = Rs. 680.\nAnswer: Selling Price is Rs. 680.",
-    "p2_q": "[Standard Placement] A trader marks his goods at such a price that after allowing a discount of 12.5% on the marked price, he still makes a profit of 20%. If the cost price of the article is Rs. 1,400, find its marked price.",
-    "p2_s": "Step 1: Use the CP-MP Ratio Bridge:\nCP / MP = (100 - D%) / (100 + P%).\nHere D = 12.5%, P = 20%, CP = Rs. 1400.\nStep 2: Substitute values:\n1400 / MP = (100 - 12.5) / (100 + 20) = 87.5 / 120 = 175 / 240 = 7 / (48 / 5) Wait: 87.5 / 120 = (7/8 * 100) / 120 = 7 / (120 / 12.5) = 7 / 9.6.\nNotice 1400 / 7 = 200!\n1400 / MP = 87.5 / 120 ==> MP = (1400 * 120) / 87.5.\nDivide 1400 by 87.5: 1400 / 87.5 = 16.\nMP = 16 * 120 = Rs. 1,920.\nVerification: SP = 1920 * 0.875 = Rs. 1680. Profit on 1400 = (1680 - 1400) / 1400 = 280 / 1400 = 20%. Matches!\nAnswer: Marked Price is Rs. 1,920.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS NQT 2024 Quantitative Section]",
-    "p3_q": "A merchant marks his goods 40% above the cost price. He sells half the stock at the marked price, one-quarter at a discount of 15% on the marked price, and the rest at a discount of 30% on the marked price. Find his overall gain percentage.",
-    "p3_s": "Step 1: Choose convenient numbers:\nLet total stock = 4 units, Cost Price of each unit = Rs. 100.\nTotal Cost Price (CP) = 4 * 100 = Rs. 400.\nMarked Price (MP) per unit = 100 + 40% = Rs. 140.\nStep 2: Calculate Selling Price for each portion:\n- Half the stock (2 units) sold at MP = 2 * 140 = Rs. 280.\n- One-quarter (1 unit) sold at 15% discount = 140 * (1 - 0.15) = 140 * 0.85 = Rs. 119.\n- Rest of stock (4 - 2 - 1 = 1 unit) sold at 30% discount = 140 * (1 - 0.30) = 140 * 0.70 = Rs. 98.\nStep 3: Total Selling Price (SP) = 280 + 119 + 98 = Rs. 497.\nStep 4: Overall Profit = Total SP - Total CP = 497 - 400 = Rs. 97.\nOverall Profit % = (97 / 400) * 100 = 97 / 4 = 24.25%.\nAnswer: Overall gain of 24.25%.",
-    "p4_q": "[Hard / Time-Pressure] A shopkeeper offers 'Buy 3 Get 1 Free' on branded t-shirts. In addition to this, he allows a further cash discount of 10% to customers paying in cash. What is the effective net percentage discount received by a cash-paying customer?",
-    "p4_s": "Step 1: Analyze the 'Buy 3 Get 1 Free' offer:\nTotal articles received = 3 + 1 = 4 articles.\nFree articles received = 1 article.\nInitial Discount % from offer = [Free / Total Received] * 100 = (1 / 4) * 100 = 25% discount.\nStep 2: Apply the additional 10% cash discount successively:\nNet Discount % = [d1 + d2 - (d1 * d2) / 100]%\n= [25 + 10 - (25 * 10) / 100]% = [35 - 250 / 100]% = 35 - 2.5 = 32.5%.\nAlternative Value Method: Let MP of each t-shirt = Rs. 100. For 4 t-shirts, total MP = Rs. 400.\nCustomer pays for 3 t-shirts = Rs. 300.\n10% cash discount on Rs. 300 = Rs. 30 discount ==> Customer pays 300 - 30 = Rs. 270.\nTotal Discount = 400 - 270 = Rs. 130 on Rs. 400.\nDiscount % = (130 / 400) * 100 = 32.5%.\nAnswer: Effective net discount is 32.5%.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "A watch is marked at Rs. 500 and sold for Rs. 425. Find the discount percentage."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "Find the single discount equivalent to two successive discounts of 15% and 10%."
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "What is the discount % in a 'Buy 4 Get 1 Free' promotional scheme?"
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "By what percentage must the cost price be marked up so that even after allowing a 20% discount, a profit of 20% is earned?"
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "A dealer allows a 25% discount on MP and earns a 20% profit. If the profit is Rs. 90, find the marked price."
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Ratio & Proportion",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Ratio & Proportion",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Ratio & Proportion",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Ratio & Proportion",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Ratio & Proportion",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "If A : B = 2 : 3 and B : C = 4 : 5, what is the combined ratio A : B : C?",
+        "options": {
+          "A": "8 : 12 : 15",
+          "B": "2 : 4 : 5",
+          "C": "6 : 9 : 15",
+          "D": "8 : 10 : 15"
+        },
+        "correct_answer": "A",
+        "explanation": "Multiply first ratio by 4 and second by 3 to equalize B: A : B = 8 : 12 and B : C = 12 : 15. Hence A : B : C = 8 : 12 : 15."
+      },
+      {
+        "mcq_no": 2,
+        "question": "A sum of Rs. 4,200 is divided among A, B, and C in the ratio 2 : 3 : 5. What is the share of C?",
+        "options": {
+          "A": "Rs. 840",
+          "B": "Rs. 1,260",
+          "C": "Rs. 2,100",
+          "D": "Rs. 1,800"
+        },
+        "correct_answer": "C",
+        "explanation": "Total ratio units = 2 + 3 + 5 = 10. Value per unit = 4,200 / 10 = Rs. 420. C's share = 5 * 420 = Rs. 2,100."
+      },
+      {
+        "mcq_no": 3,
+        "question": "Two numbers are in the ratio 3 : 5. If 9 is subtracted from both numbers, their ratio becomes 12 : 23. What is the smaller number?",
+        "options": {
+          "A": "27",
+          "B": "33",
+          "C": "45",
+          "D": "55"
+        },
+        "correct_answer": "B",
+        "explanation": "(3x - 9) / (5x - 9) = 12 / 23 => 23*(3x - 9) = 12*(5x - 9) => 69x - 207 = 60x - 108 => 9x = 99 => x = 11. Smaller number = 3 * 11 = 33."
+      },
+      {
+        "mcq_no": 4,
+        "question": "In a 60-liter mixture of milk and water, the ratio of milk to water is 2 : 1. How much water must be added to make the ratio 1 : 2?",
+        "options": {
+          "A": "40 liters",
+          "B": "50 liters",
+          "C": "60 liters",
+          "D": "30 liters"
+        },
+        "correct_answer": "C",
+        "explanation": "Initial: Milk = 40 L, Water = 20 L. Let added water be W. 40 / (20 + W) = 1 / 2 => 20 + W = 80 => W = 60 liters."
+      },
+      {
+        "mcq_no": 5,
+        "question": "A and B enter into a partnership. A invests Rs. 50,000 for 8 months and B invests Rs. 60,000 for 10 months. In what ratio should the annual profit of Rs. 50,000 be divided?",
+        "options": {
+          "A": "2 : 3",
+          "B": "1 : 2",
+          "C": "4 : 5",
+          "D": "3 : 4"
+        },
+        "correct_answer": "A",
+        "explanation": "Profit ratio = (A's Capital * Time) : (B's Capital * Time) = (50,000 * 8) : (60,000 * 10) = 400,000 : 600,000 = 2 : 3."
+      },
+      {
+        "mcq_no": 6,
+        "question": "What is the third proportional to 9 and 12?",
+        "options": {
+          "A": "15",
+          "B": "16",
+          "C": "18",
+          "D": "14"
+        },
+        "correct_answer": "B",
+        "explanation": "If x is third proportional to a and b, then a / b = b / x => 9 / 12 = 12 / x => x = (12 * 12) / 9 = 144 / 9 = 16."
+      },
+      {
+        "mcq_no": 7,
+        "question": "What is the mean proportional between 4 and 64?",
+        "options": {
+          "A": "16",
+          "B": "24",
+          "C": "32",
+          "D": "12"
+        },
+        "correct_answer": "A",
+        "explanation": "Mean proportional = sqrt(a * b) = sqrt(4 * 64) = sqrt(256) = 16."
+      },
+      {
+        "mcq_no": 8,
+        "question": "The salaries of A, B, and C are in the ratio 1 : 2 : 3. If increments of 5%, 10%, and 15% are granted respectively, what is the new ratio of their salaries?",
+        "options": {
+          "A": "21 : 44 : 69",
+          "B": "19 : 42 : 65",
+          "C": "20 : 40 : 60",
+          "D": "23 : 45 : 71"
+        },
+        "correct_answer": "A",
+        "explanation": "Take base salaries 100, 200, 300. Incremented: A = 105, B = 220, C = 345. Ratio = 105 : 220 : 345. Divide by 5: 21 : 44 : 69."
+      },
+      {
+        "mcq_no": 9,
+        "question": "A bag contains 50p, 25p, and 10p coins in the ratio 5 : 9 : 4, amounting to Rs. 206. How many 50p coins are in the bag?",
+        "options": {
+          "A": "150",
+          "B": "200",
+          "C": "250",
+          "D": "300"
+        },
+        "correct_answer": "B",
+        "explanation": "Value per unit = (5 * 0.50) + (9 * 0.25) + (4 * 0.10) = 2.50 + 2.25 + 0.40 = Rs. 5.15. Units = 206 / 5.15 = 40. Number of 50p coins = 5 * 40 = 200."
+      },
+      {
+        "mcq_no": 10,
+        "question": "If 4 men or 6 women can earn Rs. 360 per day, how much will 6 men and 8 women earn per day?",
+        "options": {
+          "A": "Rs. 900",
+          "B": "Rs. 1,020",
+          "C": "Rs. 840",
+          "D": "Rs. 960"
+        },
+        "correct_answer": "B",
+        "explanation": "1 man earns 360 / 4 = Rs. 90. 1 woman earns 360 / 6 = Rs. 60. 6 men + 8 women = (6 * 90) + (8 * 60) = 540 + 480 = Rs. 1,020."
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Ratio & Proportion (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "Discount = 500 - 425 = 75. % = (75/500)*100 = 15%. Answer: 15%."
-      ],
-      [
-        "Solution Q2:",
-        "Net % = 15 + 10 - (15*10)/100 = 25 - 1.5 = 23.5%. Answer: 23.5%."
-      ],
-      [
-        "Solution Q3:",
-        "Discount = 1 / (4 + 1) = 1/5 = 20%. Answer: 20%."
-      ],
-      [
-        "Solution Q4:",
-        "CP/MP = (100-20)/(100+20) = 80/120 = 2/3. Markup = (3-2)/2 = 1/2 = 50%. Answer: 50%."
-      ],
-      [
-        "Solution Q5:",
-        "Profit = 20% of CP = 90 ==> CP = 90 / 0.20 = Rs. 450. CP/MP = (100-25)/(100+20) = 75/120 = 5/8. MP = (450 * 8)/5 = Rs. 720. Answer: Rs. 720."
-      ]
-    ],
-    "trap": "In 'Buy X Get Y Free' schemes, NEVER calculate discount as (Y / X) * 100! The customer takes home (X + Y) items, so the true discount is always [Y / (X + Y)] * 100."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Middle of the Linked List",
+      "difficulty": "Easy",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given the head of a singly linked list, return the middle node of the linked list. If there are two middle nodes, return the second middle node.",
+      "solution_approach": "1. Apply Fast & Slow Pointers (Floyd's Tortoise and Hare) algorithmic technique.\n2. Uses two pointers moving at different speeds (slow by 1 node, fast by 2 nodes). If a cycle exists in the sequence, the fast pointer will catch and collide with the slow pointer.\n3. Invariants: In a cycle of length C, the relative distance between slow and fast decreases by exactly 1 in each step. Hence, fast must overtake slow within C iterations without using extra memory.",
+      "code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+      "java_solution": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+      "solution_java": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Linked List Cycle II",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given the head of a linked list, return the node where the cycle begins. If there is no cycle, return null.",
+      "solution_approach": "1. Identify interview variation of Fast & Slow Pointers (Floyd's Tortoise and Hare).\n2. Handle edge cases: Empty list (null head), Single node pointing to null, Single node self-loop, Two-node cycle.\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+      "java_solution": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+      "solution_java": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Fast & Slow Pointers (Floyd's Tortoise and Hare)",
+    "category": "Two Pointers",
+    "concept": "Uses two pointers moving at different speeds (slow by 1 node, fast by 2 nodes). If a cycle exists in the sequence, the fast pointer will catch and collide with the slow pointer.",
+    "why_it_works": "In a cycle of length C, the relative distance between slow and fast decreases by exactly 1 in each step. Hence, fast must overtake slow within C iterations without using extra memory.",
+    "visual_explanation": "List: 1 -> 2 -> 3 -> 4 -> 5 -> [points back to 3]\\nStep 0: Slow = 1, Fast = 1\\nStep 1: Slow = 2, Fast = 3\\nStep 2: Slow = 3, Fast = 5\\nStep 3: Slow = 4, Fast = 4 (Collision at node 4 ==> Cycle Proven!)",
+    "java_code": "class ListNode {\n    int val;\n    ListNode next;\n    ListNode(int x) { val = x; next = null; }\n}\n\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        if (head == null || head.next == null) return false;\n        ListNode slow = head;\n        ListNode fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                return true;\n            }\n        }\n        return false;\n    }\n}",
+    "code": "class ListNode {\n    int val;\n    ListNode next;\n    ListNode(int x) { val = x; next = null; }\n}\n\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        if (head == null || head.next == null) return false;\n        ListNode slow = head;\n        ListNode fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                return true;\n            }\n        }\n        return false;\n    }\n}",
+    "python_code": "class ListNode {\n    int val;\n    ListNode next;\n    ListNode(int x) { val = x; next = null; }\n}\n\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        if (head == null || head.next == null) return false;\n        ListNode slow = head;\n        ListNode fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                return true;\n            }\n        }\n        return false;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 7: Guard check for empty list or single node without cycle.",
+      "Line 8-9: Initialize slow and fast pointers at the head of the list.",
+      "Line 10: Loop while fast and fast.next are non-null.",
+      "Line 11-12: Advance slow pointer by 1 step and fast pointer by 2 steps.",
+      "Line 13-15: If slow equals fast, pointers have collided in a cycle; return true.",
+      "Line 17: If fast reaches null, list terminates without a cycle; return false."
+    ],
+    "dry_run": "List: 3 -> 2 -> 0 -> -4 -> 2. Step 1: slow=2, fast=0. Step 2: slow=0, fast=2. Step 3: slow=-4, fast=-4 (COLLISION -> true).",
+    "complexity": "O(N) Time, O(1) Auxiliary Space",
+    "edge_cases": [
+      "Empty list (null head)",
+      "Single node pointing to null",
+      "Single node self-loop",
+      "Two-node cycle"
+    ],
+    "interview_variations": [
+      "Middle of the Linked List",
+      "Linked List Cycle II (Find Entry Point)",
+      "Happy Number",
+      "Find the Duplicate Number (Array as Linked List)"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-04-01",
+        "title": "Problem 1: Middle of the Linked List",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given the head of a singly linked list, return the middle node of the linked list. If there are two middle nodes, return the second middle node.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Fast & Slow Pointers (Floyd's Tortoise and Hare) algorithmic technique.\n2. Uses two pointers moving at different speeds (slow by 1 node, fast by 2 nodes). If a cycle exists in the sequence, the fast pointer will catch and collide with the slow pointer.\n3. Invariants: In a cycle of length C, the relative distance between slow and fast decreases by exactly 1 in each step. Hence, fast must overtake slow within C iterations without using extra memory.",
+        "solution_java": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+        "solution_python": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+        "code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+        "java_code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-04-02",
+        "title": "Problem 2: Linked List Cycle II",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given the head of a linked list, return the node where the cycle begins. If there is no cycle, return null.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Fast & Slow Pointers (Floyd's Tortoise and Hare).\n2. Handle edge cases: Empty list (null head), Single node pointing to null, Single node self-loop, Two-node cycle.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+        "solution_python": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+        "code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+        "java_code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        boolean hasCycle = false;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                hasCycle = true;\n                break;\n            }\n        }\n        if (!hasCycle) return null;\n        ListNode ptr = head;\n        while (ptr != slow) {\n            ptr = ptr.next;\n            slow = slow.next;\n        }\n        return ptr;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "Operating Systems",
+    "topic": "Classical Synchronization Problems (Producer-Consumer, Dining Philosophers, Readers-Writers)",
+    "detailed_notes": [
+      "Classical synchronization problems serve as universal test cases for evaluating concurrency paradigms.\n\n1. Producer-Consumer Problem (Bounded Buffer):\nProducers generate items and append to a fixed-size buffer (size N); Consumers remove items. Three synchronization primitives are needed:\n- `mutex = 1`: Enforces mutual exclusion on buffer insert/delete.\n- `empty = N`: Counting semaphore tracking available empty slots. Producer calls `wait(empty)`.\n- `full = 0`: Counting semaphore tracking populated slots. Consumer calls `wait(full)`.\n\n2. Readers-Writers Problem:\nMultiple readers can concurrently read data without conflict, but a writer requires exclusive access. First Readers-Writers variation prioritizes readers, risking writer starvation; Second variation prioritizes writers to ensure write updates are not starved by a continuous stream of readers.\n\n3. Dining Philosophers Problem:\nFive philosophers sit around a circular table with 5 chopsticks; each alternates between thinking and eating. To eat, a philosopher requires both left and right chopsticks. If every philosopher picks up their left chopstick simultaneously, a circular wait occurs, resulting in total Deadlock. Solutions include: asymmetric pickup (odd philosophers pick left first, even pick right first), limiting table capacity to 4, or using an atomic monitor condition."
+    ],
+    "key_definitions": [
+      {
+        "term": "Bounded Buffer",
+        "definition": "A shared circular queue of fixed capacity accessible by concurrent producer and consumer threads."
+      },
+      {
+        "term": "Reader-Writer Lock",
+        "definition": "A concurrency lock allowing shared access for multiple readers or exclusive access for one writer."
+      },
+      {
+        "term": "Asymmetric Allocation",
+        "definition": "Breaking symmetry in resource acquisition order to eliminate circular wait conditions."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "How does the Producer-Consumer problem avoid race conditions and deadlocks using semaphores?",
+        "a": "It uses three semaphores: a binary semaphore 'mutex' (1) to protect buffer modifications, a counting semaphore 'empty' (initialized to buffer capacity N), and a counting semaphore 'full' (initialized to 0). The producer does wait(empty), wait(mutex), writes, signal(mutex), signal(full). The consumer does wait(full), wait(mutex), reads, signal(mutex), signal(empty). Swapping wait(empty) and wait(mutex) would cause a deadlock if the buffer is full."
+      },
+      {
+        "q": "Why does the naive Dining Philosophers implementation deadlock, and how is it solved?",
+        "a": "Deadlock occurs because if all 5 philosophers get hungry at the same moment and pick up their left chopstick, all chopsticks are taken, and every philosopher blocks waiting for the right chopstick (Circular Wait). Solutions include: 1) Asymmetric strategy: odd-numbered philosophers pick left then right, even pick right then left; 2) Allow at most 4 philosophers to sit at the table simultaneously; 3) Pick both chopsticks atomically inside a critical section."
+      },
+      {
+        "q": "Explain the difference between Reader-Preference and Writer-Preference in the Readers-Writers problem.",
+        "a": "In Reader-Preference, if at least one reader is actively reading, incoming readers are immediately granted access, which can starve waiting writers indefinitely. In Writer-Preference, once a writer signals its intention to write, no new readers are allowed to start reading; existing readers finish, and the writer acquires the lock, preventing writer starvation."
+      },
+      {
+        "q": "What is the consequence of reversing wait(empty) and wait(mutex) in Producer-Consumer?",
+        "a": "If the producer executes wait(mutex) first when the buffer is full (empty = 0), it locks the mutex and then blocks on wait(empty). The consumer needs to acquire the mutex to consume an item and signal empty, but cannot do so because the producer holds the mutex. Both threads block forever in a deadlock."
+      },
+      {
+        "q": "How can Java or Python Monitors simplify synchronization compared to semaphores?",
+        "a": "Monitors encapsulate shared state, locks, and condition variables within an object class. Only one thread can execute an object's synchronized method at a time. Programmers do not need to manually pair wait() and signal() across multiple semaphores, dramatically reducing human locking bugs like forgotten unlocks or out-of-order acquisitions."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-04-01",
+        "question": "In the Bounded Buffer problem of size N, what are the initial values of semaphores empty, full, and mutex?",
+        "options": [
+          "empty = 0, full = N, mutex = 0",
+          "empty = N, full = 0, mutex = 1",
+          "empty = 1, full = 1, mutex = N",
+          "empty = N, full = N, mutex = 1"
+        ],
+        "correct_answer": "B",
+        "explanation": "Initially all N slots are empty (empty = N), 0 slots are filled (full = 0), and mutex is unlocked (1)."
+      },
+      {
+        "id": "CS-04-02",
+        "question": "If all philosophers pick up their left chopstick simultaneously in Dining Philosophers, the system experiences:",
+        "options": [
+          "Thrashing",
+          "Deadlock",
+          "High throughput",
+          "Cache invalidation"
+        ],
+        "correct_answer": "B",
+        "explanation": "All philosophers hold one chopstick and wait for the other, forming an unbreakable circular wait deadlock."
+      },
+      {
+        "id": "CS-04-03",
+        "question": "Which Readers-Writers solution policy risks writer starvation?",
+        "options": [
+          "Writer-preference",
+          "Fair FIFO queue",
+          "Reader-preference",
+          "Strict alternating"
+        ],
+        "correct_answer": "C",
+        "explanation": "In reader-preference, as long as readers keep arriving, writers are indefinitely postponed."
+      },
+      {
+        "id": "CS-04-04",
+        "question": "In the Bounded Buffer solution, reversing wait(mutex) and wait(empty) in the producer causes:",
+        "options": [
+          "Faster throughput",
+          "Buffer overflow",
+          "Potential deadlock when buffer is full",
+          "Data corruption"
+        ],
+        "correct_answer": "C",
+        "explanation": "Holding mutex while blocked on empty prevents the consumer from entering to free up buffer space, causing deadlock."
+      },
+      {
+        "id": "CS-04-05",
+        "question": "An asymmetric solution to the Dining Philosophers problem specifies that:",
+        "options": [
+          "Philosophers eat with only one chopstick",
+          "Odd philosophers pick left first, even philosophers pick right first",
+          "All philosophers pick right first",
+          "Philosophers never release chopsticks"
+        ],
+        "correct_answer": "B",
+        "explanation": "Alternating the pickup order breaks the circular wait condition necessary for deadlock."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "TerraStract",
+    "repo_path": "D:\\Projects\\terra_extract",
+    "feature_focus": "Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nCombining PyMuPDF native vector stream parsing with OpenCV image binarization and Tesseract OCR.\n\nWHAT TO MEMORIZE:\nVector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.\n\n60-SECOND INTERVIEW PITCH:\nTerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing.",
+    "interview_qa": [
+      {
+        "q": "How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?",
+        "a": "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular coordinates and text streams in &lt;10ms; 3. If the page is a scanned bitmap or has font glyph corruption, it routes to an OpenCV pipeline that applies grayscale conversion, Otsu's adaptive thresholding, and morphological opening to clean noise before invoking Tesseract OCR with `--oem 1 --psm 6`."
+      },
+      {
+        "q": "How do you handle Devanagari Unicode characters and ligature rendering in OCR?",
+        "a": "Standard Tesseract struggles with conjunct Hindi characters (Matras). We load the `hin` traineddata pack and post-process raw text with custom regex normalization rules that correct common OCR segmentation errors in regional land records (e.g., Khasra and Khatauni numbers)."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 4 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 4 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of Caloriv.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• JVM Architecture: ClassLoader, Execution Engine, Heap, Stack, Method Area.\n• CI vs SI 2-year difference formula: P * (R/100)^2.\n• Dynamic Sliding Window with frequency map for substring invariants.\n• Critical section conditions: Mutual Exclusion, Progress, Bounded Waiting.",
+    "today_recall": "• Mastered OSI 7-Layer Reference Model vs TCP/IP Protocol Suite.\n• Detailed layer duties: Application, Presentation, Session, Transport, Network, Data Link, Physical.\n• Traced Packet Encapsulation and Decapsulation across protocol data units (Data -> Segment -> Packet -> Frame -> Bits).",
+    "formula_recall": "• Compounded Ratio of (a:b) and (c:d) = ac:bd\n• Duplicate Ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b)\n• Direct Proportion: x1 / y1 = x2 / y2; Inverse Proportion: x1 * y1 = x2 * y2\n• Floyd's Cycle Detection: Fast pointer advances by 2, slow by 1. Distance from head to cycle start = distance from meeting point to cycle start.",
+    "pyq_recall": "• University PYQ: CSJM University 2022 (Section B, 15 Marks) — 'Compare OSI reference model and TCP/IP protocol suite. Explain data encapsulation with layer-by-layer headers.'\n• Blueprint: 1. Definition (2m) -> 2. 7-Layer vs 4-Layer Diagram (4m) -> 3. Layer Functionalities (5m) -> 4. Architectural Comparison Table (2m) -> 5. Summary (2m).",
+    "dsa_recall": "• Pattern: Fast & Slow Pointers (Floyd's Tortoise and Hare).\n• Invariant: Slow pointer moves 1 step; fast pointer moves 2 steps. If a cycle exists, they must meet within the loop. To find cycle origin, reset slow to head and advance both by 1 step.\n• Edge Cases: Empty list, single node without loop, single node with self-loop, two nodes.",
+    "project_recall": "• Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline).\n• Architecture: FastAPI service, PyMuPDF vector extraction, Tesseract OCR fallback, and asynchronous background worker queues.\n• Defense Pitch: 'Engineered high-throughput document extraction API in FastAPI, parsing digital PDFs in <50ms with PyMuPDF and boosting noisy Hindi scan accuracy by 35% using OpenCV preprocessing.'",
+    "rapid_fire_questions": [
+      {
+        "q": "What are the 7 layers of the OSI reference model from bottom to top?",
+        "a": "Physical, Data Link, Network, Transport, Session, Presentation, Application."
+      },
+      {
+        "q": "Which OSI layer handles encryption, compression, and character syntax translation?",
+        "a": "Presentation Layer (Layer 6)."
+      },
+      {
+        "q": "What is the Protocol Data Unit (PDU) at the Transport, Network, and Data Link layers?",
+        "a": "Transport = Segment; Network = Packet; Data Link = Frame."
+      },
+      {
+        "q": "If a:b = 2:3 and b:c = 4:5, what is the combined ratio a:b:c?",
+        "a": "8 : 12 : 15 (Multiply to equate b to 12)."
+      },
+      {
+        "q": "In partnership accounting, in what ratio are profits partitioned among partners?",
+        "a": "In proportion to the product of (Investment * Time Period)."
+      },
+      {
+        "q": "What are the 3 classical process synchronization problems?",
+        "a": "Producer-Consumer (Bounded Buffer), Readers-Writers, and Dining Philosophers."
+      },
+      {
+        "q": "In the Dining Philosophers problem, what condition causes circular deadlock?",
+        "a": "Each philosopher picking up their left fork simultaneously and waiting indefinitely for the right fork."
+      },
+      {
+        "q": "Why does Floyd's Tortoise and Hare algorithm detect cycles in O(N) time?",
+        "a": "Because the distance between fast and slow decreases by 1 node in every iteration once both enter the loop."
+      },
+      {
+        "q": "In TerraStract, why are background worker queues used for PDF processing?",
+        "a": "To return an immediate HTTP 202 Accepted token, decoupling heavy OCR compute from client HTTP request lifecycles."
+      },
+      {
+        "q": "What OCR engine is utilized in TerraStract as a fallback for scanned pages?",
+        "a": "Tesseract OCR with OpenCV contrast preprocessing."
+      }
+    ],
+    "today_summary": "• Mastered OSI 7-Layer Reference Model vs TCP/IP Protocol Suite.\n• Detailed layer duties: Application, Presentation, Session, Transport, Network, Data Link, Physical.\n• Traced Packet Encapsulation and Decapsulation across protocol data units (Data -> Segment -> Packet -> Frame -> Bits).",
+    "formulas_and_shortcuts": [
+      "• Compounded Ratio of (a:b) and (c:d) = ac:bd\n• Duplicate Ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b)\n• Direct Proportion: x1 / y1 = x2 / y2; Inverse Proportion: x1 * y1 = x2 * y2\n• Floyd's Cycle Detection: Fast pointer advances by 2, slow by 1. Distance from head to cycle start = distance from meeting point to cycle start."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered OSI 7-Layer Reference Model vs TCP/IP Protocol Suite."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Compounded Ratio of (a:b) and (c:d) = ac:bd"
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Fast & Slow Pointers (Floyd's Tortoise and Hare)."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 04 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "In the ISO-OSI 7-Layer Reference Model, which layer is responsible for dialog control, token management, and session checkpointing?",
+        "a": "Answer: B\n\nLayer 5 (Session Layer) establishes, manages, synchronizes, and terminates sessions between end-user applications with checkpoints."
+      },
+      {
+        "q": "What is the Protocol Data Unit (PDU) name at the Network Layer of the OSI model?",
+        "a": "Answer: C\n\nPDU names across layers: Physical = Bit, Data Link = Frame, Network = Packet, Transport = Segment, Application = Data/Message."
+      },
+      {
+        "q": "Which layer in the OSI reference model handles data syntax conversion, compression, and encryption/decryption (e.g., ASN.1, SSL/TLS)?",
+        "a": "Answer: A\n\nLayer 6 (Presentation Layer) standardizes data formats, handles character set translations (ASCII/EBCDIC), data compression, and cryptographic encryption."
+      },
+      {
+        "q": "How does the TCP/IP architectural suite map the top three layers of the OSI reference model (Session, Presentation, Application)?",
+        "a": "Answer: B\n\nThe 4-layer TCP/IP model consolidates OSI's Application, Presentation, and Session layers into a single top-level Application Layer."
+      },
+      {
+        "q": "Which layer provides true end-to-end reliability and process-to-process communication using port numbers?",
+        "a": "Answer: B\n\nThe Transport Layer (TCP/UDP) uses 16-bit port addresses to deliver data process-to-process with end-to-end flow and error control."
+      },
+      {
+        "q": "If A : B = 2 : 3 and B : C = 4 : 5, find the compound ratio A : B : C.",
+        "a": "Answer: A\n\nA : B = 8 : 12 (multiplying by 4). B : C = 12 : 15 (multiplying by 3). Hence A : B : C = 8 : 12 : 15."
+      },
+      {
+        "q": "Divide Rs. 1,050 among A, B, and C in the ratio 2 : 3 : 5. What is C's share?",
+        "a": "Answer: A\n\nTotal ratio units = 2 + 3 + 5 = 10 units. Value of 1 unit = 1,050 / 10 = Rs. 105. C's share = 5 * 105 = Rs. 525."
+      },
+      {
+        "q": "Two numbers are in the ratio 3 : 5. If 9 is subtracted from each, the new ratio becomes 12 : 23. What is the smaller number?",
+        "a": "Answer: A\n\nLet numbers be 3x and 5x. (3x - 9)/(5x - 9) = 12/23 => 23(3x - 9) = 12(5x - 9) => 69x - 207 = 60x - 108 => 9x = 99 => x = 11. Smaller = 3 * 11 = 33."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-04-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In the ISO-OSI 7-Layer Reference Model, which layer is responsible for dialog control, token management, and session checkpointing?",
+        "options": [
+          "Transport Layer",
+          "Session Layer",
+          "Presentation Layer",
+          "Data Link Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "Layer 5 (Session Layer) establishes, manages, synchronizes, and terminates sessions between end-user applications with checkpoints."
+      },
+      {
+        "id": "TEST-04-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the Protocol Data Unit (PDU) name at the Network Layer of the OSI model?",
+        "options": [
+          "Frame",
+          "Segment",
+          "Packet",
+          "Bit"
+        ],
+        "correct_answer": "C",
+        "explanation": "PDU names across layers: Physical = Bit, Data Link = Frame, Network = Packet, Transport = Segment, Application = Data/Message."
+      },
+      {
+        "id": "TEST-04-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which layer in the OSI reference model handles data syntax conversion, compression, and encryption/decryption (e.g., ASN.1, SSL/TLS)?",
+        "options": [
+          "Presentation Layer",
+          "Application Layer",
+          "Session Layer",
+          "Network Layer"
+        ],
+        "correct_answer": "A",
+        "explanation": "Layer 6 (Presentation Layer) standardizes data formats, handles character set translations (ASCII/EBCDIC), data compression, and cryptographic encryption."
+      },
+      {
+        "id": "TEST-04-04",
+        "category": "Academic (Academic Theory)",
+        "question": "How does the TCP/IP architectural suite map the top three layers of the OSI reference model (Session, Presentation, Application)?",
+        "options": [
+          "They are split across Network Access and Internet layers",
+          "They are combined into a single unified Application Layer",
+          "They are moved into operating system kernel device drivers",
+          "They are replaced by the Transport Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "The 4-layer TCP/IP model consolidates OSI's Application, Presentation, and Session layers into a single top-level Application Layer."
+      },
+      {
+        "id": "TEST-04-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Which layer provides true end-to-end reliability and process-to-process communication using port numbers?",
+        "options": [
+          "Network Layer",
+          "Transport Layer",
+          "Data Link Layer",
+          "Physical Layer"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Transport Layer (TCP/UDP) uses 16-bit port addresses to deliver data process-to-process with end-to-end flow and error control."
+      },
+      {
+        "id": "TEST-04-06",
+        "category": "Placement Aptitude",
+        "question": "If A : B = 2 : 3 and B : C = 4 : 5, find the compound ratio A : B : C.",
+        "options": [
+          "8 : 12 : 15",
+          "6 : 9 : 15",
+          "8 : 10 : 15",
+          "2 : 4 : 5"
+        ],
+        "correct_answer": "A",
+        "explanation": "A : B = 8 : 12 (multiplying by 4). B : C = 12 : 15 (multiplying by 3). Hence A : B : C = 8 : 12 : 15."
+      },
+      {
+        "id": "TEST-04-07",
+        "category": "Placement Aptitude",
+        "question": "Divide Rs. 1,050 among A, B, and C in the ratio 2 : 3 : 5. What is C's share?",
+        "options": [
+          "Rs. 525",
+          "Rs. 450",
+          "Rs. 500",
+          "Rs. 550"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total ratio units = 2 + 3 + 5 = 10 units. Value of 1 unit = 1,050 / 10 = Rs. 105. C's share = 5 * 105 = Rs. 525."
+      },
+      {
+        "id": "TEST-04-08",
+        "category": "Placement Aptitude",
+        "question": "Two numbers are in the ratio 3 : 5. If 9 is subtracted from each, the new ratio becomes 12 : 23. What is the smaller number?",
+        "options": [
+          "33",
+          "27",
+          "30",
+          "36"
+        ],
+        "correct_answer": "A",
+        "explanation": "Let numbers be 3x and 5x. (3x - 9)/(5x - 9) = 12/23 => 23(3x - 9) = 12(5x - 9) => 69x - 207 = 60x - 108 => 9x = 99 => x = 11. Smaller = 3 * 11 = 33."
+      },
+      {
+        "id": "TEST-04-09",
+        "category": "Placement Aptitude",
+        "question": "What is the fourth proportional to 4, 9, and 12?",
+        "options": [
+          "27",
+          "24",
+          "28",
+          "30"
+        ],
+        "correct_answer": "A",
+        "explanation": "4 / 9 = 12 / x => 4x = 108 => x = 27."
+      },
+      {
+        "id": "TEST-04-10",
+        "category": "Placement Aptitude",
+        "question": "Three partners A, B, and C invest capital in the ratio 5 : 7 : 6. If their profit sharing ratio at the end of the year is 5 : 7 : 6, what is their investment duration ratio?",
+        "options": [
+          "1 : 1 : 1",
+          "2 : 3 : 4",
+          "5 : 7 : 6",
+          "6 : 7 : 5"
+        ],
+        "correct_answer": "A",
+        "explanation": "Profit = Capital * Time. Since profit ratio equals capital ratio, Time ratio must be 1 : 1 : 1."
+      },
+      {
+        "id": "TEST-04-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "In the Bounded Buffer problem of size N, what are the initial values of semaphores empty, full, and mutex?",
+        "options": [
+          "empty = 0, full = N, mutex = 0",
+          "empty = N, full = 0, mutex = 1",
+          "empty = 1, full = 1, mutex = N",
+          "empty = N, full = N, mutex = 1"
+        ],
+        "correct_answer": "B",
+        "explanation": "Initially all N slots are empty (empty = N), 0 slots are filled (full = 0), and mutex is unlocked (1)."
+      },
+      {
+        "id": "TEST-04-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "If all philosophers pick up their left chopstick simultaneously in Dining Philosophers, the system experiences:",
+        "options": [
+          "Thrashing",
+          "Deadlock",
+          "High throughput",
+          "Cache invalidation"
+        ],
+        "correct_answer": "B",
+        "explanation": "All philosophers hold one chopstick and wait for the other, forming an unbreakable circular wait deadlock."
+      },
+      {
+        "id": "TEST-04-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which Readers-Writers solution policy risks writer starvation?",
+        "options": [
+          "Writer-preference",
+          "Fair FIFO queue",
+          "Reader-preference",
+          "Strict alternating"
+        ],
+        "correct_answer": "C",
+        "explanation": "In reader-preference, as long as readers keep arriving, writers are indefinitely postponed."
+      },
+      {
+        "id": "TEST-04-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "In the Bounded Buffer solution, reversing wait(mutex) and wait(empty) in the producer causes:",
+        "options": [
+          "Faster throughput",
+          "Buffer overflow",
+          "Potential deadlock when buffer is full",
+          "Data corruption"
+        ],
+        "correct_answer": "C",
+        "explanation": "Holding mutex while blocked on empty prevents the consumer from entering to free up buffer space, causing deadlock."
+      },
+      {
+        "id": "TEST-04-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "An asymmetric solution to the Dining Philosophers problem specifies that:",
+        "options": [
+          "Philosophers eat with only one chopstick",
+          "Odd philosophers pick left first, even philosophers pick right first",
+          "All philosophers pick right first",
+          "Philosophers never release chopsticks"
+        ],
+        "correct_answer": "B",
+        "explanation": "Alternating the pickup order breaks the circular wait condition necessary for deadlock."
+      },
+      {
+        "id": "TEST-04-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Fast & Slow Pointers (Floyd's Tortoise and Hare)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Fast & Slow Pointers (Floyd's Tortoise and Hare)' pattern operates with O(N) Time, O(1) Auxiliary Space: In a cycle of length C, the relative distance between slow and fast decreases by exactly 1 in each step. Hence, fast must overtake slow within C iterations without using extra memory.."
+      },
+      {
+        "id": "TEST-04-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Fast & Slow Pointers (Floyd's Tortoise and Hare)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty list (null head).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Fast & Slow Pointers (Floyd's Tortoise and Hare) include Empty list (null head), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-04-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Middle of the Linked List', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-04-19",
+        "category": "Projects (TerraStract)",
+        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture'?",
+        "options": [
+          "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For TerraStract, the architectural invariant is: Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.."
+      },
+      {
+        "id": "TEST-04-20",
+        "category": "Projects (TerraStract)",
+        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?'?",
+        "options": [
+          "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present,."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-04",
+    "title": "Middle of the Linked List (Fast & Slow Pointers (Floyd's Tortoise and Hare))",
+    "time_limit_minutes": 25,
+    "difficulty": "Easy",
+    "problem_statement": "Solve the core placement problem: Middle of the Linked List.\n\nGiven the head of a singly linked list, return the middle node of the linked list. If there are two middle nodes, return the second middle node.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Fast & Slow Pointers (Floyd's Tortoise and Hare)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: Empty list (null head), Single node pointing to null, Single node self-loop, Two-node cycle.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Fast & Slow Pointers (Floyd's Tortoise and Hare)\n    public ListNode middleNode(ListNode head) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Fast & Slow Pointers (Floyd's Tortoise and Hare)\n    public ListNode middleNode(ListNode head) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public ListNode middleNode(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Fast & Slow Pointers (Floyd's Tortoise and Hare) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Empty list (null head)",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

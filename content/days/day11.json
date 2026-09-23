@@ -1,162 +1,2422 @@
 {
   "day": 11,
-  "title": "KM Data Warehousing, Binary Trees & Boats/Streams",
-  "sem_data": {
-    "subject": "BCA-5001 Knowledge Management",
-    "topic": "Unit II \u2014 Data Warehousing: 3-Tier Architecture & Star vs Snowflake Schemas",
-    "detailed_notes": [
-      "A Data Warehouse (DW) is a subject-oriented, integrated, time-variant, and non-volatile collection of data organized in support of management's decision-making process (W.H. Inmon definition).",
-      "The 3-Tier Data Warehouse Architecture:\n1. Bottom Tier (Warehouse Database Server): Almost always a relational database system (RDBMS) or specialized columnar store. Raw operational transaction data is extracted from heterogeneous production sources (OLTP databases, flat files, external feeds), cleansed, transformed, and loaded via ETL (Extract, Transform, Load) pipelines into the core warehouse repository or dependent Data Marts.\n2. Middle Tier (OLAP Server): An analytical processing engine that provides a multidimensional view of data to analytical applications. Implemented as either ROLAP (Relational OLAP - maps multidimensional operations directly onto relational tables), MOLAP (Multidimensional OLAP - stores data in dedicated high-performance array storage cubes), or HOLAP (Hybrid OLAP).\n3. Top Tier (Front-End Client Tools): The presentation layer accessed by corporate executives, financial analysts, and data scientists. Includes business intelligence dashboards, query reporting tools, statistical analysis packages, and data mining algorithms.",
-      "Multidimensional Data Models: Schemas for Decision Support:\n\u2022 Fact Table: The central table containing numerical quantitative measurements (metrics/facts, e.g., units sold, revenue, tax) and foreign keys referencing dimension tables.\n\u2022 Dimension Tables: Peripheral tables containing textual descriptive attributes that give business context to facts (e.g., Time dimension: day, month, year; Store dimension: city, state; Product dimension: category, brand).\n\u2022 Star Schema: The fact table resides at the center connected directly to non-normalized (denormalized) dimension tables, resembling a star. Highly optimized for fast query performance due to fewer table joins.\n\u2022 Snowflake Schema: A normalized variation of the star schema where dimension tables are broken down into further normalized sub-dimension tables (e.g. Product -> Subcategory -> Category), reducing data redundancy at the cost of requiring more complex SQL joins."
+  "title": "Day 11: Data Warehousing 3-Tier Architecture, Star Schema vs Snowflake Schema & Merge Intervals & Overlap Detection",
+  "streams": {
+    "academic": {
+      "unit": 3,
+      "topic": "Unit III — Data Warehousing 3-Tier Architecture, Star Schema vs Snowflake Schema",
+      "objectives": [
+        "Understand the 3-tier Data Warehouse architecture.",
+        "Compare Star Schema and Snowflake Schema with relational schemas."
+      ],
+      "explanation": "A Data Warehouse is a subject-oriented, integrated, time-variant, and non-volatile collection of data designed to support management decision making (W.H. Inmon). Its 3-tier architecture comprises: 1. Bottom Tier (Warehouse Database Server / Relational DB with ETL); 2. Middle Tier (OLAP Server — ROLAP or MOLAP engine); 3. Top Tier (Front-end Client Tools — Query, Reporting, Mining, Dashboards). Dimensional modeling uses Star schemas (denormalized dimension tables radiating from a central fact table) or Snowflake schemas (normalized dimension tables splitting into sub-dimensions).",
+      "definitions": [
+        {
+          "term": "Fact Table",
+          "definition": "A central table in a dimensional model containing quantitative numerical measures/metrics and foreign keys linking to dimension tables."
+        },
+        {
+          "term": "Dimension Table",
+          "definition": "A companion table containing descriptive textual attributes used to slice, filter, and group fact table metrics."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "3-Tier DWH Architecture",
+          "content": "Bottom tier extracts operational data via ETL into staging and relational storage; Middle tier computes multi-dimensional data cubes via OLAP; Top tier renders BI dashboards and predictive queries."
+        },
+        {
+          "title": "Star vs Snowflake Schema",
+          "content": "Star schema dimension tables are completely denormalized (fast queries, fewer joins, higher data redundancy). Snowflake schema normalizes dimension tables into 3NF (saves storage, eliminates redundancy, but requires complex multi-table joins)."
+        }
+      ],
+      "examples": [
+        "Retail sales fact table surrounded by Time, Store, Product, and Customer dimensions."
+      ],
+      "diagram": "+---------------------------------------------------+\n|           DATA WAREHOUSE 3-TIER ARCHITECTURE      |\n| [Top Tier: BI Dashboards & Query Tools]           |\n| [Middle Tier: OLAP Server (ROLAP/MOLAP Cubes)]    |\n| [Bottom Tier: Enterprise Data Warehouse & ETL]    |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Feature",
+          "Star Schema",
+          "Snowflake Schema"
+        ],
+        "rows": [
+          [
+            "Normalization",
+            "Dimension tables are completely denormalized",
+            "Dimension tables are normalized into 3NF"
+          ],
+          [
+            "Query Complexity",
+            "Simple queries with single join to fact table",
+            "Complex queries requiring multi-level joins"
+          ],
+          [
+            "Query Performance",
+            "High query execution speed (fewer joins)",
+            "Slower execution speed due to join overhead"
+          ],
+          [
+            "Data Redundancy",
+            "Higher redundancy due to repeated attributes",
+            "Minimal redundancy due to normalized structures"
+          ]
+        ]
+      },
+      "memorize": "Inmon's DWH properties: Subject-Oriented, Integrated, Time-Variant, Non-Volatile. Star schema = denormalized (fastest queries). Snowflake = normalized.",
+      "understand": "Star schema trades disk storage space to achieve blazing fast analytical query performance by minimizing SQL JOIN operations.",
+      "common_mistakes": "Confusing Fact tables (contain numbers and metrics) with Dimension tables (contain descriptive text).",
+      "exam_writing_guidance": "Draw the 3-tier architecture diagram, explain each tier, and draw relational schemas illustrating Star vs Snowflake models.",
+      "mini_practice": [
+        "Design a Star Schema for a University Course Examination system."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2023-24 (Q3)",
+          "marks": 15,
+          "question": "Describe the 3-tier architecture of a Data Warehouse with a neat diagram. Differentiate between Star Schema and Snowflake Schema with examples. (15 Marks)",
+          "rubric": "Inmon Definition & Characteristics (2 marks) + 3-Tier Architecture Diagram (4 marks) + Explanation of Tiers (4 marks) + Star vs Snowflake comparison & schemas (5 marks) = 15 Marks.",
+          "model_answer": "A Data Warehouse is a subject-oriented, integrated, time-variant, non-volatile repository of enterprise data. Its 3-tier architecture consists of: 1. Bottom Tier: The warehouse database server where data is ingested from transactional databases via ETL (Extract, Transform, Load) pipelines into a centralized relational warehouse or data mart; 2. Middle Tier: An OLAP server that pre-aggregates relational data into multi-dimensional cubes (ROLAP or MOLAP); 3. Top Tier: Front-end client presentation layer comprising query tools, reporting tools, and executive KPI scorecards. In dimensional modeling: Star Schema features a centralized Fact Table directly connected to denormalized Dimension Tables, maximizing query speed with simple joins. Snowflake Schema normalizes dimension tables into hierarchies, reducing data redundancy but increasing query join complexity.",
+          "answer_structure": "DWH Definition -> 3-Tier Diagram -> Detailed Tiers -> Star vs Snowflake Comparison Table & Diagrams",
+          "important_points": [
+            "Subject-oriented, Integrated, Time-variant, Non-volatile",
+            "Bottom, Middle, Top tier",
+            "Fact table vs Dimension table"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Diagrams for Star and Snowflake schemas",
+            "Clear explanation of ETL role in bottom tier"
+          ],
+          "common_mistakes": [
+            "Drawing Snowflake schema with fact table connected to child dimensions"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "State and explain the four key characteristics of a Data Warehouse as defined by W.H. Inmon. (5 Marks)",
+          "rubric": "1 mark per characteristic + 1 mark for overall synthesis = 5 Marks.",
+          "model_answer": "1. Subject-Oriented: Organized around major subjects (customers, products, sales) rather than operational processes; 2. Integrated: Constructed by consolidating data from multiple disparate sources with unified naming, encoding, and unit conventions; 3. Time-Variant: Data is maintained over a 5-10 year historical horizon, with every record bearing an explicit timestamp; 4. Non-Volatile: Operational updates and deletions do not occur; data is read-only and refreshed in batch snapshots."
+        }
+      ],
+      "subject_code": "BCA-5001",
+      "subject_name": "Knowledge Management",
+      "mcqs": [
+        {
+          "id": "ACAD-11-01",
+          "question": "What is the maximum sender window size in the Go-Back-N ARQ protocol using m-bit sequence numbers?",
+          "options": [
+            "2^m",
+            "2^m - 1",
+            "2^(m-1)",
+            "m^2"
+          ],
+          "correct_answer": "B",
+          "explanation": "In GBN, window size is 2^m - 1 to prevent ambiguity when all ACKs are lost."
+        },
+        {
+          "id": "ACAD-11-02",
+          "question": "In Stop-and-Wait ARQ, what sequence numbers are required for packet transmission?",
+          "options": [
+            "0 and 1 only (1-bit)",
+            "0 to 15",
+            "0 to 255",
+            "Any 32-bit integer"
+          ],
+          "correct_answer": "A",
+          "explanation": "Stop-and-Wait alternates between sequence numbers 0 and 1, requiring only a 1-bit sequence field."
+        },
+        {
+          "id": "ACAD-11-03",
+          "question": "What happens in Selective Repeat ARQ when a single frame in the transmission window is corrupted?",
+          "options": [
+            "Sender retransmits all subsequent frames from that frame onwards",
+            "Sender retransmits ONLY the specific unacknowledged frame via NAK/timeout",
+            "Receiver resets the entire connection",
+            "Sender terminates flow control"
+          ],
+          "correct_answer": "B",
+          "explanation": "Selective Repeat buffers out-of-order frames and requests retransmission of only the lost frame."
+        },
+        {
+          "id": "ACAD-11-04",
+          "question": "What is the sender window size in Selective Repeat ARQ using m-bit sequence numbering?",
+          "options": [
+            "2^m - 1",
+            "2^(m - 1)",
+            "2^m",
+            "m / 2"
+          ],
+          "correct_answer": "B",
+          "explanation": "In Selective Repeat, sender and receiver window sizes are equal to at most 2^(m - 1) to avoid overlap."
+        },
+        {
+          "id": "ACAD-11-05",
+          "question": "How is channel link utilization (efficiency U) defined in Stop-and-Wait protocol where propagation time is Tp and transmission time is Tt?",
+          "options": [
+            "1 / (1 + 2a), where a = Tp / Tt",
+            "1 + 2a",
+            "2a / (1 + a)",
+            "Tt / Tp"
+          ],
+          "correct_answer": "A",
+          "explanation": "Efficiency U = Tt / (Tt + 2Tp) = 1 / (1 + 2a), showing performance degradation over high-latency links."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2023-24 (Q3)",
+        "marks": 15,
+        "question": "Describe the 3-tier architecture of a Data Warehouse with a neat diagram. Differentiate between Star Schema and Snowflake Schema with examples. (15 Marks)",
+        "rubric": "Inmon Definition & Characteristics (2 marks) + 3-Tier Architecture Diagram (4 marks) + Explanation of Tiers (4 marks) + Star vs Snowflake comparison & schemas (5 marks) = 15 Marks.",
+        "model_answer": "A Data Warehouse is a subject-oriented, integrated, time-variant, non-volatile repository of enterprise data. Its 3-tier architecture consists of: 1. Bottom Tier: The warehouse database server where data is ingested from transactional databases via ETL (Extract, Transform, Load) pipelines into a centralized relational warehouse or data mart; 2. Middle Tier: An OLAP server that pre-aggregates relational data into multi-dimensional cubes (ROLAP or MOLAP); 3. Top Tier: Front-end client presentation layer comprising query tools, reporting tools, and executive KPI scorecards. In dimensional modeling: Star Schema features a centralized Fact Table directly connected to denormalized Dimension Tables, maximizing query speed with simple joins. Snowflake Schema normalizes dimension tables into hierarchies, reducing data redundancy but increasing query join complexity.",
+        "answer_structure": "DWH Definition -> 3-Tier Diagram -> Detailed Tiers -> Star vs Snowflake Comparison Table & Diagrams",
+        "important_points": [
+          "Subject-oriented, Integrated, Time-variant, Non-volatile",
+          "Bottom, Middle, Top tier",
+          "Fact table vs Dimension table"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagrams for Star and Snowflake schemas",
+          "Clear explanation of ETL role in bottom tier"
+        ],
+        "common_mistakes": [
+          "Drawing Snowflake schema with fact table connected to child dimensions"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "State and explain the four key characteristics of a Data Warehouse as defined by W.H. Inmon. (5 Marks)",
+        "rubric": "1 mark per characteristic + 1 mark for overall synthesis = 5 Marks.",
+        "model_answer": "1. Subject-Oriented: Organized around major subjects (customers, products, sales) rather than operational processes; 2. Integrated: Constructed by consolidating data from multiple disparate sources with unified naming, encoding, and unit conventions; 3. Time-Variant: Data is maintained over a 5-10 year historical horizon, with every record bearing an explicit timestamp; 4. Non-Volatile: Operational updates and deletions do not occur; data is read-only and refreshed in batch snapshots."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                   3-TIER DATA WAREHOUSE ARCHITECTURE                    |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|   +-----------------------------------------------------------------+   |\n|   | TOP TIER: Front-End Tools (Reporting, Analysis, BI Dashboards)  |   |\n|   +-----------------------------------------------------------------+   |\n|                                    ^                                    |\n|                                    | (Multidimensional Queries)         |\n|   +-----------------------------------------------------------------+   |\n|   | MIDDLE TIER: OLAP Server (ROLAP / MOLAP / HOLAP Engine)         |   |\n|   +-----------------------------------------------------------------+   |\n|                                    ^                                    |\n|                                    | (Relational / Cube Feeds)          |\n|   +-----------------------------------------------------------------+   |\n|   | BOTTOM TIER: Data Warehouse Database Server (RDBMS / Data Marts)|   |\n|   +-----------------------------------------------------------------+   |\n|                                    ^                                    |\n|                                    | (ETL Pipelines)                    |\n|   [OLTP Databases]      [Legacy Files]      [External Market Feeds]     |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-11-01",
+        "question": "What is the maximum sender window size in the Go-Back-N ARQ protocol using m-bit sequence numbers?",
+        "options": [
+          "2^m",
+          "2^m - 1",
+          "2^(m-1)",
+          "m^2"
+        ],
+        "correct_answer": "B",
+        "explanation": "In GBN, window size is 2^m - 1 to prevent ambiguity when all ACKs are lost."
+      },
+      {
+        "id": "ACAD-11-02",
+        "question": "In Stop-and-Wait ARQ, what sequence numbers are required for packet transmission?",
+        "options": [
+          "0 and 1 only (1-bit)",
+          "0 to 15",
+          "0 to 255",
+          "Any 32-bit integer"
+        ],
+        "correct_answer": "A",
+        "explanation": "Stop-and-Wait alternates between sequence numbers 0 and 1, requiring only a 1-bit sequence field."
+      },
+      {
+        "id": "ACAD-11-03",
+        "question": "What happens in Selective Repeat ARQ when a single frame in the transmission window is corrupted?",
+        "options": [
+          "Sender retransmits all subsequent frames from that frame onwards",
+          "Sender retransmits ONLY the specific unacknowledged frame via NAK/timeout",
+          "Receiver resets the entire connection",
+          "Sender terminates flow control"
+        ],
+        "correct_answer": "B",
+        "explanation": "Selective Repeat buffers out-of-order frames and requests retransmission of only the lost frame."
+      },
+      {
+        "id": "ACAD-11-04",
+        "question": "What is the sender window size in Selective Repeat ARQ using m-bit sequence numbering?",
+        "options": [
+          "2^m - 1",
+          "2^(m - 1)",
+          "2^m",
+          "m / 2"
+        ],
+        "correct_answer": "B",
+        "explanation": "In Selective Repeat, sender and receiver window sizes are equal to at most 2^(m - 1) to avoid overlap."
+      },
+      {
+        "id": "ACAD-11-05",
+        "question": "How is channel link utilization (efficiency U) defined in Stop-and-Wait protocol where propagation time is Tp and transmission time is Tt?",
+        "options": [
+          "1 / (1 + 2a), where a = Tp / Tt",
+          "1 + 2a",
+          "2a / (1 + a)",
+          "Tt / Tp"
+        ],
+        "correct_answer": "A",
+        "explanation": "Efficiency U = Tt / (Tt + 2Tp) = 1 / (1 + 2a), showing performance degradation over high-latency links."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Probability (Classical & Conditional)",
+      "category": "Quantitative",
+      "subtopic": "Probability",
+      "formulas": "1. P(E) = Number of favorable outcomes / Total possible outcomes = n(E) / n(S).\n2. 0 <= P(E) <= 1; P(E') = 1 - P(E).\n3. Addition Rule: P(A or B) = P(A) + P(B) - P(A and B).\n4. Independent Events: P(A and B) = P(A) * P(B).\n5. Conditional Probability: P(A | B) = P(A and B) / P(B).",
+      "shortcuts": "Complementary Counting: When asked for 'at least one', calculate 1 - P(none). It is almost always 5x faster than summing individual cases.",
+      "tutorial": [
+        "Sample spaces must be mutually exclusive and exhaustive. In dice problems (n=2, sum 2 to 12), the distribution peaks at sum 7 (prob 6/36 = 1/6). In card problems, remember 4 suits (13 cards each), 2 red/2 black suits, and 12 face cards (J, Q, K)."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Probability",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Probability",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Probability",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Probability",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Probability",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Two dice are rolled simultaneously. What is the probability that the sum of the numbers appearing is 8?",
+        "options": {
+          "A": "5/36",
+          "B": "1/6",
+          "C": "7/36",
+          "D": "1/9"
+        },
+        "correct_answer": "A",
+        "explanation": "Favorable outcomes for sum 8: (2,6), (3,5), (4,4), (5,3), (6,2) = 5 outcomes. Total = 36. Probability = 5/36.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A card is drawn from a well-shuffled pack of 52 cards. What is the probability of getting a queen of spade or a king of diamond?",
+        "options": {
+          "A": "1/26",
+          "B": "1/52",
+          "C": "2/13",
+          "D": "1/13"
+        },
+        "correct_answer": "A",
+        "explanation": "Favorable = 1 queen of spades + 1 king of diamonds = 2 cards. Probability = 2/52 = 1/26.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "A bag contains 6 red, 4 blue, and 2 green balls. If 2 balls are drawn at random, what is the probability that both are red?",
+        "options": {
+          "A": "5/22",
+          "B": "1/4",
+          "C": "3/11",
+          "D": "1/6"
+        },
+        "correct_answer": "A",
+        "explanation": "Total balls = 12. P(both red) = 6C2 / 12C2 = 15 / 66 = 5/22.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Three unbiased coins are tossed together. What is the probability of getting at least two heads?",
+        "options": {
+          "A": "1/2",
+          "B": "3/8",
+          "C": "5/8",
+          "D": "1/4"
+        },
+        "correct_answer": "A",
+        "explanation": "Sample space = 8. Favorable outcomes for at least 2 heads (HHH, HHT, HTH, THH) = 4. Probability = 4/8 = 1/2.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "A problem in mathematics is given to three students whose chances of solving it are 1/2, 1/3, and 1/4. What is the probability that the problem is solved?",
+        "options": {
+          "A": "3/4",
+          "B": "1/24",
+          "C": "23/24",
+          "D": "1/2"
+        },
+        "correct_answer": "A",
+        "explanation": "P(problem not solved) = (1 - 1/2) * (1 - 1/3) * (1 - 1/4) = 1/2 * 2/3 * 3/4 = 1/4. P(solved) = 1 - 1/4 = 3/4.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "What is the probability that a leap year selected at random will contain 53 Sundays?",
+        "options": {
+          "A": "2/7",
+          "B": "1/7",
+          "C": "3/7",
+          "D": "5/7"
+        },
+        "correct_answer": "A",
+        "explanation": "A leap year has 366 days = 52 weeks + 2 extra days. The 2 extra days can be (Sat,Sun) or (Sun,Mon) out of 7 pairs. Probability = 2/7.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Two cards are drawn together from a pack of 52 cards. Probability that one is a spade and one is a heart:",
+        "options": {
+          "A": "13/102",
+          "B": "1/4",
+          "C": "1/16",
+          "D": "26/102"
+        },
+        "correct_answer": "A",
+        "explanation": "(13C1 * 13C1) / 52C2 = (13 * 13) / 1,326 = 169 / 1,326 = 13 / 102.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A box contains 5 defective and 15 non-defective bulbs. Two bulbs are chosen at random. Probability that both are non-defective:",
+        "options": {
+          "A": "21/38",
+          "B": "9/19",
+          "C": "1/2",
+          "D": "15/38"
+        },
+        "correct_answer": "A",
+        "explanation": "15C2 / 20C2 = 105 / 190 = 21/38.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "A bag contains 4 white, 5 red, and 6 blue balls. Three balls are drawn. Probability that none is red:",
+        "options": {
+          "A": "24/91",
+          "B": "12/91",
+          "C": "35/91",
+          "D": "15/91"
+        },
+        "correct_answer": "A",
+        "explanation": "Total = 15. Non-red = 10. Probability = 10C3 / 15C3 = 120 / 455 = 24/91.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "If P(A) = 0.4, P(B) = 0.8, and P(B|A) = 0.6, what is P(A or B)?",
+        "options": {
+          "A": "0.96",
+          "B": "0.84",
+          "C": "0.76",
+          "D": "0.90"
+        },
+        "correct_answer": "A",
+        "explanation": "P(A and B) = P(A) * P(B|A) = 0.4 * 0.6 = 0.24. P(A or B) = P(A) + P(B) - P(A and B) = 0.4 + 0.8 - 0.24 = 0.96.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Probability (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Merge Intervals & Overlap Detection",
+      "category": "Intervals",
+      "concept": "Sorts intervals by their starting times, then traverses linearly, merging overlapping intervals whenever the current start time <= previous end time.",
+      "why_it_works": "Sorting imposes monotonic order on start coordinates, guaranteeing that all potential overlaps are contiguous in the sequence.",
+      "visual_explanation": "Intervals: [[1, 3], [2, 6], [8, 10], [15, 18]]\\nCompare [1, 3] and [2, 6]: 2 <= 3 -> Merge to [1, max(3, 6)] = [1, 6]\\nCompare [1, 6] and [8, 10]: 8 > 6 -> Disjoint -> Append [8, 10]",
+      "language": "Java",
+      "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        if (intervals.length <= 1) return intervals;\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> merged = new ArrayList<>();\n        int[] current = intervals[0];\n        merged.add(current);\n        \n        for (int[] interval : intervals) {\n            if (interval[0] <= current[1]) {\n                current[1] = Math.max(current[1], interval[1]);\n            } else {\n                current = interval;\n                merged.add(current);\n            }\n        }\n        return merged.toArray(new int[merged.size()][]);\n    }\n}",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        if (intervals.length <= 1) return intervals;\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> merged = new ArrayList<>();\n        int[] current = intervals[0];\n        merged.add(current);\n        \n        for (int[] interval : intervals) {\n            if (interval[0] <= current[1]) {\n                current[1] = Math.max(current[1], interval[1]);\n            } else {\n                current = interval;\n                merged.add(current);\n            }\n        }\n        return merged.toArray(new int[merged.size()][]);\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 5: Sort 2D intervals array by start coordinate a[0].",
+        "Line 6-8: Initialize current interval as intervals[0] and add to merged list.",
+        "Line 10-16: For each interval, check if start <= current[1]. If so, expand end time. Else start new disjoint interval."
+      ],
+      "dry_run": "intervals = [[1, 3], [2, 6], [8, 10]]. Sorted order maintained. [1, 3] & [2, 6] merge to [1, 6]. [8, 10] disjoint. Result: [[1, 6], [8, 10]].",
+      "complexity": "O(N log N) Time, O(N) Auxiliary Space",
+      "edge_cases": "Single interval, All intervals disjoint, All intervals nested inside one big interval",
+      "edge_cases_list": [
+        "Single interval",
+        "All intervals disjoint",
+        "All intervals nested inside one big interval"
+      ],
+      "interview_variations": [
+        "Insert Interval",
+        "Non-overlapping Intervals",
+        "Meeting Rooms I & II"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-11-01",
+        "title": "Problem 1: Merge Intervals",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Merge Intervals & Overlap Detection algorithmic technique.\n2. Sorts intervals by their starting times, then traverses linearly, merging overlapping intervals whenever the current start time <= previous end time.\n3. Invariants: Sorting imposes monotonic order on start coordinates, guaranteeing that all potential overlaps are contiguous in the sequence.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "time_complexity": "O(N log N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-11-02",
+        "title": "Problem 2: Insert Interval",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Insert a new interval into a sorted non-overlapping interval list and merge if necessary.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Merge Intervals & Overlap Detection.\n2. Handle edge cases: Single interval, All intervals disjoint, All intervals nested inside one big interval.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "time_complexity": "O(N log N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "DBMS",
+      "topic": "Transactions & ACID Properties (Atomicity, Consistency, Isolation, Durability)",
+      "concept_lesson": "A Database Transaction is a logical unit of work comprising one or more database operations (reads, writes) that must execute reliably as an indivisible whole.\n\nThe ACID Properties:\n1. Atomicity ('All or Nothing'): Either all operations of the transaction complete successfully and are committed, or the entire transaction is aborted and rolled back to its initial state. Enforced by the DBMS Recovery Manager using Write-Ahead Logging (WAL).\n2. Consistency: A transaction transforms the database from one valid consistent state to another, preserving all declared schema constraints (primary keys, foreign keys, CHECK constraints, trigger invariants).\n3. Isolation: The execution of concurrent transactions must occur without mutual interference. The intermediate uncommitted state of a transaction must remain invisible to other concurrent transactions. Enforced by Concurrency Control Manager.\n4. Durability: Once a transaction commits, its modifications are permanently recorded in non-volatile storage and will survive subsequent power failures or system crashes. Enforced via WAL flush to disk.\n\nTransaction State Diagram:\nActive -> Partially Committed (after final statement executes) -> Committed (after log flushed to disk).\nActive -> Failed (on error/abort) -> Aborted (after rollback cleans up uncommitted changes).",
+      "key_definitions": [
+        {
+          "term": "Atomicity",
+          "definition": "The ACID property ensuring all transaction operations succeed completely or are rolled back entirely."
+        },
+        {
+          "term": "Write-Ahead Logging (WAL)",
+          "definition": "A technique where state changes are recorded on non-volatile disk logs before being applied to data pages."
+        },
+        {
+          "term": "Durability",
+          "definition": "The guarantee that committed transaction updates persist permanently across crashes and power outages."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "How does a database enforce Atomicity and Durability during a sudden system crash?",
+          "a": "Using Write-Ahead Logging (WAL). Before any data page is modified in RAM or written to disk, an append-only log record describing the change (Undo and Redo logs) is flushed to non-volatile disk. On system restart after a crash, the recovery manager runs the ARIES protocol: Analysis phase identifies dirty pages, Redo phase replays all logged changes to re-establish state (Durability), and Undo phase rolls back all uncommitted transactions (Atomicity)."
+        },
+        {
+          "q": "What is the difference between a Partially Committed state and a Committed state?",
+          "a": "A transaction enters the Partially Committed state immediately after its final SQL statement has executed in memory, but before its commit log records are permanently written to disk. It transitions to the Committed state only after the WAL commit record has been physically flushed to persistent storage."
+        },
+        {
+          "q": "Explain the difference between Compensating Transactions and standard Rollback.",
+          "a": "A standard rollback relies on database undo logs within a single ACID transaction to revert uncommitted memory changes. A Compensating Transaction is used in distributed architectures (e.g., Saga Pattern across microservices) where local transactions have already committed; a subsequent failure triggers dedicated business actions (e.g., refunding a captured credit card) to logically offset prior committed steps."
+        },
+        {
+          "q": "Can Consistency in ACID be guaranteed exclusively by the database engine?",
+          "a": "No. While the DBMS strictly enforces declared schema constraints (unique keys, foreign keys, data types), application-level business consistency (e.g., account balance cannot transfer more than ledger limits) relies heavily on correct application logic written by the software engineer."
+        },
+        {
+          "q": "What is the Checkpoint mechanism in database recovery?",
+          "a": "A Checkpoint periodically flushes all dirty in-memory data buffer pages and log records to persistent disk, and writes a CHECKPOINT record with active transaction IDs to the log. During crash recovery, the DBMS only needs to scan logs back to the most recent checkpoint rather than replaying the entire history of the database."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-11-01",
+          "question": "Which ACID property guarantees that all operations of a transaction succeed or none do?",
+          "options": [
+            "Atomicity",
+            "Consistency",
+            "Isolation",
+            "Durability"
+          ],
+          "correct_answer": "A",
+          "explanation": "Atomicity ensures 'all-or-nothing' execution."
+        },
+        {
+          "id": "CS-11-02",
+          "question": "Write-Ahead Logging (WAL) requires that:",
+          "options": [
+            "Data pages are written before log records",
+            "Log records are flushed to non-volatile storage before corresponding data pages are written",
+            "Transactions commit without logs",
+            "Checkpoints run before every query"
+          ],
+          "correct_answer": "B",
+          "explanation": "WAL mandates logging modifications before data pages touch persistent storage."
+        },
+        {
+          "id": "CS-11-03",
+          "question": "A transaction enters the 'Partially Committed' state when:",
+          "options": [
+            "It begins execution",
+            "Its final statement has executed, prior to log disk flush",
+            "Its changes are rolled back",
+            "A deadlock is detected"
+          ],
+          "correct_answer": "B",
+          "explanation": "Partially committed occurs right after the last operation executes, before log flush."
+        },
+        {
+          "id": "CS-11-04",
+          "question": "Which ACID property ensures that committed transactions survive power failures and system crashes?",
+          "options": [
+            "Atomicity",
+            "Consistency",
+            "Isolation",
+            "Durability"
+          ],
+          "correct_answer": "D",
+          "explanation": "Durability guarantees committed changes persist permanently."
+        },
+        {
+          "id": "CS-11-05",
+          "question": "Checkpoints are used in database recovery systems to:",
+          "options": [
+            "Speed up SQL join processing",
+            "Reduce the log volume that must be scanned during recovery",
+            "Encrypt password fields",
+            "Enforce 3NF schema constraints"
+          ],
+          "correct_answer": "B",
+          "explanation": "Checkpoints limit how far back the recovery manager must scan WAL logs on reboot."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "SmartGalla",
+      "repo_path": "D:\\Projects\\SmartGalla",
+      "topic": "Geospatial Logistics & Automated Delivery Assignment (Google Maps & Leaflet)",
+      "what_to_understand": "Spatial distance calculation, store geofencing, and rider dispatch algorithms.",
+      "what_to_memorize": "The Haversine formula calculates great-circle distance between store coordinates and customer addresses: d = 2R * arcsin(sqrt(sin^2(dlat/2) + cos(lat1)*cos(lat2)*sin^2(dlon/2))).",
+      "interview_questions": [
+        {
+          "q": "How does SmartGalla assign nearby delivery agents to new orders?",
+          "a": "When an order enters the 'READY_FOR_PICKUP' state, the logistics assignment engine runs a spatial query over active riders within a 5km radius of the merchant's store. We filter riders whose active delivery load is less than 3 orders, rank them by Haversine proximity, and dispatch an automated push notification with a 45-second acceptance timeout. If unanswered, it cascades to the next nearest rider."
+        },
+        {
+          "q": "Why combine Google Maps API with Leaflet in the same project?",
+          "a": "Google Maps Places API provides superior address autocomplete and geocoding accuracy in Indian tier-2 cities. However, for live tracking dashboards where coordinates update every 5 seconds via WebSockets, rendering Google Maps tiles incurs significant API cost. We use Leaflet with OpenStreetMap tiles for client-side map rendering, cutting map API costs by over 70% while keeping high accuracy."
+        }
+      ],
+      "interview_pitch_exercise": "I designed an automated logistics dispatch engine in SmartGalla. It uses Google Places for customer geocoding and Leaflet with spatial distance formulas to match available delivery partners within a 5km geofenced radius. It balances delivery load across active agents and provides real-time route telemetry."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 11 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 11 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'TerraStract', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In TerraStract (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of TerraStract.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 10 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5003 — Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Probability (Classical & Conditional).\n• Algorithmic Invariant: Optimal time and space complexity rules for Merge Intervals & Overlap Detection.\n• Systems Law: Architectural equations, protocols, and complexity bounds for SQL Joins, GROUP BY & Window Functions.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Merge Intervals & Overlap Detection.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Code for the Nation 2026.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 11 Q1: What is the primary academic thesis of Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat?",
+          "a": "Core theoretical and practical mastery of Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat under the CSJM University BCA-5003 syllabus."
+        },
+        {
+          "q": "Day 11 Q2: What is the key speed calculation formula applied in Probability (Classical & Conditional)?",
+          "a": "High-speed corporate placement arithmetic shortcut for Probability (Classical & Conditional) in campus recruitment exams."
+        },
+        {
+          "q": "Day 11 Q3: What is the time complexity of Merge Intervals & Overlap Detection?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 11 Q4: What is the central architectural principle of SQL Joins, GROUP BY & Window Functions?",
+          "a": "Foundational systems engineering rule governing SQL Joins, GROUP BY & Window Functions in production environments."
+        },
+        {
+          "q": "Day 11 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 11 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 11 Q7: What is the verified technical foundation of Code for the Nation 2026?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 11 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 11 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 11 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5003 — Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Probability (Classical & Conditional).\n• Algorithmic Invariant: Optimal time and space complexity rules for Merge Intervals & Overlap Detection.\n• Systems Law: Architectural equations, protocols, and complexity bounds for SQL Joins, GROUP BY & Window Functions."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5003 — Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Probability (Classical & Conditional)."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Merge Intervals & Overlap Detection."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: Code for the Nation 2026."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-11-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the maximum sender window size in the Go-Back-N ARQ protocol using m-bit sequence numbers?",
+        "options": [
+          "2^m",
+          "2^m - 1",
+          "2^(m-1)",
+          "m^2"
+        ],
+        "correct_answer": "B",
+        "explanation": "In GBN, window size is 2^m - 1 to prevent ambiguity when all ACKs are lost."
+      },
+      {
+        "id": "TEST-11-02",
+        "category": "Academic (Academic Theory)",
+        "question": "In Stop-and-Wait ARQ, what sequence numbers are required for packet transmission?",
+        "options": [
+          "0 and 1 only (1-bit)",
+          "0 to 15",
+          "0 to 255",
+          "Any 32-bit integer"
+        ],
+        "correct_answer": "A",
+        "explanation": "Stop-and-Wait alternates between sequence numbers 0 and 1, requiring only a 1-bit sequence field."
+      },
+      {
+        "id": "TEST-11-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What happens in Selective Repeat ARQ when a single frame in the transmission window is corrupted?",
+        "options": [
+          "Sender retransmits all subsequent frames from that frame onwards",
+          "Sender retransmits ONLY the specific unacknowledged frame via NAK/timeout",
+          "Receiver resets the entire connection",
+          "Sender terminates flow control"
+        ],
+        "correct_answer": "B",
+        "explanation": "Selective Repeat buffers out-of-order frames and requests retransmission of only the lost frame."
+      },
+      {
+        "id": "TEST-11-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the sender window size in Selective Repeat ARQ using m-bit sequence numbering?",
+        "options": [
+          "2^m - 1",
+          "2^(m - 1)",
+          "2^m",
+          "m / 2"
+        ],
+        "correct_answer": "B",
+        "explanation": "In Selective Repeat, sender and receiver window sizes are equal to at most 2^(m - 1) to avoid overlap."
+      },
+      {
+        "id": "TEST-11-05",
+        "category": "Academic (Academic Theory)",
+        "question": "How is channel link utilization (efficiency U) defined in Stop-and-Wait protocol where propagation time is Tp and transmission time is Tt?",
+        "options": [
+          "1 / (1 + 2a), where a = Tp / Tt",
+          "1 + 2a",
+          "2a / (1 + a)",
+          "Tt / Tp"
+        ],
+        "correct_answer": "A",
+        "explanation": "Efficiency U = Tt / (Tt + 2Tp) = 1 / (1 + 2a), showing performance degradation over high-latency links."
+      },
+      {
+        "id": "TEST-11-06",
+        "category": "Placement Aptitude",
+        "question": "A card is drawn at random from a standard deck of 52 cards. What is the probability that the card drawn is a face card (Jack, Queen, King)?",
+        "options": [
+          "3/13",
+          "1/13",
+          "4/13",
+          "1/4"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total face cards = 4 suits * 3 face cards = 12 cards. Probability = 12 / 52 = 3 / 13."
+      },
+      {
+        "id": "TEST-11-07",
+        "category": "Placement Aptitude",
+        "question": "Two unbiased dice are tossed. What is the probability that the sum of the scores is a prime number?",
+        "options": [
+          "5/12",
+          "7/18",
+          "1/2",
+          "1/3"
+        ],
+        "correct_answer": "A",
+        "explanation": "Prime sums can be 2, 3, 5, 7, 11. Counts: 2 (1), 3 (2), 5 (4), 7 (6), 11 (2) = 15 outcomes. Total = 36. Probability = 15 / 36 = 5 / 12."
+      },
+      {
+        "id": "TEST-11-08",
+        "category": "Placement Aptitude",
+        "question": "A box contains 20 electric bulbs, out of which 4 are defective. Two bulbs are drawn at random without replacement. What is the probability that both are defective?",
+        "options": [
+          "3/95",
+          "1/25",
+          "1/20",
+          "2/95"
+        ],
+        "correct_answer": "A",
+        "explanation": "Probability = (4/20) * (3/19) = (1/5) * (3/19) = 3 / 95."
+      },
+      {
+        "id": "TEST-11-09",
+        "category": "Placement Aptitude",
+        "question": "Four fair coins are tossed simultaneously. What is the probability of obtaining exactly two heads?",
+        "options": [
+          "3/8",
+          "1/4",
+          "1/2",
+          "5/16"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total outcomes = 2^4 = 16. Favorable outcomes = 4C2 = 6. Probability = 6 / 16 = 3 / 8."
+      },
+      {
+        "id": "TEST-11-10",
+        "category": "Placement Aptitude",
+        "question": "Tickets numbered 1 to 20 are mixed thoroughly and then a ticket is drawn at random. What is the probability that the drawn ticket has a number which is a multiple of 3 or 7?",
+        "options": [
+          "2/5",
+          "1/2",
+          "3/10",
+          "7/20"
+        ],
+        "correct_answer": "A",
+        "explanation": "Multiples of 3: {3, 6, 9, 12, 15, 18} (6 numbers). Multiples of 7: {7, 14} (2 numbers). No overlap below 20. Total favorable = 8. Probability = 8 / 20 = 2 / 5."
+      },
+      {
+        "id": "TEST-11-11",
+        "category": "Core CS (DBMS)",
+        "question": "Which ACID property guarantees that all operations of a transaction succeed or none do?",
+        "options": [
+          "Atomicity",
+          "Consistency",
+          "Isolation",
+          "Durability"
+        ],
+        "correct_answer": "A",
+        "explanation": "Atomicity ensures 'all-or-nothing' execution."
+      },
+      {
+        "id": "TEST-11-12",
+        "category": "Core CS (DBMS)",
+        "question": "Write-Ahead Logging (WAL) requires that:",
+        "options": [
+          "Data pages are written before log records",
+          "Log records are flushed to non-volatile storage before corresponding data pages are written",
+          "Transactions commit without logs",
+          "Checkpoints run before every query"
+        ],
+        "correct_answer": "B",
+        "explanation": "WAL mandates logging modifications before data pages touch persistent storage."
+      },
+      {
+        "id": "TEST-11-13",
+        "category": "Core CS (DBMS)",
+        "question": "A transaction enters the 'Partially Committed' state when:",
+        "options": [
+          "It begins execution",
+          "Its final statement has executed, prior to log disk flush",
+          "Its changes are rolled back",
+          "A deadlock is detected"
+        ],
+        "correct_answer": "B",
+        "explanation": "Partially committed occurs right after the last operation executes, before log flush."
+      },
+      {
+        "id": "TEST-11-14",
+        "category": "Core CS (DBMS)",
+        "question": "Which ACID property ensures that committed transactions survive power failures and system crashes?",
+        "options": [
+          "Atomicity",
+          "Consistency",
+          "Isolation",
+          "Durability"
+        ],
+        "correct_answer": "D",
+        "explanation": "Durability guarantees committed changes persist permanently."
+      },
+      {
+        "id": "TEST-11-15",
+        "category": "Core CS (DBMS)",
+        "question": "Checkpoints are used in database recovery systems to:",
+        "options": [
+          "Speed up SQL join processing",
+          "Reduce the log volume that must be scanned during recovery",
+          "Encrypt password fields",
+          "Enforce 3NF schema constraints"
+        ],
+        "correct_answer": "B",
+        "explanation": "Checkpoints limit how far back the recovery manager must scan WAL logs on reboot."
+      },
+      {
+        "id": "TEST-11-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Merge Intervals & Overlap Detection' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N log N) Time, O(N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Merge Intervals & Overlap Detection' pattern operates with O(N log N) Time, O(N) Auxiliary Space: Sorting imposes monotonic order on start coordinates, guaranteeing that all potential overlaps are contiguous in the sequence.."
+      },
+      {
+        "id": "TEST-11-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Merge Intervals & Overlap Detection' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Single interval.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Merge Intervals & Overlap Detection include Single interval, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-11-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Merge Intervals', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N log N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-11-19",
+        "category": "Projects (SmartGalla)",
+        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Geospatial Logistics & Automated Delivery Assignment (Google Maps & Leaflet)'?",
+        "options": [
+          "The Haversine formula calculates great-circle distance between store coordinates and customer addresses: d = 2R * arcsin(sqrt(sin^2(dlat/2) + cos(lat1)*cos(lat2)*sin^2(dlon/2))).",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For SmartGalla, the architectural invariant is: The Haversine formula calculates great-circle distance between store coordinates and customer addresses: d = 2R * arcsin(sqrt(sin^2(dlat/2) + cos(lat1)*cos(lat2)*sin^2(dlon/2))).."
+      },
+      {
+        "id": "TEST-11-20",
+        "category": "Projects (SmartGalla)",
+        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'How does SmartGalla assign nearby delivery agents to new orders?'?",
+        "options": [
+          "When an order enters the 'READY_FOR_PICKUP' state, the logistics assignment engine runs a spatial query over active riders within a 5km radius of the merchant's...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When an order enters the 'READY_FOR_PICKUP' state, the logistics assignment engine runs a spatial query over active riders within a 5km radi."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-11",
+      "title": "Merge Intervals (Merge Intervals & Overlap Detection)",
+      "time_limit_minutes": 35,
+      "difficulty": "Medium",
+      "problem_statement": "Solve the core placement problem: Merge Intervals.\n\nGiven an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Merge Intervals & Overlap Detection\n- Time Complexity Target: O(N log N) Time\n- Space Complexity Target: O(N) Auxiliary Space\n- Handle all edge cases: Single interval, All intervals disjoint, All intervals nested inside one big interval.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Merge Intervals & Overlap Detection\n    public int[][] merge(int[][] intervals) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Merge Intervals & Overlap Detection\n    public int[][] merge(int[][] intervals) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Merge Intervals & Overlap Detection logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Single interval",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N log N) Time)",
+        "Space Complexity": "20 points (Meets O(N) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Knowledge Management",
+    "subject_code": "BCA-5001",
+    "unit": 3,
+    "topic": "Unit III — Data Warehousing 3-Tier Architecture, Star Schema vs Snowflake Schema",
+    "objectives": [
+      "Understand the 3-tier Data Warehouse architecture.",
+      "Compare Star Schema and Snowflake Schema with relational schemas."
+    ],
+    "detailed_notes": [
+      "A Data Warehouse is a subject-oriented, integrated, time-variant, and non-volatile collection of data designed to support management decision making (W.H. Inmon). Its 3-tier architecture comprises: 1. Bottom Tier (Warehouse Database Server / Relational DB with ETL); 2. Middle Tier (OLAP Server — ROLAP or MOLAP engine); 3. Top Tier (Front-end Client Tools — Query, Reporting, Mining, Dashboards). Dimensional modeling uses Star schemas (denormalized dimension tables radiating from a central fact table) or Snowflake schemas (normalized dimension tables splitting into sub-dimensions).",
+      "Bottom tier extracts operational data via ETL into staging and relational storage; Middle tier computes multi-dimensional data cubes via OLAP; Top tier renders BI dashboards and predictive queries.",
+      "Star schema dimension tables are completely denormalized (fast queries, fewer joins, higher data redundancy). Snowflake schema normalizes dimension tables into 3NF (saves storage, eliminates redundancy, but requires complex multi-table joins)."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|           DATA WAREHOUSE 3-TIER ARCHITECTURE      |\n| [Top Tier: BI Dashboards & Query Tools]           |\n| [Middle Tier: OLAP Server (ROLAP/MOLAP Cubes)]    |\n| [Bottom Tier: Enterprise Data Warehouse & ETL]    |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Comparison Criterion",
+        "Feature",
         "Star Schema",
         "Snowflake Schema"
       ],
       "rows": [
         [
-          "Normalization Level",
-          "Completely Denormalized dimensions (1NF/2NF)",
-          "Completely Normalized dimensions (3NF/BCNF)"
+          "Normalization",
+          "Dimension tables are completely denormalized",
+          "Dimension tables are normalized into 3NF"
         ],
         [
-          "Data Redundancy",
-          "Higher data redundancy in dimension tables",
-          "Zero or minimal data redundancy"
+          "Query Complexity",
+          "Simple queries with single join to fact table",
+          "Complex queries requiring multi-level joins"
         ],
         [
           "Query Performance",
-          "Significantly faster; requires very few SQL joins",
-          "Slower; requires numerous multi-table joins"
+          "High query execution speed (fewer joins)",
+          "Slower execution speed due to join overhead"
         ],
         [
-          "Design Complexity",
-          "Simple, intuitive schema structure",
-          "Complex, nested hierarchical structure"
-        ],
-        [
-          "Disk Storage",
-          "Consumes slightly more storage space",
-          "Consumes less disk storage due to normalization"
-        ],
-        [
-          "Maintenance Overhead",
-          "Dimension updates may require updating multiple rows",
-          "Single-point updates in normalized lookup tables"
+          "Data Redundancy",
+          "Higher redundancy due to repeated attributes",
+          "Minimal redundancy due to normalized structures"
         ]
       ]
     },
-    "memorize": "W.H. Inmon 4 Characteristics: Subject-Oriented, Integrated, Time-Variant, Non-Volatile. 3 Tiers: Bottom (Warehouse DB), Middle (OLAP Server), Top (Front-End BI Tools). Star = Denormalized (Fast queries); Snowflake = Normalized (Reduced storage).",
-    "understand": "Why denormalize in a data warehouse when OLTP databases strictly normalize? In transactional OLTP, write anomalies are the greatest danger, so 3NF is mandatory. In analytical OLAP warehouses, data is read-only (non-volatile); optimizing query execution speed by eliminating table joins is vastly more important than saving disk space.",
-    "common_mistakes": "1. Calling a Data Mart the entire Data Warehouse (a Data Mart is a departmental subset of a DW). 2. Confusing Fact tables (contain numbers/metrics) with Dimension tables (contain categories/context).",
-    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q3 - 15m), 2022-23 (Q2a - 15m), 2023-24 (Q2 - 15m), 2024-25 (Q3 - 15m)",
-    "pyq_question": "Explain the 3-tier architecture of a Data Warehouse with a neat block diagram. Differentiate between Star Schema and Snowflake Schema with illustrative examples. (15 Marks)",
-    "pyq_rubric": "Definition & 4 Inmon characteristics (2 marks) + 3-Tier Architecture Diagram (4 marks) + Detailed explanation of 3 Tiers (4 marks) + Star vs Snowflake comparison and diagrams (5 marks) = 15 Marks.",
+    "memorize": "Inmon's DWH properties: Subject-Oriented, Integrated, Time-Variant, Non-Volatile. Star schema = denormalized (fastest queries). Snowflake = normalized.",
+    "understand": "Star schema trades disk storage space to achieve blazing fast analytical query performance by minimizing SQL JOIN operations.",
+    "common_mistakes": "Confusing Fact tables (contain numbers and metrics) with Dimension tables (contain descriptive text).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2023-24 (Q3)",
+        "marks": 15,
+        "question": "Describe the 3-tier architecture of a Data Warehouse with a neat diagram. Differentiate between Star Schema and Snowflake Schema with examples. (15 Marks)",
+        "rubric": "Inmon Definition & Characteristics (2 marks) + 3-Tier Architecture Diagram (4 marks) + Explanation of Tiers (4 marks) + Star vs Snowflake comparison & schemas (5 marks) = 15 Marks.",
+        "model_answer": "A Data Warehouse is a subject-oriented, integrated, time-variant, non-volatile repository of enterprise data. Its 3-tier architecture consists of: 1. Bottom Tier: The warehouse database server where data is ingested from transactional databases via ETL (Extract, Transform, Load) pipelines into a centralized relational warehouse or data mart; 2. Middle Tier: An OLAP server that pre-aggregates relational data into multi-dimensional cubes (ROLAP or MOLAP); 3. Top Tier: Front-end client presentation layer comprising query tools, reporting tools, and executive KPI scorecards. In dimensional modeling: Star Schema features a centralized Fact Table directly connected to denormalized Dimension Tables, maximizing query speed with simple joins. Snowflake Schema normalizes dimension tables into hierarchies, reducing data redundancy but increasing query join complexity.",
+        "answer_structure": "DWH Definition -> 3-Tier Diagram -> Detailed Tiers -> Star vs Snowflake Comparison Table & Diagrams",
+        "important_points": [
+          "Subject-oriented, Integrated, Time-variant, Non-volatile",
+          "Bottom, Middle, Top tier",
+          "Fact table vs Dimension table"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagrams for Star and Snowflake schemas",
+          "Clear explanation of ETL role in bottom tier"
+        ],
+        "common_mistakes": [
+          "Drawing Snowflake schema with fact table connected to child dimensions"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "State and explain the four key characteristics of a Data Warehouse as defined by W.H. Inmon. (5 Marks)",
+        "rubric": "1 mark per characteristic + 1 mark for overall synthesis = 5 Marks.",
+        "model_answer": "1. Subject-Oriented: Organized around major subjects (customers, products, sales) rather than operational processes; 2. Integrated: Constructed by consolidating data from multiple disparate sources with unified naming, encoding, and unit conventions; 3. Time-Variant: Data is maintained over a 5-10 year historical horizon, with every record bearing an explicit timestamp; 4. Non-Volatile: Operational updates and deletions do not occur; data is read-only and refreshed in batch snapshots."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-11-01",
+        "question": "What is the maximum sender window size in the Go-Back-N ARQ protocol using m-bit sequence numbers?",
+        "options": [
+          "2^m",
+          "2^m - 1",
+          "2^(m-1)",
+          "m^2"
+        ],
+        "correct_answer": "B",
+        "explanation": "In GBN, window size is 2^m - 1 to prevent ambiguity when all ACKs are lost."
+      },
+      {
+        "id": "ACAD-11-02",
+        "question": "In Stop-and-Wait ARQ, what sequence numbers are required for packet transmission?",
+        "options": [
+          "0 and 1 only (1-bit)",
+          "0 to 15",
+          "0 to 255",
+          "Any 32-bit integer"
+        ],
+        "correct_answer": "A",
+        "explanation": "Stop-and-Wait alternates between sequence numbers 0 and 1, requiring only a 1-bit sequence field."
+      },
+      {
+        "id": "ACAD-11-03",
+        "question": "What happens in Selective Repeat ARQ when a single frame in the transmission window is corrupted?",
+        "options": [
+          "Sender retransmits all subsequent frames from that frame onwards",
+          "Sender retransmits ONLY the specific unacknowledged frame via NAK/timeout",
+          "Receiver resets the entire connection",
+          "Sender terminates flow control"
+        ],
+        "correct_answer": "B",
+        "explanation": "Selective Repeat buffers out-of-order frames and requests retransmission of only the lost frame."
+      },
+      {
+        "id": "ACAD-11-04",
+        "question": "What is the sender window size in Selective Repeat ARQ using m-bit sequence numbering?",
+        "options": [
+          "2^m - 1",
+          "2^(m - 1)",
+          "2^m",
+          "m / 2"
+        ],
+        "correct_answer": "B",
+        "explanation": "In Selective Repeat, sender and receiver window sizes are equal to at most 2^(m - 1) to avoid overlap."
+      },
+      {
+        "id": "ACAD-11-05",
+        "question": "How is channel link utilization (efficiency U) defined in Stop-and-Wait protocol where propagation time is Tp and transmission time is Tt?",
+        "options": [
+          "1 / (1 + 2a), where a = Tp / Tt",
+          "1 + 2a",
+          "2a / (1 + a)",
+          "Tt / Tp"
+        ],
+        "correct_answer": "A",
+        "explanation": "Efficiency U = Tt / (Tt + 2Tp) = 1 / (1 + 2a), showing performance degradation over high-latency links."
+      }
+    ],
+    "pyq_year": "2023-24 (Q3)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Describe the 3-tier architecture of a Data Warehouse with a neat diagram. Differentiate between Star Schema and Snowflake Schema with examples. (15 Marks)",
+    "pyq_rubric": "Inmon Definition & Characteristics (2 marks) + 3-Tier Architecture Diagram (4 marks) + Explanation of Tiers (4 marks) + Star vs Snowflake comparison & schemas (5 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Data Warehouse Definition & Core Characteristics:",
-        "According to W.H. Inmon, a Data Warehouse is a subject-oriented, integrated, time-variant, and non-volatile collection of data designed to support managerial decision analysis:\n\u2022 Subject-Oriented: Organized around major business subjects (Sales, Customers, Inventory) rather than daily operational transactions.\n\u2022 Integrated: Aggregates disparate data sources, resolving naming conflicts, differing measurement units, and encoding differences into a unified schema.\n\u2022 Time-Variant: Every data point is timestamped, preserving historical records across 5 to 10 years for trend forecasting.\n\u2022 Non-Volatile: Historical records are read-only; they are never updated or deleted in place, but loaded periodically via ETL."
+        "1. Model Answer & Technical Presentation",
+        "A Data Warehouse is a subject-oriented, integrated, time-variant, non-volatile repository of enterprise data. Its 3-tier architecture consists of: 1. Bottom Tier: The warehouse database server where data is ingested from transactional databases via ETL (Extract, Transform, Load) pipelines into a centralized relational warehouse or data mart; 2. Middle Tier: An OLAP server that pre-aggregates relational data into multi-dimensional cubes (ROLAP or MOLAP); 3. Top Tier: Front-end client presentation layer comprising query tools, reporting tools, and executive KPI scorecards. In dimensional modeling: Star Schema features a centralized Fact Table directly connected to denormalized Dimension Tables, maximizing query speed with simple joins. Snowflake Schema normalizes dimension tables into hierarchies, reducing data redundancy but increasing query join complexity."
       ],
       [
-        "2. Detailed 3-Tier Data Warehouse Architecture:",
-        "\u2022 Bottom Tier (Database Server): Consists of the central relational database engine holding the operational enterprise data warehouse. An ETL subsystem periodically extracts operational data from OLTP databases and external APIs, transforms and cleanses records, and loads them into warehouse tables and localized departmental Data Marts.\n\u2022 Middle Tier (OLAP Server): An analytical processing engine presenting multidimensional data views. It executes high-speed multidimensional operations (slice, dice, roll-up, drill-down). Implemented as ROLAP (relational mapping), MOLAP (pre-computed arrays), or HOLAP.\n\u2022 Top Tier (Client Presentation): The user layer providing interactive graphical interfaces. Analysts execute ad-hoc SQL queries, generate automated regulatory reports, explore data visually via BI dashboards (Tableau, PowerBI), and run predictive data mining algorithms."
-      ],
-      [
-        "3. Multidimensional Schemas: Star vs Snowflake:",
-        "\u2022 Star Schema: Contains a single central Fact Table connected directly to multiple Dimension Tables. Each dimension is represented by a single denormalized table. Example: Fact_Sales is connected directly to Dim_Time, Dim_Store, Dim_Product, and Dim_Customer. Because all dimensions are 1-hop away from the fact table, SQL queries require minimal joins and execute with maximum speed.\n\u2022 Snowflake Schema: An architectural refinement of the star schema where dimension tables are completely normalized into third normal form (3NF). For example, Dim_Product is split into Dim_Product, Dim_Subcategory, and Dim_Category tables. While this eliminates redundant categorical strings and reduces disk consumption, analytical queries require complex multi-hop joins that degrade query response times."
-      ],
-      [
-        "4. Summary & Examination Verdict:",
-        "Modern cloud data warehouses (BigQuery, Snowflake, Redshift) prioritize query execution speed and developer simplicity over raw disk savings. Consequently, Star Schemas remain the industry standard design pattern for corporate business intelligence."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "What is ETL? Explain the Extract, Transform, and Load processes involved in data warehousing. (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "Differentiate between an Enterprise Data Warehouse (EDW) and a Data Mart. (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Diagrams for Star and Snowflake schemas",
+          "Clear explanation of ETL role in bottom tier"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master 3-Tier Data Warehouse Architecture and Star vs Snowflake Schemas.",
-    "milestone": "Full 15/15 marks on University Question 3 (BCA-5001 Data Warehousing)."
-  },
   "apt_data": {
-    "topic": "Boats & Streams \u2014 Upstream, Downstream & Round-Trip Equations",
+    "topic": "Probability (Classical & Conditional)",
+    "category": "Quantitative",
+    "subtopic": "Probability",
+    "formulas": "1. P(E) = Number of favorable outcomes / Total possible outcomes = n(E) / n(S).\n2. 0 <= P(E) <= 1; P(E') = 1 - P(E).\n3. Addition Rule: P(A or B) = P(A) + P(B) - P(A and B).\n4. Independent Events: P(A and B) = P(A) * P(B).\n5. Conditional Probability: P(A | B) = P(A and B) / P(B).",
+    "shortcut": "Complementary Counting: When asked for 'at least one', calculate 1 - P(none). It is almost always 5x faster than summing individual cases.",
     "tutorial": [
-      "Problems on boats and streams involve relative motion where the movement of a water stream directly influences the ground speed of a boat.",
-      "Fundamental Definitions & Variables:\n\u2022 Let Speed of Boat in Still Water = u km/h\n\u2022 Let Speed of the Stream (Current) = v km/h",
-      "Relative Directional Speeds:\n1. Downstream: The boat moves IN THE SAME DIRECTION as the stream flow. The stream pushes the boat forward:\n   Downstream Speed (D) = u + v\n2. Upstream: The boat moves AGAINST THE OPPOSITE DIRECTION of the stream flow. The stream resists the boat:\n   Upstream Speed (U) = u - v  (Notice that u must be > v for the boat to move forward)",
-      "The Master Inversion Formulas (Instant Equation Solvers):\nAdding both equations: D + U = (u + v) + (u - v) = 2u  ==>  Speed in Still Water u = (D + U) / 2\nSubtracting equations: D - U = (u + v) - (u - v) = 2v  ==>  Speed of Stream v = (D - U) / 2"
+      "Sample spaces must be mutually exclusive and exhaustive. In dice problems (n=2, sum 2 to 12), the distribution peaks at sum 7 (prob 6/36 = 1/6). In card problems, remember 4 suits (13 cards each), 2 red/2 black suits, and 12 face cards (J, Q, K)."
     ],
-    "formulas": "1. Downstream Speed: D = u + v\n2. Upstream Speed: U = u - v\n3. Speed in Still Water: u = (D + U) / 2\n4. Speed of Stream: v = (D - U) / 2\n5. Round-Trip Time for Distance d: Total Time T = [d / (u + v)] + [d / (u - v)] = [2 * d * u] / (u^2 - v^2)",
-    "shortcut": "The Ratio Shortcut (Upstream vs Downstream Times):\nIf a boat takes 'n' times as long to row upstream as to row downstream for the same distance:\n(u + v) / (u - v) = n  ==>  u / v = (n + 1) / (n - 1) by Componendo-Dividendo!\nExample: Takes twice as long upstream (n = 2) ==> u / v = (2 + 1) / (2 - 1) = 3 / 1 instantly!",
-    "recognition": "Look for 'a boat goes 12 km downstream in 1 hour and returns upstream in 2 hours', 'takes twice as long to row upstream as downstream', or 'find the speed of the current'.",
-    "p1_q": "[Foundation] A boat can travel with a speed of 13 km/h in still water. If the speed of the stream is 4 km/h, find the time taken by the boat to go 68 km downstream.",
-    "p1_s": "Step 1: Given: Speed in still water u = 13 km/h, Speed of stream v = 4 km/h.\nStep 2: Downstream Speed D = u + v = 13 + 4 = 17 km/h.\nStep 3: Distance = 68 km.\nTime taken = Distance / Downstream Speed = 68 / 17 = 4 hours.\nAnswer: 4 hours.",
-    "p2_q": "[Standard Placement] A man can row upstream at 8 km/h and downstream at 14 km/h. Find his rowing speed in still water and the speed of the water current.",
-    "p2_s": "Step 1: Given: Downstream speed D = 14 km/h, Upstream speed U = 8 km/h.\nStep 2: Calculate Speed in Still Water (u):\nu = (D + U) / 2 = (14 + 8) / 2 = 22 / 2 = 11 km/h.\nStep 3: Calculate Speed of Stream (v):\nv = (D - U) / 2 = (14 - 8) / 2 = 6 / 2 = 3 km/h.\nVerification: Downstream = 11 + 3 = 14; Upstream = 11 - 3 = 8. Exact match!\nAnswer: Speed in still water = 11 km/h, Speed of stream = 3 km/h.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys Reasoning & Numerical Test]",
-    "p3_q": "A man can row at 9 km/h in still water. If it takes him twice as long to row up as to row down the river for the same distance, find the speed of the stream.",
-    "p3_s": "Step 1: Use the Componendo-Dividendo Ratio Shortcut:\nGiven: Time upstream is twice time downstream ==> n = 2.\nu / v = (n + 1) / (n - 1) = (2 + 1) / (2 - 1) = 3 / 1.\nStep 2: We are given Speed in still water u = 9 km/h.\n9 / v = 3 / 1 ==> 3v = 9 ==> v = 3 km/h.\nStep 3: Analytical Verification: Let distance = 18 km.\nDownstream Speed = 9 + 3 = 12 km/h ==> Time = 18 / 12 = 1.5 hours.\nUpstream Speed = 9 - 3 = 6 km/h ==> Time = 18 / 6 = 3.0 hours.\nNotice 3.0 hours is exactly twice 1.5 hours! Matches perfectly.\nAnswer: Speed of the stream is 3 km/h.",
-    "p4_q": "[Hard / Time-Pressure] A boat covers 24 km upstream and 36 km downstream in 6 hours. Also, it covers 36 km upstream and 24 km downstream in 6.5 hours. Find the speed of the boat in still water and the speed of the stream.",
-    "p4_s": "Step 1: Let Upstream speed = U, Downstream speed = D.\nEquation 1: (24 / U) + (36 / D) = 6\nEquation 2: (36 / U) + (24 / D) = 6.5\nStep 2: Eliminate variables. Multiply Eq 1 by 3 and Eq 2 by 2:\n3 * Eq 1: (72 / U) + (108 / D) = 18\n2 * Eq 2: (72 / U) + (48 / D) = 13\nSubtracting the two equations:\n(108 - 48) / D = 18 - 13 ==> 60 / D = 5 ==> D = 60 / 5 = 12 km/h.\nStep 3: Substitute D = 12 into Eq 1:\n(24 / U) + (36 / 12) = 6 ==> (24 / U) + 3 = 6 ==> 24 / U = 3 ==> U = 8 km/h.\nStep 4: Solve for u and v:\nSpeed in still water u = (D + U) / 2 = (12 + 8) / 2 = 20 / 2 = 10 km/h.\nSpeed of stream v = (D - U) / 2 = (12 - 8) / 2 = 4 / 2 = 2 km/h.\nAnswer: Boat speed in still water = 10 km/h, Stream speed = 2 km/h.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "A boat goes 15 km/h downstream and 9 km/h upstream. Find the speed of the stream."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "A boat travels 32 km downstream in 4 hours and 14 km upstream in 2 hours. Find speed in still water."
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "A man can row 6 km/h in still water. If the river runs at 2 km/h, it takes him 3 hours to row to a place and back. Find distance."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "A boat takes 3 times as long to row upstream as to row downstream. If stream speed is 4 km/h, find boat speed in still water."
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "A swimmer covers 1 km against current in 10 minutes and 1 km with current in 6 minutes. Find the speed of the current."
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Probability",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Probability",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Probability",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Probability",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Probability",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Two dice are rolled simultaneously. What is the probability that the sum of the numbers appearing is 8?",
+        "options": {
+          "A": "5/36",
+          "B": "1/6",
+          "C": "7/36",
+          "D": "1/9"
+        },
+        "correct_answer": "A",
+        "explanation": "Favorable outcomes for sum 8: (2,6), (3,5), (4,4), (5,3), (6,2) = 5 outcomes. Total = 36. Probability = 5/36.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A card is drawn from a well-shuffled pack of 52 cards. What is the probability of getting a queen of spade or a king of diamond?",
+        "options": {
+          "A": "1/26",
+          "B": "1/52",
+          "C": "2/13",
+          "D": "1/13"
+        },
+        "correct_answer": "A",
+        "explanation": "Favorable = 1 queen of spades + 1 king of diamonds = 2 cards. Probability = 2/52 = 1/26.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "A bag contains 6 red, 4 blue, and 2 green balls. If 2 balls are drawn at random, what is the probability that both are red?",
+        "options": {
+          "A": "5/22",
+          "B": "1/4",
+          "C": "3/11",
+          "D": "1/6"
+        },
+        "correct_answer": "A",
+        "explanation": "Total balls = 12. P(both red) = 6C2 / 12C2 = 15 / 66 = 5/22.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Three unbiased coins are tossed together. What is the probability of getting at least two heads?",
+        "options": {
+          "A": "1/2",
+          "B": "3/8",
+          "C": "5/8",
+          "D": "1/4"
+        },
+        "correct_answer": "A",
+        "explanation": "Sample space = 8. Favorable outcomes for at least 2 heads (HHH, HHT, HTH, THH) = 4. Probability = 4/8 = 1/2.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "A problem in mathematics is given to three students whose chances of solving it are 1/2, 1/3, and 1/4. What is the probability that the problem is solved?",
+        "options": {
+          "A": "3/4",
+          "B": "1/24",
+          "C": "23/24",
+          "D": "1/2"
+        },
+        "correct_answer": "A",
+        "explanation": "P(problem not solved) = (1 - 1/2) * (1 - 1/3) * (1 - 1/4) = 1/2 * 2/3 * 3/4 = 1/4. P(solved) = 1 - 1/4 = 3/4.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "What is the probability that a leap year selected at random will contain 53 Sundays?",
+        "options": {
+          "A": "2/7",
+          "B": "1/7",
+          "C": "3/7",
+          "D": "5/7"
+        },
+        "correct_answer": "A",
+        "explanation": "A leap year has 366 days = 52 weeks + 2 extra days. The 2 extra days can be (Sat,Sun) or (Sun,Mon) out of 7 pairs. Probability = 2/7.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Two cards are drawn together from a pack of 52 cards. Probability that one is a spade and one is a heart:",
+        "options": {
+          "A": "13/102",
+          "B": "1/4",
+          "C": "1/16",
+          "D": "26/102"
+        },
+        "correct_answer": "A",
+        "explanation": "(13C1 * 13C1) / 52C2 = (13 * 13) / 1,326 = 169 / 1,326 = 13 / 102.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A box contains 5 defective and 15 non-defective bulbs. Two bulbs are chosen at random. Probability that both are non-defective:",
+        "options": {
+          "A": "21/38",
+          "B": "9/19",
+          "C": "1/2",
+          "D": "15/38"
+        },
+        "correct_answer": "A",
+        "explanation": "15C2 / 20C2 = 105 / 190 = 21/38.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "A bag contains 4 white, 5 red, and 6 blue balls. Three balls are drawn. Probability that none is red:",
+        "options": {
+          "A": "24/91",
+          "B": "12/91",
+          "C": "35/91",
+          "D": "15/91"
+        },
+        "correct_answer": "A",
+        "explanation": "Total = 15. Non-red = 10. Probability = 10C3 / 15C3 = 120 / 455 = 24/91.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "If P(A) = 0.4, P(B) = 0.8, and P(B|A) = 0.6, what is P(A or B)?",
+        "options": {
+          "A": "0.96",
+          "B": "0.84",
+          "C": "0.76",
+          "D": "0.90"
+        },
+        "correct_answer": "A",
+        "explanation": "P(A and B) = P(A) * P(B|A) = 0.4 * 0.6 = 0.24. P(A or B) = P(A) + P(B) - P(A and B) = 0.4 + 0.8 - 0.24 = 0.96.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Probability (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "Stream speed v = (15 - 9) / 2 = 6 / 2 = 3 km/h. Answer: 3 km/h."
-      ],
-      [
-        "Solution Q2:",
-        "D = 32/4 = 8 km/h. U = 14/2 = 7 km/h. Still water u = (8 + 7)/2 = 7.5 km/h. Answer: 7.5 km/h."
-      ],
-      [
-        "Solution Q3:",
-        "D = 6+2 = 8, U = 6-2 = 4. Total Time = d/8 + d/4 = 3 ==> 3d/8 = 3 ==> d = 8 km. Answer: 8 km."
-      ],
-      [
-        "Solution Q4:",
-        "u / v = (3+1)/(3-1) = 4/2 = 2/1. u = 2 * v = 2 * 4 = 8 km/h. Answer: 8 km/h."
-      ],
-      [
-        "Solution Q5:",
-        "U = 1 km in (1/6) hr = 6 km/h. D = 1 km in (1/10) hr = 10 km/h. Stream v = (10 - 6)/2 = 2 km/h. Answer: 2 km/h."
-      ]
-    ],
-    "trap": "Always ensure units are consistent! If time is given in minutes, divide by 60 to convert to hours before calculating speed in km/h."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Merge Intervals",
+      "difficulty": "Medium",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals.",
+      "solution_approach": "1. Apply Merge Intervals & Overlap Detection algorithmic technique.\n2. Sorts intervals by their starting times, then traverses linearly, merging overlapping intervals whenever the current start time <= previous end time.\n3. Invariants: Sorting imposes monotonic order on start coordinates, guaranteeing that all potential overlaps are contiguous in the sequence.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "time_complexity": "O(N log N) Time",
+      "space_complexity": "O(N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Insert Interval",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Insert a new interval into a sorted non-overlapping interval list and merge if necessary.",
+      "solution_approach": "1. Identify interview variation of Merge Intervals & Overlap Detection.\n2. Handle edge cases: Single interval, All intervals disjoint, All intervals nested inside one big interval.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+      "time_complexity": "O(N log N) Time",
+      "space_complexity": "O(N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Merge Intervals & Overlap Detection",
+    "category": "Intervals",
+    "concept": "Sorts intervals by their starting times, then traverses linearly, merging overlapping intervals whenever the current start time <= previous end time.",
+    "why_it_works": "Sorting imposes monotonic order on start coordinates, guaranteeing that all potential overlaps are contiguous in the sequence.",
+    "visual_explanation": "Intervals: [[1, 3], [2, 6], [8, 10], [15, 18]]\\nCompare [1, 3] and [2, 6]: 2 <= 3 -> Merge to [1, max(3, 6)] = [1, 6]\\nCompare [1, 6] and [8, 10]: 8 > 6 -> Disjoint -> Append [8, 10]",
+    "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        if (intervals.length <= 1) return intervals;\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> merged = new ArrayList<>();\n        int[] current = intervals[0];\n        merged.add(current);\n        \n        for (int[] interval : intervals) {\n            if (interval[0] <= current[1]) {\n                current[1] = Math.max(current[1], interval[1]);\n            } else {\n                current = interval;\n                merged.add(current);\n            }\n        }\n        return merged.toArray(new int[merged.size()][]);\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        if (intervals.length <= 1) return intervals;\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> merged = new ArrayList<>();\n        int[] current = intervals[0];\n        merged.add(current);\n        \n        for (int[] interval : intervals) {\n            if (interval[0] <= current[1]) {\n                current[1] = Math.max(current[1], interval[1]);\n            } else {\n                current = interval;\n                merged.add(current);\n            }\n        }\n        return merged.toArray(new int[merged.size()][]);\n    }\n}",
+    "python_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        if (intervals.length <= 1) return intervals;\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> merged = new ArrayList<>();\n        int[] current = intervals[0];\n        merged.add(current);\n        \n        for (int[] interval : intervals) {\n            if (interval[0] <= current[1]) {\n                current[1] = Math.max(current[1], interval[1]);\n            } else {\n                current = interval;\n                merged.add(current);\n            }\n        }\n        return merged.toArray(new int[merged.size()][]);\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 5: Sort 2D intervals array by start coordinate a[0].",
+      "Line 6-8: Initialize current interval as intervals[0] and add to merged list.",
+      "Line 10-16: For each interval, check if start <= current[1]. If so, expand end time. Else start new disjoint interval."
+    ],
+    "dry_run": "intervals = [[1, 3], [2, 6], [8, 10]]. Sorted order maintained. [1, 3] & [2, 6] merge to [1, 6]. [8, 10] disjoint. Result: [[1, 6], [8, 10]].",
+    "complexity": "O(N log N) Time, O(N) Auxiliary Space",
+    "edge_cases": [
+      "Single interval",
+      "All intervals disjoint",
+      "All intervals nested inside one big interval"
+    ],
+    "interview_variations": [
+      "Insert Interval",
+      "Non-overlapping Intervals",
+      "Meeting Rooms I & II"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-11-01",
+        "title": "Problem 1: Merge Intervals",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Merge Intervals & Overlap Detection algorithmic technique.\n2. Sorts intervals by their starting times, then traverses linearly, merging overlapping intervals whenever the current start time <= previous end time.\n3. Invariants: Sorting imposes monotonic order on start coordinates, guaranteeing that all potential overlaps are contiguous in the sequence.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "time_complexity": "O(N log N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-11-02",
+        "title": "Problem 2: Insert Interval",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Insert a new interval into a sorted non-overlapping interval list and merge if necessary.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Merge Intervals & Overlap Detection.\n2. Handle edge cases: Single interval, All intervals disjoint, All intervals nested inside one big interval.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] insert(int[][] intervals, int[] newInterval) {\n        List<int[]> res = new ArrayList<>();\n        int i = 0, n = intervals.length;\n        while (i < n && intervals[i][1] < newInterval[0]) res.add(intervals[i++]);\n        while (i < n && intervals[i][0] <= newInterval[1]) {\n            newInterval[0] = Math.min(newInterval[0], intervals[i][0]);\n            newInterval[1] = Math.max(newInterval[1], intervals[i][1]);\n            i++;\n        }\n        res.add(newInterval);\n        while (i < n) res.add(intervals[i++]);\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+        "time_complexity": "O(N log N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "DBMS",
+    "topic": "Transactions & ACID Properties (Atomicity, Consistency, Isolation, Durability)",
+    "detailed_notes": [
+      "A Database Transaction is a logical unit of work comprising one or more database operations (reads, writes) that must execute reliably as an indivisible whole.\n\nThe ACID Properties:\n1. Atomicity ('All or Nothing'): Either all operations of the transaction complete successfully and are committed, or the entire transaction is aborted and rolled back to its initial state. Enforced by the DBMS Recovery Manager using Write-Ahead Logging (WAL).\n2. Consistency: A transaction transforms the database from one valid consistent state to another, preserving all declared schema constraints (primary keys, foreign keys, CHECK constraints, trigger invariants).\n3. Isolation: The execution of concurrent transactions must occur without mutual interference. The intermediate uncommitted state of a transaction must remain invisible to other concurrent transactions. Enforced by Concurrency Control Manager.\n4. Durability: Once a transaction commits, its modifications are permanently recorded in non-volatile storage and will survive subsequent power failures or system crashes. Enforced via WAL flush to disk.\n\nTransaction State Diagram:\nActive -> Partially Committed (after final statement executes) -> Committed (after log flushed to disk).\nActive -> Failed (on error/abort) -> Aborted (after rollback cleans up uncommitted changes)."
+    ],
+    "key_definitions": [
+      {
+        "term": "Atomicity",
+        "definition": "The ACID property ensuring all transaction operations succeed completely or are rolled back entirely."
+      },
+      {
+        "term": "Write-Ahead Logging (WAL)",
+        "definition": "A technique where state changes are recorded on non-volatile disk logs before being applied to data pages."
+      },
+      {
+        "term": "Durability",
+        "definition": "The guarantee that committed transaction updates persist permanently across crashes and power outages."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "How does a database enforce Atomicity and Durability during a sudden system crash?",
+        "a": "Using Write-Ahead Logging (WAL). Before any data page is modified in RAM or written to disk, an append-only log record describing the change (Undo and Redo logs) is flushed to non-volatile disk. On system restart after a crash, the recovery manager runs the ARIES protocol: Analysis phase identifies dirty pages, Redo phase replays all logged changes to re-establish state (Durability), and Undo phase rolls back all uncommitted transactions (Atomicity)."
+      },
+      {
+        "q": "What is the difference between a Partially Committed state and a Committed state?",
+        "a": "A transaction enters the Partially Committed state immediately after its final SQL statement has executed in memory, but before its commit log records are permanently written to disk. It transitions to the Committed state only after the WAL commit record has been physically flushed to persistent storage."
+      },
+      {
+        "q": "Explain the difference between Compensating Transactions and standard Rollback.",
+        "a": "A standard rollback relies on database undo logs within a single ACID transaction to revert uncommitted memory changes. A Compensating Transaction is used in distributed architectures (e.g., Saga Pattern across microservices) where local transactions have already committed; a subsequent failure triggers dedicated business actions (e.g., refunding a captured credit card) to logically offset prior committed steps."
+      },
+      {
+        "q": "Can Consistency in ACID be guaranteed exclusively by the database engine?",
+        "a": "No. While the DBMS strictly enforces declared schema constraints (unique keys, foreign keys, data types), application-level business consistency (e.g., account balance cannot transfer more than ledger limits) relies heavily on correct application logic written by the software engineer."
+      },
+      {
+        "q": "What is the Checkpoint mechanism in database recovery?",
+        "a": "A Checkpoint periodically flushes all dirty in-memory data buffer pages and log records to persistent disk, and writes a CHECKPOINT record with active transaction IDs to the log. During crash recovery, the DBMS only needs to scan logs back to the most recent checkpoint rather than replaying the entire history of the database."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-11-01",
+        "question": "Which ACID property guarantees that all operations of a transaction succeed or none do?",
+        "options": [
+          "Atomicity",
+          "Consistency",
+          "Isolation",
+          "Durability"
+        ],
+        "correct_answer": "A",
+        "explanation": "Atomicity ensures 'all-or-nothing' execution."
+      },
+      {
+        "id": "CS-11-02",
+        "question": "Write-Ahead Logging (WAL) requires that:",
+        "options": [
+          "Data pages are written before log records",
+          "Log records are flushed to non-volatile storage before corresponding data pages are written",
+          "Transactions commit without logs",
+          "Checkpoints run before every query"
+        ],
+        "correct_answer": "B",
+        "explanation": "WAL mandates logging modifications before data pages touch persistent storage."
+      },
+      {
+        "id": "CS-11-03",
+        "question": "A transaction enters the 'Partially Committed' state when:",
+        "options": [
+          "It begins execution",
+          "Its final statement has executed, prior to log disk flush",
+          "Its changes are rolled back",
+          "A deadlock is detected"
+        ],
+        "correct_answer": "B",
+        "explanation": "Partially committed occurs right after the last operation executes, before log flush."
+      },
+      {
+        "id": "CS-11-04",
+        "question": "Which ACID property ensures that committed transactions survive power failures and system crashes?",
+        "options": [
+          "Atomicity",
+          "Consistency",
+          "Isolation",
+          "Durability"
+        ],
+        "correct_answer": "D",
+        "explanation": "Durability guarantees committed changes persist permanently."
+      },
+      {
+        "id": "CS-11-05",
+        "question": "Checkpoints are used in database recovery systems to:",
+        "options": [
+          "Speed up SQL join processing",
+          "Reduce the log volume that must be scanned during recovery",
+          "Encrypt password fields",
+          "Enforce 3NF schema constraints"
+        ],
+        "correct_answer": "B",
+        "explanation": "Checkpoints limit how far back the recovery manager must scan WAL logs on reboot."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "SmartGalla",
+    "repo_path": "D:\\Projects\\SmartGalla",
+    "feature_focus": "Geospatial Logistics & Automated Delivery Assignment (Google Maps & Leaflet)",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nSpatial distance calculation, store geofencing, and rider dispatch algorithms.\n\nWHAT TO MEMORIZE:\nThe Haversine formula calculates great-circle distance between store coordinates and customer addresses: d = 2R * arcsin(sqrt(sin^2(dlat/2) + cos(lat1)*cos(lat2)*sin^2(dlon/2))).\n\n60-SECOND INTERVIEW PITCH:\nI designed an automated logistics dispatch engine in SmartGalla. It uses Google Places for customer geocoding and Leaflet with spatial distance formulas to match available delivery partners within a 5km geofenced radius. It balances delivery load across active agents and provides real-time route telemetry.",
+    "interview_qa": [
+      {
+        "q": "How does SmartGalla assign nearby delivery agents to new orders?",
+        "a": "When an order enters the 'READY_FOR_PICKUP' state, the logistics assignment engine runs a spatial query over active riders within a 5km radius of the merchant's store. We filter riders whose active delivery load is less than 3 orders, rank them by Haversine proximity, and dispatch an automated push notification with a 45-second acceptance timeout. If unanswered, it cascades to the next nearest rider."
+      },
+      {
+        "q": "Why combine Google Maps API with Leaflet in the same project?",
+        "a": "Google Maps Places API provides superior address autocomplete and geocoding accuracy in Indian tier-2 cities. However, for live tracking dashboards where coordinates update every 5 seconds via WebSockets, rendering Google Maps tiles incurs significant API cost. We use Leaflet with OpenStreetMap tiles for client-side map rendering, cutting map API costs by over 70% while keeping high accuracy."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 11 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 11 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'TerraStract', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In TerraStract (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of TerraStract.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 10 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5003 — Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Probability (Classical & Conditional).\n• Algorithmic Invariant: Optimal time and space complexity rules for Merge Intervals & Overlap Detection.\n• Systems Law: Architectural equations, protocols, and complexity bounds for SQL Joins, GROUP BY & Window Functions.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Merge Intervals & Overlap Detection.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Code for the Nation 2026.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 11 Q1: What is the primary academic thesis of Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat?",
+        "a": "Core theoretical and practical mastery of Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat under the CSJM University BCA-5003 syllabus."
+      },
+      {
+        "q": "Day 11 Q2: What is the key speed calculation formula applied in Probability (Classical & Conditional)?",
+        "a": "High-speed corporate placement arithmetic shortcut for Probability (Classical & Conditional) in campus recruitment exams."
+      },
+      {
+        "q": "Day 11 Q3: What is the time complexity of Merge Intervals & Overlap Detection?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 11 Q4: What is the central architectural principle of SQL Joins, GROUP BY & Window Functions?",
+        "a": "Foundational systems engineering rule governing SQL Joins, GROUP BY & Window Functions in production environments."
+      },
+      {
+        "q": "Day 11 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 11 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 11 Q7: What is the verified technical foundation of Code for the Nation 2026?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 11 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 11 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 11 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5003 — Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Probability (Classical & Conditional).\n• Algorithmic Invariant: Optimal time and space complexity rules for Merge Intervals & Overlap Detection.\n• Systems Law: Architectural equations, protocols, and complexity bounds for SQL Joins, GROUP BY & Window Functions."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5003 — Flow Control: Stop-and-Wait, Go-Back-N & Selective Repeat."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Probability (Classical & Conditional)."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Merge Intervals & Overlap Detection."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: Code for the Nation 2026."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 11 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "What is the maximum sender window size in the Go-Back-N ARQ protocol using m-bit sequence numbers?",
+        "a": "Answer: B\n\nIn GBN, window size is 2^m - 1 to prevent ambiguity when all ACKs are lost."
+      },
+      {
+        "q": "In Stop-and-Wait ARQ, what sequence numbers are required for packet transmission?",
+        "a": "Answer: A\n\nStop-and-Wait alternates between sequence numbers 0 and 1, requiring only a 1-bit sequence field."
+      },
+      {
+        "q": "What happens in Selective Repeat ARQ when a single frame in the transmission window is corrupted?",
+        "a": "Answer: B\n\nSelective Repeat buffers out-of-order frames and requests retransmission of only the lost frame."
+      },
+      {
+        "q": "What is the sender window size in Selective Repeat ARQ using m-bit sequence numbering?",
+        "a": "Answer: B\n\nIn Selective Repeat, sender and receiver window sizes are equal to at most 2^(m - 1) to avoid overlap."
+      },
+      {
+        "q": "How is channel link utilization (efficiency U) defined in Stop-and-Wait protocol where propagation time is Tp and transmission time is Tt?",
+        "a": "Answer: A\n\nEfficiency U = Tt / (Tt + 2Tp) = 1 / (1 + 2a), showing performance degradation over high-latency links."
+      },
+      {
+        "q": "A card is drawn at random from a standard deck of 52 cards. What is the probability that the card drawn is a face card (Jack, Queen, King)?",
+        "a": "Answer: A\n\nTotal face cards = 4 suits * 3 face cards = 12 cards. Probability = 12 / 52 = 3 / 13."
+      },
+      {
+        "q": "Two unbiased dice are tossed. What is the probability that the sum of the scores is a prime number?",
+        "a": "Answer: A\n\nPrime sums can be 2, 3, 5, 7, 11. Counts: 2 (1), 3 (2), 5 (4), 7 (6), 11 (2) = 15 outcomes. Total = 36. Probability = 15 / 36 = 5 / 12."
+      },
+      {
+        "q": "A box contains 20 electric bulbs, out of which 4 are defective. Two bulbs are drawn at random without replacement. What is the probability that both are defective?",
+        "a": "Answer: A\n\nProbability = (4/20) * (3/19) = (1/5) * (3/19) = 3 / 95."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-11-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the maximum sender window size in the Go-Back-N ARQ protocol using m-bit sequence numbers?",
+        "options": [
+          "2^m",
+          "2^m - 1",
+          "2^(m-1)",
+          "m^2"
+        ],
+        "correct_answer": "B",
+        "explanation": "In GBN, window size is 2^m - 1 to prevent ambiguity when all ACKs are lost."
+      },
+      {
+        "id": "TEST-11-02",
+        "category": "Academic (Academic Theory)",
+        "question": "In Stop-and-Wait ARQ, what sequence numbers are required for packet transmission?",
+        "options": [
+          "0 and 1 only (1-bit)",
+          "0 to 15",
+          "0 to 255",
+          "Any 32-bit integer"
+        ],
+        "correct_answer": "A",
+        "explanation": "Stop-and-Wait alternates between sequence numbers 0 and 1, requiring only a 1-bit sequence field."
+      },
+      {
+        "id": "TEST-11-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What happens in Selective Repeat ARQ when a single frame in the transmission window is corrupted?",
+        "options": [
+          "Sender retransmits all subsequent frames from that frame onwards",
+          "Sender retransmits ONLY the specific unacknowledged frame via NAK/timeout",
+          "Receiver resets the entire connection",
+          "Sender terminates flow control"
+        ],
+        "correct_answer": "B",
+        "explanation": "Selective Repeat buffers out-of-order frames and requests retransmission of only the lost frame."
+      },
+      {
+        "id": "TEST-11-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the sender window size in Selective Repeat ARQ using m-bit sequence numbering?",
+        "options": [
+          "2^m - 1",
+          "2^(m - 1)",
+          "2^m",
+          "m / 2"
+        ],
+        "correct_answer": "B",
+        "explanation": "In Selective Repeat, sender and receiver window sizes are equal to at most 2^(m - 1) to avoid overlap."
+      },
+      {
+        "id": "TEST-11-05",
+        "category": "Academic (Academic Theory)",
+        "question": "How is channel link utilization (efficiency U) defined in Stop-and-Wait protocol where propagation time is Tp and transmission time is Tt?",
+        "options": [
+          "1 / (1 + 2a), where a = Tp / Tt",
+          "1 + 2a",
+          "2a / (1 + a)",
+          "Tt / Tp"
+        ],
+        "correct_answer": "A",
+        "explanation": "Efficiency U = Tt / (Tt + 2Tp) = 1 / (1 + 2a), showing performance degradation over high-latency links."
+      },
+      {
+        "id": "TEST-11-06",
+        "category": "Placement Aptitude",
+        "question": "A card is drawn at random from a standard deck of 52 cards. What is the probability that the card drawn is a face card (Jack, Queen, King)?",
+        "options": [
+          "3/13",
+          "1/13",
+          "4/13",
+          "1/4"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total face cards = 4 suits * 3 face cards = 12 cards. Probability = 12 / 52 = 3 / 13."
+      },
+      {
+        "id": "TEST-11-07",
+        "category": "Placement Aptitude",
+        "question": "Two unbiased dice are tossed. What is the probability that the sum of the scores is a prime number?",
+        "options": [
+          "5/12",
+          "7/18",
+          "1/2",
+          "1/3"
+        ],
+        "correct_answer": "A",
+        "explanation": "Prime sums can be 2, 3, 5, 7, 11. Counts: 2 (1), 3 (2), 5 (4), 7 (6), 11 (2) = 15 outcomes. Total = 36. Probability = 15 / 36 = 5 / 12."
+      },
+      {
+        "id": "TEST-11-08",
+        "category": "Placement Aptitude",
+        "question": "A box contains 20 electric bulbs, out of which 4 are defective. Two bulbs are drawn at random without replacement. What is the probability that both are defective?",
+        "options": [
+          "3/95",
+          "1/25",
+          "1/20",
+          "2/95"
+        ],
+        "correct_answer": "A",
+        "explanation": "Probability = (4/20) * (3/19) = (1/5) * (3/19) = 3 / 95."
+      },
+      {
+        "id": "TEST-11-09",
+        "category": "Placement Aptitude",
+        "question": "Four fair coins are tossed simultaneously. What is the probability of obtaining exactly two heads?",
+        "options": [
+          "3/8",
+          "1/4",
+          "1/2",
+          "5/16"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total outcomes = 2^4 = 16. Favorable outcomes = 4C2 = 6. Probability = 6 / 16 = 3 / 8."
+      },
+      {
+        "id": "TEST-11-10",
+        "category": "Placement Aptitude",
+        "question": "Tickets numbered 1 to 20 are mixed thoroughly and then a ticket is drawn at random. What is the probability that the drawn ticket has a number which is a multiple of 3 or 7?",
+        "options": [
+          "2/5",
+          "1/2",
+          "3/10",
+          "7/20"
+        ],
+        "correct_answer": "A",
+        "explanation": "Multiples of 3: {3, 6, 9, 12, 15, 18} (6 numbers). Multiples of 7: {7, 14} (2 numbers). No overlap below 20. Total favorable = 8. Probability = 8 / 20 = 2 / 5."
+      },
+      {
+        "id": "TEST-11-11",
+        "category": "Core CS (DBMS)",
+        "question": "Which ACID property guarantees that all operations of a transaction succeed or none do?",
+        "options": [
+          "Atomicity",
+          "Consistency",
+          "Isolation",
+          "Durability"
+        ],
+        "correct_answer": "A",
+        "explanation": "Atomicity ensures 'all-or-nothing' execution."
+      },
+      {
+        "id": "TEST-11-12",
+        "category": "Core CS (DBMS)",
+        "question": "Write-Ahead Logging (WAL) requires that:",
+        "options": [
+          "Data pages are written before log records",
+          "Log records are flushed to non-volatile storage before corresponding data pages are written",
+          "Transactions commit without logs",
+          "Checkpoints run before every query"
+        ],
+        "correct_answer": "B",
+        "explanation": "WAL mandates logging modifications before data pages touch persistent storage."
+      },
+      {
+        "id": "TEST-11-13",
+        "category": "Core CS (DBMS)",
+        "question": "A transaction enters the 'Partially Committed' state when:",
+        "options": [
+          "It begins execution",
+          "Its final statement has executed, prior to log disk flush",
+          "Its changes are rolled back",
+          "A deadlock is detected"
+        ],
+        "correct_answer": "B",
+        "explanation": "Partially committed occurs right after the last operation executes, before log flush."
+      },
+      {
+        "id": "TEST-11-14",
+        "category": "Core CS (DBMS)",
+        "question": "Which ACID property ensures that committed transactions survive power failures and system crashes?",
+        "options": [
+          "Atomicity",
+          "Consistency",
+          "Isolation",
+          "Durability"
+        ],
+        "correct_answer": "D",
+        "explanation": "Durability guarantees committed changes persist permanently."
+      },
+      {
+        "id": "TEST-11-15",
+        "category": "Core CS (DBMS)",
+        "question": "Checkpoints are used in database recovery systems to:",
+        "options": [
+          "Speed up SQL join processing",
+          "Reduce the log volume that must be scanned during recovery",
+          "Encrypt password fields",
+          "Enforce 3NF schema constraints"
+        ],
+        "correct_answer": "B",
+        "explanation": "Checkpoints limit how far back the recovery manager must scan WAL logs on reboot."
+      },
+      {
+        "id": "TEST-11-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Merge Intervals & Overlap Detection' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N log N) Time, O(N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Merge Intervals & Overlap Detection' pattern operates with O(N log N) Time, O(N) Auxiliary Space: Sorting imposes monotonic order on start coordinates, guaranteeing that all potential overlaps are contiguous in the sequence.."
+      },
+      {
+        "id": "TEST-11-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Merge Intervals & Overlap Detection' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Single interval.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Merge Intervals & Overlap Detection include Single interval, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-11-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Merge Intervals', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N log N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-11-19",
+        "category": "Projects (SmartGalla)",
+        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Geospatial Logistics & Automated Delivery Assignment (Google Maps & Leaflet)'?",
+        "options": [
+          "The Haversine formula calculates great-circle distance between store coordinates and customer addresses: d = 2R * arcsin(sqrt(sin^2(dlat/2) + cos(lat1)*cos(lat2)*sin^2(dlon/2))).",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For SmartGalla, the architectural invariant is: The Haversine formula calculates great-circle distance between store coordinates and customer addresses: d = 2R * arcsin(sqrt(sin^2(dlat/2) + cos(lat1)*cos(lat2)*sin^2(dlon/2))).."
+      },
+      {
+        "id": "TEST-11-20",
+        "category": "Projects (SmartGalla)",
+        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'How does SmartGalla assign nearby delivery agents to new orders?'?",
+        "options": [
+          "When an order enters the 'READY_FOR_PICKUP' state, the logistics assignment engine runs a spatial query over active riders within a 5km radius of the merchant's...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When an order enters the 'READY_FOR_PICKUP' state, the logistics assignment engine runs a spatial query over active riders within a 5km radi."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-11",
+    "title": "Merge Intervals (Merge Intervals & Overlap Detection)",
+    "time_limit_minutes": 35,
+    "difficulty": "Medium",
+    "problem_statement": "Solve the core placement problem: Merge Intervals.\n\nGiven an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Merge Intervals & Overlap Detection\n- Time Complexity Target: O(N log N) Time\n- Space Complexity Target: O(N) Auxiliary Space\n- Handle all edge cases: Single interval, All intervals disjoint, All intervals nested inside one big interval.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Merge Intervals & Overlap Detection\n    public int[][] merge(int[][] intervals) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Merge Intervals & Overlap Detection\n    public int[][] merge(int[][] intervals) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+    "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));\n        List<int[]> res = new ArrayList<>();\n        int[] curr = intervals[0];\n        res.add(curr);\n        for (int[] inv : intervals) {\n            if (inv[0] <= curr[1]) curr[1] = Math.max(curr[1], inv[1]);\n            else {\n                curr = inv;\n                res.add(curr);\n            }\n        }\n        return res.toArray(new int[res.size()][]);\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Merge Intervals & Overlap Detection logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Single interval",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N log N) Time)",
+      "Space Complexity": "20 points (Meets O(N) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

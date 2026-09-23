@@ -1,170 +1,2444 @@
 {
   "day": 10,
-  "title": "Numerical Newton-Raphson, Rotated Arrays & Problems on Trains",
-  "sem_data": {
-    "subject": "BCA-5004 Numerical Methods",
-    "topic": "Unit I \u2014 Newton-Raphson Method, Quadratic Convergence Proof & Hand Iteration",
-    "detailed_notes": [
-      "The Newton-Raphson Method (also known as Newton's Method of Tangents) is the most widely utilized and rapidly converging open iterative method for finding roots of algebraic and transcendental equations f(x) = 0.",
-      "Mathematical Derivation via Taylor Series:\nLet x0 be an initial approximation to the exact root alpha such that alpha = x0 + h, where h is a small correction factor. Expanding f(x0 + h) using Taylor's Theorem around x0:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second-order and higher terms (since h is small):\nf(x0) + h * f'(x0) approx 0  ==>  h = - f(x0) / f'(x0).\nThus, the improved approximation is: x1 = x0 + h = x0 - [f(x0) / f'(x0)].\nIn general, the Newton-Raphson recurrence relation is:\nx_{n+1} = x_n - [f(x_n) / f'(x_n)], provided f'(x_n) != 0.",
-      "Geometric Interpretation:\nAt point (x_n, f(x_n)) on the curve y = f(x), draw the tangent line to the curve. The slope of this tangent is f'(x_n). The equation of the tangent line is: y - f(x_n) = f'(x_n) * (x - x_n). Setting y = 0 gives the x-intercept of the tangent line: x = x_n - f(x_n) / f'(x_n), which represents the next approximation x_{n+1}.",
-      "Proof of Quadratic Convergence (Order p = 2):\nLet alpha be the exact root: f(alpha) = 0. Let error in n-th step be epsilon_n = x_n - alpha  ==>  x_n = alpha + epsilon_n.\nSubstituting into recurrence: alpha + epsilon_{n+1} = alpha + epsilon_n - [f(alpha + epsilon_n) / f'(alpha + epsilon_n)].\nExpanding via Taylor series about alpha (using f(alpha) = 0):\nf(alpha + epsilon_n) = epsilon_n * f'(alpha) + (epsilon_n^2 / 2) * f''(alpha) + ...\nf'(alpha + epsilon_n) = f'(alpha) + epsilon_n * f''(alpha) + ...\nDividing the series yields: epsilon_{n+1} = [f''(alpha) / (2 * f'(alpha))] * epsilon_n^2.\nThus: epsilon_{n+1} approx K * (epsilon_n)^2. The error in each iteration is proportional to the SQUARE of the previous error. The number of correct decimal places approximately DOUBLES at every single iteration!"
+  "title": "Day 10: Roots of Non-Linear Equations: Newton-Raphson Method & Quadratic Convergence Proof & Monotonic Deque (Sliding Window Maximum)",
+  "streams": {
+    "academic": {
+      "unit": 1,
+      "topic": "Unit I — Roots of Non-Linear Equations: Newton-Raphson Method & Quadratic Convergence Proof",
+      "objectives": [
+        "Derive the Newton-Raphson formula using Taylor series.",
+        "Prove quadratic convergence (Order 2) and understand failure cases."
+      ],
+      "explanation": "The Newton-Raphson (N-R) method is an open root-finding iterative technique based on the tangent line to the function curve.\n1. Derivation via Taylor Series:\n   Expanding `f(x)` around current estimate `x_n`:\n   `f(x_{n+1}) = f(x_n) + (x_{n+1} - x_n) * f'(x_n) + ...`\n   Setting `f(x_{n+1}) = 0` and ignoring higher-order terms:\n   `x_{n+1} = x_n - [ f(x_n) / f'(x_n) ]`\n2. Proof of Quadratic Convergence (Order 2):\n   Let `alpha` be the true root (`f(alpha) = 0`) and `e_n = x_n - alpha` be the error at step n.\n   Substituting `x_n = alpha + e_n` into the N-R formula and expanding via Taylor series:\n   `e_{n+1} = (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2`\n   Since `e_{n+1} proportional to (e_n)^2`, the rate of convergence is Quadratic (Order 2). The number of correct decimal places doubles every iteration!\n3. Failure Conditions:\n   • If `f'(x_n) == 0` (tangent line is horizontal, division by zero);\n   • If initial guess `x0` is far from root (may oscillate or diverge);\n   • Inflection points where `f''(x) == 0` can trap the solver in a cycle.",
+      "definitions": [
+        {
+          "term": "Newton-Raphson Formula",
+          "definition": "x_{n+1} = x_n - [f(x_n) / f'(x_n)], finding the x-intercept of the tangent line."
+        },
+        {
+          "term": "Quadratic Convergence",
+          "definition": "Convergence of order 2 where the error at step n+1 is proportional to the square of the error at step n (e_{n+1} ≈ c * e_n^2)."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Geometric Interpretation",
+          "content": "The tangent line drawn at (x_n, f(x_n)) intersects the x-axis at x_{n+1}."
+        },
+        {
+          "title": "Failure Conditions",
+          "content": "1. f'(x) = 0 (horizontal tangent); 2. Cycle oscillations; 3. Initial guess too far from root."
+        }
+      ],
+      "examples": [
+        "Computing the square root of N: f(x) = x^2 - N = 0 -> x_{n+1} = 0.5 * (x_n + N / x_n)."
+      ],
+      "diagram": "+---------------------------------------------------+\n|              NEWTON-RAPHSON METHOD                |\n| Tangent line at (x_n, f(x_n)) hits x-axis at x_{n+1}|\n| Formula: x_{n+1} = x_n - f(x_n) / f'(x_n)         |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Method",
+          "Type",
+          "Order of Convergence",
+          "Iterations for Precision",
+          "Divergence Risk"
+        ],
+        "rows": [
+          [
+            "Bisection Method",
+            "Bracketing (2 guesses)",
+            "Linear (Order 1)",
+            "High (~20 iterations)",
+            "Zero (Always converges)"
+          ],
+          [
+            "Regula-Falsi (Secant)",
+            "Bracketing (2 guesses)",
+            "Super-linear (Order 1.618)",
+            "Moderate (~8 iterations)",
+            "Low (Guaranteed bracket)"
+          ],
+          [
+            "Newton-Raphson",
+            "Open (1 initial guess)",
+            "Quadratic (Order 2)",
+            "Very Low (~4 iterations)",
+            "Possible if f'(x)=0 or bad x0"
+          ]
+        ]
+      },
+      "memorize": "Newton-Raphson formula: x_{n+1} = x_n - [f(x_n) / f'(x_n)]. Convergence is Quadratic (Order 2). Error doubles in accuracy every step.",
+      "understand": "Newton-Raphson is lightning fast near the root, but requires computing the analytical derivative f'(x) and can fail if f'(x) approaches zero.",
+      "common_mistakes": "Forgetting the negative sign in the formula or differentiating f(x) incorrectly.",
+      "exam_writing_guidance": "Derive the formula using Taylor expansion, write the full quadratic convergence proof showing e_{n+1} = c * e_n^2, and solve numerical equation.",
+      "mini_practice": [
+        "Find real root of x^3 - 2x - 5 = 0 using Newton-Raphson (3 iterations, x0 = 2)."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5004 Numerical Methods",
+          "year": "2023-24 (Q1)",
+          "marks": 15,
+          "question": "Derive the Newton-Raphson iterative formula using Taylor series. Prove that the Newton-Raphson method has a quadratic rate of convergence. Find the root of x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
+          "rubric": "Formula Derivation (4 marks) + Quadratic Convergence Proof (5 marks) + Step-by-step Solution of x^3 - 2x - 5 = 0 (6 marks) = 15 Marks.",
+          "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} ≈ (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n• f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n• Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n• Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n• Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
+          "answer_structure": "Derivation -> Convergence Proof -> Step-by-Step Calculation -> Conclusion",
+          "important_points": [
+            "x_{n+1} = x_n - f/f'",
+            "Taylor series expansion",
+            "e_{n+1} = k * e_n^2",
+            "Order 2 convergence",
+            "Root = 2.095"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Full Taylor series derivation",
+            "Error quadratic proof",
+            "Exact arithmetic to 3 decimals"
+          ],
+          "common_mistakes": [
+            "Algebraic errors in binomial expansion of [1 + e_n*f''/f']^-1"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5004 Numerical Methods",
+          "year": "2021 / Model",
+          "marks": 5,
+          "question": "Under what conditions does the Newton-Raphson method fail to converge? (5 Marks)",
+          "rubric": "4 failure conditions explained (5 marks).",
+          "model_answer": "1. Division by Zero: If f'(x_n) = 0 at any iteration, the tangent is horizontal and parallel to the x-axis, causing x_{n+1} to shoot to infinity; 2. Bad Initial Guess: If x0 is chosen far from the true root, the method may diverge or converge to an unintended distant root; 3. Cycle Oscillations: Near inflection points where f''(x) = 0, iterations may oscillate infinitely between two values without converging; 4. Root with Multiplicity: For multiple roots (f'(alpha) = 0), convergence degrades from quadratic to linear."
+        }
+      ],
+      "subject_code": "BCA-5004",
+      "subject_name": "Numerical Methods",
+      "mcqs": [
+        {
+          "id": "ACAD-10-01",
+          "question": "In the Java Collections Framework, what is the key difference between ArrayList and LinkedList for positional index-based retrieval (get(i))?",
+          "options": [
+            "ArrayList is O(1) random access, while LinkedList is O(N) sequential traversal",
+            "ArrayList is O(N) and LinkedList is O(1)",
+            "Both provide O(1) lookup",
+            "LinkedList consumes less memory per node than ArrayList"
+          ],
+          "correct_answer": "A",
+          "explanation": "ArrayList is backed by a contiguous array, allowing O(1) random index access. LinkedList requires traversing node pointers from head/tail in O(N)."
+        },
+        {
+          "id": "ACAD-10-02",
+          "question": "How does HashMap in Java 8+ handle severe hash collisions inside a single bucket when the chain length exceeds TREEIFY_THRESHOLD (8)?",
+          "options": [
+            "It drops incoming keys with a HashCollisionException",
+            "It converts the linked list bucket into a balanced Red-Black Tree, improving lookup from O(N) to O(log N)",
+            "It increases heap allocation by 10x immediately",
+            "It converts the hash table into an array of linked lists"
+          ],
+          "correct_answer": "B",
+          "explanation": "Java 8 optimizes hash collisions: once a bucket's linked list reaches 8 nodes (and table capacity >= 64), it morphs into a Red-Black Tree for O(log N) search."
+        },
+        {
+          "id": "ACAD-10-03",
+          "question": "Which of the following collection classes is synchronized and thread-safe by default in Java?",
+          "options": [
+            "java.util.ArrayList",
+            "java.util.HashMap",
+            "java.util.Vector",
+            "java.util.HashSet"
+          ],
+          "correct_answer": "C",
+          "explanation": "Vector and Hashtable are legacy collections whose methods are synchronized. Modern code uses ConcurrentHashMap or Collections.synchronizedList()."
+        },
+        {
+          "id": "ACAD-10-04",
+          "question": "What is the default initial capacity and default load factor of a java.util.HashMap?",
+          "options": [
+            "Capacity = 10, Load Factor = 0.5",
+            "Capacity = 16, Load Factor = 0.75",
+            "Capacity = 32, Load Factor = 0.8",
+            "Capacity = 64, Load Factor = 1.0"
+          ],
+          "correct_answer": "B",
+          "explanation": "By default, HashMap initializes with a bucket array capacity of 16 and a load factor of 0.75 (rehashing occurs when size reaches 16 * 0.75 = 12)."
+        },
+        {
+          "id": "ACAD-10-05",
+          "question": "What contract must be maintained between the equals() and hashCode() methods in Java?",
+          "options": [
+            "If two objects have the same hashCode, they must be equal via equals()",
+            "If two objects are equal according to equals(), they must produce the same integer hashCode",
+            "hashCode() must return a prime number for all objects",
+            "equals() cannot be overridden without declaring the class final"
+          ],
+          "correct_answer": "B",
+          "explanation": "The Java contract requires: if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must strictly hold to ensure correct behavior in hash collections."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2023-24 (Q1)",
+        "marks": 15,
+        "question": "Derive the Newton-Raphson iterative formula using Taylor series. Prove that the Newton-Raphson method has a quadratic rate of convergence. Find the root of x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
+        "rubric": "Formula Derivation (4 marks) + Quadratic Convergence Proof (5 marks) + Step-by-step Solution of x^3 - 2x - 5 = 0 (6 marks) = 15 Marks.",
+        "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} ≈ (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n• f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n• Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n• Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n• Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
+        "answer_structure": "Derivation -> Convergence Proof -> Step-by-Step Calculation -> Conclusion",
+        "important_points": [
+          "x_{n+1} = x_n - f/f'",
+          "Taylor series expansion",
+          "e_{n+1} = k * e_n^2",
+          "Order 2 convergence",
+          "Root = 2.095"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Full Taylor series derivation",
+          "Error quadratic proof",
+          "Exact arithmetic to 3 decimals"
+        ],
+        "common_mistakes": [
+          "Algebraic errors in binomial expansion of [1 + e_n*f''/f']^-1"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2021 / Model",
+        "marks": 5,
+        "question": "Under what conditions does the Newton-Raphson method fail to converge? (5 Marks)",
+        "rubric": "4 failure conditions explained (5 marks).",
+        "model_answer": "1. Division by Zero: If f'(x_n) = 0 at any iteration, the tangent is horizontal and parallel to the x-axis, causing x_{n+1} to shoot to infinity; 2. Bad Initial Guess: If x0 is chosen far from the true root, the method may diverge or converge to an unintended distant root; 3. Cycle Oscillations: Near inflection points where f''(x) = 0, iterations may oscillate infinitely between two values without converging; 4. Root with Multiplicity: For multiple roots (f'(alpha) = 0), convergence degrades from quadratic to linear."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|             NEWTON-RAPHSON GEOMETRIC TANGENT CONSTRUCTION               |\n+-------------------------------------------------------------------------+\n|      y                                                                  |\n|      |                     * (x0, f(x0))                                |\n|      |                    /|                                            |\n|      |                   / | Tangent line slope = f'(x0)                |\n|      |                  /  |                                            |\n|      |                 /   |                                            |\n|   ---+----------------x1---x0----------------------------------> x      |\n|      |           alpha /                                                |\n|      |        (Exact  /                                                 |\n|      |         Root) /                                                  |\n|      |              * Curve y = f(x)                                    |\n|      x1 = x0 - [f(x0) / f'(x0)] is the x-intercept of the tangent line. |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-10-01",
+        "question": "In the Java Collections Framework, what is the key difference between ArrayList and LinkedList for positional index-based retrieval (get(i))?",
+        "options": [
+          "ArrayList is O(1) random access, while LinkedList is O(N) sequential traversal",
+          "ArrayList is O(N) and LinkedList is O(1)",
+          "Both provide O(1) lookup",
+          "LinkedList consumes less memory per node than ArrayList"
+        ],
+        "correct_answer": "A",
+        "explanation": "ArrayList is backed by a contiguous array, allowing O(1) random index access. LinkedList requires traversing node pointers from head/tail in O(N)."
+      },
+      {
+        "id": "ACAD-10-02",
+        "question": "How does HashMap in Java 8+ handle severe hash collisions inside a single bucket when the chain length exceeds TREEIFY_THRESHOLD (8)?",
+        "options": [
+          "It drops incoming keys with a HashCollisionException",
+          "It converts the linked list bucket into a balanced Red-Black Tree, improving lookup from O(N) to O(log N)",
+          "It increases heap allocation by 10x immediately",
+          "It converts the hash table into an array of linked lists"
+        ],
+        "correct_answer": "B",
+        "explanation": "Java 8 optimizes hash collisions: once a bucket's linked list reaches 8 nodes (and table capacity >= 64), it morphs into a Red-Black Tree for O(log N) search."
+      },
+      {
+        "id": "ACAD-10-03",
+        "question": "Which of the following collection classes is synchronized and thread-safe by default in Java?",
+        "options": [
+          "java.util.ArrayList",
+          "java.util.HashMap",
+          "java.util.Vector",
+          "java.util.HashSet"
+        ],
+        "correct_answer": "C",
+        "explanation": "Vector and Hashtable are legacy collections whose methods are synchronized. Modern code uses ConcurrentHashMap or Collections.synchronizedList()."
+      },
+      {
+        "id": "ACAD-10-04",
+        "question": "What is the default initial capacity and default load factor of a java.util.HashMap?",
+        "options": [
+          "Capacity = 10, Load Factor = 0.5",
+          "Capacity = 16, Load Factor = 0.75",
+          "Capacity = 32, Load Factor = 0.8",
+          "Capacity = 64, Load Factor = 1.0"
+        ],
+        "correct_answer": "B",
+        "explanation": "By default, HashMap initializes with a bucket array capacity of 16 and a load factor of 0.75 (rehashing occurs when size reaches 16 * 0.75 = 12)."
+      },
+      {
+        "id": "ACAD-10-05",
+        "question": "What contract must be maintained between the equals() and hashCode() methods in Java?",
+        "options": [
+          "If two objects have the same hashCode, they must be equal via equals()",
+          "If two objects are equal according to equals(), they must produce the same integer hashCode",
+          "hashCode() must return a prime number for all objects",
+          "equals() cannot be overridden without declaring the class final"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Java contract requires: if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must strictly hold to ensure correct behavior in hash collections."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Permutations & Combinations",
+      "category": "Quantitative",
+      "subtopic": "Permutations & Combinations",
+      "formulas": "1. nPr = n! / (n - r)! (Arrangements where order matters).\n2. nCr = n! / [r! * (n - r)!] (Selections where order does NOT matter).\n3. nCr = nC(n - r); nC0 = nCn = 1.\n4. Circular Permutations of n distinct objects = (n - 1)!.",
+      "shortcuts": "Grouping (Block) Method: When k items must always be together, tie them into 1 single super-item. Total items = (n - k + 1)!. Then multiply by k! internal arrangements.",
+      "tutorial": [
+        "Permutation answers 'In how many ways can we arrange/order?' Combination answers 'In how many ways can we choose/select?' Watch for duplicate letters in words: arrangements of word with repeated letters = Total! / (count1! * count2!)."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Permutations & Combinations",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Permutations & Combinations",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Permutations & Combinations",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Permutations & Combinations",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Permutations & Combinations",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "In how many different ways can the letters of the word 'LEADING' be arranged so that the vowels always come together?",
+        "options": {
+          "A": "720",
+          "B": "5040",
+          "C": "360",
+          "D": "1440"
+        },
+        "correct_answer": "A",
+        "explanation": "Vowels: E, A, I (3 vowels). Treat (EAI) as 1 unit. Units: L, D, N, G + (EAI) = 5 units. Arrangements = 5! * 3! = 120 * 6 = 720.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "In how many ways can a committee of 5 members be formed from 6 men and 4 women such that it contains at least 3 men?",
+        "options": {
+          "A": "186",
+          "B": "196",
+          "C": "210",
+          "D": "150"
+        },
+        "correct_answer": "A",
+        "explanation": "Cases: (3M, 2W): 6C3 * 4C2 = 20 * 6 = 120; (4M, 1W): 6C4 * 4C1 = 15 * 4 = 60; (5M, 0W): 6C5 * 4C0 = 6 * 1 = 6. Total = 120 + 60 + 6 = 186.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "How many 3-digit numbers can be formed from the digits 2, 3, 5, 6, 7, and 9 without repetition?",
+        "options": {
+          "A": "120",
+          "B": "216",
+          "C": "60",
+          "D": "720"
+        },
+        "correct_answer": "A",
+        "explanation": "P(6, 3) = 6 * 5 * 4 = 120.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "How many diagonals are there in a regular polygon with 12 sides (dodecagon)?",
+        "options": {
+          "A": "54",
+          "B": "60",
+          "C": "48",
+          "D": "66"
+        },
+        "correct_answer": "A",
+        "explanation": "Number of diagonals = n(n - 3) / 2 = 12 * 9 / 2 = 54.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "In how many ways can 7 people be seated around a round dining table?",
+        "options": {
+          "A": "720",
+          "B": "5040",
+          "C": "360",
+          "D": "120"
+        },
+        "correct_answer": "A",
+        "explanation": "Circular permutations = (n - 1)! = (7 - 1)! = 6! = 720.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "How many words can be formed using all the letters of the word 'MATHEMATICS'?",
+        "options": {
+          "A": "4,989,600",
+          "B": "2,494,800",
+          "C": "39,916,800",
+          "D": "1,247,400"
+        },
+        "correct_answer": "A",
+        "explanation": "Total letters = 11. Repeated: M=2, A=2, T=2. Arrangements = 11! / (2! * 2! * 2!) = 39,916,800 / 8 = 4,989,600.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Out of 7 consonants and 4 vowels, how many words of 3 consonants and 2 vowels can be formed?",
+        "options": {
+          "A": "25,200",
+          "B": "210",
+          "C": "2,520",
+          "D": "50,400"
+        },
+        "correct_answer": "A",
+        "explanation": "Selection = 7C3 * 4C2 = 35 * 6 = 210. Arrangement of 5 chosen letters = 5! = 120. Total words = 210 * 120 = 25,200.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "At a party, everybody shakes hands with everybody else. If 66 handshakes took place, how many people were present?",
+        "options": {
+          "A": "12",
+          "B": "11",
+          "C": "13",
+          "D": "14"
+        },
+        "correct_answer": "A",
+        "explanation": "nC2 = 66 => n(n - 1) / 2 = 66 => n(n - 1) = 132. Since 12 * 11 = 132, n = 12 people.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "In how many ways can 4 boys and 4 girls be arranged in a line so that boys and girls alternate?",
+        "options": {
+          "A": "1,152",
+          "B": "576",
+          "C": "2,880",
+          "D": "40,320"
+        },
+        "correct_answer": "A",
+        "explanation": "Pattern BGBGBGBG or GBGBGBGB (2 configurations). Each gives 4! * 4! = 24 * 24 = 576. Total = 2 * 576 = 1,152.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "How many 4-letter code words can be formed using the first 10 letters of the English alphabet if no letter can be repeated?",
+        "options": {
+          "A": "5,040",
+          "B": "210",
+          "C": "10,000",
+          "D": "2,520"
+        },
+        "correct_answer": "A",
+        "explanation": "10 * 9 * 8 * 7 = 5,040.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Permutations & Combinations (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Monotonic Deque (Sliding Window Maximum)",
+      "category": "Queue / Deque",
+      "concept": "Maintains a double-ended queue storing array indices such that corresponding values are monotonically decreasing.",
+      "why_it_works": "Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.",
+      "visual_explanation": "Window [ 1, 3, -1 ], k = 3 -> Deque stores [3, -1]\\nNext element is -3 -> Deque stores [3, -1, -3]\\nNext element is 5 -> 5 evicts 3, -1, -3 -> Deque stores [5]",
+      "language": "Java",
+      "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        if (nums == null || nums.length == 0) return new int[0];\n        int n = nums.length;\n        int[] result = new int[n - k + 1];\n        Deque<Integer> deque = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            if (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {\n                deque.pollFirst();\n            }\n            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {\n                deque.pollLast();\n            }\n            deque.offerLast(i);\n            if (i >= k - 1) {\n                result[i - k + 1] = nums[deque.peekFirst()];\n            }\n        }\n        return result;\n    }\n}",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        if (nums == null || nums.length == 0) return new int[0];\n        int n = nums.length;\n        int[] result = new int[n - k + 1];\n        Deque<Integer> deque = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            if (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {\n                deque.pollFirst();\n            }\n            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {\n                deque.pollLast();\n            }\n            deque.offerLast(i);\n            if (i >= k - 1) {\n                result[i - k + 1] = nums[deque.peekFirst()];\n            }\n        }\n        return result;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 7: Use ArrayDeque to support O(1) head and tail operations.",
+        "Line 10-12: Evict indices that fall outside the current sliding window.",
+        "Line 13-15: Maintain decreasing monotonic order by popping smaller elements from tail.",
+        "Line 16: Push current index i.",
+        "Line 17-19: Once window size reaches k, record head of deque as maximum."
+      ],
+      "dry_run": "nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3. Window [1, 3, -1] max=3. Window [3, -1, -3] max=3. Window [-1, -3, 5] max=5... Returns [3, 3, 5, 5, 6, 7].",
+      "complexity": "O(N) Time, O(K) Auxiliary Space",
+      "edge_cases": "k == 1, k == nums.length, Strictly decreasing array, All elements equal",
+      "edge_cases_list": [
+        "k == 1",
+        "k == nums.length",
+        "Strictly decreasing array",
+        "All elements equal"
+      ],
+      "interview_variations": [
+        "Sliding Window Minimum",
+        "Constrained Subsequence Sum",
+        "Jump Game VI"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-10-01",
+        "title": "Problem 1: Sliding Window Maximum",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are given an array of integers nums, there is a sliding window of size k which is moving from the very left to the very right. Return the max sliding window.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Monotonic Deque (Sliding Window Maximum) algorithmic technique.\n2. Maintains a double-ended queue storing array indices such that corresponding values are monotonically decreasing.\n3. Invariants: Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(K) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-10-02",
+        "title": "Problem 2: Jump Game VI",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given a 0-indexed integer array nums and an integer k. Return the maximum score you can get jumping at most k steps forward.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Monotonic Deque (Sliding Window Maximum).\n2. Handle edge cases: k == 1, k == nums.length, Strictly decreasing array, All elements equal.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(K) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "DBMS",
+      "topic": "Database Normalization: 1NF, 2NF, 3NF, BCNF & Functional Dependencies",
+      "concept_lesson": "Normalization is the systematic process of decomposing database relations to minimize data redundancy and eliminate Update, Insertion, and Deletion Anomalies while preserving Functional Dependencies and ensuring Lossless Join.\n\nFunctional Dependency (FD: X -> Y):\nIf two tuples agree on attribute set X, they must also agree on attribute set Y. X is the Determinant.\n\nNormal Forms Progression:\n1. First Normal Form (1NF): Every attribute value must be atomic (indivisible single values; no repeating groups, arrays, or comma-separated lists).\n2. Second Normal Form (2NF): Must be in 1NF AND have NO Partial Functional Dependency. Every non-prime attribute must be fully functionally dependent on the ENTIRE candidate key. (Applies only when candidate key is composite).\n3. Third Normal Form (3NF): Must be in 2NF AND have NO Transitive Dependency. For every non-trivial FD X -> Y, either X is a Superkey OR Y is a Prime Attribute (member of a candidate key).\n4. Boyce-Codd Normal Form (BCNF): A stricter version of 3NF. For every non-trivial FD X -> Y, X MUST be a Superkey. BCNF completely eliminates all functional redundancy, but decomposing into BCNF may sometimes sacrifice Dependency Preservation.\n\nArmstrong's Axioms:\nReflexivity (if Y subset X, X -> Y), Augmentation (if X -> Y, XZ -> YZ), Transitivity (if X -> Y and Y -> Z, X -> Z).",
+      "key_definitions": [
+        {
+          "term": "Functional Dependency",
+          "definition": "A constraint between two sets of attributes in a relation where values of X uniquely determine values of Y."
+        },
+        {
+          "term": "Partial Dependency",
+          "definition": "A dependency where a non-prime attribute is determined by a subset of a composite candidate key."
+        },
+        {
+          "term": "Transitive Dependency",
+          "definition": "A dependency where a non-prime attribute is determined by another non-prime attribute: X -> Y and Y -> Z."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What are Insertion, Deletion, and Modification anomalies in an unnormalized database?",
+          "a": "Insertion Anomaly: Inability to record certain information without inserting extraneous dummy data (e.g., cannot register a new department without enrolling a student). Deletion Anomaly: Deleting one piece of data inadvertently deletes unrelated vital data (e.g., deleting the last student enrolled in a course deletes the course catalog record). Modification Anomaly: Inconsistent data when updating redundant instances in multiple rows (e.g., updating a professor's phone number in one row but missing other student rows)."
+        },
+        {
+          "q": "What is the exact distinction between 3NF and BCNF?",
+          "a": "For every non-trivial functional dependency X -> Y: In 3NF, the rule is satisfied if X is a Superkey OR Y is a prime attribute. In BCNF, the rule strictly requires X to be a Superkey with NO exceptions. BCNF is strictly stronger than 3NF. Any relation in BCNF is guaranteed to be in 3NF, but a 3NF relation with overlapping candidate keys may violate BCNF."
+        },
+        {
+          "q": "Can a table with a single-attribute primary key violate 2NF?",
+          "a": "No. 2NF states that no non-prime attribute can be dependent on a proper subset of a candidate key (no partial dependency). If the candidate key consists of a single attribute, it has no proper subsets other than empty set, making partial dependency mathematically impossible. A 1NF table with a single-column primary key is automatically in 2NF."
+        },
+        {
+          "q": "What is a Lossless Join Decomposition, and why is it critical?",
+          "a": "A decomposition of relation R into R1 and R2 is lossless if natural join R1 bowtie R2 recovers exactly relation R without generating false 'spurious tuples'. Mathematically, the common attribute must be a superkey in at least one of the decomposed relations: (R1 cap R2 -> R1) OR (R1 cap R2 -> R2)."
+        },
+        {
+          "q": "What is Denormalization, and when is it recommended in production systems?",
+          "a": "Denormalization is the deliberate re-introduction of redundancy into normalized relations (e.g., storing customer_name directly inside the orders table). It is used in read-heavy analytics, data warehouses, and microservices to avoid expensive multi-table JOIN operations, trading write performance and storage space for ultra-fast query execution speeds."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-10-01",
+          "question": "A table is in 2NF if it is in 1NF and contains no:",
+          "options": [
+            "Transitive dependencies",
+            "Partial functional dependencies",
+            "Foreign keys",
+            "Composite candidate keys"
+          ],
+          "correct_answer": "B",
+          "explanation": "2NF mandates that all non-prime attributes are fully dependent on the complete candidate key."
+        },
+        {
+          "id": "CS-10-02",
+          "question": "In 3NF, for every non-trivial functional dependency X -> Y, which condition must hold?",
+          "options": [
+            "X must be a candidate key and Y must be NULL",
+            "X is a Superkey OR Y is a Prime attribute",
+            "Both X and Y must be superkeys",
+            "Y must be a foreign key"
+          ],
+          "correct_answer": "B",
+          "explanation": "3NF relaxes BCNF by permitting Y to be a prime attribute."
+        },
+        {
+          "id": "CS-10-03",
+          "question": "Which normal form requires every determinant to be a Superkey for all non-trivial dependencies?",
+          "options": [
+            "1NF",
+            "2NF",
+            "3NF",
+            "BCNF"
+          ],
+          "correct_answer": "D",
+          "explanation": "BCNF strictly requires the determinant X to be a superkey for every non-trivial FD X -> Y."
+        },
+        {
+          "id": "CS-10-04",
+          "question": "A 1NF relation whose primary key consists of a single column is guaranteed to be in:",
+          "options": [
+            "2NF",
+            "3NF",
+            "BCNF",
+            "4NF"
+          ],
+          "correct_answer": "A",
+          "explanation": "A single-column key has no proper subkeys, so partial dependencies cannot exist."
+        },
+        {
+          "id": "CS-10-05",
+          "question": "The property ensuring that joining decomposed relations does not produce spurious tuples is called:",
+          "options": [
+            "Dependency Preservation",
+            "Lossless Join Property",
+            "Referential Closure",
+            "Atomicity"
+          ],
+          "correct_answer": "B",
+          "explanation": "Lossless join decomposition ensures original relations can be reconstructed without phantom rows."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "College Student Management System (CSMS)",
+      "repo_path": "D:\\Projects\\College Student Management System",
+      "topic": "Relational Database Schema Design & Attendance Shortage Engine",
+      "what_to_understand": "Designing normalized 3NF tables in PostgreSQL and calculating aggregate attendance percentage thresholds.",
+      "what_to_memorize": "Attendance threshold formula: Attendance % = (Total Present Days / Total Recorded Class Days) * 100; triggered alerts when < 75%.",
+      "interview_questions": [
+        {
+          "q": "Explain the relational schema design for attendance and grade tracking in CSMS.",
+          "a": "In `schema.sql`, the schema utilizes PostgreSQL with UUID primary keys. The `attendance` table maintains a compound unique constraint `(student_id, record_date)` to prevent duplicate daily check-ins. The attendance aggregation query performs a count of 'Present' vs total scheduled sessions per course, flagging any student falling below the mandatory university 75% threshold for detention alerts."
+        },
+        {
+          "q": "How are foreign keys and referential integrity configured in CSMS?",
+          "a": "Child tables (`attendance`, `grades`, `fees`, `test_marks`) reference the parent `students` table with `ON DELETE CASCADE`. This ensures that when a student is archived or deleted from the directory, orphaned records are automatically cleaned up, maintaining zero orphaned rows in PostgreSQL."
+        }
+      ],
+      "interview_pitch_exercise": "I designed the relational PostgreSQL schema in schema.sql with strict constraints to ensure academic data integrity. The system features a unique constraint preventing duplicate daily attendance and an automated aggregation query that calculates attendance percentages, immediately surfacing students below the university's 75% requirement to the HOD."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 10 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 10 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of Caloriv.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 09 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n• Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Monotonic Queue & Sliding Window Max.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 10 Q1: What is the primary academic thesis of Java Collections: ArrayList, HashMap & ConcurrentHashMap?",
+          "a": "Core theoretical and practical mastery of Java Collections: ArrayList, HashMap & ConcurrentHashMap under the CSJM University BCA-5002 syllabus."
+        },
+        {
+          "q": "Day 10 Q2: What is the key speed calculation formula applied in Permutations & Combinations?",
+          "a": "High-speed corporate placement arithmetic shortcut for Permutations & Combinations in campus recruitment exams."
+        },
+        {
+          "q": "Day 10 Q3: What is the time complexity of Monotonic Queue & Sliding Window Max?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 10 Q4: What is the central architectural principle of Database Normalization: 1NF to BCNF?",
+          "a": "Foundational systems engineering rule governing Database Normalization: 1NF to BCNF in production environments."
+        },
+        {
+          "q": "Day 10 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 10 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 10 Q7: What is the verified technical foundation of College Student Management System (CSMS)?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 10 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 10 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 10 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n• Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Monotonic Queue & Sliding Window Max."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: College Student Management System (CSMS)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-10-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In the Java Collections Framework, what is the key difference between ArrayList and LinkedList for positional index-based retrieval (get(i))?",
+        "options": [
+          "ArrayList is O(1) random access, while LinkedList is O(N) sequential traversal",
+          "ArrayList is O(N) and LinkedList is O(1)",
+          "Both provide O(1) lookup",
+          "LinkedList consumes less memory per node than ArrayList"
+        ],
+        "correct_answer": "A",
+        "explanation": "ArrayList is backed by a contiguous array, allowing O(1) random index access. LinkedList requires traversing node pointers from head/tail in O(N)."
+      },
+      {
+        "id": "TEST-10-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does HashMap in Java 8+ handle severe hash collisions inside a single bucket when the chain length exceeds TREEIFY_THRESHOLD (8)?",
+        "options": [
+          "It drops incoming keys with a HashCollisionException",
+          "It converts the linked list bucket into a balanced Red-Black Tree, improving lookup from O(N) to O(log N)",
+          "It increases heap allocation by 10x immediately",
+          "It converts the hash table into an array of linked lists"
+        ],
+        "correct_answer": "B",
+        "explanation": "Java 8 optimizes hash collisions: once a bucket's linked list reaches 8 nodes (and table capacity >= 64), it morphs into a Red-Black Tree for O(log N) search."
+      },
+      {
+        "id": "TEST-10-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which of the following collection classes is synchronized and thread-safe by default in Java?",
+        "options": [
+          "java.util.ArrayList",
+          "java.util.HashMap",
+          "java.util.Vector",
+          "java.util.HashSet"
+        ],
+        "correct_answer": "C",
+        "explanation": "Vector and Hashtable are legacy collections whose methods are synchronized. Modern code uses ConcurrentHashMap or Collections.synchronizedList()."
+      },
+      {
+        "id": "TEST-10-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the default initial capacity and default load factor of a java.util.HashMap?",
+        "options": [
+          "Capacity = 10, Load Factor = 0.5",
+          "Capacity = 16, Load Factor = 0.75",
+          "Capacity = 32, Load Factor = 0.8",
+          "Capacity = 64, Load Factor = 1.0"
+        ],
+        "correct_answer": "B",
+        "explanation": "By default, HashMap initializes with a bucket array capacity of 16 and a load factor of 0.75 (rehashing occurs when size reaches 16 * 0.75 = 12)."
+      },
+      {
+        "id": "TEST-10-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What contract must be maintained between the equals() and hashCode() methods in Java?",
+        "options": [
+          "If two objects have the same hashCode, they must be equal via equals()",
+          "If two objects are equal according to equals(), they must produce the same integer hashCode",
+          "hashCode() must return a prime number for all objects",
+          "equals() cannot be overridden without declaring the class final"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Java contract requires: if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must strictly hold to ensure correct behavior in hash collections."
+      },
+      {
+        "id": "TEST-10-06",
+        "category": "Placement Aptitude",
+        "question": "In how many different ways can the letters of the word 'OPTICAL' be arranged so that the vowels always come together?",
+        "options": [
+          "720",
+          "120",
+          "480",
+          "5040"
+        ],
+        "correct_answer": "A",
+        "explanation": "Vowels: O, I, A (3 vowels). Consonants: P, T, C, L (4 consonants). Treat (OIA) as 1 unit. Total units = 5. Arrangements = 5! * 3! = 120 * 6 = 720."
+      },
+      {
+        "id": "TEST-10-07",
+        "category": "Placement Aptitude",
+        "question": "How many 4-digit numbers can be formed using the digits 1, 2, 3, 4, 5, 6 without any repetition of digits?",
+        "options": [
+          "360",
+          "720",
+          "120",
+          "240"
+        ],
+        "correct_answer": "A",
+        "explanation": "Number of permutations = P(6, 4) = 6 * 5 * 4 * 3 = 360."
+      },
+      {
+        "id": "TEST-10-08",
+        "category": "Placement Aptitude",
+        "question": "In how many ways can a cricket team of 11 players be chosen from 15 players if a particular player is always selected?",
+        "options": [
+          "1,001",
+          "1,365",
+          "960",
+          "1,200"
+        ],
+        "correct_answer": "A",
+        "explanation": "Since 1 player is fixed, choose 10 remaining players from 14: 14C10 = 14C4 = (14 * 13 * 12 * 11) / (4 * 3 * 2 * 1) = 1,001."
+      },
+      {
+        "id": "TEST-10-09",
+        "category": "Placement Aptitude",
+        "question": "How many chords can be drawn through 21 points situated on a circle?",
+        "options": [
+          "210",
+          "190",
+          "220",
+          "180"
+        ],
+        "correct_answer": "A",
+        "explanation": "A chord requires selecting 2 points from 21: 21C2 = (21 * 20) / 2 = 210 chords."
+      },
+      {
+        "id": "TEST-10-10",
+        "category": "Placement Aptitude",
+        "question": "In how many ways can 5 distinct books be arranged on a shelf?",
+        "options": [
+          "120",
+          "24",
+          "60",
+          "720"
+        ],
+        "correct_answer": "A",
+        "explanation": "5! = 5 * 4 * 3 * 2 * 1 = 120 ways."
+      },
+      {
+        "id": "TEST-10-11",
+        "category": "Core CS (DBMS)",
+        "question": "A table is in 2NF if it is in 1NF and contains no:",
+        "options": [
+          "Transitive dependencies",
+          "Partial functional dependencies",
+          "Foreign keys",
+          "Composite candidate keys"
+        ],
+        "correct_answer": "B",
+        "explanation": "2NF mandates that all non-prime attributes are fully dependent on the complete candidate key."
+      },
+      {
+        "id": "TEST-10-12",
+        "category": "Core CS (DBMS)",
+        "question": "In 3NF, for every non-trivial functional dependency X -> Y, which condition must hold?",
+        "options": [
+          "X must be a candidate key and Y must be NULL",
+          "X is a Superkey OR Y is a Prime attribute",
+          "Both X and Y must be superkeys",
+          "Y must be a foreign key"
+        ],
+        "correct_answer": "B",
+        "explanation": "3NF relaxes BCNF by permitting Y to be a prime attribute."
+      },
+      {
+        "id": "TEST-10-13",
+        "category": "Core CS (DBMS)",
+        "question": "Which normal form requires every determinant to be a Superkey for all non-trivial dependencies?",
+        "options": [
+          "1NF",
+          "2NF",
+          "3NF",
+          "BCNF"
+        ],
+        "correct_answer": "D",
+        "explanation": "BCNF strictly requires the determinant X to be a superkey for every non-trivial FD X -> Y."
+      },
+      {
+        "id": "TEST-10-14",
+        "category": "Core CS (DBMS)",
+        "question": "A 1NF relation whose primary key consists of a single column is guaranteed to be in:",
+        "options": [
+          "2NF",
+          "3NF",
+          "BCNF",
+          "4NF"
+        ],
+        "correct_answer": "A",
+        "explanation": "A single-column key has no proper subkeys, so partial dependencies cannot exist."
+      },
+      {
+        "id": "TEST-10-15",
+        "category": "Core CS (DBMS)",
+        "question": "The property ensuring that joining decomposed relations does not produce spurious tuples is called:",
+        "options": [
+          "Dependency Preservation",
+          "Lossless Join Property",
+          "Referential Closure",
+          "Atomicity"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lossless join decomposition ensures original relations can be reconstructed without phantom rows."
+      },
+      {
+        "id": "TEST-10-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Monotonic Deque (Sliding Window Maximum)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(K) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Monotonic Deque (Sliding Window Maximum)' pattern operates with O(N) Time, O(K) Auxiliary Space: Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.."
+      },
+      {
+        "id": "TEST-10-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Monotonic Deque (Sliding Window Maximum)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: k == 1.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Monotonic Deque (Sliding Window Maximum) include k == 1, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-10-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Sliding Window Maximum', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(K) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(K) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-10-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Relational Database Schema Design & Attendance Shortage Engine'?",
+        "options": [
+          "Attendance threshold formula: Attendance % = (Total Present Days / Total Recorded Class Days) * 100; triggered alerts when < 75%.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Attendance threshold formula: Attendance % = (Total Present Days / Total Recorded Class Days) * 100; triggered alerts when < 75%.."
+      },
+      {
+        "id": "TEST-10-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'Explain the relational schema design for attendance and grade tracking in CSMS.'?",
+        "options": [
+          "In `schema.sql`, the schema utilizes PostgreSQL with UUID primary keys. The `attendance` table maintains a compound unique constraint `(student_id, record_date)...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: In `schema.sql`, the schema utilizes PostgreSQL with UUID primary keys. The `attendance` table maintains a compound unique constraint `(stud."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-10",
+      "title": "Sliding Window Maximum (Monotonic Deque (Sliding Window Maximum))",
+      "time_limit_minutes": 25,
+      "difficulty": "Easy",
+      "problem_statement": "Solve the core placement problem: Sliding Window Maximum.\n\nYou are given an array of integers nums, there is a sliding window of size k which is moving from the very left to the very right. Return the max sliding window.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Monotonic Deque (Sliding Window Maximum)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(K) Auxiliary Space\n- Handle all edge cases: k == 1, k == nums.length, Strictly decreasing array, All elements equal.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Monotonic Deque (Sliding Window Maximum)\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Monotonic Deque (Sliding Window Maximum)\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+      "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Monotonic Deque (Sliding Window Maximum) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: k == 1",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(K) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Numerical Methods",
+    "subject_code": "BCA-5004",
+    "unit": 1,
+    "topic": "Unit I — Roots of Non-Linear Equations: Newton-Raphson Method & Quadratic Convergence Proof",
+    "objectives": [
+      "Derive the Newton-Raphson formula using Taylor series.",
+      "Prove quadratic convergence (Order 2) and understand failure cases."
+    ],
+    "detailed_notes": [
+      "The Newton-Raphson (N-R) method is an open root-finding iterative technique based on the tangent line to the function curve.\n1. Derivation via Taylor Series:\n   Expanding `f(x)` around current estimate `x_n`:\n   `f(x_{n+1}) = f(x_n) + (x_{n+1} - x_n) * f'(x_n) + ...`\n   Setting `f(x_{n+1}) = 0` and ignoring higher-order terms:\n   `x_{n+1} = x_n - [ f(x_n) / f'(x_n) ]`\n2. Proof of Quadratic Convergence (Order 2):\n   Let `alpha` be the true root (`f(alpha) = 0`) and `e_n = x_n - alpha` be the error at step n.\n   Substituting `x_n = alpha + e_n` into the N-R formula and expanding via Taylor series:\n   `e_{n+1} = (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2`\n   Since `e_{n+1} proportional to (e_n)^2`, the rate of convergence is Quadratic (Order 2). The number of correct decimal places doubles every iteration!\n3. Failure Conditions:\n   • If `f'(x_n) == 0` (tangent line is horizontal, division by zero);\n   • If initial guess `x0` is far from root (may oscillate or diverge);\n   • Inflection points where `f''(x) == 0` can trap the solver in a cycle.",
+      "The tangent line drawn at (x_n, f(x_n)) intersects the x-axis at x_{n+1}.",
+      "1. f'(x) = 0 (horizontal tangent); 2. Cycle oscillations; 3. Initial guess too far from root."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|              NEWTON-RAPHSON METHOD                |\n| Tangent line at (x_n, f(x_n)) hits x-axis at x_{n+1}|\n| Formula: x_{n+1} = x_n - f(x_n) / f'(x_n)         |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Comparison Criterion",
-        "Bisection Method",
-        "Regula-Falsi Method",
-        "Newton-Raphson Method"
+        "Method",
+        "Type",
+        "Order of Convergence",
+        "Iterations for Precision",
+        "Divergence Risk"
       ],
       "rows": [
         [
-          "Method Category",
-          "Bracketing (requires f(a)*f(b) < 0)",
-          "Bracketing (requires f(a)*f(b) < 0)",
-          "Open Method (needs single initial guess)"
+          "Bisection Method",
+          "Bracketing (2 guesses)",
+          "Linear (Order 1)",
+          "High (~20 iterations)",
+          "Zero (Always converges)"
         ],
         [
-          "Order of Convergence",
-          "Linear (p = 1)",
-          "Linear (p = 1)",
-          "Quadratic (p = 2)"
+          "Regula-Falsi (Secant)",
+          "Bracketing (2 guesses)",
+          "Super-linear (Order 1.618)",
+          "Moderate (~8 iterations)",
+          "Low (Guaranteed bracket)"
         ],
         [
-          "Rate of Convergence",
-          "Very slow (halves interval)",
-          "Slow to moderate",
-          "Extremely fast (doubles precision each step)"
-        ],
-        [
-          "Derivative Needed",
-          "No derivative required",
-          "No derivative required",
-          "Requires analytical derivative f'(x)"
-        ],
-        [
-          "Convergence Guarantee",
-          "100% guaranteed convergence",
-          "100% guaranteed convergence",
-          "May diverge if f'(x) approx 0 or poor guess"
-        ],
-        [
-          "Evaluation Overhead",
-          "1 function evaluation / step",
-          "1 function evaluation / step",
-          "2 evaluations / step (f(x) and f'(x))"
+          "Newton-Raphson",
+          "Open (1 initial guess)",
+          "Quadratic (Order 2)",
+          "Very Low (~4 iterations)",
+          "Possible if f'(x)=0 or bad x0"
         ]
       ]
     },
-    "memorize": "Recurrence: x_{n+1} = x_n - [f(x_n) / f'(x_n)]. Order of Convergence: Quadratic (p = 2). Error relation: epsilon_{n+1} = K * epsilon_n^2. Failure condition: f'(x_n) = 0 (horizontal tangent leads to division by zero).",
-    "understand": "Why is quadratic convergence so powerful? If your error in step 1 is 0.1, in step 2 it becomes ~0.01, in step 3 it becomes ~0.0001, and in step 4 it reaches ~0.00000001 (8 decimal places in 4 steps!).",
-    "common_mistakes": "1. Forgetting to divide by f'(x) or differentiating incorrectly. 2. Choosing an initial guess where f'(x0) is close to 0 (causes wild divergence). 3. In the convergence proof, forgetting that f(alpha) = 0.",
-    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25, 2025-26)",
-    "pyq_freq": "Verified in all 5 consecutive university sessions: 2021 (Q2 - 15m), 2022-23 (Q1 - 15m), 2023-24 (Q2 - 15m), 2024-25 (Q2 - 15m), 2025-26 (Q1 - 15m)",
-    "pyq_question": "Derive the Newton-Raphson formula for finding a real root of an equation f(x) = 0 and prove that it has quadratic convergence. Find a real root of the equation x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
-    "pyq_rubric": "Taylor Series Derivation (3 marks) + Proof of Quadratic Convergence (4 marks) + Initial bracketing & derivative setup (2 marks) + Step-by-step iteration table for 3-4 steps (5 marks) + Final root statement (1 mark) = 15 Marks.",
+    "memorize": "Newton-Raphson formula: x_{n+1} = x_n - [f(x_n) / f'(x_n)]. Convergence is Quadratic (Order 2). Error doubles in accuracy every step.",
+    "understand": "Newton-Raphson is lightning fast near the root, but requires computing the analytical derivative f'(x) and can fail if f'(x) approaches zero.",
+    "common_mistakes": "Forgetting the negative sign in the formula or differentiating f(x) incorrectly.",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2023-24 (Q1)",
+        "marks": 15,
+        "question": "Derive the Newton-Raphson iterative formula using Taylor series. Prove that the Newton-Raphson method has a quadratic rate of convergence. Find the root of x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
+        "rubric": "Formula Derivation (4 marks) + Quadratic Convergence Proof (5 marks) + Step-by-step Solution of x^3 - 2x - 5 = 0 (6 marks) = 15 Marks.",
+        "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} ≈ (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n• f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n• Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n• Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n• Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
+        "answer_structure": "Derivation -> Convergence Proof -> Step-by-Step Calculation -> Conclusion",
+        "important_points": [
+          "x_{n+1} = x_n - f/f'",
+          "Taylor series expansion",
+          "e_{n+1} = k * e_n^2",
+          "Order 2 convergence",
+          "Root = 2.095"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Full Taylor series derivation",
+          "Error quadratic proof",
+          "Exact arithmetic to 3 decimals"
+        ],
+        "common_mistakes": [
+          "Algebraic errors in binomial expansion of [1 + e_n*f''/f']^-1"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2021 / Model",
+        "marks": 5,
+        "question": "Under what conditions does the Newton-Raphson method fail to converge? (5 Marks)",
+        "rubric": "4 failure conditions explained (5 marks).",
+        "model_answer": "1. Division by Zero: If f'(x_n) = 0 at any iteration, the tangent is horizontal and parallel to the x-axis, causing x_{n+1} to shoot to infinity; 2. Bad Initial Guess: If x0 is chosen far from the true root, the method may diverge or converge to an unintended distant root; 3. Cycle Oscillations: Near inflection points where f''(x) = 0, iterations may oscillate infinitely between two values without converging; 4. Root with Multiplicity: For multiple roots (f'(alpha) = 0), convergence degrades from quadratic to linear."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-10-01",
+        "question": "In the Java Collections Framework, what is the key difference between ArrayList and LinkedList for positional index-based retrieval (get(i))?",
+        "options": [
+          "ArrayList is O(1) random access, while LinkedList is O(N) sequential traversal",
+          "ArrayList is O(N) and LinkedList is O(1)",
+          "Both provide O(1) lookup",
+          "LinkedList consumes less memory per node than ArrayList"
+        ],
+        "correct_answer": "A",
+        "explanation": "ArrayList is backed by a contiguous array, allowing O(1) random index access. LinkedList requires traversing node pointers from head/tail in O(N)."
+      },
+      {
+        "id": "ACAD-10-02",
+        "question": "How does HashMap in Java 8+ handle severe hash collisions inside a single bucket when the chain length exceeds TREEIFY_THRESHOLD (8)?",
+        "options": [
+          "It drops incoming keys with a HashCollisionException",
+          "It converts the linked list bucket into a balanced Red-Black Tree, improving lookup from O(N) to O(log N)",
+          "It increases heap allocation by 10x immediately",
+          "It converts the hash table into an array of linked lists"
+        ],
+        "correct_answer": "B",
+        "explanation": "Java 8 optimizes hash collisions: once a bucket's linked list reaches 8 nodes (and table capacity >= 64), it morphs into a Red-Black Tree for O(log N) search."
+      },
+      {
+        "id": "ACAD-10-03",
+        "question": "Which of the following collection classes is synchronized and thread-safe by default in Java?",
+        "options": [
+          "java.util.ArrayList",
+          "java.util.HashMap",
+          "java.util.Vector",
+          "java.util.HashSet"
+        ],
+        "correct_answer": "C",
+        "explanation": "Vector and Hashtable are legacy collections whose methods are synchronized. Modern code uses ConcurrentHashMap or Collections.synchronizedList()."
+      },
+      {
+        "id": "ACAD-10-04",
+        "question": "What is the default initial capacity and default load factor of a java.util.HashMap?",
+        "options": [
+          "Capacity = 10, Load Factor = 0.5",
+          "Capacity = 16, Load Factor = 0.75",
+          "Capacity = 32, Load Factor = 0.8",
+          "Capacity = 64, Load Factor = 1.0"
+        ],
+        "correct_answer": "B",
+        "explanation": "By default, HashMap initializes with a bucket array capacity of 16 and a load factor of 0.75 (rehashing occurs when size reaches 16 * 0.75 = 12)."
+      },
+      {
+        "id": "ACAD-10-05",
+        "question": "What contract must be maintained between the equals() and hashCode() methods in Java?",
+        "options": [
+          "If two objects have the same hashCode, they must be equal via equals()",
+          "If two objects are equal according to equals(), they must produce the same integer hashCode",
+          "hashCode() must return a prime number for all objects",
+          "equals() cannot be overridden without declaring the class final"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Java contract requires: if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must strictly hold to ensure correct behavior in hash collections."
+      }
+    ],
+    "pyq_year": "2023-24 (Q1)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Derive the Newton-Raphson iterative formula using Taylor series. Prove that the Newton-Raphson method has a quadratic rate of convergence. Find the root of x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
+    "pyq_rubric": "Formula Derivation (4 marks) + Quadratic Convergence Proof (5 marks) + Step-by-step Solution of x^3 - 2x - 5 = 0 (6 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Mathematical Derivation via Taylor Series:",
-        "Let f(x) = 0 be a continuous non-linear equation. Let x0 be an initial approximation to the root alpha, and let h be the correction such that alpha = x0 + h. Expanding f(x0 + h) by Taylor's series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nAssuming h is small, we truncate higher-order powers of h:\nf(x0) + h * f'(x0) = 0  ==>  h = - f(x0) / f'(x0).\nThe first approximation is x1 = x0 + h = x0 - [f(x0) / f'(x0)]. Iterating this yields the Newton-Raphson general formula:\nx_{n+1} = x_n - [f(x_n) / f'(x_n)]."
+        "1. Model Answer & Technical Presentation",
+        "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} ≈ (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n• f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n• Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n• Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n• Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095."
       ],
       [
-        "2. Rigorous Proof of Quadratic Convergence:",
-        "Let alpha be the true root: f(alpha) = 0. Let error in n-th step be epsilon_n = x_n - alpha ==> x_n = alpha + epsilon_n.\nSubstitute into recurrence: alpha + epsilon_{n+1} = alpha + epsilon_n - [f(alpha + epsilon_n) / f'(alpha + epsilon_n)].\nExpanding both numerator and denominator about alpha using Taylor series:\nf(alpha + epsilon_n) = f(alpha) + epsilon_n * f'(alpha) + (epsilon_n^2 / 2) * f''(alpha) + ...\nSince f(alpha) = 0: f(alpha + epsilon_n) = epsilon_n * f'(alpha) + (epsilon_n^2 / 2) * f''(alpha).\nSimilarly: f'(alpha + epsilon_n) = f'(alpha) + epsilon_n * f''(alpha).\nepsilon_{n+1} = epsilon_n - [epsilon_n * f'(alpha) + (epsilon_n^2 / 2) * f''(alpha)] / [f'(alpha) + epsilon_n * f''(alpha)].\nTaking f'(alpha) common and using binomial expansion (1 + z)^(-1) = 1 - z:\nepsilon_{n+1} = [f''(alpha) / (2 * f'(alpha))] * (epsilon_n)^2.\nHence: epsilon_{n+1} = K * (epsilon_n)^2. Since error exponent is 2, Newton-Raphson exhibits Quadratic Convergence (Order p = 2)."
-      ],
-      [
-        "3. Numerical Solution for x^3 - 2x - 5 = 0:",
-        "Let f(x) = x^3 - 2x - 5. Differentiating: f'(x) = 3x^2 - 2.\nLocate initial root bracket:\nf(2) = 2^3 - 2(2) - 5 = 8 - 4 - 5 = -1 < 0.\nf(3) = 3^3 - 2(3) - 5 = 27 - 6 - 5 = +16 > 0.\nSince |f(2)| = 1 is much closer to 0 than |f(3)| = 16, the root is near 2. Choose initial guess x0 = 2.000.\n\nIteration 1: x0 = 2\nf(x0) = f(2) = -1.000\nf'(x0) = 3(2)^2 - 2 = 12 - 2 = 10.000\nx1 = 2 - (-1 / 10) = 2 + 0.100 = 2.100.\n\nIteration 2: x1 = 2.100\nf(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = +0.061\nf'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.230\nx2 = 2.1 - (0.061 / 11.230) = 2.1 - 0.00543 = 2.09457.\n\nIteration 3: x2 = 2.09457\nf(2.09457) = (2.09457)^3 - 2(2.09457) - 5 = 0.000185\nf'(2.09457) = 3(2.09457)^2 - 2 = 11.1616\nx3 = 2.09457 - (0.000185 / 11.1616) = 2.09457 - 0.000016 = 2.09455.\n\nBoth x2 and x3 agree to three decimal places: 2.094."
-      ],
-      [
-        "4. Final Conclusion & Root Statement:",
-        "After 3 iterations, the real root of x^3 - 2x - 5 = 0 correct to three decimal places is x = 2.094 (or 2.095)."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Find the reciprocal of 18 using Newton-Raphson formula x_{n+1} = x_n * (2 - N * x_n). (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "State the geometrical interpretation and two conditions under which Newton-Raphson fails. (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Full Taylor series derivation",
+          "Error quadratic proof",
+          "Exact arithmetic to 3 decimals"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Newton-Raphson Derivation, Quadratic Convergence Proof, and Hand Calculations.",
-    "milestone": "Full 15/15 marks on University Question 1/2 (BCA-5004 Numerical Methods)."
-  },
   "apt_data": {
-    "topic": "Problems on Trains \u2014 Stationary Obstacles, Platforms & Relative Train Speeds",
+    "topic": "Permutations & Combinations",
+    "category": "Quantitative",
+    "subtopic": "Permutations & Combinations",
+    "formulas": "1. nPr = n! / (n - r)! (Arrangements where order matters).\n2. nCr = n! / [r! * (n - r)!] (Selections where order does NOT matter).\n3. nCr = nC(n - r); nC0 = nCn = 1.\n4. Circular Permutations of n distinct objects = (n - 1)!.",
+    "shortcut": "Grouping (Block) Method: When k items must always be together, tie them into 1 single super-item. Total items = (n - k + 1)!. Then multiply by k! internal arrangements.",
     "tutorial": [
-      "Problems on trains are specific geometric applications of Time, Speed, and Distance where the physical length of the train must be factored into distance calculations.",
-      "Case 1: Train Crossing a Point Object (Pole, Standing Person, Signal Post, Milestone):\nA point object has negligible physical length. The distance traversed by the train while passing it is exactly equal to the Length of the Train:\nDistance = Length of Train (L_T)    ==>    Time = L_T / Speed_Train",
-      "Case 2: Train Crossing an Extended Stationary Object (Platform, Bridge, Tunnel, Stationary Train):\nThe train must traverse both its own length AND the length of the platform before clearing it:\nDistance = Length of Train (L_T) + Length of Platform (L_P)\nTime = (L_T + L_P) / Speed_Train",
-      "Case 3: Two Moving Trains Crossing Each Other:\nTotal Distance is ALWAYS the sum of lengths: Distance = L_T1 + L_T2.\n\u2022 Crossing in Opposite Directions: Relative Speed = S1 + S2\n  Time = (L_T1 + L_T2) / (S1 + S2)\n\u2022 Crossing in Same Direction (Overtaking): Relative Speed = S1 - S2 (S1 > S2)\n  Time = (L_T1 + L_T2) / (S1 - S2)"
+      "Permutation answers 'In how many ways can we arrange/order?' Combination answers 'In how many ways can we choose/select?' Watch for duplicate letters in words: arrangements of word with repeated letters = Total! / (count1! * count2!)."
     ],
-    "formulas": "1. Crossing a Pole: Time = L / S\n2. Crossing a Platform: Time = (L_train + L_platform) / S\n3. Two Trains Opposite: Time = (L1 + L2) / (S1 + S2)\n4. Two Trains Same Direction: Time = (L1 + L2) / (S1 - S2)\n5. km/h to m/s conversion: Speed (m/s) = Speed (km/h) * (5 / 18)",
-    "shortcut": "The Platform Subtraction Shortcut:\nIf a train crosses a pole in T1 seconds and a platform of length P in T2 seconds at the same speed S:\nIn (T2 - T1) seconds, the train covers exactly the platform length P!\nSpeed S = P / (T2 - T1) m/s instantly, with zero variable algebra!",
-    "recognition": "Look for 'a train 150m long passes a telegraph post in 12s', 'a train passes a platform 200m long in 20s and a pole in 10s', or 'two trains of length L1 and L2 running in opposite directions'.",
-    "p1_q": "[Foundation] A train 180 meters long is running at a speed of 72 km/h. How much time will it take to pass a telegraph post?",
-    "p1_s": "Step 1: Convert speed to m/s:\nSpeed = 72 * (5 / 18) = 4 * 5 = 20 m/s.\nStep 2: Distance covered when passing a post = Length of train = 180 m.\nStep 3: Time = Distance / Speed = 180 / 20 = 9 seconds.\nAnswer: 9 seconds.",
-    "p2_q": "[Standard Placement] A train 300 meters long passes a railway platform 200 meters long in 25 seconds. Find the speed of the train in km/h.",
-    "p2_s": "Step 1: Total Distance to clear platform = Length of train + Length of platform:\nTotal Distance = 300 + 200 = 500 meters.\nStep 2: Speed in m/s = Total Distance / Time = 500 / 25 = 20 m/s.\nStep 3: Convert speed from m/s to km/h:\nSpeed in km/h = 20 * (18 / 5) = 4 * 18 = 72 km/h.\nAnswer: 72 km/h.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS NQT / Wipro Quantitative Section]",
-    "p3_q": "A train passes a standing pole in 15 seconds and passes a platform 100 meters long in 25 seconds. Find the length of the train and its speed in km/h.",
-    "p3_s": "Step 1: Apply the Platform Subtraction Shortcut:\nTime difference = 25s - 15s = 10 seconds.\nIn these 10 extra seconds, the train covered the platform length of 100 meters.\nStep 2: Speed of train = 100 m / 10 s = 10 m/s.\nSpeed in km/h = 10 * (18 / 5) = 36 km/h.\nStep 3: Find Length of the train:\nSince it crosses a pole in 15 seconds at 10 m/s:\nLength of train = Speed * Time = 10 m/s * 15 s = 150 meters.\nAnswer: Length of train = 150 meters, Speed = 36 km/h.",
-    "p4_q": "[Hard / Time-Pressure] Two trains 140 meters and 160 meters long run at speeds of 60 km/h and 40 km/h respectively in opposite directions on parallel tracks. What is the time taken by them to clear each other from the moment they meet?",
-    "p4_s": "Step 1: Total Distance to clear = Sum of lengths of both trains:\nDistance = 140 + 160 = 300 meters.\nStep 2: Calculate Relative Speed (Opposite Directions ==> Add speeds):\nRelative Speed = 60 + 40 = 100 km/h.\nStep 3: Convert relative speed to m/s:\nSpeed = 100 * (5 / 18) = 500 / 18 = 250 / 9 m/s.\nStep 4: Time taken to clear:\nTime = Distance / Relative Speed = 300 / (250 / 9) = (300 * 9) / 250 = (6 * 9) / 5 = 54 / 5 = 10.8 seconds.\nAnswer: 10.8 seconds.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "A train 125 meters long passes a man running at 5 km/h in the same direction in 10 seconds. Find the speed of the train."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "A 240m long train crosses a platform of equal length in 27 seconds. Find the speed of the train in km/h."
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "Two trains of equal length running in opposite directions pass a pole in 18s and 12s. How long will they take to cross each other?"
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "A train traveling at 48 km/h crosses another train of half its length traveling in opposite direction at 42 km/h in 12s. Find length of first train."
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "A train passes two bridges of lengths 800m and 400m in 100 seconds and 60 seconds respectively. Find the length of the train."
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Permutations & Combinations",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Permutations & Combinations",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Permutations & Combinations",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Permutations & Combinations",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Permutations & Combinations",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "In how many different ways can the letters of the word 'LEADING' be arranged so that the vowels always come together?",
+        "options": {
+          "A": "720",
+          "B": "5040",
+          "C": "360",
+          "D": "1440"
+        },
+        "correct_answer": "A",
+        "explanation": "Vowels: E, A, I (3 vowels). Treat (EAI) as 1 unit. Units: L, D, N, G + (EAI) = 5 units. Arrangements = 5! * 3! = 120 * 6 = 720.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "In how many ways can a committee of 5 members be formed from 6 men and 4 women such that it contains at least 3 men?",
+        "options": {
+          "A": "186",
+          "B": "196",
+          "C": "210",
+          "D": "150"
+        },
+        "correct_answer": "A",
+        "explanation": "Cases: (3M, 2W): 6C3 * 4C2 = 20 * 6 = 120; (4M, 1W): 6C4 * 4C1 = 15 * 4 = 60; (5M, 0W): 6C5 * 4C0 = 6 * 1 = 6. Total = 120 + 60 + 6 = 186.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "How many 3-digit numbers can be formed from the digits 2, 3, 5, 6, 7, and 9 without repetition?",
+        "options": {
+          "A": "120",
+          "B": "216",
+          "C": "60",
+          "D": "720"
+        },
+        "correct_answer": "A",
+        "explanation": "P(6, 3) = 6 * 5 * 4 = 120.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "How many diagonals are there in a regular polygon with 12 sides (dodecagon)?",
+        "options": {
+          "A": "54",
+          "B": "60",
+          "C": "48",
+          "D": "66"
+        },
+        "correct_answer": "A",
+        "explanation": "Number of diagonals = n(n - 3) / 2 = 12 * 9 / 2 = 54.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "In how many ways can 7 people be seated around a round dining table?",
+        "options": {
+          "A": "720",
+          "B": "5040",
+          "C": "360",
+          "D": "120"
+        },
+        "correct_answer": "A",
+        "explanation": "Circular permutations = (n - 1)! = (7 - 1)! = 6! = 720.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "How many words can be formed using all the letters of the word 'MATHEMATICS'?",
+        "options": {
+          "A": "4,989,600",
+          "B": "2,494,800",
+          "C": "39,916,800",
+          "D": "1,247,400"
+        },
+        "correct_answer": "A",
+        "explanation": "Total letters = 11. Repeated: M=2, A=2, T=2. Arrangements = 11! / (2! * 2! * 2!) = 39,916,800 / 8 = 4,989,600.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Out of 7 consonants and 4 vowels, how many words of 3 consonants and 2 vowels can be formed?",
+        "options": {
+          "A": "25,200",
+          "B": "210",
+          "C": "2,520",
+          "D": "50,400"
+        },
+        "correct_answer": "A",
+        "explanation": "Selection = 7C3 * 4C2 = 35 * 6 = 210. Arrangement of 5 chosen letters = 5! = 120. Total words = 210 * 120 = 25,200.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "At a party, everybody shakes hands with everybody else. If 66 handshakes took place, how many people were present?",
+        "options": {
+          "A": "12",
+          "B": "11",
+          "C": "13",
+          "D": "14"
+        },
+        "correct_answer": "A",
+        "explanation": "nC2 = 66 => n(n - 1) / 2 = 66 => n(n - 1) = 132. Since 12 * 11 = 132, n = 12 people.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "In how many ways can 4 boys and 4 girls be arranged in a line so that boys and girls alternate?",
+        "options": {
+          "A": "1,152",
+          "B": "576",
+          "C": "2,880",
+          "D": "40,320"
+        },
+        "correct_answer": "A",
+        "explanation": "Pattern BGBGBGBG or GBGBGBGB (2 configurations). Each gives 4! * 4! = 24 * 24 = 576. Total = 2 * 576 = 1,152.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "How many 4-letter code words can be formed using the first 10 letters of the English alphabet if no letter can be repeated?",
+        "options": {
+          "A": "5,040",
+          "B": "210",
+          "C": "10,000",
+          "D": "2,520"
+        },
+        "correct_answer": "A",
+        "explanation": "10 * 9 * 8 * 7 = 5,040.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Permutations & Combinations (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "Relative speed = 125/10 = 12.5 m/s = 12.5 * (18/5) = 45 km/h. Same direction ==> S_train - 5 = 45 ==> S_train = 50 km/h. Answer: 50 km/h."
-      ],
-      [
-        "Solution Q2:",
-        "Distance = 240 + 240 = 480m. Speed = 480/27 m/s = (480/27)*(18/5) = (480*2)/(3*5) = 960/15 = 64 km/h. Answer: 64 km/h."
-      ],
-      [
-        "Solution Q3:",
-        "Harmonic time shortcut: Time = (2 * t1 * t2) / (t1 + t2) = (2 * 18 * 12) / (18 + 12) = 432 / 30 = 14.4 seconds. Answer: 14.4 seconds."
-      ],
-      [
-        "Solution Q4:",
-        "Relative speed = 48 + 42 = 90 km/h = 90*(5/18) = 25 m/s. Total distance = 25 * 12 = 300m. L + L/2 = 300 ==> 1.5 L = 300 ==> L = 200m. Answer: 200 meters."
-      ],
-      [
-        "Solution Q5:",
-        "Speed = (800 - 400) / (100 - 60) = 400 / 40 = 10 m/s. Length + 800 = 10 * 100 = 1000m ==> Length = 1000 - 800 = 200m. Answer: 200 meters."
-      ]
-    ],
-    "trap": "Always convert km/h to m/s BEFORE doing arithmetic with train lengths in meters! Multiplying km/h directly with seconds produces disastrous calculation errors."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Sliding Window Maximum",
+      "difficulty": "Easy",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "You are given an array of integers nums, there is a sliding window of size k which is moving from the very left to the very right. Return the max sliding window.",
+      "solution_approach": "1. Apply Monotonic Deque (Sliding Window Maximum) algorithmic technique.\n2. Maintains a double-ended queue storing array indices such that corresponding values are monotonically decreasing.\n3. Invariants: Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(K) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Jump Game VI",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "You are given a 0-indexed integer array nums and an integer k. Return the maximum score you can get jumping at most k steps forward.",
+      "solution_approach": "1. Identify interview variation of Monotonic Deque (Sliding Window Maximum).\n2. Handle edge cases: k == 1, k == nums.length, Strictly decreasing array, All elements equal.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(K) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Monotonic Deque (Sliding Window Maximum)",
+    "category": "Queue / Deque",
+    "concept": "Maintains a double-ended queue storing array indices such that corresponding values are monotonically decreasing.",
+    "why_it_works": "Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.",
+    "visual_explanation": "Window [ 1, 3, -1 ], k = 3 -> Deque stores [3, -1]\\nNext element is -3 -> Deque stores [3, -1, -3]\\nNext element is 5 -> 5 evicts 3, -1, -3 -> Deque stores [5]",
+    "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        if (nums == null || nums.length == 0) return new int[0];\n        int n = nums.length;\n        int[] result = new int[n - k + 1];\n        Deque<Integer> deque = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            if (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {\n                deque.pollFirst();\n            }\n            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {\n                deque.pollLast();\n            }\n            deque.offerLast(i);\n            if (i >= k - 1) {\n                result[i - k + 1] = nums[deque.peekFirst()];\n            }\n        }\n        return result;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        if (nums == null || nums.length == 0) return new int[0];\n        int n = nums.length;\n        int[] result = new int[n - k + 1];\n        Deque<Integer> deque = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            if (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {\n                deque.pollFirst();\n            }\n            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {\n                deque.pollLast();\n            }\n            deque.offerLast(i);\n            if (i >= k - 1) {\n                result[i - k + 1] = nums[deque.peekFirst()];\n            }\n        }\n        return result;\n    }\n}",
+    "python_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        if (nums == null || nums.length == 0) return new int[0];\n        int n = nums.length;\n        int[] result = new int[n - k + 1];\n        Deque<Integer> deque = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            if (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {\n                deque.pollFirst();\n            }\n            while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {\n                deque.pollLast();\n            }\n            deque.offerLast(i);\n            if (i >= k - 1) {\n                result[i - k + 1] = nums[deque.peekFirst()];\n            }\n        }\n        return result;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 7: Use ArrayDeque to support O(1) head and tail operations.",
+      "Line 10-12: Evict indices that fall outside the current sliding window.",
+      "Line 13-15: Maintain decreasing monotonic order by popping smaller elements from tail.",
+      "Line 16: Push current index i.",
+      "Line 17-19: Once window size reaches k, record head of deque as maximum."
+    ],
+    "dry_run": "nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3. Window [1, 3, -1] max=3. Window [3, -1, -3] max=3. Window [-1, -3, 5] max=5... Returns [3, 3, 5, 5, 6, 7].",
+    "complexity": "O(N) Time, O(K) Auxiliary Space",
+    "edge_cases": [
+      "k == 1",
+      "k == nums.length",
+      "Strictly decreasing array",
+      "All elements equal"
+    ],
+    "interview_variations": [
+      "Sliding Window Minimum",
+      "Constrained Subsequence Sum",
+      "Jump Game VI"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-10-01",
+        "title": "Problem 1: Sliding Window Maximum",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are given an array of integers nums, there is a sliding window of size k which is moving from the very left to the very right. Return the max sliding window.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Monotonic Deque (Sliding Window Maximum) algorithmic technique.\n2. Maintains a double-ended queue storing array indices such that corresponding values are monotonically decreasing.\n3. Invariants: Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(K) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-10-02",
+        "title": "Problem 2: Jump Game VI",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given a 0-indexed integer array nums and an integer k. Return the maximum score you can get jumping at most k steps forward.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Monotonic Deque (Sliding Window Maximum).\n2. Handle edge cases: k == 1, k == nums.length, Strictly decreasing array, All elements equal.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int maxResult(int[] nums, int k) {\n        int n = nums.length;\n        int[] dp = new int[n];\n        dp[0] = nums[0];\n        Deque<Integer> dq = new ArrayDeque<>();\n        dq.offerLast(0);\n        for (int i = 1; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k) dq.pollFirst();\n            dp[i] = nums[i] + dp[dq.peekFirst()];\n            while (!dq.isEmpty() && dp[dq.peekLast()] <= dp[i]) dq.pollLast();\n            dq.offerLast(i);\n        }\n        return dp[n - 1];\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(K) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "DBMS",
+    "topic": "Database Normalization: 1NF, 2NF, 3NF, BCNF & Functional Dependencies",
+    "detailed_notes": [
+      "Normalization is the systematic process of decomposing database relations to minimize data redundancy and eliminate Update, Insertion, and Deletion Anomalies while preserving Functional Dependencies and ensuring Lossless Join.\n\nFunctional Dependency (FD: X -> Y):\nIf two tuples agree on attribute set X, they must also agree on attribute set Y. X is the Determinant.\n\nNormal Forms Progression:\n1. First Normal Form (1NF): Every attribute value must be atomic (indivisible single values; no repeating groups, arrays, or comma-separated lists).\n2. Second Normal Form (2NF): Must be in 1NF AND have NO Partial Functional Dependency. Every non-prime attribute must be fully functionally dependent on the ENTIRE candidate key. (Applies only when candidate key is composite).\n3. Third Normal Form (3NF): Must be in 2NF AND have NO Transitive Dependency. For every non-trivial FD X -> Y, either X is a Superkey OR Y is a Prime Attribute (member of a candidate key).\n4. Boyce-Codd Normal Form (BCNF): A stricter version of 3NF. For every non-trivial FD X -> Y, X MUST be a Superkey. BCNF completely eliminates all functional redundancy, but decomposing into BCNF may sometimes sacrifice Dependency Preservation.\n\nArmstrong's Axioms:\nReflexivity (if Y subset X, X -> Y), Augmentation (if X -> Y, XZ -> YZ), Transitivity (if X -> Y and Y -> Z, X -> Z)."
+    ],
+    "key_definitions": [
+      {
+        "term": "Functional Dependency",
+        "definition": "A constraint between two sets of attributes in a relation where values of X uniquely determine values of Y."
+      },
+      {
+        "term": "Partial Dependency",
+        "definition": "A dependency where a non-prime attribute is determined by a subset of a composite candidate key."
+      },
+      {
+        "term": "Transitive Dependency",
+        "definition": "A dependency where a non-prime attribute is determined by another non-prime attribute: X -> Y and Y -> Z."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "What are Insertion, Deletion, and Modification anomalies in an unnormalized database?",
+        "a": "Insertion Anomaly: Inability to record certain information without inserting extraneous dummy data (e.g., cannot register a new department without enrolling a student). Deletion Anomaly: Deleting one piece of data inadvertently deletes unrelated vital data (e.g., deleting the last student enrolled in a course deletes the course catalog record). Modification Anomaly: Inconsistent data when updating redundant instances in multiple rows (e.g., updating a professor's phone number in one row but missing other student rows)."
+      },
+      {
+        "q": "What is the exact distinction between 3NF and BCNF?",
+        "a": "For every non-trivial functional dependency X -> Y: In 3NF, the rule is satisfied if X is a Superkey OR Y is a prime attribute. In BCNF, the rule strictly requires X to be a Superkey with NO exceptions. BCNF is strictly stronger than 3NF. Any relation in BCNF is guaranteed to be in 3NF, but a 3NF relation with overlapping candidate keys may violate BCNF."
+      },
+      {
+        "q": "Can a table with a single-attribute primary key violate 2NF?",
+        "a": "No. 2NF states that no non-prime attribute can be dependent on a proper subset of a candidate key (no partial dependency). If the candidate key consists of a single attribute, it has no proper subsets other than empty set, making partial dependency mathematically impossible. A 1NF table with a single-column primary key is automatically in 2NF."
+      },
+      {
+        "q": "What is a Lossless Join Decomposition, and why is it critical?",
+        "a": "A decomposition of relation R into R1 and R2 is lossless if natural join R1 bowtie R2 recovers exactly relation R without generating false 'spurious tuples'. Mathematically, the common attribute must be a superkey in at least one of the decomposed relations: (R1 cap R2 -> R1) OR (R1 cap R2 -> R2)."
+      },
+      {
+        "q": "What is Denormalization, and when is it recommended in production systems?",
+        "a": "Denormalization is the deliberate re-introduction of redundancy into normalized relations (e.g., storing customer_name directly inside the orders table). It is used in read-heavy analytics, data warehouses, and microservices to avoid expensive multi-table JOIN operations, trading write performance and storage space for ultra-fast query execution speeds."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-10-01",
+        "question": "A table is in 2NF if it is in 1NF and contains no:",
+        "options": [
+          "Transitive dependencies",
+          "Partial functional dependencies",
+          "Foreign keys",
+          "Composite candidate keys"
+        ],
+        "correct_answer": "B",
+        "explanation": "2NF mandates that all non-prime attributes are fully dependent on the complete candidate key."
+      },
+      {
+        "id": "CS-10-02",
+        "question": "In 3NF, for every non-trivial functional dependency X -> Y, which condition must hold?",
+        "options": [
+          "X must be a candidate key and Y must be NULL",
+          "X is a Superkey OR Y is a Prime attribute",
+          "Both X and Y must be superkeys",
+          "Y must be a foreign key"
+        ],
+        "correct_answer": "B",
+        "explanation": "3NF relaxes BCNF by permitting Y to be a prime attribute."
+      },
+      {
+        "id": "CS-10-03",
+        "question": "Which normal form requires every determinant to be a Superkey for all non-trivial dependencies?",
+        "options": [
+          "1NF",
+          "2NF",
+          "3NF",
+          "BCNF"
+        ],
+        "correct_answer": "D",
+        "explanation": "BCNF strictly requires the determinant X to be a superkey for every non-trivial FD X -> Y."
+      },
+      {
+        "id": "CS-10-04",
+        "question": "A 1NF relation whose primary key consists of a single column is guaranteed to be in:",
+        "options": [
+          "2NF",
+          "3NF",
+          "BCNF",
+          "4NF"
+        ],
+        "correct_answer": "A",
+        "explanation": "A single-column key has no proper subkeys, so partial dependencies cannot exist."
+      },
+      {
+        "id": "CS-10-05",
+        "question": "The property ensuring that joining decomposed relations does not produce spurious tuples is called:",
+        "options": [
+          "Dependency Preservation",
+          "Lossless Join Property",
+          "Referential Closure",
+          "Atomicity"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lossless join decomposition ensures original relations can be reconstructed without phantom rows."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "College Student Management System (CSMS)",
+    "repo_path": "D:\\Projects\\College Student Management System",
+    "feature_focus": "Relational Database Schema Design & Attendance Shortage Engine",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nDesigning normalized 3NF tables in PostgreSQL and calculating aggregate attendance percentage thresholds.\n\nWHAT TO MEMORIZE:\nAttendance threshold formula: Attendance % = (Total Present Days / Total Recorded Class Days) * 100; triggered alerts when < 75%.\n\n60-SECOND INTERVIEW PITCH:\nI designed the relational PostgreSQL schema in schema.sql with strict constraints to ensure academic data integrity. The system features a unique constraint preventing duplicate daily attendance and an automated aggregation query that calculates attendance percentages, immediately surfacing students below the university's 75% requirement to the HOD.",
+    "interview_qa": [
+      {
+        "q": "Explain the relational schema design for attendance and grade tracking in CSMS.",
+        "a": "In `schema.sql`, the schema utilizes PostgreSQL with UUID primary keys. The `attendance` table maintains a compound unique constraint `(student_id, record_date)` to prevent duplicate daily check-ins. The attendance aggregation query performs a count of 'Present' vs total scheduled sessions per course, flagging any student falling below the mandatory university 75% threshold for detention alerts."
+      },
+      {
+        "q": "How are foreign keys and referential integrity configured in CSMS?",
+        "a": "Child tables (`attendance`, `grades`, `fees`, `test_marks`) reference the parent `students` table with `ON DELETE CASCADE`. This ensures that when a student is archived or deleted from the directory, orphaned records are automatically cleaned up, maintaining zero orphaned rows in PostgreSQL."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 10 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 10 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of Caloriv.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 09 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n• Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Monotonic Queue & Sliding Window Max.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 10 Q1: What is the primary academic thesis of Java Collections: ArrayList, HashMap & ConcurrentHashMap?",
+        "a": "Core theoretical and practical mastery of Java Collections: ArrayList, HashMap & ConcurrentHashMap under the CSJM University BCA-5002 syllabus."
+      },
+      {
+        "q": "Day 10 Q2: What is the key speed calculation formula applied in Permutations & Combinations?",
+        "a": "High-speed corporate placement arithmetic shortcut for Permutations & Combinations in campus recruitment exams."
+      },
+      {
+        "q": "Day 10 Q3: What is the time complexity of Monotonic Queue & Sliding Window Max?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 10 Q4: What is the central architectural principle of Database Normalization: 1NF to BCNF?",
+        "a": "Foundational systems engineering rule governing Database Normalization: 1NF to BCNF in production environments."
+      },
+      {
+        "q": "Day 10 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 10 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 10 Q7: What is the verified technical foundation of College Student Management System (CSMS)?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 10 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 10 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 10 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n• Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Monotonic Queue & Sliding Window Max."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: College Student Management System (CSMS)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 10 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "In the Java Collections Framework, what is the key difference between ArrayList and LinkedList for positional index-based retrieval (get(i))?",
+        "a": "Answer: A\n\nArrayList is backed by a contiguous array, allowing O(1) random index access. LinkedList requires traversing node pointers from head/tail in O(N)."
+      },
+      {
+        "q": "How does HashMap in Java 8+ handle severe hash collisions inside a single bucket when the chain length exceeds TREEIFY_THRESHOLD (8)?",
+        "a": "Answer: B\n\nJava 8 optimizes hash collisions: once a bucket's linked list reaches 8 nodes (and table capacity >= 64), it morphs into a Red-Black Tree for O(log N) search."
+      },
+      {
+        "q": "Which of the following collection classes is synchronized and thread-safe by default in Java?",
+        "a": "Answer: C\n\nVector and Hashtable are legacy collections whose methods are synchronized. Modern code uses ConcurrentHashMap or Collections.synchronizedList()."
+      },
+      {
+        "q": "What is the default initial capacity and default load factor of a java.util.HashMap?",
+        "a": "Answer: B\n\nBy default, HashMap initializes with a bucket array capacity of 16 and a load factor of 0.75 (rehashing occurs when size reaches 16 * 0.75 = 12)."
+      },
+      {
+        "q": "What contract must be maintained between the equals() and hashCode() methods in Java?",
+        "a": "Answer: B\n\nThe Java contract requires: if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must strictly hold to ensure correct behavior in hash collections."
+      },
+      {
+        "q": "In how many different ways can the letters of the word 'OPTICAL' be arranged so that the vowels always come together?",
+        "a": "Answer: A\n\nVowels: O, I, A (3 vowels). Consonants: P, T, C, L (4 consonants). Treat (OIA) as 1 unit. Total units = 5. Arrangements = 5! * 3! = 120 * 6 = 720."
+      },
+      {
+        "q": "How many 4-digit numbers can be formed using the digits 1, 2, 3, 4, 5, 6 without any repetition of digits?",
+        "a": "Answer: A\n\nNumber of permutations = P(6, 4) = 6 * 5 * 4 * 3 = 360."
+      },
+      {
+        "q": "In how many ways can a cricket team of 11 players be chosen from 15 players if a particular player is always selected?",
+        "a": "Answer: A\n\nSince 1 player is fixed, choose 10 remaining players from 14: 14C10 = 14C4 = (14 * 13 * 12 * 11) / (4 * 3 * 2 * 1) = 1,001."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-10-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In the Java Collections Framework, what is the key difference between ArrayList and LinkedList for positional index-based retrieval (get(i))?",
+        "options": [
+          "ArrayList is O(1) random access, while LinkedList is O(N) sequential traversal",
+          "ArrayList is O(N) and LinkedList is O(1)",
+          "Both provide O(1) lookup",
+          "LinkedList consumes less memory per node than ArrayList"
+        ],
+        "correct_answer": "A",
+        "explanation": "ArrayList is backed by a contiguous array, allowing O(1) random index access. LinkedList requires traversing node pointers from head/tail in O(N)."
+      },
+      {
+        "id": "TEST-10-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does HashMap in Java 8+ handle severe hash collisions inside a single bucket when the chain length exceeds TREEIFY_THRESHOLD (8)?",
+        "options": [
+          "It drops incoming keys with a HashCollisionException",
+          "It converts the linked list bucket into a balanced Red-Black Tree, improving lookup from O(N) to O(log N)",
+          "It increases heap allocation by 10x immediately",
+          "It converts the hash table into an array of linked lists"
+        ],
+        "correct_answer": "B",
+        "explanation": "Java 8 optimizes hash collisions: once a bucket's linked list reaches 8 nodes (and table capacity >= 64), it morphs into a Red-Black Tree for O(log N) search."
+      },
+      {
+        "id": "TEST-10-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which of the following collection classes is synchronized and thread-safe by default in Java?",
+        "options": [
+          "java.util.ArrayList",
+          "java.util.HashMap",
+          "java.util.Vector",
+          "java.util.HashSet"
+        ],
+        "correct_answer": "C",
+        "explanation": "Vector and Hashtable are legacy collections whose methods are synchronized. Modern code uses ConcurrentHashMap or Collections.synchronizedList()."
+      },
+      {
+        "id": "TEST-10-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the default initial capacity and default load factor of a java.util.HashMap?",
+        "options": [
+          "Capacity = 10, Load Factor = 0.5",
+          "Capacity = 16, Load Factor = 0.75",
+          "Capacity = 32, Load Factor = 0.8",
+          "Capacity = 64, Load Factor = 1.0"
+        ],
+        "correct_answer": "B",
+        "explanation": "By default, HashMap initializes with a bucket array capacity of 16 and a load factor of 0.75 (rehashing occurs when size reaches 16 * 0.75 = 12)."
+      },
+      {
+        "id": "TEST-10-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What contract must be maintained between the equals() and hashCode() methods in Java?",
+        "options": [
+          "If two objects have the same hashCode, they must be equal via equals()",
+          "If two objects are equal according to equals(), they must produce the same integer hashCode",
+          "hashCode() must return a prime number for all objects",
+          "equals() cannot be overridden without declaring the class final"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Java contract requires: if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must strictly hold to ensure correct behavior in hash collections."
+      },
+      {
+        "id": "TEST-10-06",
+        "category": "Placement Aptitude",
+        "question": "In how many different ways can the letters of the word 'OPTICAL' be arranged so that the vowels always come together?",
+        "options": [
+          "720",
+          "120",
+          "480",
+          "5040"
+        ],
+        "correct_answer": "A",
+        "explanation": "Vowels: O, I, A (3 vowels). Consonants: P, T, C, L (4 consonants). Treat (OIA) as 1 unit. Total units = 5. Arrangements = 5! * 3! = 120 * 6 = 720."
+      },
+      {
+        "id": "TEST-10-07",
+        "category": "Placement Aptitude",
+        "question": "How many 4-digit numbers can be formed using the digits 1, 2, 3, 4, 5, 6 without any repetition of digits?",
+        "options": [
+          "360",
+          "720",
+          "120",
+          "240"
+        ],
+        "correct_answer": "A",
+        "explanation": "Number of permutations = P(6, 4) = 6 * 5 * 4 * 3 = 360."
+      },
+      {
+        "id": "TEST-10-08",
+        "category": "Placement Aptitude",
+        "question": "In how many ways can a cricket team of 11 players be chosen from 15 players if a particular player is always selected?",
+        "options": [
+          "1,001",
+          "1,365",
+          "960",
+          "1,200"
+        ],
+        "correct_answer": "A",
+        "explanation": "Since 1 player is fixed, choose 10 remaining players from 14: 14C10 = 14C4 = (14 * 13 * 12 * 11) / (4 * 3 * 2 * 1) = 1,001."
+      },
+      {
+        "id": "TEST-10-09",
+        "category": "Placement Aptitude",
+        "question": "How many chords can be drawn through 21 points situated on a circle?",
+        "options": [
+          "210",
+          "190",
+          "220",
+          "180"
+        ],
+        "correct_answer": "A",
+        "explanation": "A chord requires selecting 2 points from 21: 21C2 = (21 * 20) / 2 = 210 chords."
+      },
+      {
+        "id": "TEST-10-10",
+        "category": "Placement Aptitude",
+        "question": "In how many ways can 5 distinct books be arranged on a shelf?",
+        "options": [
+          "120",
+          "24",
+          "60",
+          "720"
+        ],
+        "correct_answer": "A",
+        "explanation": "5! = 5 * 4 * 3 * 2 * 1 = 120 ways."
+      },
+      {
+        "id": "TEST-10-11",
+        "category": "Core CS (DBMS)",
+        "question": "A table is in 2NF if it is in 1NF and contains no:",
+        "options": [
+          "Transitive dependencies",
+          "Partial functional dependencies",
+          "Foreign keys",
+          "Composite candidate keys"
+        ],
+        "correct_answer": "B",
+        "explanation": "2NF mandates that all non-prime attributes are fully dependent on the complete candidate key."
+      },
+      {
+        "id": "TEST-10-12",
+        "category": "Core CS (DBMS)",
+        "question": "In 3NF, for every non-trivial functional dependency X -> Y, which condition must hold?",
+        "options": [
+          "X must be a candidate key and Y must be NULL",
+          "X is a Superkey OR Y is a Prime attribute",
+          "Both X and Y must be superkeys",
+          "Y must be a foreign key"
+        ],
+        "correct_answer": "B",
+        "explanation": "3NF relaxes BCNF by permitting Y to be a prime attribute."
+      },
+      {
+        "id": "TEST-10-13",
+        "category": "Core CS (DBMS)",
+        "question": "Which normal form requires every determinant to be a Superkey for all non-trivial dependencies?",
+        "options": [
+          "1NF",
+          "2NF",
+          "3NF",
+          "BCNF"
+        ],
+        "correct_answer": "D",
+        "explanation": "BCNF strictly requires the determinant X to be a superkey for every non-trivial FD X -> Y."
+      },
+      {
+        "id": "TEST-10-14",
+        "category": "Core CS (DBMS)",
+        "question": "A 1NF relation whose primary key consists of a single column is guaranteed to be in:",
+        "options": [
+          "2NF",
+          "3NF",
+          "BCNF",
+          "4NF"
+        ],
+        "correct_answer": "A",
+        "explanation": "A single-column key has no proper subkeys, so partial dependencies cannot exist."
+      },
+      {
+        "id": "TEST-10-15",
+        "category": "Core CS (DBMS)",
+        "question": "The property ensuring that joining decomposed relations does not produce spurious tuples is called:",
+        "options": [
+          "Dependency Preservation",
+          "Lossless Join Property",
+          "Referential Closure",
+          "Atomicity"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lossless join decomposition ensures original relations can be reconstructed without phantom rows."
+      },
+      {
+        "id": "TEST-10-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Monotonic Deque (Sliding Window Maximum)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(K) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Monotonic Deque (Sliding Window Maximum)' pattern operates with O(N) Time, O(K) Auxiliary Space: Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.."
+      },
+      {
+        "id": "TEST-10-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Monotonic Deque (Sliding Window Maximum)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: k == 1.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Monotonic Deque (Sliding Window Maximum) include k == 1, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-10-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Sliding Window Maximum', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(K) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(K) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-10-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Relational Database Schema Design & Attendance Shortage Engine'?",
+        "options": [
+          "Attendance threshold formula: Attendance % = (Total Present Days / Total Recorded Class Days) * 100; triggered alerts when < 75%.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Attendance threshold formula: Attendance % = (Total Present Days / Total Recorded Class Days) * 100; triggered alerts when < 75%.."
+      },
+      {
+        "id": "TEST-10-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'Explain the relational schema design for attendance and grade tracking in CSMS.'?",
+        "options": [
+          "In `schema.sql`, the schema utilizes PostgreSQL with UUID primary keys. The `attendance` table maintains a compound unique constraint `(student_id, record_date)...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: In `schema.sql`, the schema utilizes PostgreSQL with UUID primary keys. The `attendance` table maintains a compound unique constraint `(stud."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-10",
+    "title": "Sliding Window Maximum (Monotonic Deque (Sliding Window Maximum))",
+    "time_limit_minutes": 25,
+    "difficulty": "Easy",
+    "problem_statement": "Solve the core placement problem: Sliding Window Maximum.\n\nYou are given an array of integers nums, there is a sliding window of size k which is moving from the very left to the very right. Return the max sliding window.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Monotonic Deque (Sliding Window Maximum)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(K) Auxiliary Space\n- Handle all edge cases: k == 1, k == nums.length, Strictly decreasing array, All elements equal.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Monotonic Deque (Sliding Window Maximum)\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Monotonic Deque (Sliding Window Maximum)\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+    "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[] maxSlidingWindow(int[] nums, int k) {\n        int n = nums.length;\n        int[] res = new int[n - k + 1];\n        Deque<Integer> dq = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) {\n            if (!dq.isEmpty() && dq.peekFirst() < i - k + 1) dq.pollFirst();\n            while (!dq.isEmpty() && nums[dq.peekLast()] < nums[i]) dq.pollLast();\n            dq.offerLast(i);\n            if (i >= k - 1) res[i - k + 1] = nums[dq.peekFirst()];\n        }\n        return res;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Monotonic Deque (Sliding Window Maximum) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: k == 1",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(K) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

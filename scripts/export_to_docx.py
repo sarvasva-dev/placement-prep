@@ -33,7 +33,7 @@ def build_master_docx():
     add_title(
         doc,
         main_title="30-DAY PLACEMENT &\nSEMESTER MASTER HANDBOOK",
-        subtitle="Complete Self-Contained Textbook, Solved PYQs, Aptitude Engine, Python DSA & Project Defense System",
+        subtitle="Complete Self-Contained Textbook, Solved PYQs, Aptitude Engine, Java 17+ DSA & Project Defense System",
         author="Sarthak Srivastava (3rd-Year BCA, CSJM University)",
         metadata={
             "Standard": "SGPA >= 9.0 Standard",
@@ -47,7 +47,7 @@ def build_master_docx():
     # Foreword & Architecture
     add_heading_1(doc, "Master Handbook Architecture & Ground Truth")
     add_paragraph(doc, "This master handbook is the offline compilation of the Sarthak 30-Day Placement & Semester Master Web System. It is generated directly from the identical structured content layer that powers the interactive study application.", bold_prefix="Single Source of Truth:")
-    add_paragraph(doc, "Every day from Day 1 to Day 30 is a complete, self-contained study chapter containing: 1. Full textbook academic lectures, 2. Verified university PYQ model answers, 3. 4-tier worked aptitude problems with speed drills, 4. Python DSA solutions with line-by-line walks, 5. Core CS lectures with interview Q&As, 6. Real project defenses grounded in D:\\Projects code, and 7. Daily 8-question revision tests.")
+    add_paragraph(doc, "Every day from Day 1 to Day 30 is a complete, self-contained study chapter containing: 1. Full textbook academic lectures, 2. Verified university PYQ model answers, 3. 4-tier worked aptitude problems with speed drills, 4. Java 17+ DSA solutions with line-by-line walks, 5. Core CS lectures with interview Q&As, 6. Real project defenses grounded in D:\\Projects code, and 7. Daily 8-question revision tests.")
 
     # Loop through all 30 days
     for day_num in range(1, 31):
@@ -141,19 +141,29 @@ def build_master_docx():
             add_paragraph(doc, apt["tier4_problem"], bold_prefix="Tier 4 (Hard / Advanced):")
             add_paragraph(doc, apt["tier4_solution"], bold_prefix="Solution:")
 
-        # 3. DSA PROBLEMS
+        # 3. DSA PATTERN & CODING PROBLEMS (Java 17+)
+        dsa_pattern = d.get("dsa_pattern", {})
+        if dsa_pattern and "pattern_name" in dsa_pattern:
+            add_heading_2(doc, f"3. Java DSA Pattern: {dsa_pattern.get('pattern_name', '')}")
+            add_paragraph(doc, dsa_pattern.get('concept', ''), bold_prefix="Core Concept:")
+            code_str = dsa_pattern.get("java_code") or dsa_pattern.get("code", "")
+            if code_str:
+                add_code_block(doc, code_str, language="java")
+            add_paragraph(doc, f"Time & Space: {dsa_pattern.get('complexity', '')}", bold_prefix="Complexity:")
+
         dsa = d.get("dsa_problems", [])
         if dsa:
-            add_heading_2(doc, "3. Placement Coding & Data Structures (Python)")
+            add_heading_3(doc, "Java 17+ Placement Coding Problems")
             for p in dsa:
                 add_heading_3(doc, f"Problem: {p.get('title', '')}")
                 add_paragraph(doc, p.get('problem_statement', ''), bold_prefix="Problem Statement:")
                 add_paragraph(doc, p.get('solution_approach', ''), bold_prefix="Algorithmic Approach:")
-                if "code" in p:
-                    add_code_block(doc, p["code"], language="python")
+                p_code = p.get("solution_java") or p.get("code", "")
+                if p_code:
+                    add_code_block(doc, p_code, language="java")
                 add_paragraph(doc, f"Time: {p.get('time_complexity', 'O(N)')}  |  Space: {p.get('space_complexity', 'O(1)')}", bold_prefix="Complexities:")
                 if "edge_cases" in p:
-                    add_paragraph(doc, p["edge_cases"], bold_prefix="Edge Cases:")
+                    add_paragraph(doc, str(p["edge_cases"]), bold_prefix="Edge Cases:")
 
         # 4. CORE CS
         cs = d.get("cs_core", {})

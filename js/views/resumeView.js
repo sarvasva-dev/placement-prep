@@ -85,13 +85,15 @@ function buildResumePage(container, resumesData, daysIndex) {
         
         <!-- Header / Contact -->
         <div style="text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: var(--space-4); margin-bottom: var(--space-4);">
-          <h1 style="font-size: 1.8rem; margin: 0 0 6px 0; letter-spacing: 0.5px; color: var(--text-primary); text-transform: uppercase;">
+          <h1 style="font-size: 1.8rem; margin: 0 0 4px 0; letter-spacing: 0.5px; color: var(--text-primary); text-transform: uppercase;">
             ${r.contact.name}
           </h1>
+          ${r.contact.tagline ? `<div style="font-size: var(--font-size-xs); font-weight: 700; color: var(--color-primary); margin-bottom: 6px; letter-spacing: 0.5px;">${r.contact.tagline}</div>` : ''}
           <div style="font-size: var(--font-size-sm); color: var(--text-secondary); display: flex; justify-content: center; flex-wrap: wrap; gap: var(--space-3);">
             <span>📍 ${r.contact.location}</span>
             <span>✉️ ${r.contact.email}</span>
             <span>📞 ${r.contact.phone}</span>
+            ${r.contact.website ? `<span>🌐 <a href="${r.contact.website}" target="_blank" style="color: var(--color-primary);">${r.contact.website.replace('https://', '')}</a></span>` : ''}
             <span>🔗 <a href="${r.contact.github}" target="_blank" style="color: var(--color-primary);">${r.contact.github.replace('https://', '')}</a></span>
             <span>🔗 <a href="${r.contact.linkedin}" target="_blank" style="color: var(--color-primary);">${r.contact.linkedin.replace('https://', '')}</a></span>
           </div>
@@ -119,12 +121,37 @@ function buildResumePage(container, resumesData, daysIndex) {
           </div>
         </div>
 
-        <!-- Experience & Key Projects -->
+        <!-- Work Experience (if available) -->
+        ${r.work_experience ? `
+        <div style="margin-bottom: var(--space-4);">
+          <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
+            WORK EXPERIENCE
+          </div>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            ${r.work_experience.map(exp => `
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px;">
+                  <div>
+                    <strong style="font-size: var(--font-size-base); color: var(--text-primary);">${exp.role}</strong>
+                    <span style="font-size: var(--font-size-sm); color: var(--color-primary); margin-left: 6px;">@ ${exp.company}</span>
+                  </div>
+                  <span style="font-size: var(--font-size-xs); font-weight: 700; color: var(--text-muted);">${exp.duration} (${exp.location})</span>
+                </div>
+                <ul style="margin: 4px 0 0 0; padding-left: var(--space-4); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.5;">
+                  ${exp.bullets.map(b => `<li style="margin-bottom: 4px;">${b}</li>`).join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- Key Projects -->
         <div style="margin-bottom: var(--space-4);">
           <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
             KEY ENGINEERING PROJECTS
           </div>
-          <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
             ${r.experience_and_projects.map(proj => `
               <div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px;">
@@ -140,7 +167,7 @@ function buildResumePage(container, resumesData, daysIndex) {
         </div>
 
         <!-- Education -->
-        <div>
+        <div style="margin-bottom: var(--space-4);">
           <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
             EDUCATION
           </div>
@@ -155,6 +182,20 @@ function buildResumePage(container, resumesData, daysIndex) {
             </div>
           </div>
         </div>
+
+        <!-- Certifications & Honors -->
+        ${r.certifications ? `
+        <div>
+          <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
+            CERTIFICATIONS & HONORS
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: 4px;">
+            ${r.certifications.map(c => `
+              <span class="badge badge-secondary" style="font-size: var(--font-size-xs);">${c}</span>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
 
       </div>
     `;

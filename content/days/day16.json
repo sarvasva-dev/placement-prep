@@ -1,163 +1,2447 @@
 {
   "day": 16,
-  "title": "KM OLAP Operations, Heaps/Priority Queues & Probability",
-  "sem_data": {
-    "subject": "BCA-5001 Knowledge Management",
-    "topic": "Unit II \u2014 Multidimensional OLAP Data Cubes & The 5 Core OLAP Operations",
-    "detailed_notes": [
-      "Online Analytical Processing (OLAP) is a computing methodology that enables management executives, business analysts, and decision makers to visually inspect, summarize, and navigate complex multidimensional data cubes from multiple perspectives rapidly and interactively.",
-      "The 5 Core OLAP Operations on Multidimensional Data Cubes:\n1. Roll-Up (Drill-Up / Aggregation): Performs data summarization by either climbing up a concept hierarchy for a dimension or by dimension reduction (removing a dimension). Example: Moving from Daily sales -> Monthly sales -> Quarterly sales -> Annual sales across all retail branches.\n2. Drill-Down (Roll-Down / Disaggregation): The exact inverse of Roll-Up. It introduces greater granularity by descending down a concept hierarchy or introducing a new dimension. Example: An executive viewing national sales drills down to inspect state-level sales, and drills down further to city-level stores.\n3. Slice: Performs a selection on one specific dimension of the cube, resulting in a two-dimensional sub-cube (a 'slice'). Example: In a 3D cube of dimensions (Time, Product, Location), setting Time = 'Q1 2026' isolates a 2D slice showing sales of all Products across all Locations during Q1.\n4. Dice: Defines a sub-cube by executing a selection across two or more dimensions simultaneously. Example: Selecting (Location = 'Kanpur' OR 'Lucknow') AND (Time = 'Q1' OR 'Q2') AND (Product = 'Electronics').\n5. Pivot (Rotate): A visualization operation that rotates the data axes in space to provide an alternative perspective on the dataset, transforming rows into columns and vice-versa (e.g. converting a 2D table of Store x Product into Product x Store).",
-      "Architectural Types of OLAP Servers:\n\u2022 ROLAP (Relational OLAP): Uses relational databases to store multidimensional data, translating OLAP operations into complex multi-table SQL queries. Highly scalable for massive volumes, but slower query response times.\n\u2022 MOLAP (Multidimensional OLAP): Stores data in dedicated multidimensional arrays (cubes). Pre-computes aggregations, delivering lightning-fast O(1) query performance, but suffers from data cube sparsity and high initial build times.\n\u2022 HOLAP (Hybrid OLAP): Combines the scalability of ROLAP with the speed of MOLAP by storing detailed transaction records in relational tables while caching high-level aggregated cubes in MOLAP storage."
+  "title": "Day 16: OLAP Operations: Roll-up, Drill-down, Slice, Dice & Pivot (ROLAP vs MOLAP) & Tree Traversals: DFS Pre, In, Post-Order",
+  "streams": {
+    "academic": {
+      "unit": 3,
+      "topic": "Unit III — OLAP Operations: Roll-up, Drill-down, Slice, Dice & Pivot (ROLAP vs MOLAP)",
+      "objectives": [
+        "Understand Multi-Dimensional Data Cubes.",
+        "Execute Roll-up, Drill-down, Slice, Dice, and Pivot operations on OLAP cubes."
+      ],
+      "explanation": "Online Analytical Processing (OLAP) provides multidimensional, rapid querying of aggregated warehouse data. An OLAP Cube conceptualizes data along dimensions (e.g., Time, Location, Item). The five primary OLAP operations are: 1. Roll-up (Aggregation up a dimension hierarchy, e.g., Day -> Month -> Year); 2. Drill-down (Navigating from summary to granular details, e.g., Country -> State -> City); 3. Slice (Selecting a single dimension value to obtain a 2D cross-section); 4. Dice (Selecting sub-ranges across two or more dimensions to form a sub-cube); 5. Pivot / Rotate (Rotating data axes in space to provide alternative viewing perspectives).",
+      "definitions": [
+        {
+          "term": "OLAP Cube",
+          "definition": "A multidimensional data structure that allows fast, flexible analysis of business metrics along multiple dimensional hierarchies."
+        },
+        {
+          "term": "ROLAP vs MOLAP",
+          "definition": "ROLAP stores cubes in relational tables using star schemas; MOLAP pre-computes and stores cubes in proprietary optimized multidimensional array storage."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Core OLAP Operations",
+          "content": "Roll-up decreases detail by ascending concept hierarchies; Drill-down increases detail by descending hierarchies; Slice cuts along 1 dimension; Dice cuts along multiple dimensions; Pivot rotates view axes."
+        },
+        {
+          "title": "Storage Architectures",
+          "content": "MOLAP provides blazing query speed for small-to-medium cubes; ROLAP offers infinite scalability by querying relational databases directly; HOLAP combines both approaches."
+        }
+      ],
+      "examples": [
+        "Slicing a sales cube where Location = 'Kanpur' to view quarterly sales across products."
+      ],
+      "diagram": "+---------------------------------------------------+\n|              OLAP CUBE OPERATIONS                 |\n| Roll-up (Summary)  <---> Drill-down (Granular)    |\n| Slice (1 Dimension) <---> Dice (Sub-Cube Multi-Dim)|\n| Pivot (Rotate Axes in View)                       |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "OLAP Operation",
+          "Dimensional Action",
+          "Granularity Effect",
+          "Practical Query Example"
+        ],
+        "rows": [
+          [
+            "Roll-up",
+            "Climbs up dimension hierarchy",
+            "Decreases detail (more aggregated)",
+            "Viewing total sales by Year instead of by Day"
+          ],
+          [
+            "Drill-down",
+            "Steps down dimension hierarchy",
+            "Increases detail (more granular)",
+            "Expanding Uttar Pradesh sales into Kanpur and Lucknow sales"
+          ],
+          [
+            "Slice",
+            "Filters on 1 exact dimension value",
+            "Reduces dimensionality by 1",
+            "Selecting Time = 'Q1 2025' across all products and cities"
+          ],
+          [
+            "Dice",
+            "Filters ranges across >=2 dimensions",
+            "Creates smaller sub-cube",
+            "Selecting (Location='Kanpur' OR 'Delhi') AND (Item='Laptops')"
+          ],
+          [
+            "Pivot",
+            "Rotates dimensional axes",
+            "No granularity change (view shift)",
+            "Swapping rows and columns on a reporting grid"
+          ]
+        ]
+      },
+      "memorize": "Roll-up = less detail (climb hierarchy). Drill-down = more detail (descend hierarchy). Slice = 1 dimension cut. Dice = multi-dimension sub-cube. Pivot = rotation.",
+      "understand": "OLAP operations are algebraic manipulations over a multidimensional matrix allowing executives to explore data interactively without writing SQL.",
+      "common_mistakes": "Confusing Slice (cuts along exactly one dimension) with Dice (cuts sub-ranges across two or more dimensions).",
+      "exam_writing_guidance": "Draw a 3D data cube, define all 5 operations clearly with mathematical and business examples, and compare ROLAP vs MOLAP.",
+      "mini_practice": [
+        "Explain the architectural differences between ROLAP, MOLAP, and HOLAP."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2021-22 (Q4)",
+          "marks": 15,
+          "question": "What is an OLAP Cube? Explain the five primary OLAP operations (Roll-up, Drill-down, Slice, Dice, Pivot) with suitable diagrams. (15 Marks)",
+          "rubric": "OLAP Cube definition & diagram (4 marks) + 5 Operations explained with diagrams (8 marks) + ROLAP vs MOLAP comparison (3 marks) = 15 Marks.",
+          "model_answer": "An OLAP Cube is a multidimensional data array structured to facilitate rapid business intelligence querying across orthogonal dimensions such as Time, Geography, and Product. The 5 core OLAP operations are: 1. Roll-up: Aggregates data by climbing up a concept hierarchy (e.g., aggregating daily transactions into quarterly totals), reducing granularity; 2. Drill-down: The reverse of roll-up, descending concept hierarchies to reveal granular operational details (e.g., expanding country sales into regional city stores); 3. Slice: Fixing one specific dimension value (e.g., Time = '2024') to extract a two-dimensional cross-section slice of the cube; 4. Dice: Defining sub-ranges across two or more dimensions simultaneously (e.g., Location in ('North', 'West') AND Product in ('Hardware', 'Software')), yielding a smaller sub-cube; 5. Pivot: Re-orienting the multidimensional view axes to transform rows into columns, offering new comparative analytical perspectives.",
+          "answer_structure": "Cube Definition -> 3D Cube Diagram -> 5 Operations with Sub-Diagrams -> ROLAP/MOLAP Summary",
+          "important_points": [
+            "Multidimensional data model",
+            "Concept hierarchy",
+            "Slice vs Dice distinction",
+            "Axes rotation"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Draw cube transformations for each operation",
+            "Explicit definitions of ROLAP and MOLAP"
+          ],
+          "common_mistakes": [
+            "Failing to illustrate the operations visually"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2023 / Model",
+          "marks": 5,
+          "question": "Differentiate between ROLAP (Relational OLAP) and MOLAP (Multidimensional OLAP). (5 Marks)",
+          "rubric": "Storage (2 marks) + Performance & Scalability (2 marks) + Use Case (1 mark) = 5 Marks.",
+          "model_answer": "ROLAP stores multidimensional data directly inside relational tables using Star and Snowflake schemas; it offers virtually unlimited scalability and handles high data volumes, but queries require complex joins and execute slower. MOLAP pre-computes and stores data cubes in specialized multidimensional array storage structures; it provides ultra-fast query response times, but cube generation takes significant preprocessing time and storage scalability is limited."
+        }
+      ],
+      "subject_code": "BCA-5001",
+      "subject_name": "Knowledge Management",
+      "mcqs": [
+        {
+          "id": "ACAD-16-01",
+          "question": "What is a 'Community of Practice' (CoP) in an enterprise Knowledge Management ecosystem?",
+          "options": [
+            "An official disciplinary board that terminates underperforming employees",
+            "An informal, self-organizing group of practitioners who share a passion or domain and interact regularly to improve their craft",
+            "A software tool for running payroll calculations",
+            "A hardware firewall preventing external internet access"
+          ],
+          "correct_answer": "B",
+          "explanation": "CoPs (Lave & Wenger) are groups of people bound by informal expertise and shared passion to solve problems collaboratively."
+        },
+        {
+          "id": "ACAD-16-02",
+          "question": "What is the primary cultural barrier to successful knowledge sharing in corporate organizations?",
+          "options": [
+            "Lack of Gigabit Ethernet bandwidth",
+            "'Knowledge is Power' hoarding syndrome where individuals fear losing personal value by sharing expertise",
+            "Using Linux instead of Windows",
+            "Too many database backups"
+          ],
+          "correct_answer": "B",
+          "explanation": "Knowledge hoarding arises when organizations fail to incentivize transparency, causing experts to treat knowledge as individual leverage."
+        },
+        {
+          "id": "ACAD-16-03",
+          "question": "Which KM capture mechanism pairs a junior engineer with an experienced expert to observe and absorb intuitive problem-solving heuristics?",
+          "options": [
+            "Database Normalization",
+            "Apprenticeship / Shadowing",
+            "Web Scraping",
+            "Binary Search"
+          ],
+          "correct_answer": "B",
+          "explanation": "Shadowing and mentoring enable direct tacit-to-tacit knowledge transfer through contextual observation and guided reflection."
+        },
+        {
+          "id": "ACAD-16-04",
+          "question": "In knowledge management metrics, what does the 'Knowledge Retention Rate' measure?",
+          "options": [
+            "The percentage of hard drives retained during data center upgrades",
+            "The organization's ability to preserve mission-critical institutional expertise when senior employees leave or retire",
+            "The speed of RAM cache memory",
+            "The ratio of SQL queries to web visits"
+          ],
+          "correct_answer": "B",
+          "explanation": "Retention rate quantifies an organization's capacity to codify and transition institutional memory before attrition occurs."
+        },
+        {
+          "id": "ACAD-16-05",
+          "question": "What role does an After Action Review (AAR) play in organizational learning?",
+          "options": [
+            "It calculates end-of-year tax liabilities",
+            "It provides a structured debrief immediately following a project to analyze what was expected, what actually occurred, and why",
+            "It terminates software licenses",
+            "It formats database tables into 3NF"
+          ],
+          "correct_answer": "B",
+          "explanation": "Originating in the US Army, an AAR is a structured 4-question debrief that captures operational lessons learned before memories fade."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2021-22 (Q4)",
+        "marks": 15,
+        "question": "What is an OLAP Cube? Explain the five primary OLAP operations (Roll-up, Drill-down, Slice, Dice, Pivot) with suitable diagrams. (15 Marks)",
+        "rubric": "OLAP Cube definition & diagram (4 marks) + 5 Operations explained with diagrams (8 marks) + ROLAP vs MOLAP comparison (3 marks) = 15 Marks.",
+        "model_answer": "An OLAP Cube is a multidimensional data array structured to facilitate rapid business intelligence querying across orthogonal dimensions such as Time, Geography, and Product. The 5 core OLAP operations are: 1. Roll-up: Aggregates data by climbing up a concept hierarchy (e.g., aggregating daily transactions into quarterly totals), reducing granularity; 2. Drill-down: The reverse of roll-up, descending concept hierarchies to reveal granular operational details (e.g., expanding country sales into regional city stores); 3. Slice: Fixing one specific dimension value (e.g., Time = '2024') to extract a two-dimensional cross-section slice of the cube; 4. Dice: Defining sub-ranges across two or more dimensions simultaneously (e.g., Location in ('North', 'West') AND Product in ('Hardware', 'Software')), yielding a smaller sub-cube; 5. Pivot: Re-orienting the multidimensional view axes to transform rows into columns, offering new comparative analytical perspectives.",
+        "answer_structure": "Cube Definition -> 3D Cube Diagram -> 5 Operations with Sub-Diagrams -> ROLAP/MOLAP Summary",
+        "important_points": [
+          "Multidimensional data model",
+          "Concept hierarchy",
+          "Slice vs Dice distinction",
+          "Axes rotation"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Draw cube transformations for each operation",
+          "Explicit definitions of ROLAP and MOLAP"
+        ],
+        "common_mistakes": [
+          "Failing to illustrate the operations visually"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Differentiate between ROLAP (Relational OLAP) and MOLAP (Multidimensional OLAP). (5 Marks)",
+        "rubric": "Storage (2 marks) + Performance & Scalability (2 marks) + Use Case (1 mark) = 5 Marks.",
+        "model_answer": "ROLAP stores multidimensional data directly inside relational tables using Star and Snowflake schemas; it offers virtually unlimited scalability and handles high data volumes, but queries require complex joins and execute slower. MOLAP pre-computes and stores data cubes in specialized multidimensional array storage structures; it provides ultra-fast query response times, but cube generation takes significant preprocessing time and storage scalability is limited."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    5 CORE OLAP DATA CUBE OPERATIONS                     |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|             [ ROLL-UP ]                   [ DRILL-DOWN ]                |\n|       (Climb Concept Hierarchy)     (Descend Concept Hierarchy)         |\n|       Day -> Month -> Year          Year -> Quarter -> Month            |\n|                     ^                         |                         |\n|                     |                         v                         |\n|              +---------------------------------------+                  |\n|              |         MULTIDIMENSIONAL CUBE         |                  |\n|              |    Dimensions: Product, Time, City    |                  |\n|              +---------------------------------------+                  |\n|                     /            |            \\                         |\n|                    /             |             \\                        |\n|                   v              v              v                       |\n|               [ SLICE ]       [ DICE ]       [ PIVOT ]                  |\n|             Filter on ONE   Filter on TWO+  Rotate 2D                   |\n|             dimension       dimensions      Axes (Swap                  |\n|             (Time = 'Q1')   (City & Prod)   Row/Column)                 |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-16-01",
+        "question": "What is a 'Community of Practice' (CoP) in an enterprise Knowledge Management ecosystem?",
+        "options": [
+          "An official disciplinary board that terminates underperforming employees",
+          "An informal, self-organizing group of practitioners who share a passion or domain and interact regularly to improve their craft",
+          "A software tool for running payroll calculations",
+          "A hardware firewall preventing external internet access"
+        ],
+        "correct_answer": "B",
+        "explanation": "CoPs (Lave & Wenger) are groups of people bound by informal expertise and shared passion to solve problems collaboratively."
+      },
+      {
+        "id": "ACAD-16-02",
+        "question": "What is the primary cultural barrier to successful knowledge sharing in corporate organizations?",
+        "options": [
+          "Lack of Gigabit Ethernet bandwidth",
+          "'Knowledge is Power' hoarding syndrome where individuals fear losing personal value by sharing expertise",
+          "Using Linux instead of Windows",
+          "Too many database backups"
+        ],
+        "correct_answer": "B",
+        "explanation": "Knowledge hoarding arises when organizations fail to incentivize transparency, causing experts to treat knowledge as individual leverage."
+      },
+      {
+        "id": "ACAD-16-03",
+        "question": "Which KM capture mechanism pairs a junior engineer with an experienced expert to observe and absorb intuitive problem-solving heuristics?",
+        "options": [
+          "Database Normalization",
+          "Apprenticeship / Shadowing",
+          "Web Scraping",
+          "Binary Search"
+        ],
+        "correct_answer": "B",
+        "explanation": "Shadowing and mentoring enable direct tacit-to-tacit knowledge transfer through contextual observation and guided reflection."
+      },
+      {
+        "id": "ACAD-16-04",
+        "question": "In knowledge management metrics, what does the 'Knowledge Retention Rate' measure?",
+        "options": [
+          "The percentage of hard drives retained during data center upgrades",
+          "The organization's ability to preserve mission-critical institutional expertise when senior employees leave or retire",
+          "The speed of RAM cache memory",
+          "The ratio of SQL queries to web visits"
+        ],
+        "correct_answer": "B",
+        "explanation": "Retention rate quantifies an organization's capacity to codify and transition institutional memory before attrition occurs."
+      },
+      {
+        "id": "ACAD-16-05",
+        "question": "What role does an After Action Review (AAR) play in organizational learning?",
+        "options": [
+          "It calculates end-of-year tax liabilities",
+          "It provides a structured debrief immediately following a project to analyze what was expected, what actually occurred, and why",
+          "It terminates software licenses",
+          "It formats database tables into 3NF"
+        ],
+        "correct_answer": "B",
+        "explanation": "Originating in the US Army, an AAR is a structured 4-question debrief that captures operational lessons learned before memories fade."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Linear & Circular Seating Arrangement",
+      "category": "Logical Reasoning",
+      "subtopic": "Seating Arrangement",
+      "formulas": "1. Facing Center (North): Left is Clockwise / West; Right is Counter-clockwise / East.\n2. Facing Away from Center (South): Orientations are reversed.\n3. Definite Clues vs Ambiguous Clues: Always place fixed anchor positions first before testing conditional constraints.",
+      "shortcuts": "Dual-Diagram Parallel Tracking: When a clue allows two possible placements, draw two small candidate diagrams simultaneously rather than erasing and guessing.",
+      "tutorial": [
+        "Seating puzzles form 15-20% of the reasoning section in Infosys and Cognizant tests. Read through all conditions before placing the first element. Look for the most restrictive constraint with specific positional anchors."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Seating Arrangement",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Seating Arrangement",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Seating Arrangement",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Seating Arrangement",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Seating Arrangement",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Eight friends A, B, C, D, E, F, G, H sit around a circular table facing the center. A sits third to the right of B. C sits second to the left of A. Who sits directly between B and C if E sits opposite A?",
+        "options": {
+          "A": "D or G",
+          "B": "H",
+          "C": "F",
+          "D": "Cannot be determined"
+        },
+        "correct_answer": "D",
+        "explanation": "Without additional placement data for remaining positions D, F, G, H, the exact occupant between B and C cannot be uniquely determined.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Five girls P, Q, R, S, T sit in a row facing North. Q is to the immediate right of S. T is to the left of R and immediate right of P. S is to the right of R. Who sits in the middle?",
+        "options": {
+          "A": "R",
+          "B": "S",
+          "C": "T",
+          "D": "Q"
+        },
+        "correct_answer": "A",
+        "explanation": "Order from left to right: P, T, R, S, Q. The middle position (3rd of 5) is occupied by R.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Six persons A, B, C, D, E, F sit in two rows of three each, facing each other. E is not at the end of any row. D is second to the left of F. C, the neighbor of E, is diagonally opposite D. B is neighbor of F. Who is opposite B?",
+        "options": {
+          "A": "E",
+          "B": "C",
+          "C": "A",
+          "D": "F"
+        },
+        "correct_answer": "A",
+        "explanation": "Top row: D, A, C; Bottom row: F, B, E. E sits opposite B.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "A, B, C, D, E are sitting in a circle facing the center. A is between E and D. B is to the right of D. Who is to the immediate left of B?",
+        "options": {
+          "A": "D",
+          "B": "C",
+          "C": "E",
+          "D": "A"
+        },
+        "correct_answer": "A",
+        "explanation": "In clockwise order: E, A, D, B, C. Immediate left of B (moving clockwise) is D.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "In a row of 40 students facing North, Amit is 18th from the left end and Sumit is 24th from the right end. How many students sit between them?",
+        "options": {
+          "A": "0 (They overlap)",
+          "B": "2",
+          "C": "4",
+          "D": "6"
+        },
+        "correct_answer": "A",
+        "explanation": "Sum of positions = 18 + 24 = 42 > 40. Overlapping students = (18 + 24) - 40 - 2 = 42 - 42 = 0 students between them.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Six friends J, K, L, M, N, O sit around a hexagon table facing center. J is opposite M. K is second to left of J. O is between J and K. L is opposite O. Who is between M and L?",
+        "options": {
+          "A": "N",
+          "B": "K",
+          "C": "O",
+          "D": "J"
+        },
+        "correct_answer": "A",
+        "explanation": "Placements: J, O, K, M, N, L. N sits directly between M and L.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "In a row of children, Ravi is 4th from left and Shyam is 7th from right. When they interchange places, Ravi becomes 15th from left. How many children are in the row?",
+        "options": {
+          "A": "21",
+          "B": "22",
+          "C": "20",
+          "D": "23"
+        },
+        "correct_answer": "A",
+        "explanation": "Total children = (Ravi's new left position) + (Shyam's original right position) - 1 = 15 + 7 - 1 = 21.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Seven people A, B, C, D, E, F, G sit in a line facing North. D sits in the middle. A and G are at extreme ends. B sits immediate right of D. F is between A and C. Who sits between B and G?",
+        "options": {
+          "A": "E",
+          "B": "C",
+          "C": "F",
+          "D": "D"
+        },
+        "correct_answer": "A",
+        "explanation": "Order: A, F, C, D, B, E, G. E sits directly between B and G.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Eight executives sit around a square conference table, two on each side facing the center. If Raj sits opposite Priya, who sits to Priya's left?",
+        "options": {
+          "A": "Dependent on corner adjacency",
+          "B": "Raj",
+          "C": "Neither",
+          "D": "Cannot be determined without side parity"
+        },
+        "correct_answer": "D",
+        "explanation": "Table configuration requires side and corner assignments to resolve lateral adjacency.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "In a class of 45 students, a boy is ranked 20th. When two boys join, his rank drops by 1. What is his new rank from the bottom?",
+        "options": {
+          "A": "27th",
+          "B": "28th",
+          "C": "26th",
+          "D": "25th"
+        },
+        "correct_answer": "A",
+        "explanation": "New total students = 45 + 2 = 47. His new top rank = 20 + 1 = 21st. Rank from bottom = (47 - 21) + 1 = 27th.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Seating Arrangement (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Tree Traversals: DFS Pre, In, Post-Order",
+      "category": "Tree / DFS",
+      "concept": "Traverses binary trees recursively or with an explicit stack visiting root and children in specified sequence.",
+      "why_it_works": "Recursion stack follows call frames matching tree height; post-order processes subtrees before root, enabling bottom-up aggregation.",
+      "visual_explanation": "Pre-order:  Root -> Left -> Right\\nIn-order:   Left -> Root -> Right (Sorted in BST!)\\nPost-order: Left -> Right -> Root (Height / Diameter calculations)",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        int leftDepth = maxDepth(root.left);\n        int rightDepth = maxDepth(root.right);\n        return 1 + Math.max(leftDepth, rightDepth);\n    }\n}",
+      "code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        int leftDepth = maxDepth(root.left);\n        int rightDepth = maxDepth(root.right);\n        return 1 + Math.max(leftDepth, rightDepth);\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 2: Base case: if root is null, depth is 0.",
+        "Line 3-4: Recursively compute depth of left and right subtrees.",
+        "Line 5: Return 1 plus the maximum depth of children."
+      ],
+      "dry_run": "Tree [3, 9, 20, null, null, 15, 7]. Left child 9 returns 1. Right child 20 has children 15 and 7 (depth 2). Total depth = 1 + 2 = 3.",
+      "complexity": "O(N) Time, O(H) Auxiliary Space (H = height of tree)",
+      "edge_cases": "Empty tree, Single node, Degenerate skewed tree (H = N)",
+      "edge_cases_list": [
+        "Empty tree",
+        "Single node",
+        "Degenerate skewed tree (H = N)"
+      ],
+      "interview_variations": [
+        "Diameter of Binary Tree",
+        "Balanced Binary Tree",
+        "Maximum Path Sum in Binary Tree"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-16-01",
+        "title": "Problem 1: Maximum Depth of Binary Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given the root of a binary tree, return its maximum depth.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Tree Traversals: DFS Pre, In, Post-Order algorithmic technique.\n2. Traverses binary trees recursively or with an explicit stack visiting root and children in specified sequence.\n3. Invariants: Recursion stack follows call frames matching tree height; post-order processes subtrees before root, enabling bottom-up aggregation.",
+        "solution_java": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+        "solution_python": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+        "code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+        "java_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space (H = height of tree)"
+      },
+      {
+        "problem_id": "CODE-16-02",
+        "title": "Problem 2: Diameter of Binary Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given root of binary tree, return length of diameter (longest path between any two nodes).",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Tree Traversals: DFS Pre, In, Post-Order.\n2. Handle edge cases: Empty tree, Single node, Degenerate skewed tree (H = N).\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+        "solution_python": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+        "code": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+        "java_code": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space (H = height of tree)"
+      }
+    ],
+    "core_cs": {
+      "subject": "Computer Networks",
+      "topic": "Data Link Layer: Framing, Error Detection (CRC) & Sliding Window Protocols",
+      "concept_lesson": "The Data Link Layer is responsible for reliable node-to-node frame delivery across a physical link.\n\nFraming Techniques:\n1. Character Count: Transmitter includes frame length in the header (fragile: one transmission error corrupts subsequent boundaries).\n2. Byte Stuffing: Delimits frames with special FLAG bytes; inserts an ESC byte before any data byte that happens to match FLAG.\n3. Bit Stuffing: Frame boundary is delimited by 01111110 (0 followed by six 1s and a 0). The sender automatically inserts a 0 after every sequence of five consecutive 1s in data; the receiver strips the stuffed 0.\n\nError Detection & Correction:\n- Parity Bit: Adds a single bit for odd/even parity (detects single-bit errors).\n- Checksum: 16-bit 1's complement sum of 16-bit words (used in IP/TCP headers).\n- Cyclic Redundancy Check (CRC): Polynomial division over Galois Field GF(2). Generator polynomial G(x) divides data bits padded with degree(G) zeroes using XOR. The remainder is appended as the Frame Check Sequence (FCS). Detects all single, double, odd, and burst errors.\n\nFlow Control Protocols:\n- Stop-and-Wait: Sender transmits one frame and waits for ACK. Inefficient on high-latency links (bandwidth-delay product waste).\n- Go-Back-N (GBN): Sender uses sliding window of size N. If frame i is lost, receiver discards all subsequent frames; sender retransmits all frames from i to N upon timeout (Cumulative ACK).\n- Selective Repeat (SR): Receiver buffers out-of-order frames within a window; sender retransmits ONLY the specific lost frame (Individual ACK). Window size must be <= 2^(k-1) to avoid sequence number ambiguity.",
+      "key_definitions": [
+        {
+          "term": "Bit Stuffing",
+          "definition": "Inserting a 0-bit after every 5 consecutive 1-bits to prevent user data from mimicking the frame delimiter flag."
+        },
+        {
+          "term": "CRC (Cyclic Redundancy Check)",
+          "definition": "An error-detecting code based on polynomial binary division with XOR arithmetic."
+        },
+        {
+          "term": "Selective Repeat",
+          "definition": "A sliding window protocol where only corrupted or lost frames are retransmitted by the sender."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "How does Bit Stuffing work and why is it necessary in HDLC framing?",
+          "a": "HDLC uses the flag pattern 01111110 to designate frame boundaries. To prevent user data from accidentally mimicking this flag and causing premature frame termination, the sender inspects the data stream and automatically stuffs an extra '0' bit after every five consecutive '1' bits. The receiver detects any sequence of five 1s followed by a 0 and automatically strips the 0 bit."
+        },
+        {
+          "q": "Explain how Cyclic Redundancy Check (CRC) detects errors.",
+          "a": "Let data be D with length k and generator polynomial be G with degree r. 1. Sender appends r zeroes to D. 2. Sender performs modulo-2 binary division (using bitwise XOR without borrows) of padded D by G. 3. The r-bit remainder R is the CRC checksum. 4. Sender transmits (D + R). 5. Receiver divides the incoming frame by G. If remainder is 0, the frame is error-free; if non-zero, a transmission error occurred and the frame is dropped."
+        },
+        {
+          "q": "Compare Go-Back-N and Selective Repeat sliding window protocols.",
+          "a": "In Go-Back-N (GBN), the receiver accepts frames strictly in sequence and uses cumulative ACKs; if a frame is lost, all subsequent frames are dropped, forcing the sender to retransmit the entire window. In Selective Repeat (SR), the receiver maintains a receive window, accepts out-of-order frames, and sends individual ACKs; the sender retransmits only the single lost frame, saving bandwidth at the cost of receiver buffer memory."
+        },
+        {
+          "q": "Why must the window size in Selective Repeat be at most half the sequence number space (Ws <= 2^(k-1))?",
+          "a": "If window size exceeds 2^(k-1), an overlap occurs between the current sequence window and the next window. If all ACKs are lost, the sender retransmits old frames; the receiver cannot distinguish whether the incoming frame is a duplicate retransmission of an old frame or a brand-new frame from the next sequence cycle."
+        },
+        {
+          "q": "What is the Bandwidth-Delay Product (BDP) and why is it important?",
+          "a": "BDP = Bandwidth (bits/sec) * Round Trip Time (seconds). It represents the maximum volume of unacknowledged data in transit across the network pipe at any given instant. To achieve maximum throughput, the sliding window size must be at least equal to the BDP."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-16-01",
+          "question": "In HDLC framing, bit stuffing inserts a '0' bit after how many consecutive '1' bits?",
+          "options": [
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "correct_answer": "B",
+          "explanation": "Sender stuffs a 0 after 5 consecutive 1s to prevent collision with the flag pattern 01111110."
+        },
+        {
+          "id": "CS-16-02",
+          "question": "What mathematical operation is used in CRC modulo-2 arithmetic instead of standard subtraction?",
+          "options": [
+            "AND",
+            "OR",
+            "XOR",
+            "NOT"
+          ],
+          "correct_answer": "C",
+          "explanation": "Modulo-2 binary division uses bitwise XOR operations without borrowing."
+        },
+        {
+          "id": "CS-16-03",
+          "question": "If 3 bits are used for sequence numbers in Selective Repeat, what is the maximum sender window size?",
+          "options": [
+            "8",
+            "7",
+            "4",
+            "3"
+          ],
+          "correct_answer": "C",
+          "explanation": "Max window size in Selective Repeat is 2^(k-1) = 2^(3-1) = 4."
+        },
+        {
+          "id": "CS-16-04",
+          "question": "Which sliding window protocol buffers out-of-order frames at the receiver?",
+          "options": [
+            "Stop-and-Wait",
+            "Go-Back-N",
+            "Selective Repeat",
+            "Pure ALOHA"
+          ],
+          "correct_answer": "C",
+          "explanation": "Selective Repeat buffers out-of-order frames, whereas Go-Back-N discards them."
+        },
+        {
+          "id": "CS-16-05",
+          "question": "The frame check sequence (FCS) field in an Ethernet frame is computed using:",
+          "options": [
+            "Simple Parity",
+            "Hamming Code",
+            "CRC-32",
+            "MD5 Hash"
+          ],
+          "correct_answer": "C",
+          "explanation": "Ethernet Data Link frames utilize CRC-32 for error detection."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "SmartGalla",
+      "repo_path": "D:\\Projects\\SmartGalla",
+      "topic": "Automated Competitive Intelligence: The Blinkit Web Scraping Engine",
+      "what_to_understand": "Headless price intelligence, product matching, and automated catalog pricing.",
+      "what_to_memorize": "Price parity alerts help local merchants stay competitive against dark-store quick-commerce giants.",
+      "interview_questions": [
+        {
+          "q": "How does the Blinkit scraping worker in SmartGalla extract real-time grocery prices?",
+          "a": "We engineered an automated Node.js worker using Playwright that queries Blinkit's public catalog search endpoints using rotating User-Agents and localized pincodes. It extracts SKU names, pack sizes, MRP, and discounted prices into structured JSON (`blinkit_scraped.json`). A string similarity algorithm (Levenshtein distance) matches merchant inventory items to competitor items to highlight price disparities."
+        },
+        {
+          "q": "How do you prevent rate-limiting or IP bans while scraping quick-commerce platforms?",
+          "a": "We use jittered exponential backoffs, polite request intervals (minimum 1.5 seconds between page turns), and headless session cookie reuse. Furthermore, we run extraction in scheduled off-peak batches (2:00 AM IST) and cache scraped pricing snapshots in PostgreSQL for 24 hours."
+        }
+      ],
+      "interview_pitch_exercise": "To empower traditional merchants against quick-commerce apps, I built a competitive intelligence scraper for SmartGalla. It runs scheduled Playwright workers to capture Blinkit grocery pricing across local pincodes, maps competitor SKUs to local store inventory, and provides merchants with automated margin optimization suggestions."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 16 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 16 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of Caloriv.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 15 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5001 — Knowledge Sharing, Transfer & Communities of Practice.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Linear & Circular Seating Arrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: DFS Pre, In, Post.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Error Detection & Correction: CRC & Hamming.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Knowledge Sharing, Transfer & Communities of Practice.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Tree Traversals: DFS Pre, In, Post.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: TerraStract.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 16 Q1: What is the primary academic thesis of Knowledge Sharing, Transfer & Communities of Practice?",
+          "a": "Core theoretical and practical mastery of Knowledge Sharing, Transfer & Communities of Practice under the CSJM University BCA-5001 syllabus."
+        },
+        {
+          "q": "Day 16 Q2: What is the key speed calculation formula applied in Linear & Circular Seating Arrangement?",
+          "a": "High-speed corporate placement arithmetic shortcut for Linear & Circular Seating Arrangement in campus recruitment exams."
+        },
+        {
+          "q": "Day 16 Q3: What is the time complexity of Tree Traversals: DFS Pre, In, Post?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 16 Q4: What is the central architectural principle of Error Detection & Correction: CRC & Hamming?",
+          "a": "Foundational systems engineering rule governing Error Detection & Correction: CRC & Hamming in production environments."
+        },
+        {
+          "q": "Day 16 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 16 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 16 Q7: What is the verified technical foundation of TerraStract?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 16 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 16 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 16 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5001 — Knowledge Sharing, Transfer & Communities of Practice.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Linear & Circular Seating Arrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: DFS Pre, In, Post.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Error Detection & Correction: CRC & Hamming."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5001 — Knowledge Sharing, Transfer & Communities of Practice."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Linear & Circular Seating Arrangement."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Tree Traversals: DFS Pre, In, Post."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: TerraStract."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-16-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What is a 'Community of Practice' (CoP) in an enterprise Knowledge Management ecosystem?",
+        "options": [
+          "An official disciplinary board that terminates underperforming employees",
+          "An informal, self-organizing group of practitioners who share a passion or domain and interact regularly to improve their craft",
+          "A software tool for running payroll calculations",
+          "A hardware firewall preventing external internet access"
+        ],
+        "correct_answer": "B",
+        "explanation": "CoPs (Lave & Wenger) are groups of people bound by informal expertise and shared passion to solve problems collaboratively."
+      },
+      {
+        "id": "TEST-16-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary cultural barrier to successful knowledge sharing in corporate organizations?",
+        "options": [
+          "Lack of Gigabit Ethernet bandwidth",
+          "'Knowledge is Power' hoarding syndrome where individuals fear losing personal value by sharing expertise",
+          "Using Linux instead of Windows",
+          "Too many database backups"
+        ],
+        "correct_answer": "B",
+        "explanation": "Knowledge hoarding arises when organizations fail to incentivize transparency, causing experts to treat knowledge as individual leverage."
+      },
+      {
+        "id": "TEST-16-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which KM capture mechanism pairs a junior engineer with an experienced expert to observe and absorb intuitive problem-solving heuristics?",
+        "options": [
+          "Database Normalization",
+          "Apprenticeship / Shadowing",
+          "Web Scraping",
+          "Binary Search"
+        ],
+        "correct_answer": "B",
+        "explanation": "Shadowing and mentoring enable direct tacit-to-tacit knowledge transfer through contextual observation and guided reflection."
+      },
+      {
+        "id": "TEST-16-04",
+        "category": "Academic (Academic Theory)",
+        "question": "In knowledge management metrics, what does the 'Knowledge Retention Rate' measure?",
+        "options": [
+          "The percentage of hard drives retained during data center upgrades",
+          "The organization's ability to preserve mission-critical institutional expertise when senior employees leave or retire",
+          "The speed of RAM cache memory",
+          "The ratio of SQL queries to web visits"
+        ],
+        "correct_answer": "B",
+        "explanation": "Retention rate quantifies an organization's capacity to codify and transition institutional memory before attrition occurs."
+      },
+      {
+        "id": "TEST-16-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What role does an After Action Review (AAR) play in organizational learning?",
+        "options": [
+          "It calculates end-of-year tax liabilities",
+          "It provides a structured debrief immediately following a project to analyze what was expected, what actually occurred, and why",
+          "It terminates software licenses",
+          "It formats database tables into 3NF"
+        ],
+        "correct_answer": "B",
+        "explanation": "Originating in the US Army, an AAR is a structured 4-question debrief that captures operational lessons learned before memories fade."
+      },
+      {
+        "id": "TEST-16-06",
+        "category": "Placement Aptitude",
+        "question": "In a row of 25 girls, when Neha was shifted by 4 places towards the left, she became 10th from the left end. What was her earlier position from the right end of the row?",
+        "options": [
+          "12th",
+          "11th",
+          "13th",
+          "14th"
+        ],
+        "correct_answer": "A",
+        "explanation": "Earlier position from left = 10 + 4 = 14th. Position from right = (25 - 14) + 1 = 12th."
+      },
+      {
+        "id": "TEST-16-07",
+        "category": "Placement Aptitude",
+        "question": "Six persons A, B, C, D, E, F are sitting in two rows, three in each row. E is not at the end of any row. D is second to the left of F. C is diagonal to D. B is neighbor of F. Who is facing B?",
+        "options": [
+          "E",
+          "A",
+          "C",
+          "D"
+        ],
+        "correct_answer": "A",
+        "explanation": "Row 1: C, E, D; Row 2: A, B, F. E faces B directly."
+      },
+      {
+        "id": "TEST-16-08",
+        "category": "Placement Aptitude",
+        "question": "In a class of 40 students, Samir is ranked 8th from top and Alok is ranked 12th from bottom. How many students are there between Samir and Alok?",
+        "options": [
+          "20 students",
+          "22 students",
+          "18 students",
+          "24 students"
+        ],
+        "correct_answer": "A",
+        "explanation": "Students between = Total - (Top rank + Bottom rank) = 40 - (8 + 12) = 40 - 20 = 20 students."
+      },
+      {
+        "id": "TEST-16-09",
+        "category": "Placement Aptitude",
+        "question": "Five girls are sitting in a circle facing the center. Suman is between Rita and Monica. Neha is to the immediate left of Pooja. Rita is to the immediate left of Neha. Who is to the immediate right of Suman?",
+        "options": [
+          "Rita",
+          "Monica",
+          "Pooja",
+          "Neha"
+        ],
+        "correct_answer": "A",
+        "explanation": "Circle order clockwise: Monica, Suman, Rita, Neha, Pooja. To the immediate right of Suman is Rita."
+      },
+      {
+        "id": "TEST-16-10",
+        "category": "Placement Aptitude",
+        "question": "In a line facing North, P is 13th from left and Q is 17th from right. If they interchange positions, P becomes 21st from left. How many persons are in the row?",
+        "options": [
+          "37 persons",
+          "36 persons",
+          "38 persons",
+          "35 persons"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total = P's new left position + Q's original right position - 1 = 21 + 17 - 1 = 37 persons."
+      },
+      {
+        "id": "TEST-16-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "In HDLC framing, bit stuffing inserts a '0' bit after how many consecutive '1' bits?",
+        "options": [
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "correct_answer": "B",
+        "explanation": "Sender stuffs a 0 after 5 consecutive 1s to prevent collision with the flag pattern 01111110."
+      },
+      {
+        "id": "TEST-16-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "What mathematical operation is used in CRC modulo-2 arithmetic instead of standard subtraction?",
+        "options": [
+          "AND",
+          "OR",
+          "XOR",
+          "NOT"
+        ],
+        "correct_answer": "C",
+        "explanation": "Modulo-2 binary division uses bitwise XOR operations without borrowing."
+      },
+      {
+        "id": "TEST-16-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "If 3 bits are used for sequence numbers in Selective Repeat, what is the maximum sender window size?",
+        "options": [
+          "8",
+          "7",
+          "4",
+          "3"
+        ],
+        "correct_answer": "C",
+        "explanation": "Max window size in Selective Repeat is 2^(k-1) = 2^(3-1) = 4."
+      },
+      {
+        "id": "TEST-16-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which sliding window protocol buffers out-of-order frames at the receiver?",
+        "options": [
+          "Stop-and-Wait",
+          "Go-Back-N",
+          "Selective Repeat",
+          "Pure ALOHA"
+        ],
+        "correct_answer": "C",
+        "explanation": "Selective Repeat buffers out-of-order frames, whereas Go-Back-N discards them."
+      },
+      {
+        "id": "TEST-16-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "The frame check sequence (FCS) field in an Ethernet frame is computed using:",
+        "options": [
+          "Simple Parity",
+          "Hamming Code",
+          "CRC-32",
+          "MD5 Hash"
+        ],
+        "correct_answer": "C",
+        "explanation": "Ethernet Data Link frames utilize CRC-32 for error detection."
+      },
+      {
+        "id": "TEST-16-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Tree Traversals: DFS Pre, In, Post-Order' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(H) Auxiliary Space (H = height of tree).",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Tree Traversals: DFS Pre, In, Post-Order' pattern operates with O(N) Time, O(H) Auxiliary Space (H = height of tree): Recursion stack follows call frames matching tree height; post-order processes subtrees before root, enabling bottom-up aggregation.."
+      },
+      {
+        "id": "TEST-16-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Tree Traversals: DFS Pre, In, Post-Order' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty tree.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Tree Traversals: DFS Pre, In, Post-Order include Empty tree, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-16-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Maximum Depth of Binary Tree', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(H) Auxiliary Space (H = height of tree).",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(H) Auxiliary Space (H = height of tree) by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-16-19",
+        "category": "Projects (SmartGalla)",
+        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Automated Competitive Intelligence: The Blinkit Web Scraping Engine'?",
+        "options": [
+          "Price parity alerts help local merchants stay competitive against dark-store quick-commerce giants.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For SmartGalla, the architectural invariant is: Price parity alerts help local merchants stay competitive against dark-store quick-commerce giants.."
+      },
+      {
+        "id": "TEST-16-20",
+        "category": "Projects (SmartGalla)",
+        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'How does the Blinkit scraping worker in SmartGalla extract real-time grocery prices?'?",
+        "options": [
+          "We engineered an automated Node.js worker using Playwright that queries Blinkit's public catalog search endpoints using rotating User-Agents and localized pinco...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: We engineered an automated Node.js worker using Playwright that queries Blinkit's public catalog search endpoints using rotating User-Agents."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-16",
+      "title": "Maximum Depth of Binary Tree (Tree Traversals: DFS Pre, In, Post-Order)",
+      "time_limit_minutes": 35,
+      "difficulty": "Medium",
+      "problem_statement": "Solve the core placement problem: Maximum Depth of Binary Tree.\n\nGiven the root of a binary tree, return its maximum depth.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Tree Traversals: DFS Pre, In, Post-Order\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(H) Auxiliary Space (H = height of tree)\n- Handle all edge cases: Empty tree, Single node, Degenerate skewed tree (H = N).",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Tree Traversals: DFS Pre, In, Post-Order\n    public int maxDepth(TreeNode root) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Tree Traversals: DFS Pre, In, Post-Order\n    public int maxDepth(TreeNode root) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Tree Traversals: DFS Pre, In, Post-Order logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Empty tree",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(H) Auxiliary Space (H = height of tree))",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Knowledge Management",
+    "subject_code": "BCA-5001",
+    "unit": 3,
+    "topic": "Unit III — OLAP Operations: Roll-up, Drill-down, Slice, Dice & Pivot (ROLAP vs MOLAP)",
+    "objectives": [
+      "Understand Multi-Dimensional Data Cubes.",
+      "Execute Roll-up, Drill-down, Slice, Dice, and Pivot operations on OLAP cubes."
+    ],
+    "detailed_notes": [
+      "Online Analytical Processing (OLAP) provides multidimensional, rapid querying of aggregated warehouse data. An OLAP Cube conceptualizes data along dimensions (e.g., Time, Location, Item). The five primary OLAP operations are: 1. Roll-up (Aggregation up a dimension hierarchy, e.g., Day -> Month -> Year); 2. Drill-down (Navigating from summary to granular details, e.g., Country -> State -> City); 3. Slice (Selecting a single dimension value to obtain a 2D cross-section); 4. Dice (Selecting sub-ranges across two or more dimensions to form a sub-cube); 5. Pivot / Rotate (Rotating data axes in space to provide alternative viewing perspectives).",
+      "Roll-up decreases detail by ascending concept hierarchies; Drill-down increases detail by descending hierarchies; Slice cuts along 1 dimension; Dice cuts along multiple dimensions; Pivot rotates view axes.",
+      "MOLAP provides blazing query speed for small-to-medium cubes; ROLAP offers infinite scalability by querying relational databases directly; HOLAP combines both approaches."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|              OLAP CUBE OPERATIONS                 |\n| Roll-up (Summary)  <---> Drill-down (Granular)    |\n| Slice (1 Dimension) <---> Dice (Sub-Cube Multi-Dim)|\n| Pivot (Rotate Axes in View)                       |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Comparison Criterion",
-        "ROLAP (Relational OLAP)",
-        "MOLAP (Multidimensional OLAP)",
-        "HOLAP (Hybrid OLAP)"
+        "OLAP Operation",
+        "Dimensional Action",
+        "Granularity Effect",
+        "Practical Query Example"
       ],
       "rows": [
         [
-          "Underlying Storage",
-          "Standard relational tables (RDBMS)",
-          "Proprietary multidimensional arrays/cubes",
-          "Relational tables + Pre-computed cubes"
+          "Roll-up",
+          "Climbs up dimension hierarchy",
+          "Decreases detail (more aggregated)",
+          "Viewing total sales by Year instead of by Day"
         ],
         [
-          "Query Response Speed",
-          "Moderate to slow (complex SQL joins)",
-          "Fastest (pre-calculated matrix lookups)",
-          "Fast for aggregates, moderate for details"
+          "Drill-down",
+          "Steps down dimension hierarchy",
+          "Increases detail (more granular)",
+          "Expanding Uttar Pradesh sales into Kanpur and Lucknow sales"
         ],
         [
-          "Data Volume Scalability",
-          "Extremely high (handles petabytes)",
-          "Limited by cube explosion & sparsity",
-          "High (combines both architectures)"
+          "Slice",
+          "Filters on 1 exact dimension value",
+          "Reduces dimensionality by 1",
+          "Selecting Time = 'Q1 2025' across all products and cities"
         ],
         [
-          "Data Cube Sparsity",
-          "Immune to sparsity (only rows stored)",
-          "Highly vulnerable to sparse data waste",
-          "Optimized across storage tiers"
+          "Dice",
+          "Filters ranges across >=2 dimensions",
+          "Creates smaller sub-cube",
+          "Selecting (Location='Kanpur' OR 'Delhi') AND (Item='Laptops')"
         ],
         [
-          "Hardware Cost",
-          "Standard enterprise database storage",
-          "High RAM and disk array requirements",
-          "Moderate hybrid infrastructure"
+          "Pivot",
+          "Rotates dimensional axes",
+          "No granularity change (view shift)",
+          "Swapping rows and columns on a reporting grid"
         ]
       ]
     },
-    "memorize": "5 OLAP Operations: Roll-Up (Aggregate/Climb), Drill-Down (De-aggregate/Descend), Slice (1 Dimension fixed), Dice (2+ Dimensions sub-cube), Pivot (Rotate axes). ROLAP = Relational SQL; MOLAP = Array Storage Cube; HOLAP = Hybrid.",
-    "understand": "Think of an OLAP cube as a 3D Rubik's cube. 'Slicing' cuts off a single vertical 2D sheet of stickers. 'Dicing' cuts out a smaller 2x2 mini-cube from the corner. 'Pivoting' rotates the cube in your hand to look at the top face instead of the front.",
-    "common_mistakes": "1. Confusing Slice (filtering on strictly ONE dimension) with Dice (filtering across MULTIPLE dimensions). 2. Confusing Roll-Up (moves up toward higher summary) with Drill-Down (moves down toward granular detail).",
-    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q5 - 15m), 2022-23 (Q3a - 15m), 2023-24 (Q3 - 15m), 2024-25 (Q4 - 15m)",
-    "pyq_question": "Explain the various OLAP operations performed on multidimensional data cubes with neat diagrams and concrete business examples. Differentiate between ROLAP, MOLAP, and HOLAP. (15 Marks)",
-    "pyq_rubric": "OLAP concept & Data Cube definition (2 marks) + Explanation of all 5 OLAP operations with diagrams & examples (6 marks) + ROLAP vs MOLAP vs HOLAP architecture comparison table (5 marks) + Examination summary (2 marks) = 15 Marks.",
+    "memorize": "Roll-up = less detail (climb hierarchy). Drill-down = more detail (descend hierarchy). Slice = 1 dimension cut. Dice = multi-dimension sub-cube. Pivot = rotation.",
+    "understand": "OLAP operations are algebraic manipulations over a multidimensional matrix allowing executives to explore data interactively without writing SQL.",
+    "common_mistakes": "Confusing Slice (cuts along exactly one dimension) with Dice (cuts sub-ranges across two or more dimensions).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2021-22 (Q4)",
+        "marks": 15,
+        "question": "What is an OLAP Cube? Explain the five primary OLAP operations (Roll-up, Drill-down, Slice, Dice, Pivot) with suitable diagrams. (15 Marks)",
+        "rubric": "OLAP Cube definition & diagram (4 marks) + 5 Operations explained with diagrams (8 marks) + ROLAP vs MOLAP comparison (3 marks) = 15 Marks.",
+        "model_answer": "An OLAP Cube is a multidimensional data array structured to facilitate rapid business intelligence querying across orthogonal dimensions such as Time, Geography, and Product. The 5 core OLAP operations are: 1. Roll-up: Aggregates data by climbing up a concept hierarchy (e.g., aggregating daily transactions into quarterly totals), reducing granularity; 2. Drill-down: The reverse of roll-up, descending concept hierarchies to reveal granular operational details (e.g., expanding country sales into regional city stores); 3. Slice: Fixing one specific dimension value (e.g., Time = '2024') to extract a two-dimensional cross-section slice of the cube; 4. Dice: Defining sub-ranges across two or more dimensions simultaneously (e.g., Location in ('North', 'West') AND Product in ('Hardware', 'Software')), yielding a smaller sub-cube; 5. Pivot: Re-orienting the multidimensional view axes to transform rows into columns, offering new comparative analytical perspectives.",
+        "answer_structure": "Cube Definition -> 3D Cube Diagram -> 5 Operations with Sub-Diagrams -> ROLAP/MOLAP Summary",
+        "important_points": [
+          "Multidimensional data model",
+          "Concept hierarchy",
+          "Slice vs Dice distinction",
+          "Axes rotation"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Draw cube transformations for each operation",
+          "Explicit definitions of ROLAP and MOLAP"
+        ],
+        "common_mistakes": [
+          "Failing to illustrate the operations visually"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Differentiate between ROLAP (Relational OLAP) and MOLAP (Multidimensional OLAP). (5 Marks)",
+        "rubric": "Storage (2 marks) + Performance & Scalability (2 marks) + Use Case (1 mark) = 5 Marks.",
+        "model_answer": "ROLAP stores multidimensional data directly inside relational tables using Star and Snowflake schemas; it offers virtually unlimited scalability and handles high data volumes, but queries require complex joins and execute slower. MOLAP pre-computes and stores data cubes in specialized multidimensional array storage structures; it provides ultra-fast query response times, but cube generation takes significant preprocessing time and storage scalability is limited."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-16-01",
+        "question": "What is a 'Community of Practice' (CoP) in an enterprise Knowledge Management ecosystem?",
+        "options": [
+          "An official disciplinary board that terminates underperforming employees",
+          "An informal, self-organizing group of practitioners who share a passion or domain and interact regularly to improve their craft",
+          "A software tool for running payroll calculations",
+          "A hardware firewall preventing external internet access"
+        ],
+        "correct_answer": "B",
+        "explanation": "CoPs (Lave & Wenger) are groups of people bound by informal expertise and shared passion to solve problems collaboratively."
+      },
+      {
+        "id": "ACAD-16-02",
+        "question": "What is the primary cultural barrier to successful knowledge sharing in corporate organizations?",
+        "options": [
+          "Lack of Gigabit Ethernet bandwidth",
+          "'Knowledge is Power' hoarding syndrome where individuals fear losing personal value by sharing expertise",
+          "Using Linux instead of Windows",
+          "Too many database backups"
+        ],
+        "correct_answer": "B",
+        "explanation": "Knowledge hoarding arises when organizations fail to incentivize transparency, causing experts to treat knowledge as individual leverage."
+      },
+      {
+        "id": "ACAD-16-03",
+        "question": "Which KM capture mechanism pairs a junior engineer with an experienced expert to observe and absorb intuitive problem-solving heuristics?",
+        "options": [
+          "Database Normalization",
+          "Apprenticeship / Shadowing",
+          "Web Scraping",
+          "Binary Search"
+        ],
+        "correct_answer": "B",
+        "explanation": "Shadowing and mentoring enable direct tacit-to-tacit knowledge transfer through contextual observation and guided reflection."
+      },
+      {
+        "id": "ACAD-16-04",
+        "question": "In knowledge management metrics, what does the 'Knowledge Retention Rate' measure?",
+        "options": [
+          "The percentage of hard drives retained during data center upgrades",
+          "The organization's ability to preserve mission-critical institutional expertise when senior employees leave or retire",
+          "The speed of RAM cache memory",
+          "The ratio of SQL queries to web visits"
+        ],
+        "correct_answer": "B",
+        "explanation": "Retention rate quantifies an organization's capacity to codify and transition institutional memory before attrition occurs."
+      },
+      {
+        "id": "ACAD-16-05",
+        "question": "What role does an After Action Review (AAR) play in organizational learning?",
+        "options": [
+          "It calculates end-of-year tax liabilities",
+          "It provides a structured debrief immediately following a project to analyze what was expected, what actually occurred, and why",
+          "It terminates software licenses",
+          "It formats database tables into 3NF"
+        ],
+        "correct_answer": "B",
+        "explanation": "Originating in the US Army, an AAR is a structured 4-question debrief that captures operational lessons learned before memories fade."
+      }
+    ],
+    "pyq_year": "2021-22 (Q4)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "What is an OLAP Cube? Explain the five primary OLAP operations (Roll-up, Drill-down, Slice, Dice, Pivot) with suitable diagrams. (15 Marks)",
+    "pyq_rubric": "OLAP Cube definition & diagram (4 marks) + 5 Operations explained with diagrams (8 marks) + ROLAP vs MOLAP comparison (3 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Theoretical Foundation of OLAP & Multidimensional Cubes:",
-        "Online Analytical Processing (OLAP) facilitates high-velocity, multidimensional analysis of consolidated enterprise data. Unlike transactional databases (OLTP) which model data in two-dimensional normalized tables, OLAP structures data into multidimensional Data Cubes (hypercubes), defined by Dimensions (categorical business perspectives like Time, Product, Location) and Facts (numerical quantitative measures like Sales Revenue, Units Sold)."
+        "1. Model Answer & Technical Presentation",
+        "An OLAP Cube is a multidimensional data array structured to facilitate rapid business intelligence querying across orthogonal dimensions such as Time, Geography, and Product. The 5 core OLAP operations are: 1. Roll-up: Aggregates data by climbing up a concept hierarchy (e.g., aggregating daily transactions into quarterly totals), reducing granularity; 2. Drill-down: The reverse of roll-up, descending concept hierarchies to reveal granular operational details (e.g., expanding country sales into regional city stores); 3. Slice: Fixing one specific dimension value (e.g., Time = '2024') to extract a two-dimensional cross-section slice of the cube; 4. Dice: Defining sub-ranges across two or more dimensions simultaneously (e.g., Location in ('North', 'West') AND Product in ('Hardware', 'Software')), yielding a smaller sub-cube; 5. Pivot: Re-orienting the multidimensional view axes to transform rows into columns, offering new comparative analytical perspectives."
       ],
       [
-        "2. Detailed 5 Core OLAP Operations:",
-        "\u2022 Roll-Up (Drill-Up): Performs data aggregation by climbing up a concept hierarchy for a specific dimension or by stepping down a dimension. Example: In an automobile enterprise, rolling up sales data from 'City level' (Kanpur, Lucknow) to 'State level' (Uttar Pradesh) and 'National level' (India).\n\u2022 Drill-Down (Roll-Down): The reverse of roll-up. Navigates from less detailed summary data to highly granular data by descending down a concept hierarchy. Example: An executive examining Quarterly sales drills down into Monthly and Daily sales figures to diagnose a revenue dip.\n\u2022 Slice: Extracts a two-dimensional sub-cube by fixing a single dimension at a specific attribute value. Example: Setting Location = 'Delhi' generates a 2D slice showing sales of all Products across all Quarters specifically within Delhi.\n\u2022 Dice: Extracts a smaller sub-cube by applying selection filters simultaneously across multiple dimensions. Example: Selecting Time = ('Q1', 'Q2') AND Product = ('Laptops', 'Tablets') AND Location = ('Mumbai', 'Bangalore').\n\u2022 Pivot (Rotate): A visualization operation that rotates the multidimensional axes in 3D space, rearranging the layout of report rows and columns (e.g. converting a table of Products along rows and Months along columns into Months along rows and Products along columns)."
-      ],
-      [
-        "3. Comparative Analysis: ROLAP vs MOLAP vs HOLAP:",
-        "\u2022 ROLAP: Relies on relational databases to store fact and dimension tables directly. It uses extended SQL to simulate multidimensional cubes. It handles massive petabyte-scale data seamlessly, but query latency is high due to expensive join operations.\n\u2022 MOLAP: Implements dedicated multidimensional array storage structures. Pre-computes cell aggregations during cube build time, delivering instantaneous O(1) query response. However, when dimensions contain many sparse empty cells, storage utilization is inefficient.\n\u2022 HOLAP: A hybrid compromise. Detailed granular records are retained in scalable ROLAP relational databases, while high-frequency aggregated cubes are cached in high-speed MOLAP array structures."
-      ],
-      [
-        "4. Conclusion & Examination Summary:",
-        "OLAP operations empower business analysts to perform interactive multidimensional slicing and dicing without writing complex SQL scripts. Modern cloud analytical data platforms blend ROLAP and MOLAP techniques to achieve near-instantaneous business intelligence querying."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Explain Star Schema and how OLAP queries are executed on fact tables. (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "What is data cube sparsity in MOLAP and how is it mitigated? (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Draw cube transformations for each operation",
+          "Explicit definitions of ROLAP and MOLAP"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master 5 OLAP Operations (Roll-Up, Drill-Down, Slice, Dice, Pivot) and ROLAP vs MOLAP.",
-    "milestone": "Full 15/15 marks on University Question 4 (BCA-5001 OLAP Operations)."
-  },
   "apt_data": {
-    "topic": "Probability \u2014 Foundations, Addition Rule, Independent Events & Cards/Dice",
+    "topic": "Linear & Circular Seating Arrangement",
+    "category": "Logical Reasoning",
+    "subtopic": "Seating Arrangement",
+    "formulas": "1. Facing Center (North): Left is Clockwise / West; Right is Counter-clockwise / East.\n2. Facing Away from Center (South): Orientations are reversed.\n3. Definite Clues vs Ambiguous Clues: Always place fixed anchor positions first before testing conditional constraints.",
+    "shortcut": "Dual-Diagram Parallel Tracking: When a clue allows two possible placements, draw two small candidate diagrams simultaneously rather than erasing and guessing.",
     "tutorial": [
-      "Probability measures the mathematical likelihood that an uncertain event will occur:\nProbability of Event E: P(E) = n(E) / n(S) = (Number of Favorable Outcomes) / (Total Number of Exhaustive Sample Space Outcomes).\nFundamental Probability Invariants:\n\u2022 0 <= P(E) <= 1. P(Impossible Event) = 0; P(Certain Event) = 1.\n\u2022 Complementary Event: P(Not E) = 1 - P(E).",
-      "The Addition Theorem of Probability:\nFor any two events A and B:\nP(A cup B) = P(A) + P(B) - P(A cap B)\nIf events A and B are Mutually Exclusive (cannot happen simultaneously, P(A cap B) = 0):\nP(A cup B) = P(A) + P(B).",
-      "Independent Events (Multiplication Rule):\nTwo events A and B are Independent if the occurrence of one does not affect the probability of the other:\nP(A cap B) = P(A) * P(B).",
-      "Standard Placement Sample Spaces:\n\u2022 Tossing 'n' Coins: Total sample space = 2^n outcomes (2 coins = 4, 3 coins = 8).\n\u2022 Rolling 'n' Dice: Total sample space = 6^n outcomes (1 die = 6, 2 dice = 36).\n\u2022 Pack of 52 Playing Cards: 4 Suits of 13 cards each: Spades (Black), Clubs (Black), Hearts (Red), Diamonds (Red). 26 Red cards, 26 Black cards. 12 Face Cards (4 Kings, 4 Queens, 4 Jacks). 4 Aces."
+      "Seating puzzles form 15-20% of the reasoning section in Infosys and Cognizant tests. Read through all conditions before placing the first element. Look for the most restrictive constraint with specific positional anchors."
     ],
-    "formulas": "1. Basic Probability: P(E) = n(E) / n(S)\n2. Addition Theorem: P(A or B) = P(A) + P(B) - P(A and B)\n3. Independent Events: P(A and B) = P(A) * P(B)\n4. At Least One Occurrence: P(At least one A) = 1 - P(None of A) = 1 - [P(Not A)]^n",
-    "shortcut": "The 'At Least One' Inversion Shortcut:\nWhenever an exam question asks for 'the probability of getting AT LEAST ONE...', never sum multiple cases!\nCalculate the complementary probability of getting ZERO occurrences, and subtract from 1:\nP(At least one) = 1 - P(None) instantly!",
-    "recognition": "Look for 'what is the probability that a card drawn is either a king or a heart', 'two dice are thrown, find the probability that the sum is 8', or 'probability that at least one person hits the target'.",
-    "p1_q": "[Foundation] A card is drawn from a well-shuffled pack of 52 cards. What is the probability of getting either a King or a Heart?",
-    "p1_s": "Step 1: Total sample space n(S) = 52 cards.\nStep 2: Let Event A = Drawing a King; Event B = Drawing a Heart.\n- Number of Kings = 4 ==> P(A) = 4 / 52.\n- Number of Hearts = 13 ==> P(B) = 13 / 52.\nStep 3: Check for intersection (King of Hearts is counted in both):\n- King of Hearts n(A cap B) = 1 card ==> P(A cap B) = 1 / 52.\nStep 4: Apply Addition Theorem:\nP(A cup B) = P(A) + P(B) - P(A cap B) = (4 / 52) + (13 / 52) - (1 / 52) = 16 / 52.\nStep 5: Reduce fraction: 16 / 52 = 4 / 13.\nAnswer: 4 / 13.",
-    "p2_q": "[Standard Placement] In a single throw of two unbiased dice, find the probability of obtaining a total sum of 8.",
-    "p2_s": "Step 1: Total sample space for 2 dice: n(S) = 6 * 6 = 36 outcomes.\nStep 2: List all pairs (Die 1, Die 2) summing to 8:\nFavorable pairs = {(2, 6), (3, 5), (4, 4), (5, 3), (6, 2)}.\nNotice (1, 7) is impossible on a standard 6-sided die.\nTotal favorable outcomes n(E) = 5.\nStep 3: P(Sum of 8) = n(E) / n(S) = 5 / 36.\nSpeed Tip: Memorize dice sum frequency pattern (Sums 2 to 12):\nSum:       2   3   4   5   6   7   8   9  10  11  12\nWays:      1   2   3   4   5   6   5   4   3   2   1\nWays to get 8 is instantly 5 ==> 5/36!\nAnswer: 5 / 36.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys / Cognizant Reasoning Round]",
-    "p3_q": "The probability that A can solve a problem is 2/3, and the probability that B can solve it is 3/4. If both attempt the problem independently, what is the probability that the problem is solved?",
-    "p3_s": "Step 1: The problem is solved if AT LEAST ONE person solves it.\nUse the 'At Least One' Inversion Shortcut:\nP(Problem is solved) = 1 - P(Neither A nor B solves it).\nStep 2: Calculate complementary failure probabilities:\n- P(A fails) = 1 - 2/3 = 1/3.\n- P(B fails) = 1 - 3/4 = 1/4.\nStep 3: Since events are independent, multiply failure probabilities:\nP(Neither solves it) = P(A fails) * P(B fails) = (1 / 3) * (1 / 4) = 1 / 12.\nStep 4: P(Solved) = 1 - 1/12 = 11 / 12.\nVerification via Addition Theorem: P(A cup B) = 2/3 + 3/4 - (2/3 * 3/4) = 8/12 + 9/12 - 6/12 = 11/12. Exact match!\nAnswer: 11 / 12.",
-    "p4_q": "[Hard / Time-Pressure] A bag contains 4 red, 5 white, and 6 blue balls. Three balls are drawn at random from the bag without replacement. What is the probability that all three balls drawn are of different colors?",
-    "p4_s": "Step 1: Total balls = 4 + 5 + 6 = 15 balls.\nTotal ways to choose any 3 balls out of 15: n(S) = ^15 C_3.\n^15 C_3 = (15 * 14 * 13) / (3 * 2 * 1) = 5 * 7 * 13 = 455 ways.\nStep 2: Favorable outcome: Exactly 1 Red AND 1 White AND 1 Blue ball:\n- Ways to select 1 Red from 4: ^4 C_1 = 4.\n- Ways to select 1 White from 5: ^5 C_1 = 5.\n- Ways to select 1 Blue from 6: ^6 C_1 = 6.\nTotal favorable ways n(E) = ^4 C_1 * ^5 C_1 * ^6 C_1 = 4 * 5 * 6 = 120 ways.\nStep 3: Probability P(All different) = n(E) / n(S) = 120 / 455.\nDivide numerator and denominator by 5: 120 / 5 = 24; 455 / 5 = 91.\nProbability = 24 / 91.\nAnswer: 24 / 91.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "Two coins are tossed simultaneously. What is the probability of getting at least one head?"
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "What is the probability of picking an Ace from a well-shuffled standard pack of 52 cards?"
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "In rolling two dice, what is the probability of getting a doublet (both dice showing the same number)?"
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "A box contains 20 electric bulbs, out of which 4 are defective. If 2 bulbs are chosen, find the probability that none is defective."
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "A speaks truth in 75% of cases and B in 80% of cases. In what percentage of cases are they likely to contradict each other in stating the same fact?"
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Seating Arrangement",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Seating Arrangement",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Seating Arrangement",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Seating Arrangement",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Seating Arrangement",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Eight friends A, B, C, D, E, F, G, H sit around a circular table facing the center. A sits third to the right of B. C sits second to the left of A. Who sits directly between B and C if E sits opposite A?",
+        "options": {
+          "A": "D or G",
+          "B": "H",
+          "C": "F",
+          "D": "Cannot be determined"
+        },
+        "correct_answer": "D",
+        "explanation": "Without additional placement data for remaining positions D, F, G, H, the exact occupant between B and C cannot be uniquely determined.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Five girls P, Q, R, S, T sit in a row facing North. Q is to the immediate right of S. T is to the left of R and immediate right of P. S is to the right of R. Who sits in the middle?",
+        "options": {
+          "A": "R",
+          "B": "S",
+          "C": "T",
+          "D": "Q"
+        },
+        "correct_answer": "A",
+        "explanation": "Order from left to right: P, T, R, S, Q. The middle position (3rd of 5) is occupied by R.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Six persons A, B, C, D, E, F sit in two rows of three each, facing each other. E is not at the end of any row. D is second to the left of F. C, the neighbor of E, is diagonally opposite D. B is neighbor of F. Who is opposite B?",
+        "options": {
+          "A": "E",
+          "B": "C",
+          "C": "A",
+          "D": "F"
+        },
+        "correct_answer": "A",
+        "explanation": "Top row: D, A, C; Bottom row: F, B, E. E sits opposite B.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "A, B, C, D, E are sitting in a circle facing the center. A is between E and D. B is to the right of D. Who is to the immediate left of B?",
+        "options": {
+          "A": "D",
+          "B": "C",
+          "C": "E",
+          "D": "A"
+        },
+        "correct_answer": "A",
+        "explanation": "In clockwise order: E, A, D, B, C. Immediate left of B (moving clockwise) is D.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "In a row of 40 students facing North, Amit is 18th from the left end and Sumit is 24th from the right end. How many students sit between them?",
+        "options": {
+          "A": "0 (They overlap)",
+          "B": "2",
+          "C": "4",
+          "D": "6"
+        },
+        "correct_answer": "A",
+        "explanation": "Sum of positions = 18 + 24 = 42 > 40. Overlapping students = (18 + 24) - 40 - 2 = 42 - 42 = 0 students between them.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Six friends J, K, L, M, N, O sit around a hexagon table facing center. J is opposite M. K is second to left of J. O is between J and K. L is opposite O. Who is between M and L?",
+        "options": {
+          "A": "N",
+          "B": "K",
+          "C": "O",
+          "D": "J"
+        },
+        "correct_answer": "A",
+        "explanation": "Placements: J, O, K, M, N, L. N sits directly between M and L.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "In a row of children, Ravi is 4th from left and Shyam is 7th from right. When they interchange places, Ravi becomes 15th from left. How many children are in the row?",
+        "options": {
+          "A": "21",
+          "B": "22",
+          "C": "20",
+          "D": "23"
+        },
+        "correct_answer": "A",
+        "explanation": "Total children = (Ravi's new left position) + (Shyam's original right position) - 1 = 15 + 7 - 1 = 21.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Seven people A, B, C, D, E, F, G sit in a line facing North. D sits in the middle. A and G are at extreme ends. B sits immediate right of D. F is between A and C. Who sits between B and G?",
+        "options": {
+          "A": "E",
+          "B": "C",
+          "C": "F",
+          "D": "D"
+        },
+        "correct_answer": "A",
+        "explanation": "Order: A, F, C, D, B, E, G. E sits directly between B and G.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Eight executives sit around a square conference table, two on each side facing the center. If Raj sits opposite Priya, who sits to Priya's left?",
+        "options": {
+          "A": "Dependent on corner adjacency",
+          "B": "Raj",
+          "C": "Neither",
+          "D": "Cannot be determined without side parity"
+        },
+        "correct_answer": "D",
+        "explanation": "Table configuration requires side and corner assignments to resolve lateral adjacency.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "In a class of 45 students, a boy is ranked 20th. When two boys join, his rank drops by 1. What is his new rank from the bottom?",
+        "options": {
+          "A": "27th",
+          "B": "28th",
+          "C": "26th",
+          "D": "25th"
+        },
+        "correct_answer": "A",
+        "explanation": "New total students = 45 + 2 = 47. His new top rank = 20 + 1 = 21st. Rank from bottom = (47 - 21) + 1 = 27th.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Seating Arrangement (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "Sample space = {HH, HT, TH, TT} (4). At least 1 head = 3. P = 3/4. Answer: 3/4."
-      ],
-      [
-        "Solution Q2:",
-        "Aces = 4. P = 4 / 52 = 1 / 13. Answer: 1 / 13."
-      ],
-      [
-        "Solution Q3:",
-        "Doublets = {(1,1), (2,2), (3,3), (4,4), (5,5), (6,6)} (6 ways). P = 6 / 36 = 1 / 6. Answer: 1 / 6."
-      ],
-      [
-        "Solution Q4:",
-        "Non-defective = 16. Total = 20. P = (^16 C_2) / (^20 C_2) = (16 * 15) / (20 * 19) = 240 / 380 = 12 / 19. Answer: 12 / 19."
-      ],
-      [
-        "Solution Q5:",
-        "Contradict when (A true and B false) OR (A false and B true). P = (3/4 * 1/5) + (1/4 * 4/5) = 3/20 + 4/20 = 7/20 = 35%. Answer: 35%."
-      ]
-    ],
-    "trap": "In contradiction questions, remember that contradiction means ONE speaks truth AND the other lies. Sum both combinations (A true/B false + A false/B true)."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Maximum Depth of Binary Tree",
+      "difficulty": "Medium",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given the root of a binary tree, return its maximum depth.",
+      "solution_approach": "1. Apply Tree Traversals: DFS Pre, In, Post-Order algorithmic technique.\n2. Traverses binary trees recursively or with an explicit stack visiting root and children in specified sequence.\n3. Invariants: Recursion stack follows call frames matching tree height; post-order processes subtrees before root, enabling bottom-up aggregation.",
+      "code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+      "java_solution": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+      "solution_java": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(H) Auxiliary Space (H = height of tree)",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Diameter of Binary Tree",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given root of binary tree, return length of diameter (longest path between any two nodes).",
+      "solution_approach": "1. Identify interview variation of Tree Traversals: DFS Pre, In, Post-Order.\n2. Handle edge cases: Empty tree, Single node, Degenerate skewed tree (H = N).\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+      "java_solution": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+      "solution_java": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(H) Auxiliary Space (H = height of tree)",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Tree Traversals: DFS Pre, In, Post-Order",
+    "category": "Tree / DFS",
+    "concept": "Traverses binary trees recursively or with an explicit stack visiting root and children in specified sequence.",
+    "why_it_works": "Recursion stack follows call frames matching tree height; post-order processes subtrees before root, enabling bottom-up aggregation.",
+    "visual_explanation": "Pre-order:  Root -> Left -> Right\\nIn-order:   Left -> Root -> Right (Sorted in BST!)\\nPost-order: Left -> Right -> Root (Height / Diameter calculations)",
+    "java_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        int leftDepth = maxDepth(root.left);\n        int rightDepth = maxDepth(root.right);\n        return 1 + Math.max(leftDepth, rightDepth);\n    }\n}",
+    "code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        int leftDepth = maxDepth(root.left);\n        int rightDepth = maxDepth(root.right);\n        return 1 + Math.max(leftDepth, rightDepth);\n    }\n}",
+    "python_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        int leftDepth = maxDepth(root.left);\n        int rightDepth = maxDepth(root.right);\n        return 1 + Math.max(leftDepth, rightDepth);\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 2: Base case: if root is null, depth is 0.",
+      "Line 3-4: Recursively compute depth of left and right subtrees.",
+      "Line 5: Return 1 plus the maximum depth of children."
+    ],
+    "dry_run": "Tree [3, 9, 20, null, null, 15, 7]. Left child 9 returns 1. Right child 20 has children 15 and 7 (depth 2). Total depth = 1 + 2 = 3.",
+    "complexity": "O(N) Time, O(H) Auxiliary Space (H = height of tree)",
+    "edge_cases": [
+      "Empty tree",
+      "Single node",
+      "Degenerate skewed tree (H = N)"
+    ],
+    "interview_variations": [
+      "Diameter of Binary Tree",
+      "Balanced Binary Tree",
+      "Maximum Path Sum in Binary Tree"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-16-01",
+        "title": "Problem 1: Maximum Depth of Binary Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given the root of a binary tree, return its maximum depth.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Tree Traversals: DFS Pre, In, Post-Order algorithmic technique.\n2. Traverses binary trees recursively or with an explicit stack visiting root and children in specified sequence.\n3. Invariants: Recursion stack follows call frames matching tree height; post-order processes subtrees before root, enabling bottom-up aggregation.",
+        "solution_java": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+        "solution_python": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+        "code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+        "java_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space (H = height of tree)"
+      },
+      {
+        "problem_id": "CODE-16-02",
+        "title": "Problem 2: Diameter of Binary Tree",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given root of binary tree, return length of diameter (longest path between any two nodes).",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Tree Traversals: DFS Pre, In, Post-Order.\n2. Handle edge cases: Empty tree, Single node, Degenerate skewed tree (H = N).\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+        "solution_python": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+        "code": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+        "java_code": "public class Solution {\n    private int maxDiameter = 0;\n    public int diameterOfBinaryTree(TreeNode root) {\n        depth(root);\n        return maxDiameter;\n    }\n    private int depth(TreeNode node) {\n        if (node == null) return 0;\n        int l = depth(node.left), r = depth(node.right);\n        maxDiameter = Math.max(maxDiameter, l + r);\n        return 1 + Math.max(l, r);\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(H) Auxiliary Space (H = height of tree)"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "Computer Networks",
+    "topic": "Data Link Layer: Framing, Error Detection (CRC) & Sliding Window Protocols",
+    "detailed_notes": [
+      "The Data Link Layer is responsible for reliable node-to-node frame delivery across a physical link.\n\nFraming Techniques:\n1. Character Count: Transmitter includes frame length in the header (fragile: one transmission error corrupts subsequent boundaries).\n2. Byte Stuffing: Delimits frames with special FLAG bytes; inserts an ESC byte before any data byte that happens to match FLAG.\n3. Bit Stuffing: Frame boundary is delimited by 01111110 (0 followed by six 1s and a 0). The sender automatically inserts a 0 after every sequence of five consecutive 1s in data; the receiver strips the stuffed 0.\n\nError Detection & Correction:\n- Parity Bit: Adds a single bit for odd/even parity (detects single-bit errors).\n- Checksum: 16-bit 1's complement sum of 16-bit words (used in IP/TCP headers).\n- Cyclic Redundancy Check (CRC): Polynomial division over Galois Field GF(2). Generator polynomial G(x) divides data bits padded with degree(G) zeroes using XOR. The remainder is appended as the Frame Check Sequence (FCS). Detects all single, double, odd, and burst errors.\n\nFlow Control Protocols:\n- Stop-and-Wait: Sender transmits one frame and waits for ACK. Inefficient on high-latency links (bandwidth-delay product waste).\n- Go-Back-N (GBN): Sender uses sliding window of size N. If frame i is lost, receiver discards all subsequent frames; sender retransmits all frames from i to N upon timeout (Cumulative ACK).\n- Selective Repeat (SR): Receiver buffers out-of-order frames within a window; sender retransmits ONLY the specific lost frame (Individual ACK). Window size must be <= 2^(k-1) to avoid sequence number ambiguity."
+    ],
+    "key_definitions": [
+      {
+        "term": "Bit Stuffing",
+        "definition": "Inserting a 0-bit after every 5 consecutive 1-bits to prevent user data from mimicking the frame delimiter flag."
+      },
+      {
+        "term": "CRC (Cyclic Redundancy Check)",
+        "definition": "An error-detecting code based on polynomial binary division with XOR arithmetic."
+      },
+      {
+        "term": "Selective Repeat",
+        "definition": "A sliding window protocol where only corrupted or lost frames are retransmitted by the sender."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "How does Bit Stuffing work and why is it necessary in HDLC framing?",
+        "a": "HDLC uses the flag pattern 01111110 to designate frame boundaries. To prevent user data from accidentally mimicking this flag and causing premature frame termination, the sender inspects the data stream and automatically stuffs an extra '0' bit after every five consecutive '1' bits. The receiver detects any sequence of five 1s followed by a 0 and automatically strips the 0 bit."
+      },
+      {
+        "q": "Explain how Cyclic Redundancy Check (CRC) detects errors.",
+        "a": "Let data be D with length k and generator polynomial be G with degree r. 1. Sender appends r zeroes to D. 2. Sender performs modulo-2 binary division (using bitwise XOR without borrows) of padded D by G. 3. The r-bit remainder R is the CRC checksum. 4. Sender transmits (D + R). 5. Receiver divides the incoming frame by G. If remainder is 0, the frame is error-free; if non-zero, a transmission error occurred and the frame is dropped."
+      },
+      {
+        "q": "Compare Go-Back-N and Selective Repeat sliding window protocols.",
+        "a": "In Go-Back-N (GBN), the receiver accepts frames strictly in sequence and uses cumulative ACKs; if a frame is lost, all subsequent frames are dropped, forcing the sender to retransmit the entire window. In Selective Repeat (SR), the receiver maintains a receive window, accepts out-of-order frames, and sends individual ACKs; the sender retransmits only the single lost frame, saving bandwidth at the cost of receiver buffer memory."
+      },
+      {
+        "q": "Why must the window size in Selective Repeat be at most half the sequence number space (Ws <= 2^(k-1))?",
+        "a": "If window size exceeds 2^(k-1), an overlap occurs between the current sequence window and the next window. If all ACKs are lost, the sender retransmits old frames; the receiver cannot distinguish whether the incoming frame is a duplicate retransmission of an old frame or a brand-new frame from the next sequence cycle."
+      },
+      {
+        "q": "What is the Bandwidth-Delay Product (BDP) and why is it important?",
+        "a": "BDP = Bandwidth (bits/sec) * Round Trip Time (seconds). It represents the maximum volume of unacknowledged data in transit across the network pipe at any given instant. To achieve maximum throughput, the sliding window size must be at least equal to the BDP."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-16-01",
+        "question": "In HDLC framing, bit stuffing inserts a '0' bit after how many consecutive '1' bits?",
+        "options": [
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "correct_answer": "B",
+        "explanation": "Sender stuffs a 0 after 5 consecutive 1s to prevent collision with the flag pattern 01111110."
+      },
+      {
+        "id": "CS-16-02",
+        "question": "What mathematical operation is used in CRC modulo-2 arithmetic instead of standard subtraction?",
+        "options": [
+          "AND",
+          "OR",
+          "XOR",
+          "NOT"
+        ],
+        "correct_answer": "C",
+        "explanation": "Modulo-2 binary division uses bitwise XOR operations without borrowing."
+      },
+      {
+        "id": "CS-16-03",
+        "question": "If 3 bits are used for sequence numbers in Selective Repeat, what is the maximum sender window size?",
+        "options": [
+          "8",
+          "7",
+          "4",
+          "3"
+        ],
+        "correct_answer": "C",
+        "explanation": "Max window size in Selective Repeat is 2^(k-1) = 2^(3-1) = 4."
+      },
+      {
+        "id": "CS-16-04",
+        "question": "Which sliding window protocol buffers out-of-order frames at the receiver?",
+        "options": [
+          "Stop-and-Wait",
+          "Go-Back-N",
+          "Selective Repeat",
+          "Pure ALOHA"
+        ],
+        "correct_answer": "C",
+        "explanation": "Selective Repeat buffers out-of-order frames, whereas Go-Back-N discards them."
+      },
+      {
+        "id": "CS-16-05",
+        "question": "The frame check sequence (FCS) field in an Ethernet frame is computed using:",
+        "options": [
+          "Simple Parity",
+          "Hamming Code",
+          "CRC-32",
+          "MD5 Hash"
+        ],
+        "correct_answer": "C",
+        "explanation": "Ethernet Data Link frames utilize CRC-32 for error detection."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "SmartGalla",
+    "repo_path": "D:\\Projects\\SmartGalla",
+    "feature_focus": "Automated Competitive Intelligence: The Blinkit Web Scraping Engine",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nHeadless price intelligence, product matching, and automated catalog pricing.\n\nWHAT TO MEMORIZE:\nPrice parity alerts help local merchants stay competitive against dark-store quick-commerce giants.\n\n60-SECOND INTERVIEW PITCH:\nTo empower traditional merchants against quick-commerce apps, I built a competitive intelligence scraper for SmartGalla. It runs scheduled Playwright workers to capture Blinkit grocery pricing across local pincodes, maps competitor SKUs to local store inventory, and provides merchants with automated margin optimization suggestions.",
+    "interview_qa": [
+      {
+        "q": "How does the Blinkit scraping worker in SmartGalla extract real-time grocery prices?",
+        "a": "We engineered an automated Node.js worker using Playwright that queries Blinkit's public catalog search endpoints using rotating User-Agents and localized pincodes. It extracts SKU names, pack sizes, MRP, and discounted prices into structured JSON (`blinkit_scraped.json`). A string similarity algorithm (Levenshtein distance) matches merchant inventory items to competitor items to highlight price disparities."
+      },
+      {
+        "q": "How do you prevent rate-limiting or IP bans while scraping quick-commerce platforms?",
+        "a": "We use jittered exponential backoffs, polite request intervals (minimum 1.5 seconds between page turns), and headless session cookie reuse. Furthermore, we run extraction in scheduled off-peak batches (2:00 AM IST) and cache scraped pricing snapshots in PostgreSQL for 24 hours."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 16 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 16 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of Caloriv.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 15 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5001 — Knowledge Sharing, Transfer & Communities of Practice.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Linear & Circular Seating Arrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: DFS Pre, In, Post.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Error Detection & Correction: CRC & Hamming.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Knowledge Sharing, Transfer & Communities of Practice.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Tree Traversals: DFS Pre, In, Post.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: TerraStract.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 16 Q1: What is the primary academic thesis of Knowledge Sharing, Transfer & Communities of Practice?",
+        "a": "Core theoretical and practical mastery of Knowledge Sharing, Transfer & Communities of Practice under the CSJM University BCA-5001 syllabus."
+      },
+      {
+        "q": "Day 16 Q2: What is the key speed calculation formula applied in Linear & Circular Seating Arrangement?",
+        "a": "High-speed corporate placement arithmetic shortcut for Linear & Circular Seating Arrangement in campus recruitment exams."
+      },
+      {
+        "q": "Day 16 Q3: What is the time complexity of Tree Traversals: DFS Pre, In, Post?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 16 Q4: What is the central architectural principle of Error Detection & Correction: CRC & Hamming?",
+        "a": "Foundational systems engineering rule governing Error Detection & Correction: CRC & Hamming in production environments."
+      },
+      {
+        "q": "Day 16 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 16 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 16 Q7: What is the verified technical foundation of TerraStract?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 16 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 16 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 16 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5001 — Knowledge Sharing, Transfer & Communities of Practice.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Linear & Circular Seating Arrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: DFS Pre, In, Post.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Error Detection & Correction: CRC & Hamming."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5001 — Knowledge Sharing, Transfer & Communities of Practice."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Linear & Circular Seating Arrangement."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Tree Traversals: DFS Pre, In, Post."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: TerraStract."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 16 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "What is a 'Community of Practice' (CoP) in an enterprise Knowledge Management ecosystem?",
+        "a": "Answer: B\n\nCoPs (Lave & Wenger) are groups of people bound by informal expertise and shared passion to solve problems collaboratively."
+      },
+      {
+        "q": "What is the primary cultural barrier to successful knowledge sharing in corporate organizations?",
+        "a": "Answer: B\n\nKnowledge hoarding arises when organizations fail to incentivize transparency, causing experts to treat knowledge as individual leverage."
+      },
+      {
+        "q": "Which KM capture mechanism pairs a junior engineer with an experienced expert to observe and absorb intuitive problem-solving heuristics?",
+        "a": "Answer: B\n\nShadowing and mentoring enable direct tacit-to-tacit knowledge transfer through contextual observation and guided reflection."
+      },
+      {
+        "q": "In knowledge management metrics, what does the 'Knowledge Retention Rate' measure?",
+        "a": "Answer: B\n\nRetention rate quantifies an organization's capacity to codify and transition institutional memory before attrition occurs."
+      },
+      {
+        "q": "What role does an After Action Review (AAR) play in organizational learning?",
+        "a": "Answer: B\n\nOriginating in the US Army, an AAR is a structured 4-question debrief that captures operational lessons learned before memories fade."
+      },
+      {
+        "q": "In a row of 25 girls, when Neha was shifted by 4 places towards the left, she became 10th from the left end. What was her earlier position from the right end of the row?",
+        "a": "Answer: A\n\nEarlier position from left = 10 + 4 = 14th. Position from right = (25 - 14) + 1 = 12th."
+      },
+      {
+        "q": "Six persons A, B, C, D, E, F are sitting in two rows, three in each row. E is not at the end of any row. D is second to the left of F. C is diagonal to D. B is neighbor of F. Who is facing B?",
+        "a": "Answer: A\n\nRow 1: C, E, D; Row 2: A, B, F. E faces B directly."
+      },
+      {
+        "q": "In a class of 40 students, Samir is ranked 8th from top and Alok is ranked 12th from bottom. How many students are there between Samir and Alok?",
+        "a": "Answer: A\n\nStudents between = Total - (Top rank + Bottom rank) = 40 - (8 + 12) = 40 - 20 = 20 students."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-16-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What is a 'Community of Practice' (CoP) in an enterprise Knowledge Management ecosystem?",
+        "options": [
+          "An official disciplinary board that terminates underperforming employees",
+          "An informal, self-organizing group of practitioners who share a passion or domain and interact regularly to improve their craft",
+          "A software tool for running payroll calculations",
+          "A hardware firewall preventing external internet access"
+        ],
+        "correct_answer": "B",
+        "explanation": "CoPs (Lave & Wenger) are groups of people bound by informal expertise and shared passion to solve problems collaboratively."
+      },
+      {
+        "id": "TEST-16-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary cultural barrier to successful knowledge sharing in corporate organizations?",
+        "options": [
+          "Lack of Gigabit Ethernet bandwidth",
+          "'Knowledge is Power' hoarding syndrome where individuals fear losing personal value by sharing expertise",
+          "Using Linux instead of Windows",
+          "Too many database backups"
+        ],
+        "correct_answer": "B",
+        "explanation": "Knowledge hoarding arises when organizations fail to incentivize transparency, causing experts to treat knowledge as individual leverage."
+      },
+      {
+        "id": "TEST-16-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which KM capture mechanism pairs a junior engineer with an experienced expert to observe and absorb intuitive problem-solving heuristics?",
+        "options": [
+          "Database Normalization",
+          "Apprenticeship / Shadowing",
+          "Web Scraping",
+          "Binary Search"
+        ],
+        "correct_answer": "B",
+        "explanation": "Shadowing and mentoring enable direct tacit-to-tacit knowledge transfer through contextual observation and guided reflection."
+      },
+      {
+        "id": "TEST-16-04",
+        "category": "Academic (Academic Theory)",
+        "question": "In knowledge management metrics, what does the 'Knowledge Retention Rate' measure?",
+        "options": [
+          "The percentage of hard drives retained during data center upgrades",
+          "The organization's ability to preserve mission-critical institutional expertise when senior employees leave or retire",
+          "The speed of RAM cache memory",
+          "The ratio of SQL queries to web visits"
+        ],
+        "correct_answer": "B",
+        "explanation": "Retention rate quantifies an organization's capacity to codify and transition institutional memory before attrition occurs."
+      },
+      {
+        "id": "TEST-16-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What role does an After Action Review (AAR) play in organizational learning?",
+        "options": [
+          "It calculates end-of-year tax liabilities",
+          "It provides a structured debrief immediately following a project to analyze what was expected, what actually occurred, and why",
+          "It terminates software licenses",
+          "It formats database tables into 3NF"
+        ],
+        "correct_answer": "B",
+        "explanation": "Originating in the US Army, an AAR is a structured 4-question debrief that captures operational lessons learned before memories fade."
+      },
+      {
+        "id": "TEST-16-06",
+        "category": "Placement Aptitude",
+        "question": "In a row of 25 girls, when Neha was shifted by 4 places towards the left, she became 10th from the left end. What was her earlier position from the right end of the row?",
+        "options": [
+          "12th",
+          "11th",
+          "13th",
+          "14th"
+        ],
+        "correct_answer": "A",
+        "explanation": "Earlier position from left = 10 + 4 = 14th. Position from right = (25 - 14) + 1 = 12th."
+      },
+      {
+        "id": "TEST-16-07",
+        "category": "Placement Aptitude",
+        "question": "Six persons A, B, C, D, E, F are sitting in two rows, three in each row. E is not at the end of any row. D is second to the left of F. C is diagonal to D. B is neighbor of F. Who is facing B?",
+        "options": [
+          "E",
+          "A",
+          "C",
+          "D"
+        ],
+        "correct_answer": "A",
+        "explanation": "Row 1: C, E, D; Row 2: A, B, F. E faces B directly."
+      },
+      {
+        "id": "TEST-16-08",
+        "category": "Placement Aptitude",
+        "question": "In a class of 40 students, Samir is ranked 8th from top and Alok is ranked 12th from bottom. How many students are there between Samir and Alok?",
+        "options": [
+          "20 students",
+          "22 students",
+          "18 students",
+          "24 students"
+        ],
+        "correct_answer": "A",
+        "explanation": "Students between = Total - (Top rank + Bottom rank) = 40 - (8 + 12) = 40 - 20 = 20 students."
+      },
+      {
+        "id": "TEST-16-09",
+        "category": "Placement Aptitude",
+        "question": "Five girls are sitting in a circle facing the center. Suman is between Rita and Monica. Neha is to the immediate left of Pooja. Rita is to the immediate left of Neha. Who is to the immediate right of Suman?",
+        "options": [
+          "Rita",
+          "Monica",
+          "Pooja",
+          "Neha"
+        ],
+        "correct_answer": "A",
+        "explanation": "Circle order clockwise: Monica, Suman, Rita, Neha, Pooja. To the immediate right of Suman is Rita."
+      },
+      {
+        "id": "TEST-16-10",
+        "category": "Placement Aptitude",
+        "question": "In a line facing North, P is 13th from left and Q is 17th from right. If they interchange positions, P becomes 21st from left. How many persons are in the row?",
+        "options": [
+          "37 persons",
+          "36 persons",
+          "38 persons",
+          "35 persons"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total = P's new left position + Q's original right position - 1 = 21 + 17 - 1 = 37 persons."
+      },
+      {
+        "id": "TEST-16-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "In HDLC framing, bit stuffing inserts a '0' bit after how many consecutive '1' bits?",
+        "options": [
+          "4",
+          "5",
+          "6",
+          "7"
+        ],
+        "correct_answer": "B",
+        "explanation": "Sender stuffs a 0 after 5 consecutive 1s to prevent collision with the flag pattern 01111110."
+      },
+      {
+        "id": "TEST-16-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "What mathematical operation is used in CRC modulo-2 arithmetic instead of standard subtraction?",
+        "options": [
+          "AND",
+          "OR",
+          "XOR",
+          "NOT"
+        ],
+        "correct_answer": "C",
+        "explanation": "Modulo-2 binary division uses bitwise XOR operations without borrowing."
+      },
+      {
+        "id": "TEST-16-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "If 3 bits are used for sequence numbers in Selective Repeat, what is the maximum sender window size?",
+        "options": [
+          "8",
+          "7",
+          "4",
+          "3"
+        ],
+        "correct_answer": "C",
+        "explanation": "Max window size in Selective Repeat is 2^(k-1) = 2^(3-1) = 4."
+      },
+      {
+        "id": "TEST-16-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which sliding window protocol buffers out-of-order frames at the receiver?",
+        "options": [
+          "Stop-and-Wait",
+          "Go-Back-N",
+          "Selective Repeat",
+          "Pure ALOHA"
+        ],
+        "correct_answer": "C",
+        "explanation": "Selective Repeat buffers out-of-order frames, whereas Go-Back-N discards them."
+      },
+      {
+        "id": "TEST-16-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "The frame check sequence (FCS) field in an Ethernet frame is computed using:",
+        "options": [
+          "Simple Parity",
+          "Hamming Code",
+          "CRC-32",
+          "MD5 Hash"
+        ],
+        "correct_answer": "C",
+        "explanation": "Ethernet Data Link frames utilize CRC-32 for error detection."
+      },
+      {
+        "id": "TEST-16-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Tree Traversals: DFS Pre, In, Post-Order' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(H) Auxiliary Space (H = height of tree).",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Tree Traversals: DFS Pre, In, Post-Order' pattern operates with O(N) Time, O(H) Auxiliary Space (H = height of tree): Recursion stack follows call frames matching tree height; post-order processes subtrees before root, enabling bottom-up aggregation.."
+      },
+      {
+        "id": "TEST-16-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Tree Traversals: DFS Pre, In, Post-Order' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty tree.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Tree Traversals: DFS Pre, In, Post-Order include Empty tree, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-16-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Maximum Depth of Binary Tree', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(H) Auxiliary Space (H = height of tree).",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(H) Auxiliary Space (H = height of tree) by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-16-19",
+        "category": "Projects (SmartGalla)",
+        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Automated Competitive Intelligence: The Blinkit Web Scraping Engine'?",
+        "options": [
+          "Price parity alerts help local merchants stay competitive against dark-store quick-commerce giants.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For SmartGalla, the architectural invariant is: Price parity alerts help local merchants stay competitive against dark-store quick-commerce giants.."
+      },
+      {
+        "id": "TEST-16-20",
+        "category": "Projects (SmartGalla)",
+        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'How does the Blinkit scraping worker in SmartGalla extract real-time grocery prices?'?",
+        "options": [
+          "We engineered an automated Node.js worker using Playwright that queries Blinkit's public catalog search endpoints using rotating User-Agents and localized pinco...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: We engineered an automated Node.js worker using Playwright that queries Blinkit's public catalog search endpoints using rotating User-Agents."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-16",
+    "title": "Maximum Depth of Binary Tree (Tree Traversals: DFS Pre, In, Post-Order)",
+    "time_limit_minutes": 35,
+    "difficulty": "Medium",
+    "problem_statement": "Solve the core placement problem: Maximum Depth of Binary Tree.\n\nGiven the root of a binary tree, return its maximum depth.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Tree Traversals: DFS Pre, In, Post-Order\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(H) Auxiliary Space (H = height of tree)\n- Handle all edge cases: Empty tree, Single node, Degenerate skewed tree (H = N).",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Tree Traversals: DFS Pre, In, Post-Order\n    public int maxDepth(TreeNode root) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Tree Traversals: DFS Pre, In, Post-Order\n    public int maxDepth(TreeNode root) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public int maxDepth(TreeNode root) {\n        if (root == null) return 0;\n        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Tree Traversals: DFS Pre, In, Post-Order logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Empty tree",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(H) Auxiliary Space (H = height of tree))",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

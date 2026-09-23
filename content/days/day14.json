@@ -1,160 +1,2430 @@
 {
   "day": 14,
-  "title": "Java JDBC 4 Drivers, BST Validation & TCP 3-Way Handshake",
-  "sem_data": {
-    "subject": "BCA-5002 Java Programming",
-    "topic": "Unit IV \u2014 JDBC Architecture, 4 Driver Types & Database Programming Protocol",
-    "detailed_notes": [
-      "Java Database Connectivity (JDBC) is a standard Java API situated in the 'java.sql' and 'javax.sql' packages that defines how Java client applications access, query, and manipulate relational database management systems (RDBMS) in a database-independent manner.",
-      "The 4 Architectural Types of JDBC Drivers:\n1. Type-1 Driver (JDBC-ODBC Bridge Driver): Translates JDBC method calls into Microsoft ODBC (Open Database Connectivity) calls, which then communicate with database client libraries. Disadvantages: Requires ODBC driver installation on every client machine; slow performance due to double conversion overhead. Deprecated and completely removed in Java 8.\n2. Type-2 Driver (Native-API Partly-Java Driver): Translates JDBC calls into native C/C++ client API calls of the specific database (e.g. Oracle OCI, DB2 CLI). Disadvantages: Requires proprietary native client libraries installed on every client machine; platform-dependent.\n3. Type-3 Driver (Network-Protocol All-Java Driver): Translates JDBC calls into a vendor-independent middleware network protocol. An application middleware server then translates client requests into database-specific protocols. Advantages: Highly flexible, zero client-side native installation. Disadvantages: Requires intermediate middleware server maintenance.\n4. Type-4 Driver (Thin Driver / Direct-to-Database Pure Java): The industry standard default driver. Written 100% in pure Java. Converts JDBC calls directly into the database engine's proprietary network wire protocol (e.g. Oracle Thin TNS, PostgreSQL wire protocol). Zero client-side installation, platform-independent, and provides the highest operational performance.",
-      "The 5 Standard Steps of JDBC Database Execution:\n1. Load Driver Class: 'Class.forName(\"com.mysql.cj.jdbc.Driver\");' (Optional in modern JDBC 4.0 via ServiceLoader).\n2. Establish Connection: 'Connection con = DriverManager.getConnection(url, user, pass);'.\n3. Create Statement: 'PreparedStatement pstmt = con.prepareStatement(sql);' (PreparedStatement pre-compiles SQL on the database engine, improving execution speed and natively preventing SQL Injection attacks).\n4. Execute Query / Update: 'ResultSet rs = pstmt.executeQuery();' or 'int rows = pstmt.executeUpdate();'.\n5. Close Resources: Close ResultSet, Statement, and Connection objects in finally block or via Java 7 Try-With-Resources."
+  "title": "Day 14: JDBC Architecture: 4 Driver Types, Connection Steps & Statement vs PreparedStatement & K-Way Merge of Sorted Arrays / Lists",
+  "streams": {
+    "academic": {
+      "unit": 3,
+      "topic": "Unit III — JDBC Architecture: 4 Driver Types, Connection Steps & Statement vs PreparedStatement",
+      "objectives": [
+        "Master JDBC 2-tier and 3-tier architecture.",
+        "Understand the 4 JDBC driver types and why PreparedStatement prevents SQL injection."
+      ],
+      "explanation": "Java Database Connectivity (JDBC) is a Java API that manages connecting to databases, issuing SQL queries, and processing results. Its architecture consists of the JDBC API (application level) and JDBC Driver Manager (driver level). The 4 Driver Types are:\n1. Type-1: JDBC-ODBC Bridge (translates JDBC to ODBC; obsolete, platform-dependent);\n2. Type-2: Native-API Driver (partly Java, translates JDBC to native client C/C++ DB library);\n3. Type-3: Network-Protocol Driver (all Java, sends calls via middleware server which connects to DB);\n4. Type-4: Thin Driver / Direct-to-Database Pure Java Driver (converts JDBC calls directly into vendor database network protocol; fastest, most portable, industry standard).\n5 Steps of JDBC Connection: 1. Load Driver class (`Class.forName()`); 2. Establish Connection (`DriverManager.getConnection()`); 3. Create Statement (`con.prepareStatement()`); 4. Execute Query (`ps.executeQuery()`); 5. Close Connection (`con.close()`).",
+      "definitions": [
+        {
+          "term": "PreparedStatement",
+          "definition": "A pre-compiled SQL statement interface in JDBC that caches query execution plans and safely binds parameters, preventing SQL injection."
+        },
+        {
+          "term": "Type-4 Thin Driver",
+          "definition": "A 100% pure Java driver that communicates directly with the database engine via native socket protocols without native libraries."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "The 4 Driver Types",
+          "content": "Type-1 (Bridge), Type-2 (Native API), Type-3 (Network Middleware), Type-4 (Pure Java Thin Driver)."
+        },
+        {
+          "title": "Statement vs PreparedStatement",
+          "content": "Statement compiles SQL every execution and is vulnerable to SQL injection. PreparedStatement pre-compiles query templates in the database and treats parameter inputs purely as literal values."
+        }
+      ],
+      "examples": [
+        "Executing parameterized login query: `SELECT * FROM users WHERE user = ? AND pass = ?`."
+      ],
+      "diagram": "+---------------------------------------------------+\n|                 JDBC ARCHITECTURE                 |\n| [Java App] -> [JDBC API] -> [DriverManager]       |\n| -> [Type-4 Thin Driver] -> [Relational Database]  |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Dimension",
+          "Statement",
+          "PreparedStatement"
+        ],
+        "rows": [
+          [
+            "Compilation",
+            "Compiled by database on every single execution",
+            "Pre-compiled once by DB engine; cached execution plan"
+          ],
+          [
+            "Performance",
+            "Slower for repetitive queries",
+            "Significantly faster for parameterized batch queries"
+          ],
+          [
+            "Security",
+            "Highly vulnerable to SQL Injection attacks",
+            "Immune to SQL Injection (parameters treated as data)"
+          ],
+          [
+            "Parameter Support",
+            "Cannot use parameterized placeholders (?)",
+            "Supports positional wildcard parameters (`?`)"
+          ]
+        ]
+      },
+      "memorize": "Type-4 driver is 100% pure Java (thin driver, direct socket communication). PreparedStatement precompiles SQL and blocks SQL injection. 5 steps: Load, Connect, Statement, Execute, Close.",
+      "understand": "PreparedStatement prevents SQL injection because parameter values are transmitted to the database engine separately from the SQL command structure, preventing attackers from injecting arbitrary SQL clauses like `OR 1=1`.",
+      "common_mistakes": "Forgetting to close ResultSet, Statement, and Connection objects, causing database connection pool leaks.",
+      "exam_writing_guidance": "Draw the JDBC architecture diagram, explain all 4 driver types, write the 5-step connection code, and contrast Statement vs PreparedStatement.",
+      "mini_practice": [
+        "Write complete Java code to insert a student record into MySQL using PreparedStatement."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2024-25 (Q3)",
+          "marks": 15,
+          "question": "What is JDBC? Explain the 4 types of JDBC Drivers with suitable diagrams. Write the five standard steps required to connect a Java application to a database. (15 Marks)",
+          "rubric": "JDBC Definition & Architecture (3 marks) + 4 Driver Types detailed with diagrams (6 marks) + 5 Connection Steps with code (6 marks) = 15 Marks.",
+          "model_answer": "Java Database Connectivity (JDBC) is a standard Java API that enables Java programs to interact with relational database management systems. The 4 Driver Types are: 1. Type-1 Driver (JDBC-ODBC Bridge): Translates JDBC calls to ODBC calls which rely on native OS client ODBC drivers (slow, non-portable, obsolete); 2. Type-2 Driver (Native-API Driver): Converts JDBC calls into native C/C++ client API calls of the database vendor (requires vendor client library installation); 3. Type-3 Driver (Network-Protocol Driver): All-Java driver that communicates over network sockets with a middle-tier application server which translates requests to database calls; 4. Type-4 Driver (Direct-to-Database Pure Java Thin Driver): Converts JDBC calls directly into vendor-specific database network protocols without intermediate native libraries, offering the highest performance and total portability.\n\nFive Standard Steps to Connect:\n```java\n// Step 1: Load and register driver class\nClass.forName('com.mysql.cj.jdbc.Driver');\n// Step 2: Establish database connection\nConnection con = DriverManager.getConnection('jdbc:mysql://localhost:3306/db', 'root', 'pass');\n// Step 3: Create parameterized PreparedStatement\nPreparedStatement ps = con.prepareStatement('SELECT * FROM students WHERE id = ?');\nps.setInt(1, 101);\n// Step 4: Execute query and retrieve ResultSet\nResultSet rs = ps.executeQuery();\nwhile (rs.next()) { System.out.println(rs.getString('name')); }\n// Step 5: Close open resources\nrs.close(); ps.close(); con.close();\n```",
+          "answer_structure": "JDBC Overview -> 4 Driver Types Detailed with Diagrams -> 5 Steps Detailed with Code Snippet",
+          "important_points": [
+            "Type 1, 2, 3, 4 drivers",
+            "Pure Java Thin driver",
+            "DriverManager",
+            "PreparedStatement vs Statement",
+            "Resource closure"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Diagrams showing driver interaction layers",
+            "Complete working Java code showing all 5 steps"
+          ],
+          "common_mistakes": [
+            "Omitting Step 5 resource closing in the code snippet"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2023 / Model",
+          "marks": 5,
+          "question": "How does PreparedStatement prevent SQL Injection attacks? Explain with an example. (5 Marks)",
+          "rubric": "Explanation of pre-compilation (3 marks) + Vulnerable vs Secure code example (2 marks) = 5 Marks.",
+          "model_answer": "In raw Statement execution, SQL queries are dynamically constructed using string concatenation: `'SELECT * FROM users WHERE name = ' + input`. If an attacker enters `' OR '1'='1`, the query structure is altered. With PreparedStatement, the query template is compiled in the database beforehand: `SELECT * FROM users WHERE name = ?`. Parameter values are transmitted in a separate binary protocol phase; the database treats user input strictly as literal data, rendering malicious SQL command injection impossible."
+        }
+      ],
+      "subject_code": "BCA-5002",
+      "subject_name": "Java Programming & Dynamic Webpage Design",
+      "mcqs": [
+        {
+          "id": "ACAD-14-01",
+          "question": "What mechanism does the Java compiler use to implement Generics while maintaining backward compatibility with older JVM versions?",
+          "options": [
+            "Dynamic byte generation",
+            "Type Erasure (replacing generic types with their bounds or Object at compile time)",
+            "C++ template specialization",
+            "Multiple virtual tables"
+          ],
+          "correct_answer": "B",
+          "explanation": "Type Erasure removes all generic type information during compilation, inserting necessary casts and keeping bytecode backward compatible."
+        },
+        {
+          "id": "ACAD-14-02",
+          "question": "In Java Generics, what does the wildcard expression `List<? extends Number>` signify?",
+          "options": [
+            "A list that can store any Object",
+            "An upper-bounded wildcard: a list of elements of type Number or any subtype of Number (read-only producer)",
+            "A lower-bounded wildcard accepting only Object",
+            "A synchronized thread-safe array"
+          ],
+          "correct_answer": "B",
+          "explanation": "Upper bounded wildcard `? extends T` enforces covariance: the collection produces elements of type T (PECS: Producer Extends)."
+        },
+        {
+          "id": "ACAD-14-03",
+          "question": "Which Java API allows runtime inspection of classes, methods, fields, and constructors, including invoking private methods dynamically?",
+          "options": [
+            "Java Collections API",
+            "Java Reflection API (java.lang.reflect)",
+            "Java NIO API",
+            "Java Native Interface (JNI)"
+          ],
+          "correct_answer": "B",
+          "explanation": "Reflection provides programmatic introspection and dynamic invocation of class metadata and private members at runtime."
+        },
+        {
+          "id": "ACAD-14-04",
+          "question": "What retention policy must be specified on a custom Java annotation so it remains available in bytecode and inspectable via Reflection at runtime?",
+          "options": [
+            "RetentionPolicy.SOURCE",
+            "RetentionPolicy.CLASS",
+            "RetentionPolicy.RUNTIME",
+            "RetentionPolicy.SYSTEM"
+          ],
+          "correct_answer": "C",
+          "explanation": "RetentionPolicy.RUNTIME records annotations in the .class file and makes them accessible to the JVM Reflection engine at runtime."
+        },
+        {
+          "id": "ACAD-14-05",
+          "question": "What is the effect of PECS (Producer Extends, Consumer Super) in Java Generics?",
+          "options": [
+            "Use 'extends' when you only read from a collection; use 'super' when you only write to a collection",
+            "Use 'super' for return values and 'extends' for method arguments always",
+            "Generics cannot be combined with wildcards",
+            "Extends allows adding any object to the collection"
+          ],
+          "correct_answer": "A",
+          "explanation": "PECS rule: If a parameterized collection produces data (read-only), use `? extends`; if it consumes data (write-only), use `? super`."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2024-25 (Q3)",
+        "marks": 15,
+        "question": "What is JDBC? Explain the 4 types of JDBC Drivers with suitable diagrams. Write the five standard steps required to connect a Java application to a database. (15 Marks)",
+        "rubric": "JDBC Definition & Architecture (3 marks) + 4 Driver Types detailed with diagrams (6 marks) + 5 Connection Steps with code (6 marks) = 15 Marks.",
+        "model_answer": "Java Database Connectivity (JDBC) is a standard Java API that enables Java programs to interact with relational database management systems. The 4 Driver Types are: 1. Type-1 Driver (JDBC-ODBC Bridge): Translates JDBC calls to ODBC calls which rely on native OS client ODBC drivers (slow, non-portable, obsolete); 2. Type-2 Driver (Native-API Driver): Converts JDBC calls into native C/C++ client API calls of the database vendor (requires vendor client library installation); 3. Type-3 Driver (Network-Protocol Driver): All-Java driver that communicates over network sockets with a middle-tier application server which translates requests to database calls; 4. Type-4 Driver (Direct-to-Database Pure Java Thin Driver): Converts JDBC calls directly into vendor-specific database network protocols without intermediate native libraries, offering the highest performance and total portability.\n\nFive Standard Steps to Connect:\n```java\n// Step 1: Load and register driver class\nClass.forName('com.mysql.cj.jdbc.Driver');\n// Step 2: Establish database connection\nConnection con = DriverManager.getConnection('jdbc:mysql://localhost:3306/db', 'root', 'pass');\n// Step 3: Create parameterized PreparedStatement\nPreparedStatement ps = con.prepareStatement('SELECT * FROM students WHERE id = ?');\nps.setInt(1, 101);\n// Step 4: Execute query and retrieve ResultSet\nResultSet rs = ps.executeQuery();\nwhile (rs.next()) { System.out.println(rs.getString('name')); }\n// Step 5: Close open resources\nrs.close(); ps.close(); con.close();\n```",
+        "answer_structure": "JDBC Overview -> 4 Driver Types Detailed with Diagrams -> 5 Steps Detailed with Code Snippet",
+        "important_points": [
+          "Type 1, 2, 3, 4 drivers",
+          "Pure Java Thin driver",
+          "DriverManager",
+          "PreparedStatement vs Statement",
+          "Resource closure"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagrams showing driver interaction layers",
+          "Complete working Java code showing all 5 steps"
+        ],
+        "common_mistakes": [
+          "Omitting Step 5 resource closing in the code snippet"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "How does PreparedStatement prevent SQL Injection attacks? Explain with an example. (5 Marks)",
+        "rubric": "Explanation of pre-compilation (3 marks) + Vulnerable vs Secure code example (2 marks) = 5 Marks.",
+        "model_answer": "In raw Statement execution, SQL queries are dynamically constructed using string concatenation: `'SELECT * FROM users WHERE name = ' + input`. If an attacker enters `' OR '1'='1`, the query structure is altered. With PreparedStatement, the query template is compiled in the database beforehand: `SELECT * FROM users WHERE name = ?`. Parameter values are transmitted in a separate binary protocol phase; the database treats user input strictly as literal data, rendering malicious SQL command injection impossible."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                     JDBC 4-DRIVER TYPES ARCHITECTURAL MODEL             |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|   +-----------------------------------------------------------------+   |\n|   |                     JAVA APPLICATION LAYER                      |   |\n|   +-----------------------------------------------------------------+   |\n|                                    | (JDBC API Method Calls)            |\n|                                    v                                    |\n|   +-----------------------------------------------------------------+   |\n|   |                     JDBC DRIVER MANAGER                         |   |\n|   +-----------------------------------------------------------------+   |\n|       |                 |                   |                 |         |\n|       v                 v                   v                 v         |\n|   [TYPE 1]          [TYPE 2]            [TYPE 3]          [TYPE 4]      |\n|  JDBC-ODBC        Native-API        Network-Protocol    Thin Driver     |\n|   Bridge        (Partly Java)          Middleware       (Pure Java)     |\n|       |                 |                   |                 |         |\n|       v                 v                   v                 v         |\n|   ODBC Driver     Native C/C++ API    Middleware Server Database Wire   |\n|   (Client DLL)      (Client DLL)        (Translate)       Protocol      |\n|       |                 |                   |                 |         |\n|       +-----------------+-------------------+-----------------+         |\n|                                    |                                    |\n|                                    v                                    |\n|                      RELATIONAL DATABASE ENGINE (RDBMS)                 |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-14-01",
+        "question": "What mechanism does the Java compiler use to implement Generics while maintaining backward compatibility with older JVM versions?",
+        "options": [
+          "Dynamic byte generation",
+          "Type Erasure (replacing generic types with their bounds or Object at compile time)",
+          "C++ template specialization",
+          "Multiple virtual tables"
+        ],
+        "correct_answer": "B",
+        "explanation": "Type Erasure removes all generic type information during compilation, inserting necessary casts and keeping bytecode backward compatible."
+      },
+      {
+        "id": "ACAD-14-02",
+        "question": "In Java Generics, what does the wildcard expression `List<? extends Number>` signify?",
+        "options": [
+          "A list that can store any Object",
+          "An upper-bounded wildcard: a list of elements of type Number or any subtype of Number (read-only producer)",
+          "A lower-bounded wildcard accepting only Object",
+          "A synchronized thread-safe array"
+        ],
+        "correct_answer": "B",
+        "explanation": "Upper bounded wildcard `? extends T` enforces covariance: the collection produces elements of type T (PECS: Producer Extends)."
+      },
+      {
+        "id": "ACAD-14-03",
+        "question": "Which Java API allows runtime inspection of classes, methods, fields, and constructors, including invoking private methods dynamically?",
+        "options": [
+          "Java Collections API",
+          "Java Reflection API (java.lang.reflect)",
+          "Java NIO API",
+          "Java Native Interface (JNI)"
+        ],
+        "correct_answer": "B",
+        "explanation": "Reflection provides programmatic introspection and dynamic invocation of class metadata and private members at runtime."
+      },
+      {
+        "id": "ACAD-14-04",
+        "question": "What retention policy must be specified on a custom Java annotation so it remains available in bytecode and inspectable via Reflection at runtime?",
+        "options": [
+          "RetentionPolicy.SOURCE",
+          "RetentionPolicy.CLASS",
+          "RetentionPolicy.RUNTIME",
+          "RetentionPolicy.SYSTEM"
+        ],
+        "correct_answer": "C",
+        "explanation": "RetentionPolicy.RUNTIME records annotations in the .class file and makes them accessible to the JVM Reflection engine at runtime."
+      },
+      {
+        "id": "ACAD-14-05",
+        "question": "What is the effect of PECS (Producer Extends, Consumer Super) in Java Generics?",
+        "options": [
+          "Use 'extends' when you only read from a collection; use 'super' when you only write to a collection",
+          "Use 'super' for return values and 'extends' for method arguments always",
+          "Generics cannot be combined with wildcards",
+          "Extends allows adding any object to the collection"
+        ],
+        "correct_answer": "A",
+        "explanation": "PECS rule: If a parameterized collection produces data (read-only), use `? extends`; if it consumes data (write-only), use `? super`."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Blood Relations & Family Tree Notation",
+      "category": "Logical Reasoning",
+      "subtopic": "Blood Relations",
+      "formulas": "1. Standard Symbols: Male = [+], Female = [-], Marriage = [=], Siblings = [---], Vertical line = generation gap.\n2. Generational Indexing: Grandparents (+2), Parents/Uncles (+1), Self/Siblings/Spouse (0), Children (-1), Grandchildren (-2).",
+      "shortcuts": "Reverse Parsing Trick for Coded Relations: In 'P is the mother of Q's father', start reading from the end ('Q's father' -> Father's mother -> P is Q's paternal grandmother).",
+      "tutorial": [
+        "Never assume gender from names in competitive reasoning exams unless explicitly stated or determined by familial role (e.g. 'mother', 'brother'). Always construct the family tree generation by generation."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Blood Relations",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Blood Relations",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Blood Relations",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Blood Relations",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Blood Relations",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Pointing to a photograph of a boy, Suresh said, 'He is the son of the only son of my mother.' How is Suresh related to that boy?",
+        "options": {
+          "A": "Father",
+          "B": "Brother",
+          "C": "Uncle",
+          "D": "Grandfather"
+        },
+        "correct_answer": "A",
+        "explanation": "'Only son of my mother' is Suresh himself. Therefore, the boy is the son of Suresh. Suresh is his father.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "If A + B means A is the brother of B; A - B means A is the sister of B; and A * B means A is the father of B. Which of the following means that C is the son of M?",
+        "options": {
+          "A": "M * C + N",
+          "B": "M - C + N",
+          "C": "M * N - C",
+          "D": "C * M + N"
+        },
+        "correct_answer": "A",
+        "explanation": "M * C means M is father of C. C + N means C is brother (male). Hence C is the son of M.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Introducing a girl, Vipin said, 'Her mother is the only daughter of my mother-in-law.' How is Vipin related to the girl?",
+        "options": {
+          "A": "Father",
+          "B": "Uncle",
+          "C": "Brother",
+          "D": "Husband"
+        },
+        "correct_answer": "A",
+        "explanation": "'Only daughter of my mother-in-law' is Vipin's wife. The girl's mother is Vipin's wife, so Vipin is her father.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "A man said to a lady, 'Your mother's husband's sister is my aunt.' How is the lady related to the man?",
+        "options": {
+          "A": "Sister",
+          "B": "Mother",
+          "C": "Daughter",
+          "D": "Aunt"
+        },
+        "correct_answer": "A",
+        "explanation": "Lady's mother's husband is lady's father. Father's sister is lady's aunt. Since she is also the man's aunt, the lady is the man's sister.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Pointing to a woman, Naman said, 'She is the daughter of the only child of my grandfather.' How is the woman related to Naman?",
+        "options": {
+          "A": "Sister",
+          "B": "Niece",
+          "C": "Mother",
+          "D": "Aunt"
+        },
+        "correct_answer": "A",
+        "explanation": "'Only child of my grandfather' is Naman's father. The daughter of Naman's father is Naman's sister.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Deepak said to Nitin, 'That boy playing with football is the younger of the two brothers of the daughter of my father's wife.' Who is the boy to Deepak?",
+        "options": {
+          "A": "Brother",
+          "B": "Cousin",
+          "C": "Nephew",
+          "D": "Son"
+        },
+        "correct_answer": "A",
+        "explanation": "'Father's wife' = mother. 'Daughter of mother' = sister. 'Brother of sister' = brother. The boy is Deepak's brother.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "P is the brother of Q and R. S is R's mother. T is P's father. Which of the following statements cannot be definitely true?",
+        "options": {
+          "A": "T is Q's father",
+          "B": "S is P's mother",
+          "C": "Q is T's son",
+          "D": "P is S's son"
+        },
+        "correct_answer": "C",
+        "explanation": "Q's gender is not specified in the premises; Q could be a son or a daughter.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A is B's sister. C is B's mother. D is C's father. E is D's mother. Then how is A related to D?",
+        "options": {
+          "A": "Granddaughter",
+          "B": "Grandmother",
+          "C": "Daughter",
+          "D": "Grandfather"
+        },
+        "correct_answer": "A",
+        "explanation": "A is sister of B, whose mother is C (A is C's daughter). D is C's father, so A is D's granddaughter.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Pointing to a gentleman, Deepak said, 'His only brother is the father of my daughter's father.' How is the gentleman related to Deepak?",
+        "options": {
+          "A": "Uncle",
+          "B": "Father",
+          "C": "Grandfather",
+          "D": "Brother-in-law"
+        },
+        "correct_answer": "A",
+        "explanation": "'My daughter's father' = Deepak. 'Father of Deepak' = Deepak's father. The gentleman's only brother is Deepak's father, making the gentleman Deepak's uncle.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "If 'P $ Q' means P is father of Q; 'P # Q' means P is mother of Q; 'P * Q' means P is sister of Q. In N # L $ P * Q, how is N related to Q?",
+        "options": {
+          "A": "Paternal Grandmother",
+          "B": "Maternal Grandmother",
+          "C": "Aunt",
+          "D": "Mother"
+        },
+        "correct_answer": "A",
+        "explanation": "L is father of P and Q. N is mother of L. Hence N is the paternal grandmother of Q.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Blood Relations (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "K-Way Merge of Sorted Arrays / Lists",
+      "category": "Heap / PriorityQueue",
+      "concept": "Uses a min-heap initialized with the head node of each of the K sorted lists. Extracts the minimum and advances that list's pointer.",
+      "why_it_works": "At each step, selecting the next smallest element across K lists takes O(log K) rather than O(K) linear comparison.",
+      "visual_explanation": "Lists: L1: 1->4->5, L2: 1->3->4, L3: 2->6\\nHeap: [ (1, L1), (1, L2), (2, L3) ]\\nPoll (1, L1), Insert (4, L1)\\nPoll (1, L2), Insert (3, L2)...",
+      "language": "Java",
+      "java_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> minHeap = new PriorityQueue<>(\n            lists.length, (a, b) -> Integer.compare(a.val, b.val)\n        );\n        for (ListNode node : lists) {\n            if (node != null) minHeap.offer(node);\n        }\n        ListNode dummy = new ListNode(0);\n        ListNode tail = dummy;\n        while (!minHeap.isEmpty()) {\n            ListNode smallest = minHeap.poll();\n            tail.next = smallest;\n            tail = tail.next;\n            if (smallest.next != null) {\n                minHeap.offer(smallest.next);\n            }\n        }\n        return dummy.next;\n    }\n}",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> minHeap = new PriorityQueue<>(\n            lists.length, (a, b) -> Integer.compare(a.val, b.val)\n        );\n        for (ListNode node : lists) {\n            if (node != null) minHeap.offer(node);\n        }\n        ListNode dummy = new ListNode(0);\n        ListNode tail = dummy;\n        while (!minHeap.isEmpty()) {\n            ListNode smallest = minHeap.poll();\n            tail.next = smallest;\n            tail = tail.next;\n            if (smallest.next != null) {\n                minHeap.offer(smallest.next);\n            }\n        }\n        return dummy.next;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 5-7: Create PriorityQueue comparator ordering ListNode by val.",
+        "Line 8-10: Offer non-null heads of all K lists into minHeap.",
+        "Line 11-12: Create dummy sentinel node to simplify list building.",
+        "Line 13-19: Poll smallest node, append to tail, and insert next node from same list."
+      ],
+      "dry_run": "K=3 lists with total N nodes. Each node inserted once and polled once in O(log K). Total runtime O(N log K).",
+      "complexity": "O(N log K) Time, O(K) Auxiliary Space",
+      "edge_cases": "Empty lists array, Array containing null heads, One list much longer than others",
+      "edge_cases_list": [
+        "Empty lists array",
+        "Array containing null heads",
+        "One list much longer than others"
+      ],
+      "interview_variations": [
+        "Merge K Sorted Lists",
+        "Find K Pairs with Smallest Sums",
+        "Kth Smallest Element in a Sorted Matrix"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-14-01",
+        "title": "Problem 1: Merge k Sorted Lists",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply K-Way Merge of Sorted Arrays / Lists algorithmic technique.\n2. Uses a min-heap initialized with the head node of each of the K sorted lists. Extracts the minimum and advances that list's pointer.\n3. Invariants: At each step, selecting the next smallest element across K lists takes O(log K) rather than O(K) linear comparison.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+        "time_complexity": "O(N log K) Time",
+        "space_complexity": "O(K) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-14-02",
+        "title": "Problem 2: Find K Pairs with Smallest Sums",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given two integer arrays nums1 and nums2 sorted in ascending order and an integer k. Return the k pairs (u, v) with the smallest sums.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of K-Way Merge of Sorted Arrays / Lists.\n2. Handle edge cases: Empty lists array, Array containing null heads, One list much longer than others.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N log K) Time",
+        "space_complexity": "O(K) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "DBMS",
+      "topic": "Database Indexing: B-Trees, B+ Trees, Clustered vs Non-Clustered Indexes",
+      "concept_lesson": "A Database Index is an auxiliary search data structure that optimizes data retrieval without scanning every table page.\n\nB-Tree vs B+ Tree Architecture:\n- B-Tree: Stores keys and actual data record pointers in both internal routing nodes and leaf nodes. Searching for keys stored in top internal nodes can terminate early without reaching leaves.\n- B+ Tree: The universal choice for relational databases (PostgreSQL, MySQL InnoDB, SQLite). Internal nodes store ONLY routing keys and child node pointers (maximizing fan-out and reducing tree depth to 3-4 levels for billions of rows). ALL actual record pointers reside exclusively in the leaf nodes. Furthermore, leaf nodes are linked via a doubly linked list, enabling ultra-fast sequential range scans.\n\nClustered vs Non-Clustered Indexes:\n- Clustered Index: Determines the physical sorting order of rows on disk. A table can have at most ONE clustered index (usually the Primary Key). In MySQL InnoDB, the clustered index table is the data itself (Index-Organized Table).\n- Non-Clustered (Secondary) Index: A separate search structure. Leaf nodes store the indexed key along with a pointer to the physical row (or clustered primary key). Requires a secondary lookup (Bookmark Lookup) to fetch non-indexed columns unless satisfied by a Covering Index.",
+      "key_definitions": [
+        {
+          "term": "B+ Tree",
+          "definition": "A self-balancing N-ary tree storing keys in internal nodes and all data pointers in doubly-linked leaf nodes."
+        },
+        {
+          "term": "Clustered Index",
+          "definition": "An index where the physical order of table rows on disk matches the index key order (1 per table)."
+        },
+        {
+          "term": "Covering Index",
+          "definition": "An index containing all columns requested by a query, satisfying execution without touching table data pages."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "Why do relational database engines use B+ Trees instead of B-Trees or Binary Search Trees for indexing?",
+          "a": "1. High Fan-out and Shallow Depth: Because internal nodes store only keys without data pointers, thousands of keys fit in a single 16KB disk page, keeping tree height to 3-4 levels for millions of rows (minimizing disk I/O). 2. Range Queries: In a B+ Tree, all leaf nodes are connected in a doubly linked list; range scans simply traverse leaves sequentially without tree back-tracking. 3. Predictable Latency: Every lookup traverses the exact same number of levels to the leaf."
+        },
+        {
+          "q": "What is the difference between a Clustered and a Non-Clustered index?",
+          "a": "A Clustered Index dictates the actual physical sorting order of table rows on disk; therefore, a table can have only ONE clustered index. In a Non-Clustered Index, data rows are stored independently, and the index contains pointers back to the rows. A table can have multiple non-clustered indexes."
+        },
+        {
+          "q": "What is a Covering Index in SQL optimization?",
+          "a": "A Covering Index includes all columns referenced in the query's SELECT, WHERE, JOIN, and ORDER BY clauses (e.g., using CREATE INDEX idx_emp ON Employee(dept_id, salary)). The database engine can satisfy the query entirely from the index tree without performing a secondary lookup to read the main table data pages, drastically reducing I/O."
+        },
+        {
+          "q": "What is Index Selectivity and how does it affect query optimizer decisions?",
+          "a": "Selectivity is the ratio of distinct values in a column to total row count: Cardinality / Total Rows. High selectivity (e.g., primary key or email, near 1.0) makes indexes extremely effective. Low selectivity (e.g., gender with only 2 distinct values) causes the query optimizer to skip the index and perform a Full Table Scan because scanning non-clustered index pointers for 50% of the rows is slower than a sequential disk scan."
+        },
+        {
+          "q": "What is the write penalty of having too many indexes on a table?",
+          "a": "Every INSERT, UPDATE, or DELETE statement must not only modify the primary table pages, but must also update every single secondary index tree (including balancing node splits or merges). Having excessive indexes slows down write throughput and inflates storage footprint."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-14-01",
+          "question": "Why are B+ Trees preferred over B-Trees for database disk indexing?",
+          "options": [
+            "B+ trees require no sorting",
+            "Internal nodes store only keys, maximizing fan-out, and leaf nodes form a linked list for range scans",
+            "B+ trees are binary trees",
+            "B+ trees store data in RAM only"
+          ],
+          "correct_answer": "B",
+          "explanation": "B+ trees pack more keys per internal page and link leaves for rapid range scanning."
+        },
+        {
+          "id": "CS-14-02",
+          "question": "How many Clustered Indexes can exist on a single database table?",
+          "options": [
+            "Zero",
+            "Exactly one",
+            "Up to 16",
+            "Unlimited"
+          ],
+          "correct_answer": "B",
+          "explanation": "Because physical disk rows can only be ordered in one sequence, only one clustered index can exist."
+        },
+        {
+          "id": "CS-14-03",
+          "question": "An index that contains every column requested by a query, avoiding physical table page lookups, is called a:",
+          "options": [
+            "Bitmap Index",
+            "Covering Index",
+            "Dense Index",
+            "Hash Index"
+          ],
+          "correct_answer": "B",
+          "explanation": "Covering indexes satisfy the query directly from leaf nodes without fetching base table pages."
+        },
+        {
+          "id": "CS-14-04",
+          "question": "In a B+ tree of order m, all leaf nodes reside at:",
+          "options": [
+            "Different depths",
+            "The exact same depth",
+            "Depth 1",
+            "Random positions"
+          ],
+          "correct_answer": "B",
+          "explanation": "B+ trees are strictly height-balanced; all leaf nodes reside at the exact same depth."
+        },
+        {
+          "id": "CS-14-05",
+          "question": "Creating an index on a boolean column (e.g., is_active) with 50/50 distribution is usually ineffective because:",
+          "options": [
+            "B+ trees cannot store booleans",
+            "The column has very low selectivity",
+            "The index would be larger than the table",
+            "Foreign keys cannot be booleans"
+          ],
+          "correct_answer": "B",
+          "explanation": "Low selectivity causes the query optimizer to choose a full table scan over the index."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "TerraStract",
+      "repo_path": "D:\\Projects\\terra_extract",
+      "topic": "Tabular Coordinate Extraction & Spatial Column Alignment",
+      "what_to_understand": "Detecting table borders, bounding boxes, and aligning cells into structured JSON/Excel.",
+      "what_to_memorize": "Horizontal and vertical vector lines determine cell intersections and boundary coordinates.",
+      "interview_questions": [
+        {
+          "q": "How do you extract tables from PDFs where table borders are missing (borderless tables)?",
+          "a": "When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with overlapping vertical Y-coordinates within a 3pt tolerance, and compute horizontal X-coordinate gutters to detect column boundaries. These bounding box matrices are then reconstructed into structured JSON tables."
+        },
+        {
+          "q": "How do you export extracted tables to formatted Excel spreadsheets?",
+          "a": "We pass the reconstructed row/column dictionary into pandas or `openpyxl`, auto-fit column widths based on maximum string lengths, apply bold formatting to header rows, and stream the generated `.xlsx` binary directly to the user."
+        }
+      ],
+      "interview_pitch_exercise": "Extracting tables from scanned government records is difficult because borders are often faded or absent. I implemented a coordinate-clustering algorithm in TerraStract that analyzes text bounding boxes to reconstruct table rows and columns, exporting structured tables directly to Excel and JSON."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 14 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 14 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of SmartGalla.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 13 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5002 — Java Generics, Reflection API & Annotations.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Blood Relations & Family Tree Notation.\n• Algorithmic Invariant: Optimal time and space complexity rules for K-Way Merge of Sorted Arrays.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Indexing: B-Trees vs B+ Trees.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Generics, Reflection API & Annotations.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: K-Way Merge of Sorted Arrays.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: BulkBeat TV.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 14 Q1: What is the primary academic thesis of Java Generics, Reflection API & Annotations?",
+          "a": "Core theoretical and practical mastery of Java Generics, Reflection API & Annotations under the CSJM University BCA-5002 syllabus."
+        },
+        {
+          "q": "Day 14 Q2: What is the key speed calculation formula applied in Blood Relations & Family Tree Notation?",
+          "a": "High-speed corporate placement arithmetic shortcut for Blood Relations & Family Tree Notation in campus recruitment exams."
+        },
+        {
+          "q": "Day 14 Q3: What is the time complexity of K-Way Merge of Sorted Arrays?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 14 Q4: What is the central architectural principle of Database Indexing: B-Trees vs B+ Trees?",
+          "a": "Foundational systems engineering rule governing Database Indexing: B-Trees vs B+ Trees in production environments."
+        },
+        {
+          "q": "Day 14 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 14 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 14 Q7: What is the verified technical foundation of BulkBeat TV?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 14 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 14 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 14 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5002 — Java Generics, Reflection API & Annotations.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Blood Relations & Family Tree Notation.\n• Algorithmic Invariant: Optimal time and space complexity rules for K-Way Merge of Sorted Arrays.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Indexing: B-Trees vs B+ Trees."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5002 — Java Generics, Reflection API & Annotations."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Blood Relations & Family Tree Notation."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: K-Way Merge of Sorted Arrays."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: BulkBeat TV."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-14-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What mechanism does the Java compiler use to implement Generics while maintaining backward compatibility with older JVM versions?",
+        "options": [
+          "Dynamic byte generation",
+          "Type Erasure (replacing generic types with their bounds or Object at compile time)",
+          "C++ template specialization",
+          "Multiple virtual tables"
+        ],
+        "correct_answer": "B",
+        "explanation": "Type Erasure removes all generic type information during compilation, inserting necessary casts and keeping bytecode backward compatible."
+      },
+      {
+        "id": "TEST-14-02",
+        "category": "Academic (Academic Theory)",
+        "question": "In Java Generics, what does the wildcard expression `List<? extends Number>` signify?",
+        "options": [
+          "A list that can store any Object",
+          "An upper-bounded wildcard: a list of elements of type Number or any subtype of Number (read-only producer)",
+          "A lower-bounded wildcard accepting only Object",
+          "A synchronized thread-safe array"
+        ],
+        "correct_answer": "B",
+        "explanation": "Upper bounded wildcard `? extends T` enforces covariance: the collection produces elements of type T (PECS: Producer Extends)."
+      },
+      {
+        "id": "TEST-14-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which Java API allows runtime inspection of classes, methods, fields, and constructors, including invoking private methods dynamically?",
+        "options": [
+          "Java Collections API",
+          "Java Reflection API (java.lang.reflect)",
+          "Java NIO API",
+          "Java Native Interface (JNI)"
+        ],
+        "correct_answer": "B",
+        "explanation": "Reflection provides programmatic introspection and dynamic invocation of class metadata and private members at runtime."
+      },
+      {
+        "id": "TEST-14-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What retention policy must be specified on a custom Java annotation so it remains available in bytecode and inspectable via Reflection at runtime?",
+        "options": [
+          "RetentionPolicy.SOURCE",
+          "RetentionPolicy.CLASS",
+          "RetentionPolicy.RUNTIME",
+          "RetentionPolicy.SYSTEM"
+        ],
+        "correct_answer": "C",
+        "explanation": "RetentionPolicy.RUNTIME records annotations in the .class file and makes them accessible to the JVM Reflection engine at runtime."
+      },
+      {
+        "id": "TEST-14-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the effect of PECS (Producer Extends, Consumer Super) in Java Generics?",
+        "options": [
+          "Use 'extends' when you only read from a collection; use 'super' when you only write to a collection",
+          "Use 'super' for return values and 'extends' for method arguments always",
+          "Generics cannot be combined with wildcards",
+          "Extends allows adding any object to the collection"
+        ],
+        "correct_answer": "A",
+        "explanation": "PECS rule: If a parameterized collection produces data (read-only), use `? extends`; if it consumes data (write-only), use `? super`."
+      },
+      {
+        "id": "TEST-14-06",
+        "category": "Placement Aptitude",
+        "question": "Pointing to a gentleman, Prabhat remarked, 'His only son is my son's uncle.' How is the gentleman related to Prabhat?",
+        "options": [
+          "Father",
+          "Uncle",
+          "Brother",
+          "Grandfather"
+        ],
+        "correct_answer": "A",
+        "explanation": "'My son's uncle' = Prabhat's brother. The gentleman's only son is Prabhat's brother => The gentleman is Prabhat's father."
+      },
+      {
+        "id": "TEST-14-07",
+        "category": "Placement Aptitude",
+        "question": "Introducing a man, a woman said, 'His wife is the only daughter of my father.' How is the man related to the woman?",
+        "options": [
+          "Husband",
+          "Brother",
+          "Maternal Uncle",
+          "Father-in-law"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Only daughter of my father' = the woman herself. The man's wife is the woman herself => the man is her husband."
+      },
+      {
+        "id": "TEST-14-08",
+        "category": "Placement Aptitude",
+        "question": "In a family tree code, if 'P $ Q' means P is father of Q, 'P # Q' means P is mother of Q, and 'P & Q' means P is sister of Q. In the expression X $ Y & Z # W, how is X related to W?",
+        "options": [
+          "Maternal Grandfather",
+          "Paternal Grandfather",
+          "Uncle",
+          "Brother"
+        ],
+        "correct_answer": "A",
+        "explanation": "Z is mother of W, Y is sister of Z, and X is father of Y (and Z). Therefore X is the maternal grandfather of W."
+      },
+      {
+        "id": "TEST-14-09",
+        "category": "Placement Aptitude",
+        "question": "A is the mother of B. C is the father of A. D is the brother of E. E is the daughter of B. How is C related to E?",
+        "options": [
+          "Maternal Great-Grandfather",
+          "Maternal Grandfather",
+          "Paternal Grandfather",
+          "Uncle"
+        ],
+        "correct_answer": "A",
+        "explanation": "E is daughter of B, who is child of A, who is daughter of C. Hence C is the maternal great-grandfather of E."
+      },
+      {
+        "id": "TEST-14-10",
+        "category": "Placement Aptitude",
+        "question": "Pointing to a man in a photograph, Anita said, 'His brother's father is the only son of my grandfather.' How is Anita related to the man in the photograph?",
+        "options": [
+          "Sister",
+          "Aunt",
+          "Mother",
+          "Daughter"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Only son of my grandfather' = Anita's father. 'His brother's father' = the man's father. Both share the same father => Anita is his sister."
+      },
+      {
+        "id": "TEST-14-11",
+        "category": "Core CS (DBMS)",
+        "question": "Why are B+ Trees preferred over B-Trees for database disk indexing?",
+        "options": [
+          "B+ trees require no sorting",
+          "Internal nodes store only keys, maximizing fan-out, and leaf nodes form a linked list for range scans",
+          "B+ trees are binary trees",
+          "B+ trees store data in RAM only"
+        ],
+        "correct_answer": "B",
+        "explanation": "B+ trees pack more keys per internal page and link leaves for rapid range scanning."
+      },
+      {
+        "id": "TEST-14-12",
+        "category": "Core CS (DBMS)",
+        "question": "How many Clustered Indexes can exist on a single database table?",
+        "options": [
+          "Zero",
+          "Exactly one",
+          "Up to 16",
+          "Unlimited"
+        ],
+        "correct_answer": "B",
+        "explanation": "Because physical disk rows can only be ordered in one sequence, only one clustered index can exist."
+      },
+      {
+        "id": "TEST-14-13",
+        "category": "Core CS (DBMS)",
+        "question": "An index that contains every column requested by a query, avoiding physical table page lookups, is called a:",
+        "options": [
+          "Bitmap Index",
+          "Covering Index",
+          "Dense Index",
+          "Hash Index"
+        ],
+        "correct_answer": "B",
+        "explanation": "Covering indexes satisfy the query directly from leaf nodes without fetching base table pages."
+      },
+      {
+        "id": "TEST-14-14",
+        "category": "Core CS (DBMS)",
+        "question": "In a B+ tree of order m, all leaf nodes reside at:",
+        "options": [
+          "Different depths",
+          "The exact same depth",
+          "Depth 1",
+          "Random positions"
+        ],
+        "correct_answer": "B",
+        "explanation": "B+ trees are strictly height-balanced; all leaf nodes reside at the exact same depth."
+      },
+      {
+        "id": "TEST-14-15",
+        "category": "Core CS (DBMS)",
+        "question": "Creating an index on a boolean column (e.g., is_active) with 50/50 distribution is usually ineffective because:",
+        "options": [
+          "B+ trees cannot store booleans",
+          "The column has very low selectivity",
+          "The index would be larger than the table",
+          "Foreign keys cannot be booleans"
+        ],
+        "correct_answer": "B",
+        "explanation": "Low selectivity causes the query optimizer to choose a full table scan over the index."
+      },
+      {
+        "id": "TEST-14-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'K-Way Merge of Sorted Arrays / Lists' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N log K) Time, O(K) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'K-Way Merge of Sorted Arrays / Lists' pattern operates with O(N log K) Time, O(K) Auxiliary Space: At each step, selecting the next smallest element across K lists takes O(log K) rather than O(K) linear comparison.."
+      },
+      {
+        "id": "TEST-14-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'K-Way Merge of Sorted Arrays / Lists' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty lists array.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for K-Way Merge of Sorted Arrays / Lists include Empty lists array, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-14-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Merge k Sorted Lists', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(K) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N log K) Time, O(K) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-14-19",
+        "category": "Projects (TerraStract)",
+        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Tabular Coordinate Extraction & Spatial Column Alignment'?",
+        "options": [
+          "Horizontal and vertical vector lines determine cell intersections and boundary coordinates.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For TerraStract, the architectural invariant is: Horizontal and vertical vector lines determine cell intersections and boundary coordinates.."
+      },
+      {
+        "id": "TEST-14-20",
+        "category": "Projects (TerraStract)",
+        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you extract tables from PDFs where table borders are missing (borderless tables)?'?",
+        "options": [
+          "When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with overlapping vertica...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-14",
+      "title": "Merge k Sorted Lists (K-Way Merge of Sorted Arrays / Lists)",
+      "time_limit_minutes": 35,
+      "difficulty": "Medium",
+      "problem_statement": "Solve the core placement problem: Merge k Sorted Lists.\n\nYou are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: K-Way Merge of Sorted Arrays / Lists\n- Time Complexity Target: O(N log K) Time\n- Space Complexity Target: O(K) Auxiliary Space\n- Handle all edge cases: Empty lists array, Array containing null heads, One list much longer than others.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using K-Way Merge of Sorted Arrays / Lists\n    public ListNode mergeKLists(ListNode[] lists) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using K-Way Merge of Sorted Arrays / Lists\n    public ListNode mergeKLists(ListNode[] lists) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+      "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary K-Way Merge of Sorted Arrays / Lists logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Empty lists array",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N log K) Time)",
+        "Space Complexity": "20 points (Meets O(K) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Java Programming & Dynamic Webpage Design",
+    "subject_code": "BCA-5002",
+    "unit": 3,
+    "topic": "Unit III — JDBC Architecture: 4 Driver Types, Connection Steps & Statement vs PreparedStatement",
+    "objectives": [
+      "Master JDBC 2-tier and 3-tier architecture.",
+      "Understand the 4 JDBC driver types and why PreparedStatement prevents SQL injection."
+    ],
+    "detailed_notes": [
+      "Java Database Connectivity (JDBC) is a Java API that manages connecting to databases, issuing SQL queries, and processing results. Its architecture consists of the JDBC API (application level) and JDBC Driver Manager (driver level). The 4 Driver Types are:\n1. Type-1: JDBC-ODBC Bridge (translates JDBC to ODBC; obsolete, platform-dependent);\n2. Type-2: Native-API Driver (partly Java, translates JDBC to native client C/C++ DB library);\n3. Type-3: Network-Protocol Driver (all Java, sends calls via middleware server which connects to DB);\n4. Type-4: Thin Driver / Direct-to-Database Pure Java Driver (converts JDBC calls directly into vendor database network protocol; fastest, most portable, industry standard).\n5 Steps of JDBC Connection: 1. Load Driver class (`Class.forName()`); 2. Establish Connection (`DriverManager.getConnection()`); 3. Create Statement (`con.prepareStatement()`); 4. Execute Query (`ps.executeQuery()`); 5. Close Connection (`con.close()`).",
+      "Type-1 (Bridge), Type-2 (Native API), Type-3 (Network Middleware), Type-4 (Pure Java Thin Driver).",
+      "Statement compiles SQL every execution and is vulnerable to SQL injection. PreparedStatement pre-compiles query templates in the database and treats parameter inputs purely as literal values."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|                 JDBC ARCHITECTURE                 |\n| [Java App] -> [JDBC API] -> [DriverManager]       |\n| -> [Type-4 Thin Driver] -> [Relational Database]  |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Driver Category",
-        "Implementation Language",
-        "Client-Side Native Install",
-        "Performance Speed",
-        "Portability Status"
+        "Dimension",
+        "Statement",
+        "PreparedStatement"
       ],
       "rows": [
         [
-          "Type 1: JDBC-ODBC Bridge",
-          "Java + C/C++ (ODBC)",
-          "Requires ODBC installation on client",
-          "Lowest speed (dual translation)",
-          "Poor (Removed in Java 8)"
+          "Compilation",
+          "Compiled by database on every single execution",
+          "Pre-compiled once by DB engine; cached execution plan"
         ],
         [
-          "Type 2: Native-API",
-          "Partly Java + Partly C/C++",
-          "Requires native database vendor client DLL",
-          "Moderate to high",
-          "Platform-dependent (OS specific)"
+          "Performance",
+          "Slower for repetitive queries",
+          "Significantly faster for parameterized batch queries"
         ],
         [
-          "Type 3: Network-Protocol",
-          "100% Pure Java",
-          "Zero client installation (middleware needed)",
-          "High (network latency overhead)",
-          "High (vendor-independent)"
+          "Security",
+          "Highly vulnerable to SQL Injection attacks",
+          "Immune to SQL Injection (parameters treated as data)"
         ],
         [
-          "Type 4: Thin Driver",
-          "100% Pure Java",
-          "Zero client installation (direct socket)",
-          "Highest speed (direct wire protocol)",
-          "Completely portable & preferred"
+          "Parameter Support",
+          "Cannot use parameterized placeholders (?)",
+          "Supports positional wildcard parameters (`?`)"
         ]
       ]
     },
-    "memorize": "4 Drivers: Type-1 (Bridge), Type-2 (Native-API), Type-3 (Network-Protocol), Type-4 (Thin Pure Java). Type-4 is the universally preferred driver. 5 Steps: Load Driver -> Get Connection -> Create Statement -> Execute Query -> Close Connection. PreparedStatement pre-compiles SQL and stops SQL injection.",
-    "understand": "Why is Type-4 preferred over Type-1? Type-1 requires installing Microsoft ODBC on every user workstation, and converts Java to C to ODBC to SQL. Type-4 speaks the database's native TCP/IP wire protocol directly from Java, requiring zero client configuration and delivering maximum network performance.",
-    "common_mistakes": "1. Using Statement instead of PreparedStatement when handling user input (creates severe SQL injection vulnerabilities). 2. Forgetting to close Connection in finally block, causing database connection pool leaks.",
-    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q5 - 15m), 2022-23 (Q3 - 15m), 2023-24 (Q4 - 15m), 2024-25 (Q5 - 15m)",
-    "pyq_question": "Explain JDBC architecture and describe all four types of JDBC drivers with neat diagrams. Which driver is preferred and why? Write a complete Java program to retrieve records from a database table. (15 Marks)",
-    "pyq_rubric": "JDBC Architectural Diagram (4 marks) + Explanation of 4 Driver Types (5 marks) + PreparedStatement vs Statement (2 marks) + Complete JDBC Program with error handling (4 marks) = 15 Marks.",
+    "memorize": "Type-4 driver is 100% pure Java (thin driver, direct socket communication). PreparedStatement precompiles SQL and blocks SQL injection. 5 steps: Load, Connect, Statement, Execute, Close.",
+    "understand": "PreparedStatement prevents SQL injection because parameter values are transmitted to the database engine separately from the SQL command structure, preventing attackers from injecting arbitrary SQL clauses like `OR 1=1`.",
+    "common_mistakes": "Forgetting to close ResultSet, Statement, and Connection objects, causing database connection pool leaks.",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2024-25 (Q3)",
+        "marks": 15,
+        "question": "What is JDBC? Explain the 4 types of JDBC Drivers with suitable diagrams. Write the five standard steps required to connect a Java application to a database. (15 Marks)",
+        "rubric": "JDBC Definition & Architecture (3 marks) + 4 Driver Types detailed with diagrams (6 marks) + 5 Connection Steps with code (6 marks) = 15 Marks.",
+        "model_answer": "Java Database Connectivity (JDBC) is a standard Java API that enables Java programs to interact with relational database management systems. The 4 Driver Types are: 1. Type-1 Driver (JDBC-ODBC Bridge): Translates JDBC calls to ODBC calls which rely on native OS client ODBC drivers (slow, non-portable, obsolete); 2. Type-2 Driver (Native-API Driver): Converts JDBC calls into native C/C++ client API calls of the database vendor (requires vendor client library installation); 3. Type-3 Driver (Network-Protocol Driver): All-Java driver that communicates over network sockets with a middle-tier application server which translates requests to database calls; 4. Type-4 Driver (Direct-to-Database Pure Java Thin Driver): Converts JDBC calls directly into vendor-specific database network protocols without intermediate native libraries, offering the highest performance and total portability.\n\nFive Standard Steps to Connect:\n```java\n// Step 1: Load and register driver class\nClass.forName('com.mysql.cj.jdbc.Driver');\n// Step 2: Establish database connection\nConnection con = DriverManager.getConnection('jdbc:mysql://localhost:3306/db', 'root', 'pass');\n// Step 3: Create parameterized PreparedStatement\nPreparedStatement ps = con.prepareStatement('SELECT * FROM students WHERE id = ?');\nps.setInt(1, 101);\n// Step 4: Execute query and retrieve ResultSet\nResultSet rs = ps.executeQuery();\nwhile (rs.next()) { System.out.println(rs.getString('name')); }\n// Step 5: Close open resources\nrs.close(); ps.close(); con.close();\n```",
+        "answer_structure": "JDBC Overview -> 4 Driver Types Detailed with Diagrams -> 5 Steps Detailed with Code Snippet",
+        "important_points": [
+          "Type 1, 2, 3, 4 drivers",
+          "Pure Java Thin driver",
+          "DriverManager",
+          "PreparedStatement vs Statement",
+          "Resource closure"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagrams showing driver interaction layers",
+          "Complete working Java code showing all 5 steps"
+        ],
+        "common_mistakes": [
+          "Omitting Step 5 resource closing in the code snippet"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "How does PreparedStatement prevent SQL Injection attacks? Explain with an example. (5 Marks)",
+        "rubric": "Explanation of pre-compilation (3 marks) + Vulnerable vs Secure code example (2 marks) = 5 Marks.",
+        "model_answer": "In raw Statement execution, SQL queries are dynamically constructed using string concatenation: `'SELECT * FROM users WHERE name = ' + input`. If an attacker enters `' OR '1'='1`, the query structure is altered. With PreparedStatement, the query template is compiled in the database beforehand: `SELECT * FROM users WHERE name = ?`. Parameter values are transmitted in a separate binary protocol phase; the database treats user input strictly as literal data, rendering malicious SQL command injection impossible."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-14-01",
+        "question": "What mechanism does the Java compiler use to implement Generics while maintaining backward compatibility with older JVM versions?",
+        "options": [
+          "Dynamic byte generation",
+          "Type Erasure (replacing generic types with their bounds or Object at compile time)",
+          "C++ template specialization",
+          "Multiple virtual tables"
+        ],
+        "correct_answer": "B",
+        "explanation": "Type Erasure removes all generic type information during compilation, inserting necessary casts and keeping bytecode backward compatible."
+      },
+      {
+        "id": "ACAD-14-02",
+        "question": "In Java Generics, what does the wildcard expression `List<? extends Number>` signify?",
+        "options": [
+          "A list that can store any Object",
+          "An upper-bounded wildcard: a list of elements of type Number or any subtype of Number (read-only producer)",
+          "A lower-bounded wildcard accepting only Object",
+          "A synchronized thread-safe array"
+        ],
+        "correct_answer": "B",
+        "explanation": "Upper bounded wildcard `? extends T` enforces covariance: the collection produces elements of type T (PECS: Producer Extends)."
+      },
+      {
+        "id": "ACAD-14-03",
+        "question": "Which Java API allows runtime inspection of classes, methods, fields, and constructors, including invoking private methods dynamically?",
+        "options": [
+          "Java Collections API",
+          "Java Reflection API (java.lang.reflect)",
+          "Java NIO API",
+          "Java Native Interface (JNI)"
+        ],
+        "correct_answer": "B",
+        "explanation": "Reflection provides programmatic introspection and dynamic invocation of class metadata and private members at runtime."
+      },
+      {
+        "id": "ACAD-14-04",
+        "question": "What retention policy must be specified on a custom Java annotation so it remains available in bytecode and inspectable via Reflection at runtime?",
+        "options": [
+          "RetentionPolicy.SOURCE",
+          "RetentionPolicy.CLASS",
+          "RetentionPolicy.RUNTIME",
+          "RetentionPolicy.SYSTEM"
+        ],
+        "correct_answer": "C",
+        "explanation": "RetentionPolicy.RUNTIME records annotations in the .class file and makes them accessible to the JVM Reflection engine at runtime."
+      },
+      {
+        "id": "ACAD-14-05",
+        "question": "What is the effect of PECS (Producer Extends, Consumer Super) in Java Generics?",
+        "options": [
+          "Use 'extends' when you only read from a collection; use 'super' when you only write to a collection",
+          "Use 'super' for return values and 'extends' for method arguments always",
+          "Generics cannot be combined with wildcards",
+          "Extends allows adding any object to the collection"
+        ],
+        "correct_answer": "A",
+        "explanation": "PECS rule: If a parameterized collection produces data (read-only), use `? extends`; if it consumes data (write-only), use `? super`."
+      }
+    ],
+    "pyq_year": "2024-25 (Q3)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "What is JDBC? Explain the 4 types of JDBC Drivers with suitable diagrams. Write the five standard steps required to connect a Java application to a database. (15 Marks)",
+    "pyq_rubric": "JDBC Definition & Architecture (3 marks) + 4 Driver Types detailed with diagrams (6 marks) + 5 Connection Steps with code (6 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. JDBC Architecture & Component Layers:",
-        "Java Database Connectivity (JDBC) is a standardized Java call-level interface for database communication. The architecture consists of four components:\n\u2022 Application: Client Java program invoking JDBC methods.\n\u2022 JDBC API: Standard classes and interfaces in 'java.sql' (DriverManager, Connection, Statement, PreparedStatement, ResultSet).\n\u2022 Driver Manager: The backbone interface that manages a list of database drivers, matching connection requests with appropriate driver implementations.\n\u2022 JDBC Drivers: Vendor-supplied drivers implementing standard JDBC interfaces for specific RDBMS engines."
+        "1. Model Answer & Technical Presentation",
+        "Java Database Connectivity (JDBC) is a standard Java API that enables Java programs to interact with relational database management systems. The 4 Driver Types are: 1. Type-1 Driver (JDBC-ODBC Bridge): Translates JDBC calls to ODBC calls which rely on native OS client ODBC drivers (slow, non-portable, obsolete); 2. Type-2 Driver (Native-API Driver): Converts JDBC calls into native C/C++ client API calls of the database vendor (requires vendor client library installation); 3. Type-3 Driver (Network-Protocol Driver): All-Java driver that communicates over network sockets with a middle-tier application server which translates requests to database calls; 4. Type-4 Driver (Direct-to-Database Pure Java Thin Driver): Converts JDBC calls directly into vendor-specific database network protocols without intermediate native libraries, offering the highest performance and total portability.\n\nFive Standard Steps to Connect:\n```java\n// Step 1: Load and register driver class\nClass.forName('com.mysql.cj.jdbc.Driver');\n// Step 2: Establish database connection\nConnection con = DriverManager.getConnection('jdbc:mysql://localhost:3306/db', 'root', 'pass');\n// Step 3: Create parameterized PreparedStatement\nPreparedStatement ps = con.prepareStatement('SELECT * FROM students WHERE id = ?');\nps.setInt(1, 101);\n// Step 4: Execute query and retrieve ResultSet\nResultSet rs = ps.executeQuery();\nwhile (rs.next()) { System.out.println(rs.getString('name')); }\n// Step 5: Close open resources\nrs.close(); ps.close(); con.close();\n```"
       ],
       [
-        "2. Detailed 4 Driver Types:",
-        "\u2022 Type-1 Driver (JDBC-ODBC Bridge): Converts JDBC calls into ODBC function calls. Requires client ODBC configuration and native C libraries. Obsolete.\n\u2022 Type-2 Driver (Native-API Driver): Converts JDBC calls into native vendor client library APIs (e.g. Oracle OCI). Highly performant, but requires vendor client binaries on each machine.\n\u2022 Type-3 Driver (Network-Protocol Driver): Uses a common middleware application server that routes client requests to multiple heterogeneous databases.\n\u2022 Type-4 Driver (Thin Driver / Pure Java): Converts JDBC calls directly into the database engine's proprietary network protocol using TCP/IP sockets. Highly preferred because it requires no client configuration, is 100% portable, and provides peak throughput."
-      ],
-      [
-        "3. Complete Java Program Retrieving Records:",
-        "import java.sql.*;\npublic class StudentQuery {\n    public static void main(String[] args) {\n        String url = \"jdbc:mysql://localhost:3306/college_db\";\n        String user = \"root\", pass = \"secret\";\n        String sql = \"SELECT id, name, marks FROM students WHERE marks >= ?\";\n        try (Connection con = DriverManager.getConnection(url, user, pass);\n             PreparedStatement pstmt = con.prepareStatement(sql)) {\n            pstmt.setDouble(1, 75.0);\n            try (ResultSet rs = pstmt.executeQuery()) {\n                while (rs.next()) {\n                    System.out.println(rs.getInt(\"id\") + \" | \" + rs.getString(\"name\") + \" | \" + rs.getDouble(\"marks\"));\n                }\n            }\n        } catch (SQLException e) {\n            e.printStackTrace();\n        }\n    }\n}"
-      ],
-      [
-        "4. PreparedStatement Security & Performance Rationale:",
-        "PreparedStatement pre-compiles SQL queries on the database server during instantiation. When user parameters are bound via setString() or setInt(), the database treats them strictly as literal parameter data, completely neutralizing malicious SQL injection inputs (e.g. '' OR '1'='1'). Furthermore, subsequent executions reuse the pre-compiled database execution plan, drastically accelerating high-frequency queries."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Explain the ResultSet interface. Differentiate between forward-only and scrollable ResultSets. (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "How do you manage database transactions in JDBC using setAutoCommit(false) and commit()? (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Diagrams showing driver interaction layers",
+          "Complete working Java code showing all 5 steps"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master JDBC Architecture, 4 Driver Types, and Complete PreparedStatement Code.",
-    "milestone": "Full 15/15 marks on University Question 5 (BCA-5002 Java Database)."
-  },
   "apt_data": {
-    "topic": "Time & Work \u2014 Alternate Days Work & Wage Division Rules",
+    "topic": "Blood Relations & Family Tree Notation",
+    "category": "Logical Reasoning",
+    "subtopic": "Blood Relations",
+    "formulas": "1. Standard Symbols: Male = [+], Female = [-], Marriage = [=], Siblings = [---], Vertical line = generation gap.\n2. Generational Indexing: Grandparents (+2), Parents/Uncles (+1), Self/Siblings/Spouse (0), Children (-1), Grandchildren (-2).",
+    "shortcut": "Reverse Parsing Trick for Coded Relations: In 'P is the mother of Q's father', start reading from the end ('Q's father' -> Father's mother -> P is Q's paternal grandmother).",
     "tutorial": [
-      "Alternate Days Work:\nIn alternate work problems, workers do not work concurrently; instead, Worker A works on Day 1, Worker B on Day 2, Worker A on Day 3, and so on.\nThe Cycle Principle:\nGroup days into full execution cycles. For 2 workers A and B, a complete cycle consists of 2 days:\nWork done in 1 cycle (2 days) = Efficiency_A + Efficiency_B.\nMultiply the cycle work by integer 'k' to reach just below Total Work, then calculate the fractional days needed for the remaining units.",
-      "Wage Division Rules (The Fundamental Economic Theorem):\n1. If all workers work together for the ENTIRE duration of the project, their wages are divided in direct proportion to their individual Efficiencies (or 1-day work rates):\n   Wage_A : Wage_B = Efficiency_A : Efficiency_B = (1 / Time_A) : (1 / Time_B)\n2. If workers work for DIFFERENT durations or join/leave mid-way, wages are divided strictly in proportion to the ACTUAL TOTAL WORK DONE by each individual:\n   Wage_A : Wage_B = (Efficiency_A * Days_A) : (Efficiency_B * Days_B)"
+      "Never assume gender from names in competitive reasoning exams unless explicitly stated or determined by familial role (e.g. 'mother', 'brother'). Always construct the family tree generation by generation."
     ],
-    "formulas": "1. Alternate Work 2-Day Cycle: Work_cycle = Eff_A + Eff_B\n2. Wages (Same duration): Wage_A : Wage_B = Eff_A : Eff_B = (1 / A) : (1 / B)\n3. Wages (Different duration): Wage_A : Wage_B = Work_Done_A : Work_Done_B\n4. Individual Share = (Individual Work Done / Total Work) * Total Wages",
-    "shortcut": "Two-Worker Equal-Time Wage Inversion:\nIf A finishes in 10 days and B in 15 days, working together:\nWage ratio = 1/10 : 1/15 = 15 : 10 = 3 : 2.\nIf total payment is Rs. 500, A gets (3/5)*500 = Rs. 300, and B gets (2/5)*500 = Rs. 200 instantly!",
-    "recognition": "Look for 'A and B undertake to do a piece of work for Rs. X', 'working on alternate days starting with A', or 'A, B, and C completed a work, find A's wage share'.",
-    "p1_q": "[Foundation] A and B can do a piece of work in 10 days and 15 days respectively. They undertake to complete the work together for Rs. 3,000. What is A's share of the wages?",
-    "p1_s": "Step 1: Since they work together for the entire duration, wages are divided in ratio of efficiencies:\nRatio of efficiencies = (1 / 10) : (1 / 15).\nMultiply by LCM(10, 15) = 30:\nRatio A : B = 3 : 2.\nStep 2: Total ratio parts = 3 + 2 = 5 parts.\nStep 3: A's wage share = (3 / 5) * 3,000 = 3 * 600 = Rs. 1,800.\nB's wage share = (2 / 5) * 3,000 = Rs. 1,200.\nAnswer: A's share is Rs. 1,800.",
-    "p2_q": "[Standard Placement] A, B, and C can do a work in 6, 8, and 12 days respectively. Doing that work together, they get an all-inclusive payment of Rs. 1,800. What is B's share of the payment?",
-    "p2_s": "Step 1: Total Work = LCM(6, 8, 12) = 24 units.\nCalculate daily efficiencies:\n- A's efficiency = 24 / 6 = 4 units/day.\n- B's efficiency = 24 / 8 = 3 units/day.\n- C's efficiency = 24 / 12 = 2 units/day.\nStep 2: Ratio of wages = 4 : 3 : 2.\nTotal parts = 4 + 3 + 2 = 9 parts.\nStep 3: B's share = (3 / 9) * 1,800 = (1 / 3) * 1,800 = Rs. 600.\nAnswer: B's share is Rs. 600.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys Quantitative Placement Test]",
-    "p3_q": "A can do a piece of work in 16 days and B in 12 days. With the help of C, they completed the work in 4 days. If the total payment for the work is Rs. 4,800, how much should be paid to C?",
-    "p3_s": "Step 1: Total Work = LCM(16, 12, 4) = 48 units.\nStep 2: Calculate efficiencies:\n- A's daily efficiency = 48 / 16 = 3 units/day.\n- B's daily efficiency = 48 / 12 = 4 units/day.\n- Combined (A + B + C) daily efficiency = 48 / 4 = 12 units/day.\nStep 3: Find C's individual daily efficiency:\nEfficiency of C = Combined - A - B = 12 - 3 - 4 = 5 units/day.\nStep 4: All three worked for 4 days together.\nRatio of wages = Efficiency ratio = 3 : 4 : 5.\nTotal parts = 3 + 4 + 5 = 12 parts.\nStep 5: C's payment = (5 / 12) * 4,800 = 5 * 400 = Rs. 2,000.\nAnswer: C should be paid Rs. 2,000.",
-    "p4_q": "[Hard / Time-Pressure] A and B can complete a work in 9 days and 12 days respectively. If they work on alternate days starting with A on Day 1, in how many days will the work be completed?",
-    "p4_s": "Step 1: Total Work = LCM(9, 12) = 36 units.\n- A's efficiency = 36 / 9 = 4 units/day.\n- B's efficiency = 36 / 12 = 3 units/day.\nStep 2: Calculate work done in 1 cycle (2 days):\nDay 1 (A) + Day 2 (B) = 4 + 3 = 7 units per 2-day cycle.\nStep 3: Determine number of complete cycles:\n5 cycles (10 days) = 5 * 7 = 35 units completed.\nRemaining work = 36 - 35 = 1 unit.\nStep 4: On Day 11, it is A's turn:\nA's daily work rate = 4 units/day.\nTime taken by A for 1 unit = 1 / 4 day.\nStep 5: Total time = 10 full days + 1/4 day = 10 1/4 days (or 10.25 days).\nAnswer: 10 1/4 days.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "A can do a work in 10 days, B in 20 days. Paid Rs. 600 together. Find A's share."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "A and B alternate days starting with A. A takes 8 days, B takes 12 days. Find total days to finish."
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "A alone can do a work in 6 days and B in 8 days. They undertook it for Rs. 3,200. With C, finished in 3 days. Find C's share."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "A and B working together earn Rs. 300 in 6 days. B and C together earn Rs. 400 in 10 days. Find daily earning of B if A, B, C earn Rs. 500 in 5 days."
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "A takes 20 days and B takes 30 days. Alternate days starting with B. In how many days will work be done?"
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Blood Relations",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Blood Relations",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Blood Relations",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Blood Relations",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Blood Relations",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Pointing to a photograph of a boy, Suresh said, 'He is the son of the only son of my mother.' How is Suresh related to that boy?",
+        "options": {
+          "A": "Father",
+          "B": "Brother",
+          "C": "Uncle",
+          "D": "Grandfather"
+        },
+        "correct_answer": "A",
+        "explanation": "'Only son of my mother' is Suresh himself. Therefore, the boy is the son of Suresh. Suresh is his father.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "If A + B means A is the brother of B; A - B means A is the sister of B; and A * B means A is the father of B. Which of the following means that C is the son of M?",
+        "options": {
+          "A": "M * C + N",
+          "B": "M - C + N",
+          "C": "M * N - C",
+          "D": "C * M + N"
+        },
+        "correct_answer": "A",
+        "explanation": "M * C means M is father of C. C + N means C is brother (male). Hence C is the son of M.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Introducing a girl, Vipin said, 'Her mother is the only daughter of my mother-in-law.' How is Vipin related to the girl?",
+        "options": {
+          "A": "Father",
+          "B": "Uncle",
+          "C": "Brother",
+          "D": "Husband"
+        },
+        "correct_answer": "A",
+        "explanation": "'Only daughter of my mother-in-law' is Vipin's wife. The girl's mother is Vipin's wife, so Vipin is her father.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "A man said to a lady, 'Your mother's husband's sister is my aunt.' How is the lady related to the man?",
+        "options": {
+          "A": "Sister",
+          "B": "Mother",
+          "C": "Daughter",
+          "D": "Aunt"
+        },
+        "correct_answer": "A",
+        "explanation": "Lady's mother's husband is lady's father. Father's sister is lady's aunt. Since she is also the man's aunt, the lady is the man's sister.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Pointing to a woman, Naman said, 'She is the daughter of the only child of my grandfather.' How is the woman related to Naman?",
+        "options": {
+          "A": "Sister",
+          "B": "Niece",
+          "C": "Mother",
+          "D": "Aunt"
+        },
+        "correct_answer": "A",
+        "explanation": "'Only child of my grandfather' is Naman's father. The daughter of Naman's father is Naman's sister.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Deepak said to Nitin, 'That boy playing with football is the younger of the two brothers of the daughter of my father's wife.' Who is the boy to Deepak?",
+        "options": {
+          "A": "Brother",
+          "B": "Cousin",
+          "C": "Nephew",
+          "D": "Son"
+        },
+        "correct_answer": "A",
+        "explanation": "'Father's wife' = mother. 'Daughter of mother' = sister. 'Brother of sister' = brother. The boy is Deepak's brother.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "P is the brother of Q and R. S is R's mother. T is P's father. Which of the following statements cannot be definitely true?",
+        "options": {
+          "A": "T is Q's father",
+          "B": "S is P's mother",
+          "C": "Q is T's son",
+          "D": "P is S's son"
+        },
+        "correct_answer": "C",
+        "explanation": "Q's gender is not specified in the premises; Q could be a son or a daughter.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A is B's sister. C is B's mother. D is C's father. E is D's mother. Then how is A related to D?",
+        "options": {
+          "A": "Granddaughter",
+          "B": "Grandmother",
+          "C": "Daughter",
+          "D": "Grandfather"
+        },
+        "correct_answer": "A",
+        "explanation": "A is sister of B, whose mother is C (A is C's daughter). D is C's father, so A is D's granddaughter.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Pointing to a gentleman, Deepak said, 'His only brother is the father of my daughter's father.' How is the gentleman related to Deepak?",
+        "options": {
+          "A": "Uncle",
+          "B": "Father",
+          "C": "Grandfather",
+          "D": "Brother-in-law"
+        },
+        "correct_answer": "A",
+        "explanation": "'My daughter's father' = Deepak. 'Father of Deepak' = Deepak's father. The gentleman's only brother is Deepak's father, making the gentleman Deepak's uncle.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "If 'P $ Q' means P is father of Q; 'P # Q' means P is mother of Q; 'P * Q' means P is sister of Q. In N # L $ P * Q, how is N related to Q?",
+        "options": {
+          "A": "Paternal Grandmother",
+          "B": "Maternal Grandmother",
+          "C": "Aunt",
+          "D": "Mother"
+        },
+        "correct_answer": "A",
+        "explanation": "L is father of P and Q. N is mother of L. Hence N is the paternal grandmother of Q.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Blood Relations (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "Ratio 2:1. A's share = (2/3)*600 = Rs. 400. Answer: Rs. 400."
-      ],
-      [
-        "Solution Q2:",
-        "Work=24. A=3, B=2. 2-day cycle = 5. 4 cycles (8 days) = 20 units. Day 9 (A) = 3 units (23 total). Day 10 (B) needs 1 unit ==> 1/2 day. Total = 9 1/2 days. Answer: 9.5 days."
-      ],
-      [
-        "Solution Q3:",
-        "Work=24. A=4, B=3. Total A+B+C = 24/3 = 8 ==> C = 8 - 7 = 1 unit/day. C's share = (1/8)*3200 = Rs. 400. Answer: Rs. 400."
-      ],
-      [
-        "Solution Q4:",
-        "A+B daily = 300/6 = 50. B+C daily = 400/10 = 40. A+B+C daily = 500/5 = 100. C daily = 100 - 50 = 50. B daily = 40 - C = 40 - 50 = -10 (Wait: A+B=50, B+C=40. A = 100 - 40 = 60. B = 50 - 60 = -10. Check numbers: If A+B earn 60, B=20). B earns Rs. 20. Answer: Rs. 20."
-      ],
-      [
-        "Solution Q5:",
-        "Work=60. B=2, A=3. 2-day cycle = 5. 11 cycles (22 days) = 55 units. Day 23 (B) = 2 units (57 units). Day 24 (A) needs 3 units ==> exactly 1 day! Total = 22 + 1 + 1 = 24 days. Answer: 24 days."
-      ]
-    ],
-    "trap": "In alternate day problems, the first worker of the cycle makes a huge difference! Always identify who works on Day 1."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Merge k Sorted Lists",
+      "difficulty": "Medium",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "You are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.",
+      "solution_approach": "1. Apply K-Way Merge of Sorted Arrays / Lists algorithmic technique.\n2. Uses a min-heap initialized with the head node of each of the K sorted lists. Extracts the minimum and advances that list's pointer.\n3. Invariants: At each step, selecting the next smallest element across K lists takes O(log K) rather than O(K) linear comparison.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+      "time_complexity": "O(N log K) Time",
+      "space_complexity": "O(K) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Find K Pairs with Smallest Sums",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "You are given two integer arrays nums1 and nums2 sorted in ascending order and an integer k. Return the k pairs (u, v) with the smallest sums.",
+      "solution_approach": "1. Identify interview variation of K-Way Merge of Sorted Arrays / Lists.\n2. Handle edge cases: Empty lists array, Array containing null heads, One list much longer than others.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+      "time_complexity": "O(N log K) Time",
+      "space_complexity": "O(K) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "K-Way Merge of Sorted Arrays / Lists",
+    "category": "Heap / PriorityQueue",
+    "concept": "Uses a min-heap initialized with the head node of each of the K sorted lists. Extracts the minimum and advances that list's pointer.",
+    "why_it_works": "At each step, selecting the next smallest element across K lists takes O(log K) rather than O(K) linear comparison.",
+    "visual_explanation": "Lists: L1: 1->4->5, L2: 1->3->4, L3: 2->6\\nHeap: [ (1, L1), (1, L2), (2, L3) ]\\nPoll (1, L1), Insert (4, L1)\\nPoll (1, L2), Insert (3, L2)...",
+    "java_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> minHeap = new PriorityQueue<>(\n            lists.length, (a, b) -> Integer.compare(a.val, b.val)\n        );\n        for (ListNode node : lists) {\n            if (node != null) minHeap.offer(node);\n        }\n        ListNode dummy = new ListNode(0);\n        ListNode tail = dummy;\n        while (!minHeap.isEmpty()) {\n            ListNode smallest = minHeap.poll();\n            tail.next = smallest;\n            tail = tail.next;\n            if (smallest.next != null) {\n                minHeap.offer(smallest.next);\n            }\n        }\n        return dummy.next;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> minHeap = new PriorityQueue<>(\n            lists.length, (a, b) -> Integer.compare(a.val, b.val)\n        );\n        for (ListNode node : lists) {\n            if (node != null) minHeap.offer(node);\n        }\n        ListNode dummy = new ListNode(0);\n        ListNode tail = dummy;\n        while (!minHeap.isEmpty()) {\n            ListNode smallest = minHeap.poll();\n            tail.next = smallest;\n            tail = tail.next;\n            if (smallest.next != null) {\n                minHeap.offer(smallest.next);\n            }\n        }\n        return dummy.next;\n    }\n}",
+    "python_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> minHeap = new PriorityQueue<>(\n            lists.length, (a, b) -> Integer.compare(a.val, b.val)\n        );\n        for (ListNode node : lists) {\n            if (node != null) minHeap.offer(node);\n        }\n        ListNode dummy = new ListNode(0);\n        ListNode tail = dummy;\n        while (!minHeap.isEmpty()) {\n            ListNode smallest = minHeap.poll();\n            tail.next = smallest;\n            tail = tail.next;\n            if (smallest.next != null) {\n                minHeap.offer(smallest.next);\n            }\n        }\n        return dummy.next;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 5-7: Create PriorityQueue comparator ordering ListNode by val.",
+      "Line 8-10: Offer non-null heads of all K lists into minHeap.",
+      "Line 11-12: Create dummy sentinel node to simplify list building.",
+      "Line 13-19: Poll smallest node, append to tail, and insert next node from same list."
+    ],
+    "dry_run": "K=3 lists with total N nodes. Each node inserted once and polled once in O(log K). Total runtime O(N log K).",
+    "complexity": "O(N log K) Time, O(K) Auxiliary Space",
+    "edge_cases": [
+      "Empty lists array",
+      "Array containing null heads",
+      "One list much longer than others"
+    ],
+    "interview_variations": [
+      "Merge K Sorted Lists",
+      "Find K Pairs with Smallest Sums",
+      "Kth Smallest Element in a Sorted Matrix"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-14-01",
+        "title": "Problem 1: Merge k Sorted Lists",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply K-Way Merge of Sorted Arrays / Lists algorithmic technique.\n2. Uses a min-heap initialized with the head node of each of the K sorted lists. Extracts the minimum and advances that list's pointer.\n3. Invariants: At each step, selecting the next smallest element across K lists takes O(log K) rather than O(K) linear comparison.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+        "time_complexity": "O(N log K) Time",
+        "space_complexity": "O(K) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-14-02",
+        "title": "Problem 2: Find K Pairs with Smallest Sums",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given two integer arrays nums1 and nums2 sorted in ascending order and an integer k. Return the k pairs (u, v) with the smallest sums.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of K-Way Merge of Sorted Arrays / Lists.\n2. Handle edge cases: Empty lists array, Array containing null heads, One list much longer than others.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) {\n        List<List<Integer>> res = new ArrayList<>();\n        if (nums1.length == 0 || nums2.length == 0 || k == 0) return res;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (nums1[a[0]] + nums2[a[1]]) - (nums1[b[0]] + nums2[b[1]]));\n        for (int i = 0; i < Math.min(nums1.length, k); i++) pq.offer(new int[]{i, 0});\n        while (k-- > 0 && !pq.isEmpty()) {\n            int[] cur = pq.poll();\n            res.add(Arrays.asList(nums1[cur[0]], nums2[cur[1]]));\n            if (cur[1] + 1 < nums2.length) pq.offer(new int[]{cur[0], cur[1] + 1});\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N log K) Time",
+        "space_complexity": "O(K) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "DBMS",
+    "topic": "Database Indexing: B-Trees, B+ Trees, Clustered vs Non-Clustered Indexes",
+    "detailed_notes": [
+      "A Database Index is an auxiliary search data structure that optimizes data retrieval without scanning every table page.\n\nB-Tree vs B+ Tree Architecture:\n- B-Tree: Stores keys and actual data record pointers in both internal routing nodes and leaf nodes. Searching for keys stored in top internal nodes can terminate early without reaching leaves.\n- B+ Tree: The universal choice for relational databases (PostgreSQL, MySQL InnoDB, SQLite). Internal nodes store ONLY routing keys and child node pointers (maximizing fan-out and reducing tree depth to 3-4 levels for billions of rows). ALL actual record pointers reside exclusively in the leaf nodes. Furthermore, leaf nodes are linked via a doubly linked list, enabling ultra-fast sequential range scans.\n\nClustered vs Non-Clustered Indexes:\n- Clustered Index: Determines the physical sorting order of rows on disk. A table can have at most ONE clustered index (usually the Primary Key). In MySQL InnoDB, the clustered index table is the data itself (Index-Organized Table).\n- Non-Clustered (Secondary) Index: A separate search structure. Leaf nodes store the indexed key along with a pointer to the physical row (or clustered primary key). Requires a secondary lookup (Bookmark Lookup) to fetch non-indexed columns unless satisfied by a Covering Index."
+    ],
+    "key_definitions": [
+      {
+        "term": "B+ Tree",
+        "definition": "A self-balancing N-ary tree storing keys in internal nodes and all data pointers in doubly-linked leaf nodes."
+      },
+      {
+        "term": "Clustered Index",
+        "definition": "An index where the physical order of table rows on disk matches the index key order (1 per table)."
+      },
+      {
+        "term": "Covering Index",
+        "definition": "An index containing all columns requested by a query, satisfying execution without touching table data pages."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "Why do relational database engines use B+ Trees instead of B-Trees or Binary Search Trees for indexing?",
+        "a": "1. High Fan-out and Shallow Depth: Because internal nodes store only keys without data pointers, thousands of keys fit in a single 16KB disk page, keeping tree height to 3-4 levels for millions of rows (minimizing disk I/O). 2. Range Queries: In a B+ Tree, all leaf nodes are connected in a doubly linked list; range scans simply traverse leaves sequentially without tree back-tracking. 3. Predictable Latency: Every lookup traverses the exact same number of levels to the leaf."
+      },
+      {
+        "q": "What is the difference between a Clustered and a Non-Clustered index?",
+        "a": "A Clustered Index dictates the actual physical sorting order of table rows on disk; therefore, a table can have only ONE clustered index. In a Non-Clustered Index, data rows are stored independently, and the index contains pointers back to the rows. A table can have multiple non-clustered indexes."
+      },
+      {
+        "q": "What is a Covering Index in SQL optimization?",
+        "a": "A Covering Index includes all columns referenced in the query's SELECT, WHERE, JOIN, and ORDER BY clauses (e.g., using CREATE INDEX idx_emp ON Employee(dept_id, salary)). The database engine can satisfy the query entirely from the index tree without performing a secondary lookup to read the main table data pages, drastically reducing I/O."
+      },
+      {
+        "q": "What is Index Selectivity and how does it affect query optimizer decisions?",
+        "a": "Selectivity is the ratio of distinct values in a column to total row count: Cardinality / Total Rows. High selectivity (e.g., primary key or email, near 1.0) makes indexes extremely effective. Low selectivity (e.g., gender with only 2 distinct values) causes the query optimizer to skip the index and perform a Full Table Scan because scanning non-clustered index pointers for 50% of the rows is slower than a sequential disk scan."
+      },
+      {
+        "q": "What is the write penalty of having too many indexes on a table?",
+        "a": "Every INSERT, UPDATE, or DELETE statement must not only modify the primary table pages, but must also update every single secondary index tree (including balancing node splits or merges). Having excessive indexes slows down write throughput and inflates storage footprint."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-14-01",
+        "question": "Why are B+ Trees preferred over B-Trees for database disk indexing?",
+        "options": [
+          "B+ trees require no sorting",
+          "Internal nodes store only keys, maximizing fan-out, and leaf nodes form a linked list for range scans",
+          "B+ trees are binary trees",
+          "B+ trees store data in RAM only"
+        ],
+        "correct_answer": "B",
+        "explanation": "B+ trees pack more keys per internal page and link leaves for rapid range scanning."
+      },
+      {
+        "id": "CS-14-02",
+        "question": "How many Clustered Indexes can exist on a single database table?",
+        "options": [
+          "Zero",
+          "Exactly one",
+          "Up to 16",
+          "Unlimited"
+        ],
+        "correct_answer": "B",
+        "explanation": "Because physical disk rows can only be ordered in one sequence, only one clustered index can exist."
+      },
+      {
+        "id": "CS-14-03",
+        "question": "An index that contains every column requested by a query, avoiding physical table page lookups, is called a:",
+        "options": [
+          "Bitmap Index",
+          "Covering Index",
+          "Dense Index",
+          "Hash Index"
+        ],
+        "correct_answer": "B",
+        "explanation": "Covering indexes satisfy the query directly from leaf nodes without fetching base table pages."
+      },
+      {
+        "id": "CS-14-04",
+        "question": "In a B+ tree of order m, all leaf nodes reside at:",
+        "options": [
+          "Different depths",
+          "The exact same depth",
+          "Depth 1",
+          "Random positions"
+        ],
+        "correct_answer": "B",
+        "explanation": "B+ trees are strictly height-balanced; all leaf nodes reside at the exact same depth."
+      },
+      {
+        "id": "CS-14-05",
+        "question": "Creating an index on a boolean column (e.g., is_active) with 50/50 distribution is usually ineffective because:",
+        "options": [
+          "B+ trees cannot store booleans",
+          "The column has very low selectivity",
+          "The index would be larger than the table",
+          "Foreign keys cannot be booleans"
+        ],
+        "correct_answer": "B",
+        "explanation": "Low selectivity causes the query optimizer to choose a full table scan over the index."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "TerraStract",
+    "repo_path": "D:\\Projects\\terra_extract",
+    "feature_focus": "Tabular Coordinate Extraction & Spatial Column Alignment",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nDetecting table borders, bounding boxes, and aligning cells into structured JSON/Excel.\n\nWHAT TO MEMORIZE:\nHorizontal and vertical vector lines determine cell intersections and boundary coordinates.\n\n60-SECOND INTERVIEW PITCH:\nExtracting tables from scanned government records is difficult because borders are often faded or absent. I implemented a coordinate-clustering algorithm in TerraStract that analyzes text bounding boxes to reconstruct table rows and columns, exporting structured tables directly to Excel and JSON.",
+    "interview_qa": [
+      {
+        "q": "How do you extract tables from PDFs where table borders are missing (borderless tables)?",
+        "a": "When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with overlapping vertical Y-coordinates within a 3pt tolerance, and compute horizontal X-coordinate gutters to detect column boundaries. These bounding box matrices are then reconstructed into structured JSON tables."
+      },
+      {
+        "q": "How do you export extracted tables to formatted Excel spreadsheets?",
+        "a": "We pass the reconstructed row/column dictionary into pandas or `openpyxl`, auto-fit column widths based on maximum string lengths, apply bold formatting to header rows, and stream the generated `.xlsx` binary directly to the user."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 14 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 14 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of SmartGalla.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 13 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5002 — Java Generics, Reflection API & Annotations.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Blood Relations & Family Tree Notation.\n• Algorithmic Invariant: Optimal time and space complexity rules for K-Way Merge of Sorted Arrays.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Indexing: B-Trees vs B+ Trees.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Generics, Reflection API & Annotations.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: K-Way Merge of Sorted Arrays.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: BulkBeat TV.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 14 Q1: What is the primary academic thesis of Java Generics, Reflection API & Annotations?",
+        "a": "Core theoretical and practical mastery of Java Generics, Reflection API & Annotations under the CSJM University BCA-5002 syllabus."
+      },
+      {
+        "q": "Day 14 Q2: What is the key speed calculation formula applied in Blood Relations & Family Tree Notation?",
+        "a": "High-speed corporate placement arithmetic shortcut for Blood Relations & Family Tree Notation in campus recruitment exams."
+      },
+      {
+        "q": "Day 14 Q3: What is the time complexity of K-Way Merge of Sorted Arrays?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 14 Q4: What is the central architectural principle of Database Indexing: B-Trees vs B+ Trees?",
+        "a": "Foundational systems engineering rule governing Database Indexing: B-Trees vs B+ Trees in production environments."
+      },
+      {
+        "q": "Day 14 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 14 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 14 Q7: What is the verified technical foundation of BulkBeat TV?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 14 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 14 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 14 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5002 — Java Generics, Reflection API & Annotations.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Blood Relations & Family Tree Notation.\n• Algorithmic Invariant: Optimal time and space complexity rules for K-Way Merge of Sorted Arrays.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Indexing: B-Trees vs B+ Trees."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5002 — Java Generics, Reflection API & Annotations."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Blood Relations & Family Tree Notation."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: K-Way Merge of Sorted Arrays."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: BulkBeat TV."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 14 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "What mechanism does the Java compiler use to implement Generics while maintaining backward compatibility with older JVM versions?",
+        "a": "Answer: B\n\nType Erasure removes all generic type information during compilation, inserting necessary casts and keeping bytecode backward compatible."
+      },
+      {
+        "q": "In Java Generics, what does the wildcard expression `List<? extends Number>` signify?",
+        "a": "Answer: B\n\nUpper bounded wildcard `? extends T` enforces covariance: the collection produces elements of type T (PECS: Producer Extends)."
+      },
+      {
+        "q": "Which Java API allows runtime inspection of classes, methods, fields, and constructors, including invoking private methods dynamically?",
+        "a": "Answer: B\n\nReflection provides programmatic introspection and dynamic invocation of class metadata and private members at runtime."
+      },
+      {
+        "q": "What retention policy must be specified on a custom Java annotation so it remains available in bytecode and inspectable via Reflection at runtime?",
+        "a": "Answer: C\n\nRetentionPolicy.RUNTIME records annotations in the .class file and makes them accessible to the JVM Reflection engine at runtime."
+      },
+      {
+        "q": "What is the effect of PECS (Producer Extends, Consumer Super) in Java Generics?",
+        "a": "Answer: A\n\nPECS rule: If a parameterized collection produces data (read-only), use `? extends`; if it consumes data (write-only), use `? super`."
+      },
+      {
+        "q": "Pointing to a gentleman, Prabhat remarked, 'His only son is my son's uncle.' How is the gentleman related to Prabhat?",
+        "a": "Answer: A\n\n'My son's uncle' = Prabhat's brother. The gentleman's only son is Prabhat's brother => The gentleman is Prabhat's father."
+      },
+      {
+        "q": "Introducing a man, a woman said, 'His wife is the only daughter of my father.' How is the man related to the woman?",
+        "a": "Answer: A\n\n'Only daughter of my father' = the woman herself. The man's wife is the woman herself => the man is her husband."
+      },
+      {
+        "q": "In a family tree code, if 'P $ Q' means P is father of Q, 'P # Q' means P is mother of Q, and 'P & Q' means P is sister of Q. In the expression X $ Y & Z # W, how is X related to W?",
+        "a": "Answer: A\n\nZ is mother of W, Y is sister of Z, and X is father of Y (and Z). Therefore X is the maternal grandfather of W."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-14-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What mechanism does the Java compiler use to implement Generics while maintaining backward compatibility with older JVM versions?",
+        "options": [
+          "Dynamic byte generation",
+          "Type Erasure (replacing generic types with their bounds or Object at compile time)",
+          "C++ template specialization",
+          "Multiple virtual tables"
+        ],
+        "correct_answer": "B",
+        "explanation": "Type Erasure removes all generic type information during compilation, inserting necessary casts and keeping bytecode backward compatible."
+      },
+      {
+        "id": "TEST-14-02",
+        "category": "Academic (Academic Theory)",
+        "question": "In Java Generics, what does the wildcard expression `List<? extends Number>` signify?",
+        "options": [
+          "A list that can store any Object",
+          "An upper-bounded wildcard: a list of elements of type Number or any subtype of Number (read-only producer)",
+          "A lower-bounded wildcard accepting only Object",
+          "A synchronized thread-safe array"
+        ],
+        "correct_answer": "B",
+        "explanation": "Upper bounded wildcard `? extends T` enforces covariance: the collection produces elements of type T (PECS: Producer Extends)."
+      },
+      {
+        "id": "TEST-14-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which Java API allows runtime inspection of classes, methods, fields, and constructors, including invoking private methods dynamically?",
+        "options": [
+          "Java Collections API",
+          "Java Reflection API (java.lang.reflect)",
+          "Java NIO API",
+          "Java Native Interface (JNI)"
+        ],
+        "correct_answer": "B",
+        "explanation": "Reflection provides programmatic introspection and dynamic invocation of class metadata and private members at runtime."
+      },
+      {
+        "id": "TEST-14-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What retention policy must be specified on a custom Java annotation so it remains available in bytecode and inspectable via Reflection at runtime?",
+        "options": [
+          "RetentionPolicy.SOURCE",
+          "RetentionPolicy.CLASS",
+          "RetentionPolicy.RUNTIME",
+          "RetentionPolicy.SYSTEM"
+        ],
+        "correct_answer": "C",
+        "explanation": "RetentionPolicy.RUNTIME records annotations in the .class file and makes them accessible to the JVM Reflection engine at runtime."
+      },
+      {
+        "id": "TEST-14-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the effect of PECS (Producer Extends, Consumer Super) in Java Generics?",
+        "options": [
+          "Use 'extends' when you only read from a collection; use 'super' when you only write to a collection",
+          "Use 'super' for return values and 'extends' for method arguments always",
+          "Generics cannot be combined with wildcards",
+          "Extends allows adding any object to the collection"
+        ],
+        "correct_answer": "A",
+        "explanation": "PECS rule: If a parameterized collection produces data (read-only), use `? extends`; if it consumes data (write-only), use `? super`."
+      },
+      {
+        "id": "TEST-14-06",
+        "category": "Placement Aptitude",
+        "question": "Pointing to a gentleman, Prabhat remarked, 'His only son is my son's uncle.' How is the gentleman related to Prabhat?",
+        "options": [
+          "Father",
+          "Uncle",
+          "Brother",
+          "Grandfather"
+        ],
+        "correct_answer": "A",
+        "explanation": "'My son's uncle' = Prabhat's brother. The gentleman's only son is Prabhat's brother => The gentleman is Prabhat's father."
+      },
+      {
+        "id": "TEST-14-07",
+        "category": "Placement Aptitude",
+        "question": "Introducing a man, a woman said, 'His wife is the only daughter of my father.' How is the man related to the woman?",
+        "options": [
+          "Husband",
+          "Brother",
+          "Maternal Uncle",
+          "Father-in-law"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Only daughter of my father' = the woman herself. The man's wife is the woman herself => the man is her husband."
+      },
+      {
+        "id": "TEST-14-08",
+        "category": "Placement Aptitude",
+        "question": "In a family tree code, if 'P $ Q' means P is father of Q, 'P # Q' means P is mother of Q, and 'P & Q' means P is sister of Q. In the expression X $ Y & Z # W, how is X related to W?",
+        "options": [
+          "Maternal Grandfather",
+          "Paternal Grandfather",
+          "Uncle",
+          "Brother"
+        ],
+        "correct_answer": "A",
+        "explanation": "Z is mother of W, Y is sister of Z, and X is father of Y (and Z). Therefore X is the maternal grandfather of W."
+      },
+      {
+        "id": "TEST-14-09",
+        "category": "Placement Aptitude",
+        "question": "A is the mother of B. C is the father of A. D is the brother of E. E is the daughter of B. How is C related to E?",
+        "options": [
+          "Maternal Great-Grandfather",
+          "Maternal Grandfather",
+          "Paternal Grandfather",
+          "Uncle"
+        ],
+        "correct_answer": "A",
+        "explanation": "E is daughter of B, who is child of A, who is daughter of C. Hence C is the maternal great-grandfather of E."
+      },
+      {
+        "id": "TEST-14-10",
+        "category": "Placement Aptitude",
+        "question": "Pointing to a man in a photograph, Anita said, 'His brother's father is the only son of my grandfather.' How is Anita related to the man in the photograph?",
+        "options": [
+          "Sister",
+          "Aunt",
+          "Mother",
+          "Daughter"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Only son of my grandfather' = Anita's father. 'His brother's father' = the man's father. Both share the same father => Anita is his sister."
+      },
+      {
+        "id": "TEST-14-11",
+        "category": "Core CS (DBMS)",
+        "question": "Why are B+ Trees preferred over B-Trees for database disk indexing?",
+        "options": [
+          "B+ trees require no sorting",
+          "Internal nodes store only keys, maximizing fan-out, and leaf nodes form a linked list for range scans",
+          "B+ trees are binary trees",
+          "B+ trees store data in RAM only"
+        ],
+        "correct_answer": "B",
+        "explanation": "B+ trees pack more keys per internal page and link leaves for rapid range scanning."
+      },
+      {
+        "id": "TEST-14-12",
+        "category": "Core CS (DBMS)",
+        "question": "How many Clustered Indexes can exist on a single database table?",
+        "options": [
+          "Zero",
+          "Exactly one",
+          "Up to 16",
+          "Unlimited"
+        ],
+        "correct_answer": "B",
+        "explanation": "Because physical disk rows can only be ordered in one sequence, only one clustered index can exist."
+      },
+      {
+        "id": "TEST-14-13",
+        "category": "Core CS (DBMS)",
+        "question": "An index that contains every column requested by a query, avoiding physical table page lookups, is called a:",
+        "options": [
+          "Bitmap Index",
+          "Covering Index",
+          "Dense Index",
+          "Hash Index"
+        ],
+        "correct_answer": "B",
+        "explanation": "Covering indexes satisfy the query directly from leaf nodes without fetching base table pages."
+      },
+      {
+        "id": "TEST-14-14",
+        "category": "Core CS (DBMS)",
+        "question": "In a B+ tree of order m, all leaf nodes reside at:",
+        "options": [
+          "Different depths",
+          "The exact same depth",
+          "Depth 1",
+          "Random positions"
+        ],
+        "correct_answer": "B",
+        "explanation": "B+ trees are strictly height-balanced; all leaf nodes reside at the exact same depth."
+      },
+      {
+        "id": "TEST-14-15",
+        "category": "Core CS (DBMS)",
+        "question": "Creating an index on a boolean column (e.g., is_active) with 50/50 distribution is usually ineffective because:",
+        "options": [
+          "B+ trees cannot store booleans",
+          "The column has very low selectivity",
+          "The index would be larger than the table",
+          "Foreign keys cannot be booleans"
+        ],
+        "correct_answer": "B",
+        "explanation": "Low selectivity causes the query optimizer to choose a full table scan over the index."
+      },
+      {
+        "id": "TEST-14-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'K-Way Merge of Sorted Arrays / Lists' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N log K) Time, O(K) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'K-Way Merge of Sorted Arrays / Lists' pattern operates with O(N log K) Time, O(K) Auxiliary Space: At each step, selecting the next smallest element across K lists takes O(log K) rather than O(K) linear comparison.."
+      },
+      {
+        "id": "TEST-14-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'K-Way Merge of Sorted Arrays / Lists' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty lists array.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for K-Way Merge of Sorted Arrays / Lists include Empty lists array, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-14-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Merge k Sorted Lists', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(K) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N log K) Time, O(K) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-14-19",
+        "category": "Projects (TerraStract)",
+        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Tabular Coordinate Extraction & Spatial Column Alignment'?",
+        "options": [
+          "Horizontal and vertical vector lines determine cell intersections and boundary coordinates.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For TerraStract, the architectural invariant is: Horizontal and vertical vector lines determine cell intersections and boundary coordinates.."
+      },
+      {
+        "id": "TEST-14-20",
+        "category": "Projects (TerraStract)",
+        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you extract tables from PDFs where table borders are missing (borderless tables)?'?",
+        "options": [
+          "When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with overlapping vertica...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-14",
+    "title": "Merge k Sorted Lists (K-Way Merge of Sorted Arrays / Lists)",
+    "time_limit_minutes": 35,
+    "difficulty": "Medium",
+    "problem_statement": "Solve the core placement problem: Merge k Sorted Lists.\n\nYou are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: K-Way Merge of Sorted Arrays / Lists\n- Time Complexity Target: O(N log K) Time\n- Space Complexity Target: O(K) Auxiliary Space\n- Handle all edge cases: Empty lists array, Array containing null heads, One list much longer than others.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using K-Way Merge of Sorted Arrays / Lists\n    public ListNode mergeKLists(ListNode[] lists) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using K-Way Merge of Sorted Arrays / Lists\n    public ListNode mergeKLists(ListNode[] lists) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+    "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public ListNode mergeKLists(ListNode[] lists) {\n        if (lists == null || lists.length == 0) return null;\n        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> a.val - b.val);\n        for (ListNode l : lists) if (l != null) pq.offer(l);\n        ListNode dummy = new ListNode(0), curr = dummy;\n        while (!pq.isEmpty()) {\n            ListNode node = pq.poll();\n            curr.next = node;\n            curr = curr.next;\n            if (node.next != null) pq.offer(node.next);\n        }\n        return dummy.next;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary K-Way Merge of Sorted Arrays / Lists logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Empty lists array",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N log K) Time)",
+      "Space Complexity": "20 points (Meets O(K) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

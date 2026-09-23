@@ -1,168 +1,2449 @@
 {
   "day": 9,
-  "title": "Networks Transmission Media, Binary Search & Time-Speed-Distance",
-  "sem_data": {
-    "subject": "BCA-5003 Computer Network",
-    "topic": "Unit II \u2014 Transmission Media: Guided vs Unguided & Optical Fiber Principles",
-    "detailed_notes": [
-      "Transmission Media is the physical pathway situated at Layer 1 (Physical Layer) through which electromagnetic signals representing binary data travel from a transmitter to a receiver across a computer network.",
-      "Transmission media is fundamentally classified into two physical categories:\n1. Guided (Bounded) Media: Physical conductors that channel and direct electromagnetic signals along a solid physical path:\n   - Twisted Pair Cable: Consists of pairs of insulated copper wires twisted spirally together. Twisting cancels out electromagnetic interference (EMI) and crosstalk from adjacent pairs. Divided into Unshielded Twisted Pair (UTP - e.g. Cat5e, Cat6 used in Ethernet LANs) and Shielded Twisted Pair (STP - possesses metal foil shielding for high-noise industrial environments).\n   - Coaxial Cable: Consists of a central copper wire conductor surrounded by a dielectric insulating spacer, a woven braided copper mesh shield, and an outer insulating plastic jacket. Provides higher bandwidth than twisted pair and superior noise immunity. Types: Baseband (digital signaling, 50 ohm) and Broadband (analog multichannel cable TV signaling, 75 ohm).\n   - Optical Fiber: Transmits data as pulses of light through ultra-pure glass (silica) or plastic fibers. Completely immune to electromagnetic interference, electrical noise, and radio frequency interference. Operates on the physical principle of Total Internal Reflection. Divided into Single-Mode Fiber (narrow core ~9 micrometers, laser source, long-haul telco backbones) and Multi-Mode Fiber (wider core ~50-62.5 micrometers, LED source, shorter campus backbones).\n2. Unguided (Wireless / Unbounded) Media: Transmits electromagnetic waves through air, vacuum, or seawater without physical conductors:\n   - Radio Waves: Omnidirectional, frequencies 3 kHz to 1 GHz, easily penetrate solid walls (e.g. FM radio, AM, Wi-Fi).\n   - Microwaves: Unidirectional line-of-sight propagation, frequencies 1 GHz to 300 GHz. Requires parabolic antenna alignment (e.g. cellular towers, satellite links).\n   - Infrared: Line-of-sight, short-range, cannot penetrate walls, frequencies 300 GHz to 400 THz (e.g. TV remotes, IrDA)."
+  "title": "Day 09: Transmission Media: Guided (Twisted Pair, Coaxial, Fiber Optic) vs Unguided & Network Topologies & Fast & Slow Pointers (Cycle & Midpoint)",
+  "streams": {
+    "academic": {
+      "unit": 1,
+      "topic": "Unit I — Transmission Media: Guided (Twisted Pair, Coaxial, Fiber Optic) vs Unguided & Network Topologies",
+      "objectives": [
+        "Classify guided vs unguided transmission media.",
+        "Understand Total Internal Reflection in Fiber Optics and compare Bus, Star, Ring, Mesh topologies."
+      ],
+      "explanation": "Transmission media is the physical path between transmitter and receiver in a data transmission system. It is classified into:\n1. Guided (Bounded) Media: Waves are guided along a physical solid medium.\n   • Twisted Pair: Pairs of insulated copper wires twisted to cancel Electromagnetic Interference (EMI); UTP (Unshielded) and STP (Shielded). High attenuation, used in LANs.\n   • Coaxial Cable: Central copper core surrounded by dielectric insulator, metallic braided shield, and jacket. Higher bandwidth and noise immunity than twisted pair; used in cable TV.\n   • Fiber Optic Cable: Hair-thin glass/silica strands carrying pulses of light using the principle of Total Internal Reflection (TIR). Extremely high bandwidth (terabits/sec), zero EMI, low attenuation, immune to eavesdropping.\n2. Unguided (Wireless) Media: Electromagnetic waves propagate through air/vacuum (Radio, Microwave, Infrared).\n\nNetwork Topologies define the geometric arrangement of nodes: Star (central switch/hub), Bus (shared backbone cable with terminators), Ring (token passing), and Mesh (n*(n-1)/2 direct links for complete fault tolerance).",
+      "definitions": [
+        {
+          "term": "Total Internal Reflection (TIR)",
+          "definition": "The optical phenomenon where a light ray propagating through an optically dense medium (glass core) strikes the boundary of a less dense medium (cladding) at an angle greater than the critical angle, reflecting 100% of the light back into the core."
+        },
+        {
+          "term": "Mesh Topology",
+          "definition": "A network layout where every device has a dedicated point-to-point physical link to every other device in the network."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Guided Media Comparison",
+          "content": "Fiber Optic is fastest and immune to EMI; Coaxial offers medium range; Twisted Pair is cheapest but susceptible to interference."
+        },
+        {
+          "title": "Network Topologies",
+          "content": "Star is industry standard (single point of switch failure, easy isolation); Mesh provides maximum reliability (costly cabling: n*(n-1)/2 links); Bus suffers from backbone collision."
+        }
+      ],
+      "examples": [
+        "Undersea transoceanic fiber cables carrying global Internet traffic via total internal reflection."
+      ],
+      "diagram": "+---------------------------------------------------+\n|            FIBER OPTIC TOTAL INTERNAL REFLECTION  |\n| Light Pulse -> [Core (Glass n1)] ===============> |\n|                [Cladding (n2 < n1)] (Reflected)   |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Parameter",
+          "Twisted Pair (UTP/STP)",
+          "Coaxial Cable",
+          "Fiber Optic Cable"
+        ],
+        "rows": [
+          [
+            "Transmission Signal",
+            "Electrical pulses",
+            "Electrical signals",
+            "Light pulses (photons)"
+          ],
+          [
+            "Bandwidth Capacity",
+            "Moderate (up to 10 Gbps)",
+            "Moderate-High (up to 1 Gbps)",
+            "Extremely High (Terabits/sec)"
+          ],
+          [
+            "EMI Susceptibility",
+            "High (sensitive to noise)",
+            "Moderate (shielded)",
+            "Completely immune to EMI"
+          ],
+          [
+            "Attenuation",
+            "High (requires repeaters 100m)",
+            "Moderate",
+            "Extremely low (tens of km)"
+          ],
+          [
+            "Cost & Installation",
+            "Lowest cost, very easy",
+            "Moderate cost",
+            "Highest cable & splicing cost"
+          ]
+        ]
+      },
+      "memorize": "Fiber optics uses Total Internal Reflection (core refractive index n1 > cladding n2). Mesh topology formula: n*(n-1)/2 links.",
+      "understand": "Twisting the copper wires cancels out mutual electromagnetic interference through magnetic field phase cancellation.",
+      "common_mistakes": "Stating that fiber optics transmits electrical currents (it transmits optical light photons).",
+      "exam_writing_guidance": "Draw structural cross-sections of Coax and Fiber cables, explain Total Internal Reflection with critical angle formula, and provide topology diagrams.",
+      "mini_practice": [
+        "How many physical links are required in a full Mesh topology of 12 computers?"
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2023-24 (Q2)",
+          "marks": 15,
+          "question": "Discuss various Guided Transmission Media (Twisted Pair, Coaxial, Optical Fiber) with neat diagrams. Explain Total Internal Reflection in Optical Fiber. (15 Marks)",
+          "rubric": "Twisted Pair & Coaxial diagrams & details (5 marks) + Fiber Optic structure & Total Internal Reflection proof (6 marks) + Comparison table (4 marks) = 15 Marks.",
+          "model_answer": "Guided transmission media are physical cabling channels that direct signal energy along a specific path:\n1. Twisted Pair Cable: Consists of pairs of insulated copper wires twisted spirally together. Twisting causes external electromagnetic interference (EMI) to affect both wires equally, allowing differential receivers to cancel the common-mode noise. Available as UTP (Unshielded Twisted Pair - Cat5e/Cat6) and STP (Shielded Twisted Pair with foil braiding).\n2. Coaxial Cable: Comprises a central solid copper conductor surrounded by a dielectric plastic insulator, a braided copper/foil shield to block external EMI, and an outer PVC protective jacket. Provides higher bandwidth than twisted pair over longer cable runs.\n3. Fiber Optic Cable: Transmits information using light pulses through ultra-pure glass or plastic cores. It operates on the physical principle of Total Internal Reflection (TIR). When light travels from an optically denser medium (core with refractive index n1) toward a less dense medium (cladding with refractive index n2, where n1 > n2) at an angle of incidence greater than the critical angle (θc = arcsin(n2/n1)), 100% of the light ray reflects internally within the core with zero light refraction loss. Fiber optics provides terabit bandwidth, zero EMI susceptibility, and minimal signal attenuation over tens of kilometers.",
+          "answer_structure": "Media Classification -> Detailed 3 Cables with Cross-Section Diagrams -> Total Internal Reflection Physics -> Comparison Table",
+          "important_points": [
+            "Twisting cancels EMI",
+            "Coaxial shielding",
+            "Total Internal Reflection condition: n1 > n2 and angle > critical angle",
+            "Zero EMI in fiber"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Cross-section diagrams for all 3 media",
+            "Ray diagram showing Total Internal Reflection in core and cladding"
+          ],
+          "common_mistakes": [
+            "Drawing light passing through cladding instead of reflecting within core"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "Differentiate between Star Topology and Mesh Topology. (5 Marks)",
+          "rubric": "Comparison table across Links, Failure impact, Cost, and Scalability (5 marks).",
+          "model_answer": "1. Cabling Links: Star topology requires `n` links connecting nodes to a central switch; full Mesh topology requires `n*(n-1)/2` dedicated links between every node pair; 2. Fault Tolerance: In Star, failure of a single node does not affect others, but central switch failure collapses the network; in Mesh, failure of a link only affects that specific peer link, offering maximum fault tolerance; 3. Cost & Installation: Star is inexpensive and simple to install; Mesh is prohibitively expensive and complex for large networks."
+        }
+      ],
+      "subject_code": "BCA-5003",
+      "subject_name": "Computer Networks",
+      "mcqs": [
+        {
+          "id": "ACAD-09-01",
+          "question": "What is the order of convergence for the Newton-Raphson iterative method for solving f(x) = 0 with simple roots?",
+          "options": [
+            "1 (Linear)",
+            "1.618 (Golden ratio)",
+            "2 (Quadratic)",
+            "3 (Cubic)"
+          ],
+          "correct_answer": "C",
+          "explanation": "Newton-Raphson exhibits quadratic convergence (order 2), meaning the number of correct decimal places approximately doubles each iteration."
+        },
+        {
+          "id": "ACAD-09-02",
+          "question": "What is the Newton-Raphson iteration formula for finding root x_{n+1} from current estimate x_n?",
+          "options": [
+            "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+            "x_{n+1} = x_n + f(x_n) / f'(x_n)",
+            "x_{n+1} = x_n - f'(x_n) / f(x_n)",
+            "x_{n+1} = [x_n + f(x_n)] / 2"
+          ],
+          "correct_answer": "A",
+          "explanation": "Newton-Raphson uses the tangent slope at x_n: x_{n+1} = x_n - f(x_n) / f'(x_n)."
+        },
+        {
+          "id": "ACAD-09-03",
+          "question": "Under what condition does the Newton-Raphson method fail or breakdown completely?",
+          "options": [
+            "When f(x_n) = 0",
+            "When f'(x_n) = 0 (tangent line is parallel to x-axis)",
+            "When f''(x_n) > 0",
+            "When the initial guess is an integer"
+          ],
+          "correct_answer": "B",
+          "explanation": "If the first derivative f'(x_n) becomes zero, division by zero occurs because the tangent line is horizontal and never intersects the x-axis."
+        },
+        {
+          "id": "ACAD-09-04",
+          "question": "How does the Regula-Falsi (False Position) method differ geometrically from the Bisection method?",
+          "options": [
+            "It uses the arithmetic midpoint (a + b) / 2 to divide the interval",
+            "It connects (a, f(a)) and (b, f(b)) with a secant straight line and finds its x-intercept",
+            "It uses the tangent line at the midpoint",
+            "It requires evaluating the second derivative"
+          ],
+          "correct_answer": "B",
+          "explanation": "Regula-Falsi replaces the midpoint subdivision with the x-intercept of the secant chord joining (a, f(a)) and (b, f(b)): c = [a*f(b) - b*f(a)] / [f(b) - f(a)]."
+        },
+        {
+          "id": "ACAD-09-05",
+          "question": "Using the Newton-Raphson iteration formula x_{n+1} = 0.5 * (x_n + N / x_n), what value is being computed?",
+          "options": [
+            "N^2",
+            "1 / N",
+            "sqrt(N)",
+            "log(N)"
+          ],
+          "correct_answer": "C",
+          "explanation": "Applying Newton-Raphson to f(x) = x^2 - N = 0 yields x_{n+1} = x_n - (x_n^2 - N)/(2x_n) = 0.5 * (x_n + N / x_n), which computes sqrt(N)."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2023-24 (Q2)",
+        "marks": 15,
+        "question": "Discuss various Guided Transmission Media (Twisted Pair, Coaxial, Optical Fiber) with neat diagrams. Explain Total Internal Reflection in Optical Fiber. (15 Marks)",
+        "rubric": "Twisted Pair & Coaxial diagrams & details (5 marks) + Fiber Optic structure & Total Internal Reflection proof (6 marks) + Comparison table (4 marks) = 15 Marks.",
+        "model_answer": "Guided transmission media are physical cabling channels that direct signal energy along a specific path:\n1. Twisted Pair Cable: Consists of pairs of insulated copper wires twisted spirally together. Twisting causes external electromagnetic interference (EMI) to affect both wires equally, allowing differential receivers to cancel the common-mode noise. Available as UTP (Unshielded Twisted Pair - Cat5e/Cat6) and STP (Shielded Twisted Pair with foil braiding).\n2. Coaxial Cable: Comprises a central solid copper conductor surrounded by a dielectric plastic insulator, a braided copper/foil shield to block external EMI, and an outer PVC protective jacket. Provides higher bandwidth than twisted pair over longer cable runs.\n3. Fiber Optic Cable: Transmits information using light pulses through ultra-pure glass or plastic cores. It operates on the physical principle of Total Internal Reflection (TIR). When light travels from an optically denser medium (core with refractive index n1) toward a less dense medium (cladding with refractive index n2, where n1 > n2) at an angle of incidence greater than the critical angle (θc = arcsin(n2/n1)), 100% of the light ray reflects internally within the core with zero light refraction loss. Fiber optics provides terabit bandwidth, zero EMI susceptibility, and minimal signal attenuation over tens of kilometers.",
+        "answer_structure": "Media Classification -> Detailed 3 Cables with Cross-Section Diagrams -> Total Internal Reflection Physics -> Comparison Table",
+        "important_points": [
+          "Twisting cancels EMI",
+          "Coaxial shielding",
+          "Total Internal Reflection condition: n1 > n2 and angle > critical angle",
+          "Zero EMI in fiber"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Cross-section diagrams for all 3 media",
+          "Ray diagram showing Total Internal Reflection in core and cladding"
+        ],
+        "common_mistakes": [
+          "Drawing light passing through cladding instead of reflecting within core"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Differentiate between Star Topology and Mesh Topology. (5 Marks)",
+        "rubric": "Comparison table across Links, Failure impact, Cost, and Scalability (5 marks).",
+        "model_answer": "1. Cabling Links: Star topology requires `n` links connecting nodes to a central switch; full Mesh topology requires `n*(n-1)/2` dedicated links between every node pair; 2. Fault Tolerance: In Star, failure of a single node does not affect others, but central switch failure collapses the network; in Mesh, failure of a link only affects that specific peer link, offering maximum fault tolerance; 3. Cost & Installation: Star is inexpensive and simple to install; Mesh is prohibitively expensive and complex for large networks."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|             OPTICAL FIBER TOTAL INTERNAL REFLECTION (TIR)               |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|     Cladding (Lower Refractive Index: n2)                               |\n|   ===================================================================   |\n|               \\             /             \\             /               |\n|                \\           /               \\           /                |\n|   Light Beam    \\  Angle  /                 \\         /                 |\n|   -------------> \\ > qc  /                   \\       /                  |\n|                   \\     /                     \\     /                   |\n|     Core (Higher Refractive Index: n1)                                  |\n|   ===================================================================   |\n|     Cladding (Lower Refractive Index: n2)                               |\n|                                                                         |\n|   Condition for TIR:                                                    |\n|   1. Light travels from denser medium (Core n1) to rarer (Cladding n2). |\n|   2. Angle of Incidence (theta) > Critical Angle (theta_c).             |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-09-01",
+        "question": "What is the order of convergence for the Newton-Raphson iterative method for solving f(x) = 0 with simple roots?",
+        "options": [
+          "1 (Linear)",
+          "1.618 (Golden ratio)",
+          "2 (Quadratic)",
+          "3 (Cubic)"
+        ],
+        "correct_answer": "C",
+        "explanation": "Newton-Raphson exhibits quadratic convergence (order 2), meaning the number of correct decimal places approximately doubles each iteration."
+      },
+      {
+        "id": "ACAD-09-02",
+        "question": "What is the Newton-Raphson iteration formula for finding root x_{n+1} from current estimate x_n?",
+        "options": [
+          "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "x_{n+1} = x_n + f(x_n) / f'(x_n)",
+          "x_{n+1} = x_n - f'(x_n) / f(x_n)",
+          "x_{n+1} = [x_n + f(x_n)] / 2"
+        ],
+        "correct_answer": "A",
+        "explanation": "Newton-Raphson uses the tangent slope at x_n: x_{n+1} = x_n - f(x_n) / f'(x_n)."
+      },
+      {
+        "id": "ACAD-09-03",
+        "question": "Under what condition does the Newton-Raphson method fail or breakdown completely?",
+        "options": [
+          "When f(x_n) = 0",
+          "When f'(x_n) = 0 (tangent line is parallel to x-axis)",
+          "When f''(x_n) > 0",
+          "When the initial guess is an integer"
+        ],
+        "correct_answer": "B",
+        "explanation": "If the first derivative f'(x_n) becomes zero, division by zero occurs because the tangent line is horizontal and never intersects the x-axis."
+      },
+      {
+        "id": "ACAD-09-04",
+        "question": "How does the Regula-Falsi (False Position) method differ geometrically from the Bisection method?",
+        "options": [
+          "It uses the arithmetic midpoint (a + b) / 2 to divide the interval",
+          "It connects (a, f(a)) and (b, f(b)) with a secant straight line and finds its x-intercept",
+          "It uses the tangent line at the midpoint",
+          "It requires evaluating the second derivative"
+        ],
+        "correct_answer": "B",
+        "explanation": "Regula-Falsi replaces the midpoint subdivision with the x-intercept of the secant chord joining (a, f(a)) and (b, f(b)): c = [a*f(b) - b*f(a)] / [f(b) - f(a)]."
+      },
+      {
+        "id": "ACAD-09-05",
+        "question": "Using the Newton-Raphson iteration formula x_{n+1} = 0.5 * (x_n + N / x_n), what value is being computed?",
+        "options": [
+          "N^2",
+          "1 / N",
+          "sqrt(N)",
+          "log(N)"
+        ],
+        "correct_answer": "C",
+        "explanation": "Applying Newton-Raphson to f(x) = x^2 - N = 0 yields x_{n+1} = x_n - (x_n^2 - N)/(2x_n) = 0.5 * (x_n + N / x_n), which computes sqrt(N)."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Boats, Streams & Circular Tracks",
+      "category": "Quantitative",
+      "subtopic": "Boats & Streams",
+      "formulas": "1. Downstream Speed (D) = Speed of Boat (u) + Speed of Stream (v).\n2. Upstream Speed (U) = Speed of Boat (u) - Speed of Stream (v).\n3. Speed of Boat in still water (u) = (D + U) / 2.\n4. Speed of Stream (v) = (D - U) / 2.",
+      "shortcuts": "Circular Track First Meeting: Time to meet for the first time anywhere = Track Circumference / Relative Speed. Time to meet at starting point = LCM(T1, T2).",
+      "tutorial": [
+        "In river navigation, downstream motion is accelerated by water current, while upstream motion is impeded. Remember that boat speed in still water must always exceed stream speed for upstream progress to occur."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Boats & Streams",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Boats & Streams",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Boats & Streams",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Boats & Streams",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Boats & Streams",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A boat travels downstream at 16 km/hr and upstream at 10 km/hr. What is the speed of the boat in still water?",
+        "options": {
+          "A": "13 km/hr",
+          "B": "12 km/hr",
+          "C": "14 km/hr",
+          "D": "15 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Speed in still water = (Downstream + Upstream) / 2 = (16 + 10) / 2 = 13 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A boat goes 24 km upstream and 28 km downstream in 6 hours. It goes 30 km upstream and 21 km downstream in 6.5 hours. Speed of stream:",
+        "options": {
+          "A": "4 km/hr",
+          "B": "2 km/hr",
+          "C": "3 km/hr",
+          "D": "5 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Let upstream = U, downstream = D. Solving gives U = 6 km/hr, D = 14 km/hr. Stream speed = (14 - 6)/2 = 4 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "A man can row 9 1/3 km/hr in still water and finds that it takes him thrice as much time to row up than as to row down. Stream speed:",
+        "options": {
+          "A": "4 2/3 km/hr",
+          "B": "3 1/3 km/hr",
+          "C": "2 1/2 km/hr",
+          "D": "4 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Downstream = 3 * Upstream => u + v = 3(u - v) => 2u = 4v => v = u / 2 = (28/3) / 2 = 14/3 = 4 2/3 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Two runners run along a 400 m circular track in the same direction at 6 m/s and 10 m/s. When will they meet for the first time?",
+        "options": {
+          "A": "100 secs",
+          "B": "80 secs",
+          "C": "60 secs",
+          "D": "120 secs"
+        },
+        "correct_answer": "A",
+        "explanation": "Relative speed = 10 - 6 = 4 m/s. Time to meet = Track length / Relative speed = 400 / 4 = 100 seconds.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Two runners start from the same point on a 1,200 m circular track running in opposite directions at 5 m/s and 3 m/s. When do they meet?",
+        "options": {
+          "A": "150 secs",
+          "B": "120 secs",
+          "C": "200 secs",
+          "D": "180 secs"
+        },
+        "correct_answer": "A",
+        "explanation": "Opposite directions: speeds add. Relative speed = 5 + 3 = 8 m/s. Time = 1,200 / 8 = 150 seconds.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "A boat covers 40 km downstream in 2 hours and 30 km upstream in 3 hours. What is the speed of the current?",
+        "options": {
+          "A": "5 km/hr",
+          "B": "4 km/hr",
+          "C": "6 km/hr",
+          "D": "3 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Downstream = 40/2 = 20 km/hr. Upstream = 30/3 = 10 km/hr. Current = (20 - 10) / 2 = 5 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "A man rows to a place 48 km away and comes back in 14 hours. He finds he can row 4 km with the stream in the same time as 3 km against. Rate of stream:",
+        "options": {
+          "A": "1 km/hr",
+          "B": "1.5 km/hr",
+          "C": "2 km/hr",
+          "D": "0.5 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Ratio D:U = 4:3. 48/4k + 48/3k = 14 => 12/k + 16/k = 14 => 28/k = 14 => k = 2. D = 8, U = 6. Stream = (8 - 6)/2 = 1 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A circular running track is 600 m long. A and B start at the same time at speeds 15 m/s and 10 m/s in same direction. How many times will they cross in 10 minutes?",
+        "options": {
+          "A": "5 times",
+          "B": "4 times",
+          "C": "6 times",
+          "D": "8 times"
+        },
+        "correct_answer": "A",
+        "explanation": "Relative speed = 5 m/s. First meeting = 600/5 = 120 secs. In 10 mins (600 secs), meetings = 600 / 120 = 5 times.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "A swimmer can swim in still water at 5 km/hr. If the river speed is 1 km/hr, it takes him 75 minutes to row to a place and back. How far is the place?",
+        "options": {
+          "A": "3 km",
+          "B": "2.5 km",
+          "C": "4 km",
+          "D": "3.5 km"
+        },
+        "correct_answer": "A",
+        "explanation": "D/6 + D/4 = 75/60 = 5/4 => 5D/12 = 5/4 => D = 3 km.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Three runners A, B, C run around a circular track of 12 km at 3 km/hr, 7 km/hr, and 13 km/hr in the same direction. When will they meet at the start point?",
+        "options": {
+          "A": "12 hours",
+          "B": "8 hours",
+          "C": "6 hours",
+          "D": "24 hours"
+        },
+        "correct_answer": "A",
+        "explanation": "Time for 1 lap: A=12/3=4 hrs, B=12/7 hrs, C=12/13 hrs. Meeting at start = LCM(4, 12/7, 12/13) = LCM(4, 12, 12) / HCF(1, 7, 13) = 12 / 1 = 12 hours.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Boats & Streams (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Fast & Slow Pointers (Cycle & Midpoint)",
+      "category": "Two Pointers",
+      "concept": "Combines fast and slow pointer cycle detection with mathematical re-indexing to locate the cycle entrance node.",
+      "why_it_works": "If list head is distance L from cycle entry, and collision occurs at distance k from entry: L = (m * C) - k. Resetting one pointer to head aligns both at cycle entry.",
+      "visual_explanation": "Head ---- L ----> [Cycle Entry] ---- k ----> [Collision]\\nAdvance Head pointer and Collision pointer at 1x speed -> Meet exactly at Cycle Entry!",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                ListNode ptr = head;\n                while (ptr != slow) {\n                    ptr = ptr.next;\n                    slow = slow.next;\n                }\n                return ptr;\n            }\n        }\n        return null;\n    }\n}",
+      "code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                ListNode ptr = head;\n                while (ptr != slow) {\n                    ptr = ptr.next;\n                    slow = slow.next;\n                }\n                return ptr;\n            }\n        }\n        return null;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4: Guard check for empty or single element list.",
+        "Line 5-8: Fast moves 2 steps, slow moves 1 step.",
+        "Line 9: On collision, initialize ptr at head.",
+        "Line 11-14: Advance ptr and slow by 1 step until they meet at cycle entry."
+      ],
+      "dry_run": "Cycle entry at node 2. Collision occurs at node 4. Advancing head and node 4 simultaneously converges at node 2.",
+      "complexity": "O(N) Time, O(1) Auxiliary Space",
+      "edge_cases": "No cycle present, Cycle spans entire list, Single node self cycle",
+      "edge_cases_list": [
+        "No cycle present",
+        "Cycle spans entire list",
+        "Single node self cycle"
+      ],
+      "interview_variations": [
+        "Find the Duplicate Number",
+        "Happy Number",
+        "Circular Array Loop"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-09-01",
+        "title": "Problem 1: Find the Duplicate Number",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive, find the duplicate number.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Fast & Slow Pointers (Cycle & Midpoint) algorithmic technique.\n2. Combines fast and slow pointer cycle detection with mathematical re-indexing to locate the cycle entrance node.\n3. Invariants: If list head is distance L from cycle entry, and collision occurs at distance k from entry: L = (m * C) - k. Resetting one pointer to head aligns both at cycle entry.",
+        "solution_java": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+        "code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+        "java_code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-09-02",
+        "title": "Problem 2: Reorder List",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given the head of a singly linked-list. Reorder the list to be: L0 -> Ln -> L1 -> Ln-1 -> L2 -> Ln-2...",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Fast & Slow Pointers (Cycle & Midpoint).\n2. Handle edge cases: No cycle present, Cycle spans entire list, Single node self cycle.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+        "solution_python": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+        "code": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+        "java_code": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "DBMS",
+      "topic": "Relational Algebra, SQL Joins & Subquery Optimization",
+      "concept_lesson": "Relational Algebra is the formal procedural query language underlying SQL query compilation and optimization.\n\nFundamental Operators:\n1. Selection (sigma): Filters tuples satisfying a predicate: sigma_{dept='CS'}(Students).\n2. Projection (pi): Selects specific columns and eliminates duplicates: pi_{name, roll}(Students).\n3. Cartesian Product (X): Combines every tuple of R with every tuple of S.\n4. Set Operations: Union (U), Set Difference (-), Intersection (cap) (require Union Compatibility).\n5. Natural Join (bowtie): Equijoin on all common attribute names followed by projection eliminating duplicate columns.\n\nSQL Joins Deep-Dive:\n- INNER JOIN: Returns rows with matching values in both tables.\n- LEFT OUTER JOIN: Returns all rows from left table, with matched rows from right table (or NULL if no match).\n- RIGHT OUTER JOIN: Returns all rows from right table, with matched left rows or NULL.\n- FULL OUTER JOIN: Combines LEFT and RIGHT join results; returns all rows from both tables, filling NULLs on mismatches.\n- CROSS JOIN: Cartesian product of both tables (size = N * M).\n- SELF JOIN: Joining a table to itself using aliases (common for hierarchical manager-employee relationships).\n\nSubqueries vs Joins:\nCorrelated Subqueries execute once for every candidate row evaluated by the outer query, resulting in O(N*M) execution. Query optimizers transform correlated subqueries into equivalent Hash Joins or Merge Joins to run in O(N + M) time.",
+      "key_definitions": [
+        {
+          "term": "Cartesian Product",
+          "definition": "A relational operation combining all tuples of two tables, producing N * M rows."
+        },
+        {
+          "term": "Natural Join",
+          "definition": "A join matching tuples on identical column names and projecting out duplicate columns."
+        },
+        {
+          "term": "Correlated Subquery",
+          "definition": "A nested SQL query that references columns from the outer query, re-evaluating for every outer row."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What is the difference between WHERE and HAVING clauses in SQL?",
+          "a": "WHERE filters individual rows before any grouping occurs and cannot evaluate aggregate functions (e.g., WHERE count(*) > 5 is illegal). HAVING filters aggregated groups after the GROUP BY clause has executed and is specifically designed to evaluate aggregate conditions (e.g., HAVING sum(salary) > 50000)."
+        },
+        {
+          "q": "Explain the difference between INNER JOIN, LEFT JOIN, and FULL OUTER JOIN.",
+          "a": "INNER JOIN returns only rows where the join condition evaluates to TRUE in both tables. LEFT JOIN returns all rows from the left table; matching rows from the right table are populated, and unmatched right columns return NULL. FULL OUTER JOIN returns all rows from both tables, populating columns with NULL whenever an opposite record does not exist."
+        },
+        {
+          "q": "Why are correlated subqueries generally slower than JOINs, and how do database query engines optimize them?",
+          "a": "A correlated subquery references values from the outer query, forcing the engine to execute the inner query once for every single row in the outer table (nested loop, O(N * M)). Modern query planners optimize these by rewriting correlated subqueries into INNER or LEFT JOINs, allowing the query engine to use fast O(N + M) Hash Join or Merge Join algorithms."
+        },
+        {
+          "q": "Write a query to find the N-th highest salary from an Employee table without using LIMIT/TOP.",
+          "a": "SELECT DISTINCT salary FROM Employee E1 WHERE (N - 1) = (SELECT COUNT(DISTINCT salary) FROM Employee E2 WHERE E2.salary > E1.salary). Alternatively, using modern window functions: WITH RankedSalaries AS (SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) as rank_pos FROM Employee) SELECT salary FROM RankedSalaries WHERE rank_pos = N."
+        },
+        {
+          "q": "What is the difference between RANK(), DENSE_RANK(), and ROW_NUMBER() in SQL?",
+          "a": "ROW_NUMBER() assigns a unique sequential integer to every row regardless of ties (1, 2, 3, 4). RANK() assigns the same rank to identical values but leaves gaps in rank sequence after ties (1, 2, 2, 4). DENSE_RANK() assigns the same rank to ties without skipping subsequent ranks (1, 2, 2, 3)."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-09-01",
+          "question": "Which relational algebra operator selects specific columns from a relation?",
+          "options": [
+            "Selection (sigma)",
+            "Projection (pi)",
+            "Cartesian Product (X)",
+            "Join (bowtie)"
+          ],
+          "correct_answer": "B",
+          "explanation": "Projection (pi) extracts specified attribute columns and removes duplicate rows."
+        },
+        {
+          "id": "CS-09-02",
+          "question": "Which clause must be used to filter groups based on aggregate function values in SQL?",
+          "options": [
+            "WHERE",
+            "HAVING",
+            "GROUP BY",
+            "ORDER BY"
+          ],
+          "correct_answer": "B",
+          "explanation": "HAVING filters groups post-aggregation; WHERE cannot take aggregate functions."
+        },
+        {
+          "id": "CS-09-03",
+          "question": "If Table A has 5 rows and Table B has 4 rows, how many rows are returned by a CROSS JOIN?",
+          "options": [
+            "9",
+            "20",
+            "1",
+            "5"
+          ],
+          "correct_answer": "B",
+          "explanation": "CROSS JOIN produces the Cartesian product: 5 * 4 = 20 rows."
+        },
+        {
+          "id": "CS-09-04",
+          "question": "If two employees tie for salary rank 2, what rank will DENSE_RANK() assign to the next employee?",
+          "options": [
+            "3",
+            "4",
+            "2",
+            "NULL"
+          ],
+          "correct_answer": "A",
+          "explanation": "DENSE_RANK() does not skip rank values after ties: 1, 2, 2, 3."
+        },
+        {
+          "id": "CS-09-05",
+          "question": "A LEFT OUTER JOIN returns:",
+          "options": [
+            "Only matching rows from both tables",
+            "All rows from the left table and matched rows from the right table",
+            "Only non-matching rows from left table",
+            "All rows from right table only"
+          ],
+          "correct_answer": "B",
+          "explanation": "LEFT JOIN preserves every row from the left relation, filling NULL for unmatched right attributes."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "TerraStract",
+      "repo_path": "D:\\Projects\\terra_extract",
+      "topic": "Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines",
+      "what_to_understand": "Preventing HTTP gateway timeouts when processing 50-page PDF documents.",
+      "what_to_memorize": "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
+      "interview_questions": [
+        {
+          "q": "How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?",
+          "a": "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the uploaded file, generates a UUID task ID, enqueues the extraction job to an async background worker queue, and immediately returns HTTP 202 Accepted with a status URL. Clients poll `/api/extract/status/{task_id}` or receive a webhook callback upon completion."
+        },
+        {
+          "q": "How do you clean up temporary PDF files and memory buffers after processing?",
+          "a": "We use Python context managers (`tempfile.NamedTemporaryFile`) and wrap the processing block in `try...finally` constructs to guarantee that temporary decrypted PDF fragments and image slices are deleted from disk and unlinked, preventing disk exhaustion and data leakage."
+        }
+      ],
+      "interview_pitch_exercise": "Processing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 9 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 9 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'NSE2 / BulkBeat TV', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In NSE2 / BulkBeat TV (Python aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Dhan API), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of NSE2 / BulkBeat TV.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 08 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5004 — Regula-Falsi & Newton-Raphson Methods.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks.\n• Algorithmic Invariant: Optimal time and space complexity rules for Fast & Slow Pointers (Linked List Mid/Cycle).\n• Systems Law: Architectural equations, protocols, and complexity bounds for DBMS Architecture & Three-Schema Model.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Regula-Falsi & Newton-Raphson Methods.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Fast & Slow Pointers (Linked List Mid/Cycle).\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: TerraStract.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 9 Q1: What is the primary academic thesis of Regula-Falsi & Newton-Raphson Methods?",
+          "a": "Core theoretical and practical mastery of Regula-Falsi & Newton-Raphson Methods under the CSJM University BCA-5004 syllabus."
+        },
+        {
+          "q": "Day 9 Q2: What is the key speed calculation formula applied in Boats, Streams & Circular Tracks?",
+          "a": "High-speed corporate placement arithmetic shortcut for Boats, Streams & Circular Tracks in campus recruitment exams."
+        },
+        {
+          "q": "Day 9 Q3: What is the time complexity of Fast & Slow Pointers (Linked List Mid/Cycle)?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 9 Q4: What is the central architectural principle of DBMS Architecture & Three-Schema Model?",
+          "a": "Foundational systems engineering rule governing DBMS Architecture & Three-Schema Model in production environments."
+        },
+        {
+          "q": "Day 9 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 9 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 9 Q7: What is the verified technical foundation of TerraStract?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 9 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 9 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 9 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5004 — Regula-Falsi & Newton-Raphson Methods.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks.\n• Algorithmic Invariant: Optimal time and space complexity rules for Fast & Slow Pointers (Linked List Mid/Cycle).\n• Systems Law: Architectural equations, protocols, and complexity bounds for DBMS Architecture & Three-Schema Model."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5004 — Regula-Falsi & Newton-Raphson Methods."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Fast & Slow Pointers (Linked List Mid/Cycle)."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: TerraStract."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-09-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the order of convergence for the Newton-Raphson iterative method for solving f(x) = 0 with simple roots?",
+        "options": [
+          "1 (Linear)",
+          "1.618 (Golden ratio)",
+          "2 (Quadratic)",
+          "3 (Cubic)"
+        ],
+        "correct_answer": "C",
+        "explanation": "Newton-Raphson exhibits quadratic convergence (order 2), meaning the number of correct decimal places approximately doubles each iteration."
+      },
+      {
+        "id": "TEST-09-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the Newton-Raphson iteration formula for finding root x_{n+1} from current estimate x_n?",
+        "options": [
+          "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "x_{n+1} = x_n + f(x_n) / f'(x_n)",
+          "x_{n+1} = x_n - f'(x_n) / f(x_n)",
+          "x_{n+1} = [x_n + f(x_n)] / 2"
+        ],
+        "correct_answer": "A",
+        "explanation": "Newton-Raphson uses the tangent slope at x_n: x_{n+1} = x_n - f(x_n) / f'(x_n)."
+      },
+      {
+        "id": "TEST-09-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Under what condition does the Newton-Raphson method fail or breakdown completely?",
+        "options": [
+          "When f(x_n) = 0",
+          "When f'(x_n) = 0 (tangent line is parallel to x-axis)",
+          "When f''(x_n) > 0",
+          "When the initial guess is an integer"
+        ],
+        "correct_answer": "B",
+        "explanation": "If the first derivative f'(x_n) becomes zero, division by zero occurs because the tangent line is horizontal and never intersects the x-axis."
+      },
+      {
+        "id": "TEST-09-04",
+        "category": "Academic (Academic Theory)",
+        "question": "How does the Regula-Falsi (False Position) method differ geometrically from the Bisection method?",
+        "options": [
+          "It uses the arithmetic midpoint (a + b) / 2 to divide the interval",
+          "It connects (a, f(a)) and (b, f(b)) with a secant straight line and finds its x-intercept",
+          "It uses the tangent line at the midpoint",
+          "It requires evaluating the second derivative"
+        ],
+        "correct_answer": "B",
+        "explanation": "Regula-Falsi replaces the midpoint subdivision with the x-intercept of the secant chord joining (a, f(a)) and (b, f(b)): c = [a*f(b) - b*f(a)] / [f(b) - f(a)]."
+      },
+      {
+        "id": "TEST-09-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Using the Newton-Raphson iteration formula x_{n+1} = 0.5 * (x_n + N / x_n), what value is being computed?",
+        "options": [
+          "N^2",
+          "1 / N",
+          "sqrt(N)",
+          "log(N)"
+        ],
+        "correct_answer": "C",
+        "explanation": "Applying Newton-Raphson to f(x) = x^2 - N = 0 yields x_{n+1} = x_n - (x_n^2 - N)/(2x_n) = 0.5 * (x_n + N / x_n), which computes sqrt(N)."
+      },
+      {
+        "id": "TEST-09-06",
+        "category": "Placement Aptitude",
+        "question": "A boat can travel with a speed of 13 km/hr in still water. If the speed of the stream is 4 km/hr, find the time taken by the boat to go 68 km downstream.",
+        "options": [
+          "4 hours",
+          "5 hours",
+          "3.5 hours",
+          "4.5 hours"
+        ],
+        "correct_answer": "A",
+        "explanation": "Downstream speed = 13 + 4 = 17 km/hr. Time = 68 / 17 = 4 hours."
+      },
+      {
+        "id": "TEST-09-07",
+        "category": "Placement Aptitude",
+        "question": "A boat running upstream takes 8 hours 48 minutes to cover a certain distance, while it takes 4 hours to cover the same distance downstream. What is the ratio between the speed of the boat and speed of the water current?",
+        "options": [
+          "8 : 3",
+          "7 : 3",
+          "5 : 2",
+          "9 : 4"
+        ],
+        "correct_answer": "A",
+        "explanation": "Upstream time = 8 + 48/60 = 8.8 hrs = 44/5 hrs. Downstream time = 4 hrs. Distance is equal: (u - v) * (44/5) = (u + v) * 4 => 11(u - v) = 5(u + v) => 6u = 16v => u/v = 16/6 = 8/3."
+      },
+      {
+        "id": "TEST-09-08",
+        "category": "Placement Aptitude",
+        "question": "A man rows downstream 32 km and 14 km upstream, taking 6 hours for each journey. What is the velocity of the current?",
+        "options": [
+          "1.5 km/hr",
+          "2 km/hr",
+          "1 km/hr",
+          "2.5 km/hr"
+        ],
+        "correct_answer": "A",
+        "explanation": "Downstream speed D = 32 / 6 km/hr. Upstream speed U = 14 / 6 km/hr. Speed of current = (D - U) / 2 = [(32 - 14)/6] / 2 = (18 / 6) / 2 = 3 / 2 = 1.5 km/hr."
+      },
+      {
+        "id": "TEST-09-09",
+        "category": "Placement Aptitude",
+        "question": "A motorboat whose speed in still water is 15 km/hr goes 30 km downstream and comes back in a total of 4 hours 30 minutes. What is the speed of the stream?",
+        "options": [
+          "5 km/hr",
+          "4 km/hr",
+          "6 km/hr",
+          "3 km/hr"
+        ],
+        "correct_answer": "A",
+        "explanation": "30/(15 + v) + 30/(15 - v) = 4.5 => 30 [ 30 / (225 - v^2) ] = 4.5 => 900 / (225 - v^2) = 4.5 => 225 - v^2 = 200 => v^2 = 25 => v = 5 km/hr."
+      },
+      {
+        "id": "TEST-09-10",
+        "category": "Placement Aptitude",
+        "question": "Two cyclists start from the same point on a circular track of 600 meters in the same direction at speeds of 10 m/s and 15 m/s. When will they meet for the first time?",
+        "options": [
+          "120 seconds",
+          "60 seconds",
+          "90 seconds",
+          "150 seconds"
+        ],
+        "correct_answer": "A",
+        "explanation": "Relative speed in same direction = 15 - 10 = 5 m/s. Time to meet = Track length / Relative speed = 600 / 5 = 120 seconds."
+      },
+      {
+        "id": "TEST-09-11",
+        "category": "Core CS (DBMS)",
+        "question": "Which relational algebra operator selects specific columns from a relation?",
+        "options": [
+          "Selection (sigma)",
+          "Projection (pi)",
+          "Cartesian Product (X)",
+          "Join (bowtie)"
+        ],
+        "correct_answer": "B",
+        "explanation": "Projection (pi) extracts specified attribute columns and removes duplicate rows."
+      },
+      {
+        "id": "TEST-09-12",
+        "category": "Core CS (DBMS)",
+        "question": "Which clause must be used to filter groups based on aggregate function values in SQL?",
+        "options": [
+          "WHERE",
+          "HAVING",
+          "GROUP BY",
+          "ORDER BY"
+        ],
+        "correct_answer": "B",
+        "explanation": "HAVING filters groups post-aggregation; WHERE cannot take aggregate functions."
+      },
+      {
+        "id": "TEST-09-13",
+        "category": "Core CS (DBMS)",
+        "question": "If Table A has 5 rows and Table B has 4 rows, how many rows are returned by a CROSS JOIN?",
+        "options": [
+          "9",
+          "20",
+          "1",
+          "5"
+        ],
+        "correct_answer": "B",
+        "explanation": "CROSS JOIN produces the Cartesian product: 5 * 4 = 20 rows."
+      },
+      {
+        "id": "TEST-09-14",
+        "category": "Core CS (DBMS)",
+        "question": "If two employees tie for salary rank 2, what rank will DENSE_RANK() assign to the next employee?",
+        "options": [
+          "3",
+          "4",
+          "2",
+          "NULL"
+        ],
+        "correct_answer": "A",
+        "explanation": "DENSE_RANK() does not skip rank values after ties: 1, 2, 2, 3."
+      },
+      {
+        "id": "TEST-09-15",
+        "category": "Core CS (DBMS)",
+        "question": "A LEFT OUTER JOIN returns:",
+        "options": [
+          "Only matching rows from both tables",
+          "All rows from the left table and matched rows from the right table",
+          "Only non-matching rows from left table",
+          "All rows from right table only"
+        ],
+        "correct_answer": "B",
+        "explanation": "LEFT JOIN preserves every row from the left relation, filling NULL for unmatched right attributes."
+      },
+      {
+        "id": "TEST-09-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Fast & Slow Pointers (Cycle & Midpoint)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Fast & Slow Pointers (Cycle & Midpoint)' pattern operates with O(N) Time, O(1) Auxiliary Space: If list head is distance L from cycle entry, and collision occurs at distance k from entry: L = (m * C) - k. Resetting one pointer to head aligns both at cycle entry.."
+      },
+      {
+        "id": "TEST-09-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Fast & Slow Pointers (Cycle & Midpoint)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: No cycle present.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Fast & Slow Pointers (Cycle & Midpoint) include No cycle present, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-09-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Find the Duplicate Number', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-09-19",
+        "category": "Projects (TerraStract)",
+        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines'?",
+        "options": [
+          "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For TerraStract, the architectural invariant is: HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.."
+      },
+      {
+        "id": "TEST-09-20",
+        "category": "Projects (TerraStract)",
+        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?'?",
+        "options": [
+          "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` en."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-09",
+      "title": "Find the Duplicate Number (Fast & Slow Pointers (Cycle & Midpoint))",
+      "time_limit_minutes": 25,
+      "difficulty": "Easy",
+      "problem_statement": "Solve the core placement problem: Find the Duplicate Number.\n\nGiven an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive, find the duplicate number.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Fast & Slow Pointers (Cycle & Midpoint)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: No cycle present, Cycle spans entire list, Single node self cycle.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Fast & Slow Pointers (Cycle & Midpoint)\n    public int findDuplicate(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Fast & Slow Pointers (Cycle & Midpoint)\n    public int findDuplicate(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Fast & Slow Pointers (Cycle & Midpoint) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: No cycle present",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Computer Networks",
+    "subject_code": "BCA-5003",
+    "unit": 1,
+    "topic": "Unit I — Transmission Media: Guided (Twisted Pair, Coaxial, Fiber Optic) vs Unguided & Network Topologies",
+    "objectives": [
+      "Classify guided vs unguided transmission media.",
+      "Understand Total Internal Reflection in Fiber Optics and compare Bus, Star, Ring, Mesh topologies."
+    ],
+    "detailed_notes": [
+      "Transmission media is the physical path between transmitter and receiver in a data transmission system. It is classified into:\n1. Guided (Bounded) Media: Waves are guided along a physical solid medium.\n   • Twisted Pair: Pairs of insulated copper wires twisted to cancel Electromagnetic Interference (EMI); UTP (Unshielded) and STP (Shielded). High attenuation, used in LANs.\n   • Coaxial Cable: Central copper core surrounded by dielectric insulator, metallic braided shield, and jacket. Higher bandwidth and noise immunity than twisted pair; used in cable TV.\n   • Fiber Optic Cable: Hair-thin glass/silica strands carrying pulses of light using the principle of Total Internal Reflection (TIR). Extremely high bandwidth (terabits/sec), zero EMI, low attenuation, immune to eavesdropping.\n2. Unguided (Wireless) Media: Electromagnetic waves propagate through air/vacuum (Radio, Microwave, Infrared).\n\nNetwork Topologies define the geometric arrangement of nodes: Star (central switch/hub), Bus (shared backbone cable with terminators), Ring (token passing), and Mesh (n*(n-1)/2 direct links for complete fault tolerance).",
+      "Fiber Optic is fastest and immune to EMI; Coaxial offers medium range; Twisted Pair is cheapest but susceptible to interference.",
+      "Star is industry standard (single point of switch failure, easy isolation); Mesh provides maximum reliability (costly cabling: n*(n-1)/2 links); Bus suffers from backbone collision."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|            FIBER OPTIC TOTAL INTERNAL REFLECTION  |\n| Light Pulse -> [Core (Glass n1)] ===============> |\n|                [Cladding (n2 < n1)] (Reflected)   |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
         "Parameter",
-        "Twisted Pair Cable",
+        "Twisted Pair (UTP/STP)",
         "Coaxial Cable",
-        "Optical Fiber Cable"
+        "Fiber Optic Cable"
       ],
       "rows": [
         [
           "Transmission Signal",
-          "Electrical voltage signals",
-          "Electrical voltage signals",
-          "Light pulses (Photons)"
+          "Electrical pulses",
+          "Electrical signals",
+          "Light pulses (photons)"
         ],
         [
-          "Data Transfer Rate",
-          "Up to 1 - 10 Gbps (Cat 6a)",
-          "Up to 10 - 100 Mbps",
-          "Exceeds 100 Gbps to Tbps"
+          "Bandwidth Capacity",
+          "Moderate (up to 10 Gbps)",
+          "Moderate-High (up to 1 Gbps)",
+          "Extremely High (Terabits/sec)"
         ],
         [
-          "EMI Immunity",
-          "Moderate (vulnerable to crosstalk)",
-          "High (shielded mesh)",
-          "Absolute immunity (zero EMI)"
+          "EMI Susceptibility",
+          "High (sensitive to noise)",
+          "Moderate (shielded)",
+          "Completely immune to EMI"
         ],
         [
-          "Attenuation / Loss",
-          "High attenuation (repeater ~100m)",
-          "Moderate attenuation",
-          "Extremely low attenuation (>50km)"
+          "Attenuation",
+          "High (requires repeaters 100m)",
+          "Moderate",
+          "Extremely low (tens of km)"
         ],
         [
-          "Physical Cost",
-          "Least expensive; easy to install",
+          "Cost & Installation",
+          "Lowest cost, very easy",
           "Moderate cost",
-          "Highest installation & splicing cost"
-        ],
-        [
-          "Security",
-          "Vulnerable to wire-tapping",
-          "Vulnerable to physical taps",
-          "Virtually tap-proof (light leaks detected)"
+          "Highest cable & splicing cost"
         ]
       ]
     },
-    "memorize": "Guided Media: Twisted Pair (UTP/STP), Coaxial, Optical Fiber. TIR Conditions: Core index (n1) > Cladding index (n2); Angle of incidence > Critical angle. Conversion speed factor: 1 km/h = 5/18 m/s; 1 m/s = 18/5 km/h.",
-    "understand": "Light travels through optical fiber without escaping because the glass core is surrounded by glass cladding with a lower refractive index. When light hits the core-cladding boundary at an angle steeper than the critical angle, it bounces completely back into the core, propagating with negligible signal loss.",
-    "common_mistakes": "1. Forgetting to state both conditions for Total Internal Reflection in exam questions. 2. Confusing Baseband (single digital channel over entire bandwidth) with Broadband (multiple analog frequency channels).",
-    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2024-25)",
-    "pyq_freq": "3 University Sessions: 2021 (Q2 - 15m), 2022-23 (Q2a - 15m), 2024-25 (Q2 - 15m)",
-    "pyq_question": "Describe various types of transmission media used in computer networks. Differentiate between guided and unguided media. Explain the principle of optical fiber communication with a neat diagram. (15 Marks)",
-    "pyq_rubric": "Transmission Media taxonomy (3 marks) + Guided vs Unguided distinction (3 marks) + Coaxial/Twisted pair details (4 marks) + Optical Fiber TIR diagram & explanation (5 marks) = 15 Marks.",
+    "memorize": "Fiber optics uses Total Internal Reflection (core refractive index n1 > cladding n2). Mesh topology formula: n*(n-1)/2 links.",
+    "understand": "Twisting the copper wires cancels out mutual electromagnetic interference through magnetic field phase cancellation.",
+    "common_mistakes": "Stating that fiber optics transmits electrical currents (it transmits optical light photons).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2023-24 (Q2)",
+        "marks": 15,
+        "question": "Discuss various Guided Transmission Media (Twisted Pair, Coaxial, Optical Fiber) with neat diagrams. Explain Total Internal Reflection in Optical Fiber. (15 Marks)",
+        "rubric": "Twisted Pair & Coaxial diagrams & details (5 marks) + Fiber Optic structure & Total Internal Reflection proof (6 marks) + Comparison table (4 marks) = 15 Marks.",
+        "model_answer": "Guided transmission media are physical cabling channels that direct signal energy along a specific path:\n1. Twisted Pair Cable: Consists of pairs of insulated copper wires twisted spirally together. Twisting causes external electromagnetic interference (EMI) to affect both wires equally, allowing differential receivers to cancel the common-mode noise. Available as UTP (Unshielded Twisted Pair - Cat5e/Cat6) and STP (Shielded Twisted Pair with foil braiding).\n2. Coaxial Cable: Comprises a central solid copper conductor surrounded by a dielectric plastic insulator, a braided copper/foil shield to block external EMI, and an outer PVC protective jacket. Provides higher bandwidth than twisted pair over longer cable runs.\n3. Fiber Optic Cable: Transmits information using light pulses through ultra-pure glass or plastic cores. It operates on the physical principle of Total Internal Reflection (TIR). When light travels from an optically denser medium (core with refractive index n1) toward a less dense medium (cladding with refractive index n2, where n1 > n2) at an angle of incidence greater than the critical angle (θc = arcsin(n2/n1)), 100% of the light ray reflects internally within the core with zero light refraction loss. Fiber optics provides terabit bandwidth, zero EMI susceptibility, and minimal signal attenuation over tens of kilometers.",
+        "answer_structure": "Media Classification -> Detailed 3 Cables with Cross-Section Diagrams -> Total Internal Reflection Physics -> Comparison Table",
+        "important_points": [
+          "Twisting cancels EMI",
+          "Coaxial shielding",
+          "Total Internal Reflection condition: n1 > n2 and angle > critical angle",
+          "Zero EMI in fiber"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Cross-section diagrams for all 3 media",
+          "Ray diagram showing Total Internal Reflection in core and cladding"
+        ],
+        "common_mistakes": [
+          "Drawing light passing through cladding instead of reflecting within core"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Differentiate between Star Topology and Mesh Topology. (5 Marks)",
+        "rubric": "Comparison table across Links, Failure impact, Cost, and Scalability (5 marks).",
+        "model_answer": "1. Cabling Links: Star topology requires `n` links connecting nodes to a central switch; full Mesh topology requires `n*(n-1)/2` dedicated links between every node pair; 2. Fault Tolerance: In Star, failure of a single node does not affect others, but central switch failure collapses the network; in Mesh, failure of a link only affects that specific peer link, offering maximum fault tolerance; 3. Cost & Installation: Star is inexpensive and simple to install; Mesh is prohibitively expensive and complex for large networks."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-09-01",
+        "question": "What is the order of convergence for the Newton-Raphson iterative method for solving f(x) = 0 with simple roots?",
+        "options": [
+          "1 (Linear)",
+          "1.618 (Golden ratio)",
+          "2 (Quadratic)",
+          "3 (Cubic)"
+        ],
+        "correct_answer": "C",
+        "explanation": "Newton-Raphson exhibits quadratic convergence (order 2), meaning the number of correct decimal places approximately doubles each iteration."
+      },
+      {
+        "id": "ACAD-09-02",
+        "question": "What is the Newton-Raphson iteration formula for finding root x_{n+1} from current estimate x_n?",
+        "options": [
+          "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "x_{n+1} = x_n + f(x_n) / f'(x_n)",
+          "x_{n+1} = x_n - f'(x_n) / f(x_n)",
+          "x_{n+1} = [x_n + f(x_n)] / 2"
+        ],
+        "correct_answer": "A",
+        "explanation": "Newton-Raphson uses the tangent slope at x_n: x_{n+1} = x_n - f(x_n) / f'(x_n)."
+      },
+      {
+        "id": "ACAD-09-03",
+        "question": "Under what condition does the Newton-Raphson method fail or breakdown completely?",
+        "options": [
+          "When f(x_n) = 0",
+          "When f'(x_n) = 0 (tangent line is parallel to x-axis)",
+          "When f''(x_n) > 0",
+          "When the initial guess is an integer"
+        ],
+        "correct_answer": "B",
+        "explanation": "If the first derivative f'(x_n) becomes zero, division by zero occurs because the tangent line is horizontal and never intersects the x-axis."
+      },
+      {
+        "id": "ACAD-09-04",
+        "question": "How does the Regula-Falsi (False Position) method differ geometrically from the Bisection method?",
+        "options": [
+          "It uses the arithmetic midpoint (a + b) / 2 to divide the interval",
+          "It connects (a, f(a)) and (b, f(b)) with a secant straight line and finds its x-intercept",
+          "It uses the tangent line at the midpoint",
+          "It requires evaluating the second derivative"
+        ],
+        "correct_answer": "B",
+        "explanation": "Regula-Falsi replaces the midpoint subdivision with the x-intercept of the secant chord joining (a, f(a)) and (b, f(b)): c = [a*f(b) - b*f(a)] / [f(b) - f(a)]."
+      },
+      {
+        "id": "ACAD-09-05",
+        "question": "Using the Newton-Raphson iteration formula x_{n+1} = 0.5 * (x_n + N / x_n), what value is being computed?",
+        "options": [
+          "N^2",
+          "1 / N",
+          "sqrt(N)",
+          "log(N)"
+        ],
+        "correct_answer": "C",
+        "explanation": "Applying Newton-Raphson to f(x) = x^2 - N = 0 yields x_{n+1} = x_n - (x_n^2 - N)/(2x_n) = 0.5 * (x_n + N / x_n), which computes sqrt(N)."
+      }
+    ],
+    "pyq_year": "2023-24 (Q2)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Discuss various Guided Transmission Media (Twisted Pair, Coaxial, Optical Fiber) with neat diagrams. Explain Total Internal Reflection in Optical Fiber. (15 Marks)",
+    "pyq_rubric": "Twisted Pair & Coaxial diagrams & details (5 marks) + Fiber Optic structure & Total Internal Reflection proof (6 marks) + Comparison table (4 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Transmission Media Taxonomy & Physical Principles:",
-        "Transmission media constitute the physical Layer 1 communication channels carrying raw information between network nodes. Signals are transmitted as electromagnetic waves. Guided media use physical solid conductors to constrain waves, whereas unguided media broadcast waves through open space."
+        "1. Model Answer & Technical Presentation",
+        "Guided transmission media are physical cabling channels that direct signal energy along a specific path:\n1. Twisted Pair Cable: Consists of pairs of insulated copper wires twisted spirally together. Twisting causes external electromagnetic interference (EMI) to affect both wires equally, allowing differential receivers to cancel the common-mode noise. Available as UTP (Unshielded Twisted Pair - Cat5e/Cat6) and STP (Shielded Twisted Pair with foil braiding).\n2. Coaxial Cable: Comprises a central solid copper conductor surrounded by a dielectric plastic insulator, a braided copper/foil shield to block external EMI, and an outer PVC protective jacket. Provides higher bandwidth than twisted pair over longer cable runs.\n3. Fiber Optic Cable: Transmits information using light pulses through ultra-pure glass or plastic cores. It operates on the physical principle of Total Internal Reflection (TIR). When light travels from an optically denser medium (core with refractive index n1) toward a less dense medium (cladding with refractive index n2, where n1 > n2) at an angle of incidence greater than the critical angle (θc = arcsin(n2/n1)), 100% of the light ray reflects internally within the core with zero light refraction loss. Fiber optics provides terabit bandwidth, zero EMI susceptibility, and minimal signal attenuation over tens of kilometers."
       ],
       [
-        "2. Guided Transmission Media Types:",
-        "\u2022 Twisted Pair Cable: Two insulated copper strands twisted in a helical spiral. The twisting balances noise pickup across both wires, enabling the receiver to cancel external electromagnetic noise via Differential Signaling. UTP is inexpensive and ubiquitous in Ethernet LANs (Cat 5e handles 1 Gbps up to 100 meters).\n\u2022 Coaxial Cable: Contains a solid copper core, surrounded by an insulating layer, covered by a conductive metal shield (copper braid), and an outer jacket. The shielding provides robust noise rejection, supporting baseband digital transmissions in early Ethernet and broadband RF signals in cable television networks."
-      ],
-      [
-        "3. Optical Fiber & Total Internal Reflection (TIR):",
-        "Optical fiber represents the pinnacle of guided transmission media, transmitting data as light pulses. An optical fiber cable comprises three concentric cylindrical layers: the inner Core (silica glass), the surrounding Cladding (glass with a lower refractive index), and the outer Protective Buffer Jacket.\nPrinciple of Total Internal Reflection:\nLight guided through the fiber stays trapped inside the core by satisfying two physical conditions:\n1. The refractive index of the core (n1) must be strictly greater than that of the cladding (n2): n1 > n2.\n2. The angle of incidence at the core-cladding interface must exceed the Critical Angle (theta_c), defined by Snell's Law as: sin(theta_c) = n2 / n1.\nWhen these criteria are met, 100% of the light energy is reflected back into the core with zero refractive leakage, enabling signals to travel dozens of kilometers without repeaters."
-      ],
-      [
-        "4. Unguided Media Overview & Examination Summary:",
-        "Unguided media broadcast signals through electromagnetic wireless spectrum: Radio waves (omnidirectional, penetrate walls, e.g. Wi-Fi), Microwaves (unidirectional line-of-sight parabolic towers, e.g. cellular backhaul), and Infrared (short range, obstructed by walls). Guided media offer high security and predictable bandwidth; unguided media offer user mobility and rapid deployment."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Differentiate between Single-Mode and Multi-Mode optical fiber cables in terms of core diameter, light source, and transmission distance. (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "What is UTP and STP? Explain the categories of UTP cable (Cat5, Cat6). (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Cross-section diagrams for all 3 media",
+          "Ray diagram showing Total Internal Reflection in core and cladding"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Transmission Media Taxonomy, Guided vs Unguided, and Optical Fiber TIR.",
-    "milestone": "Full 15/15 marks on University Question 2 (BCA-5003 Computer Networks)."
-  },
   "apt_data": {
-    "topic": "Time, Speed & Distance \u2014 Average Speed Harmonic Mean & Relative Speed",
+    "topic": "Boats, Streams & Circular Tracks",
+    "category": "Quantitative",
+    "subtopic": "Boats & Streams",
+    "formulas": "1. Downstream Speed (D) = Speed of Boat (u) + Speed of Stream (v).\n2. Upstream Speed (U) = Speed of Boat (u) - Speed of Stream (v).\n3. Speed of Boat in still water (u) = (D + U) / 2.\n4. Speed of Stream (v) = (D - U) / 2.",
+    "shortcut": "Circular Track First Meeting: Time to meet for the first time anywhere = Track Circumference / Relative Speed. Time to meet at starting point = LCM(T1, T2).",
     "tutorial": [
-      "Fundamental Motion Equation: Distance = Speed * Time  ==>  Speed = Distance / Time  ==>  Time = Distance / Speed.",
-      "Unit Conversion Speed Multipliers:\n\u2022 To convert km/h to m/s: Multiply by 5/18 (e.g. 72 km/h = 72 * (5/18) = 20 m/s).\n\u2022 To convert m/s to km/h: Multiply by 18/5 (e.g. 25 m/s = 25 * (18/5) = 90 km/h).",
-      "Average Speed (Universal Placement Rule):\nAverage Speed = (Total Distance Traveled) / (Total Time Taken).\nSPECIAL CASE: When equal distances are traveled at speeds x and y, Average Speed is the Harmonic Mean:\nAverage Speed = (2 * x * y) / (x + y).\n(NEVER take the arithmetic average (x + y)/2!)",
-      "Relative Speed:\n\u2022 Moving in Opposite Directions: Relative Speed = Speed_A + Speed_B\n\u2022 Moving in Same Direction: Relative Speed = Speed_A - Speed_B (assuming Speed_A > Speed_B)"
+      "In river navigation, downstream motion is accelerated by water current, while upstream motion is impeded. Remember that boat speed in still water must always exceed stream speed for upstream progress to occur."
     ],
-    "formulas": "1. Conversion: 1 km/h = 5/18 m/s; 1 m/s = 18/5 km/h\n2. Equal Distance Average Speed: Avg Speed = (2xy) / (x + y)\n3. Three Equal Distances Average Speed: Avg Speed = (3xyz) / (xy + yz + zx)\n4. Constant Distance Invariant: Speed is inversely proportional to Time: S1 / S2 = T2 / T1",
-    "shortcut": "The LCM Distance Assumption Method:\nIf a person travels a certain distance at 20 km/h and returns at 30 km/h, assume Distance = LCM(20, 30) = 60 km.\nTime going = 60 / 20 = 3 hrs. Time returning = 60 / 30 = 2 hrs.\nTotal Distance = 60 + 60 = 120 km. Total Time = 3 + 2 = 5 hrs.\nAverage Speed = 120 / 5 = 24 km/h instantly!",
-    "recognition": "Look for 'a man travels from A to B at x km/h and returns at y km/h', 'two trains start simultaneously from two points toward each other', 'walking at 3/4 of normal speed a person is 20 minutes late'.",
-    "p1_q": "[Foundation] Convert 54 km/h into meters per second, and convert 20 m/s into km/h.",
-    "p1_s": "Part 1: 54 km/h to m/s:\nSpeed = 54 * (5 / 18) = 3 * 5 = 15 m/s.\nPart 2: 20 m/s to km/h:\nSpeed = 20 * (18 / 5) = 4 * 18 = 72 km/h.\nAnswer: 15 m/s and 72 km/h.",
-    "p2_q": "[Standard Placement] A motorist travels from city A to city B at an average speed of 60 km/h and returns from B to A at an average speed of 40 km/h. What is his average speed for the entire round trip?",
-    "p2_s": "Step 1: Distance from A to B and B to A is equal.\nStep 2: Use Harmonic Mean formula for equal distances:\nAverage Speed = (2 * x * y) / (x + y).\nHere x = 60, y = 40.\nStep 3: Substitute values:\nAverage Speed = (2 * 60 * 40) / (60 + 40) = 4800 / 100 = 48 km/h.\nWarning: The common trap answer is (60 + 40) / 2 = 50 km/h, which is WRONG because the driver spends more time traveling at the slower speed!\nAnswer: 48 km/h.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS NQT / Accenture Placement Drive]",
-    "p3_q": "Walking at 3/4 of his usual speed, a man reaches his office 20 minutes late. Find his usual time taken to reach the office.",
-    "p3_s": "Step 1: Universal Speed-Time Inversion Principle:\nDistance to office is constant. Therefore, Speed is inversely proportional to Time:\nSpeed_new / Speed_usual = 3 / 4  ==>  Time_new / Time_usual = 4 / 3.\nStep 2: Let usual time = 3x minutes. New time = 4x minutes.\nStep 3: The difference in time is given as 20 minutes:\n4x - 3x = 20 ==> x = 20 minutes.\nStep 4: Usual Time = 3x = 3 * 20 = 60 minutes = 1 hour.\nFast Placement Shortcut: If speed is a/b of usual speed, then Usual Time = [a / (b - a)] * Late Time.\nHere: Usual Time = [3 / (4 - 3)] * 20 = 3 * 20 = 60 minutes.\nAnswer: 60 minutes (1 hour).",
-    "p4_q": "[Hard / Time-Pressure] Two cities P and Q are 360 km apart. Train A leaves P at 8:00 AM heading toward Q at 40 km/h. Train B leaves Q at 9:00 AM heading toward P at 60 km/h. At what time will the two trains cross each other?",
-    "p4_s": "Step 1: Normalize departure times. Train A starts 1 hour earlier (at 8:00 AM):\nDistance covered by Train A from 8:00 AM to 9:00 AM = 40 km/h * 1 hr = 40 km.\nStep 2: Remaining distance between trains at 9:00 AM:\nRemaining Distance = 360 km - 40 km = 320 km.\nStep 3: At 9:00 AM, both trains are moving toward each other (opposite directions):\nRelative Speed = Speed_A + Speed_B = 40 + 60 = 100 km/h.\nStep 4: Time taken to meet after 9:00 AM:\nTime = Distance / Relative Speed = 320 / 100 = 3.2 hours.\nConvert 0.2 hours to minutes: 0.2 * 60 = 12 minutes.\nTime to meet = 3 hours and 12 minutes.\nStep 5: Exact clock time of meeting:\n9:00 AM + 3 hours 12 minutes = 12:12 PM.\nAnswer: The trains cross each other at 12:12 PM.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "A car travels 300 meters in 15 seconds. Find its speed in km/h."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "A boy goes to school at 3 km/h and returns at 2 km/h. If he takes 5 hours in all, find the distance."
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "If a person walks at 14 km/h instead of 10 km/h, he would have walked 20 km more. Find actual distance."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "Two cyclists start from the same point at the same time in opposite directions at 15 km/h and 18 km/h. When will they be 99 km apart?"
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "Excluding stoppages, the speed of a bus is 54 km/h, and including stoppages, it is 45 km/h. For how many minutes does the bus stop per hour?"
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Boats & Streams",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Boats & Streams",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Boats & Streams",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Boats & Streams",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Boats & Streams",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A boat travels downstream at 16 km/hr and upstream at 10 km/hr. What is the speed of the boat in still water?",
+        "options": {
+          "A": "13 km/hr",
+          "B": "12 km/hr",
+          "C": "14 km/hr",
+          "D": "15 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Speed in still water = (Downstream + Upstream) / 2 = (16 + 10) / 2 = 13 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A boat goes 24 km upstream and 28 km downstream in 6 hours. It goes 30 km upstream and 21 km downstream in 6.5 hours. Speed of stream:",
+        "options": {
+          "A": "4 km/hr",
+          "B": "2 km/hr",
+          "C": "3 km/hr",
+          "D": "5 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Let upstream = U, downstream = D. Solving gives U = 6 km/hr, D = 14 km/hr. Stream speed = (14 - 6)/2 = 4 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "A man can row 9 1/3 km/hr in still water and finds that it takes him thrice as much time to row up than as to row down. Stream speed:",
+        "options": {
+          "A": "4 2/3 km/hr",
+          "B": "3 1/3 km/hr",
+          "C": "2 1/2 km/hr",
+          "D": "4 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Downstream = 3 * Upstream => u + v = 3(u - v) => 2u = 4v => v = u / 2 = (28/3) / 2 = 14/3 = 4 2/3 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Two runners run along a 400 m circular track in the same direction at 6 m/s and 10 m/s. When will they meet for the first time?",
+        "options": {
+          "A": "100 secs",
+          "B": "80 secs",
+          "C": "60 secs",
+          "D": "120 secs"
+        },
+        "correct_answer": "A",
+        "explanation": "Relative speed = 10 - 6 = 4 m/s. Time to meet = Track length / Relative speed = 400 / 4 = 100 seconds.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Two runners start from the same point on a 1,200 m circular track running in opposite directions at 5 m/s and 3 m/s. When do they meet?",
+        "options": {
+          "A": "150 secs",
+          "B": "120 secs",
+          "C": "200 secs",
+          "D": "180 secs"
+        },
+        "correct_answer": "A",
+        "explanation": "Opposite directions: speeds add. Relative speed = 5 + 3 = 8 m/s. Time = 1,200 / 8 = 150 seconds.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "A boat covers 40 km downstream in 2 hours and 30 km upstream in 3 hours. What is the speed of the current?",
+        "options": {
+          "A": "5 km/hr",
+          "B": "4 km/hr",
+          "C": "6 km/hr",
+          "D": "3 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Downstream = 40/2 = 20 km/hr. Upstream = 30/3 = 10 km/hr. Current = (20 - 10) / 2 = 5 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "A man rows to a place 48 km away and comes back in 14 hours. He finds he can row 4 km with the stream in the same time as 3 km against. Rate of stream:",
+        "options": {
+          "A": "1 km/hr",
+          "B": "1.5 km/hr",
+          "C": "2 km/hr",
+          "D": "0.5 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Ratio D:U = 4:3. 48/4k + 48/3k = 14 => 12/k + 16/k = 14 => 28/k = 14 => k = 2. D = 8, U = 6. Stream = (8 - 6)/2 = 1 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A circular running track is 600 m long. A and B start at the same time at speeds 15 m/s and 10 m/s in same direction. How many times will they cross in 10 minutes?",
+        "options": {
+          "A": "5 times",
+          "B": "4 times",
+          "C": "6 times",
+          "D": "8 times"
+        },
+        "correct_answer": "A",
+        "explanation": "Relative speed = 5 m/s. First meeting = 600/5 = 120 secs. In 10 mins (600 secs), meetings = 600 / 120 = 5 times.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "A swimmer can swim in still water at 5 km/hr. If the river speed is 1 km/hr, it takes him 75 minutes to row to a place and back. How far is the place?",
+        "options": {
+          "A": "3 km",
+          "B": "2.5 km",
+          "C": "4 km",
+          "D": "3.5 km"
+        },
+        "correct_answer": "A",
+        "explanation": "D/6 + D/4 = 75/60 = 5/4 => 5D/12 = 5/4 => D = 3 km.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Three runners A, B, C run around a circular track of 12 km at 3 km/hr, 7 km/hr, and 13 km/hr in the same direction. When will they meet at the start point?",
+        "options": {
+          "A": "12 hours",
+          "B": "8 hours",
+          "C": "6 hours",
+          "D": "24 hours"
+        },
+        "correct_answer": "A",
+        "explanation": "Time for 1 lap: A=12/3=4 hrs, B=12/7 hrs, C=12/13 hrs. Meeting at start = LCM(4, 12/7, 12/13) = LCM(4, 12, 12) / HCF(1, 7, 13) = 12 / 1 = 12 hours.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Boats & Streams (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "Speed = 300/15 = 20 m/s. In km/h = 20 * (18/5) = 72 km/h. Answer: 72 km/h."
-      ],
-      [
-        "Solution Q2:",
-        "Avg Speed = (2*3*2)/(3+2) = 12/5 = 2.4 km/h. Total distance = 2.4 * 5 = 12 km. One-way distance = 12/2 = 6 km. Answer: 6 km."
-      ],
-      [
-        "Solution Q3:",
-        "Time is constant. D1/D2 = S1/S2 ==> D / (D + 20) = 10 / 14 = 5 / 7 ==> 7D = 5D + 100 ==> 2D = 100 ==> D = 50 km. Answer: 50 km."
-      ],
-      [
-        "Solution Q4:",
-        "Opposite directions ==> Relative speed = 15 + 18 = 33 km/h. Time = 99 / 33 = 3 hours. Answer: 3 hours."
-      ],
-      [
-        "Solution Q5:",
-        "Stoppage time per hour = [(Speed_without - Speed_with) / Speed_without] * 60 = [(54 - 45) / 54] * 60 = (9 / 54) * 60 = (1/6) * 60 = 10 minutes. Answer: 10 minutes per hour."
-      ]
-    ],
-    "trap": "In stoppage questions, always divide the speed difference by the speed EXCLUDING stoppages (the higher speed), never by the stopped speed."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Find the Duplicate Number",
+      "difficulty": "Easy",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive, find the duplicate number.",
+      "solution_approach": "1. Apply Fast & Slow Pointers (Cycle & Midpoint) algorithmic technique.\n2. Combines fast and slow pointer cycle detection with mathematical re-indexing to locate the cycle entrance node.\n3. Invariants: If list head is distance L from cycle entry, and collision occurs at distance k from entry: L = (m * C) - k. Resetting one pointer to head aligns both at cycle entry.",
+      "code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+      "java_solution": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+      "solution_java": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Reorder List",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "You are given the head of a singly linked-list. Reorder the list to be: L0 -> Ln -> L1 -> Ln-1 -> L2 -> Ln-2...",
+      "solution_approach": "1. Identify interview variation of Fast & Slow Pointers (Cycle & Midpoint).\n2. Handle edge cases: No cycle present, Cycle spans entire list, Single node self cycle.\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+      "java_solution": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+      "solution_java": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Fast & Slow Pointers (Cycle & Midpoint)",
+    "category": "Two Pointers",
+    "concept": "Combines fast and slow pointer cycle detection with mathematical re-indexing to locate the cycle entrance node.",
+    "why_it_works": "If list head is distance L from cycle entry, and collision occurs at distance k from entry: L = (m * C) - k. Resetting one pointer to head aligns both at cycle entry.",
+    "visual_explanation": "Head ---- L ----> [Cycle Entry] ---- k ----> [Collision]\\nAdvance Head pointer and Collision pointer at 1x speed -> Meet exactly at Cycle Entry!",
+    "java_code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                ListNode ptr = head;\n                while (ptr != slow) {\n                    ptr = ptr.next;\n                    slow = slow.next;\n                }\n                return ptr;\n            }\n        }\n        return null;\n    }\n}",
+    "code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                ListNode ptr = head;\n                while (ptr != slow) {\n                    ptr = ptr.next;\n                    slow = slow.next;\n                }\n                return ptr;\n            }\n        }\n        return null;\n    }\n}",
+    "python_code": "public class Solution {\n    public ListNode detectCycle(ListNode head) {\n        if (head == null || head.next == null) return null;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n            if (slow == fast) {\n                ListNode ptr = head;\n                while (ptr != slow) {\n                    ptr = ptr.next;\n                    slow = slow.next;\n                }\n                return ptr;\n            }\n        }\n        return null;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4: Guard check for empty or single element list.",
+      "Line 5-8: Fast moves 2 steps, slow moves 1 step.",
+      "Line 9: On collision, initialize ptr at head.",
+      "Line 11-14: Advance ptr and slow by 1 step until they meet at cycle entry."
+    ],
+    "dry_run": "Cycle entry at node 2. Collision occurs at node 4. Advancing head and node 4 simultaneously converges at node 2.",
+    "complexity": "O(N) Time, O(1) Auxiliary Space",
+    "edge_cases": [
+      "No cycle present",
+      "Cycle spans entire list",
+      "Single node self cycle"
+    ],
+    "interview_variations": [
+      "Find the Duplicate Number",
+      "Happy Number",
+      "Circular Array Loop"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-09-01",
+        "title": "Problem 1: Find the Duplicate Number",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive, find the duplicate number.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Fast & Slow Pointers (Cycle & Midpoint) algorithmic technique.\n2. Combines fast and slow pointer cycle detection with mathematical re-indexing to locate the cycle entrance node.\n3. Invariants: If list head is distance L from cycle entry, and collision occurs at distance k from entry: L = (m * C) - k. Resetting one pointer to head aligns both at cycle entry.",
+        "solution_java": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+        "code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+        "java_code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-09-02",
+        "title": "Problem 2: Reorder List",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given the head of a singly linked-list. Reorder the list to be: L0 -> Ln -> L1 -> Ln-1 -> L2 -> Ln-2...",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Fast & Slow Pointers (Cycle & Midpoint).\n2. Handle edge cases: No cycle present, Cycle spans entire list, Single node self cycle.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+        "solution_python": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+        "code": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+        "java_code": "public class Solution {\n    public void reorderList(ListNode head) {\n        if (head == null || head.next == null) return;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null, curr = slow.next;\n        slow.next = null;\n        while (curr != null) {\n            ListNode temp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = temp;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            ListNode t1 = p1.next, t2 = p2.next;\n            p1.next = p2;\n            p2.next = t1;\n            p1 = t1;\n            p2 = t2;\n        }\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "DBMS",
+    "topic": "Relational Algebra, SQL Joins & Subquery Optimization",
+    "detailed_notes": [
+      "Relational Algebra is the formal procedural query language underlying SQL query compilation and optimization.\n\nFundamental Operators:\n1. Selection (sigma): Filters tuples satisfying a predicate: sigma_{dept='CS'}(Students).\n2. Projection (pi): Selects specific columns and eliminates duplicates: pi_{name, roll}(Students).\n3. Cartesian Product (X): Combines every tuple of R with every tuple of S.\n4. Set Operations: Union (U), Set Difference (-), Intersection (cap) (require Union Compatibility).\n5. Natural Join (bowtie): Equijoin on all common attribute names followed by projection eliminating duplicate columns.\n\nSQL Joins Deep-Dive:\n- INNER JOIN: Returns rows with matching values in both tables.\n- LEFT OUTER JOIN: Returns all rows from left table, with matched rows from right table (or NULL if no match).\n- RIGHT OUTER JOIN: Returns all rows from right table, with matched left rows or NULL.\n- FULL OUTER JOIN: Combines LEFT and RIGHT join results; returns all rows from both tables, filling NULLs on mismatches.\n- CROSS JOIN: Cartesian product of both tables (size = N * M).\n- SELF JOIN: Joining a table to itself using aliases (common for hierarchical manager-employee relationships).\n\nSubqueries vs Joins:\nCorrelated Subqueries execute once for every candidate row evaluated by the outer query, resulting in O(N*M) execution. Query optimizers transform correlated subqueries into equivalent Hash Joins or Merge Joins to run in O(N + M) time."
+    ],
+    "key_definitions": [
+      {
+        "term": "Cartesian Product",
+        "definition": "A relational operation combining all tuples of two tables, producing N * M rows."
+      },
+      {
+        "term": "Natural Join",
+        "definition": "A join matching tuples on identical column names and projecting out duplicate columns."
+      },
+      {
+        "term": "Correlated Subquery",
+        "definition": "A nested SQL query that references columns from the outer query, re-evaluating for every outer row."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "What is the difference between WHERE and HAVING clauses in SQL?",
+        "a": "WHERE filters individual rows before any grouping occurs and cannot evaluate aggregate functions (e.g., WHERE count(*) > 5 is illegal). HAVING filters aggregated groups after the GROUP BY clause has executed and is specifically designed to evaluate aggregate conditions (e.g., HAVING sum(salary) > 50000)."
+      },
+      {
+        "q": "Explain the difference between INNER JOIN, LEFT JOIN, and FULL OUTER JOIN.",
+        "a": "INNER JOIN returns only rows where the join condition evaluates to TRUE in both tables. LEFT JOIN returns all rows from the left table; matching rows from the right table are populated, and unmatched right columns return NULL. FULL OUTER JOIN returns all rows from both tables, populating columns with NULL whenever an opposite record does not exist."
+      },
+      {
+        "q": "Why are correlated subqueries generally slower than JOINs, and how do database query engines optimize them?",
+        "a": "A correlated subquery references values from the outer query, forcing the engine to execute the inner query once for every single row in the outer table (nested loop, O(N * M)). Modern query planners optimize these by rewriting correlated subqueries into INNER or LEFT JOINs, allowing the query engine to use fast O(N + M) Hash Join or Merge Join algorithms."
+      },
+      {
+        "q": "Write a query to find the N-th highest salary from an Employee table without using LIMIT/TOP.",
+        "a": "SELECT DISTINCT salary FROM Employee E1 WHERE (N - 1) = (SELECT COUNT(DISTINCT salary) FROM Employee E2 WHERE E2.salary > E1.salary). Alternatively, using modern window functions: WITH RankedSalaries AS (SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) as rank_pos FROM Employee) SELECT salary FROM RankedSalaries WHERE rank_pos = N."
+      },
+      {
+        "q": "What is the difference between RANK(), DENSE_RANK(), and ROW_NUMBER() in SQL?",
+        "a": "ROW_NUMBER() assigns a unique sequential integer to every row regardless of ties (1, 2, 3, 4). RANK() assigns the same rank to identical values but leaves gaps in rank sequence after ties (1, 2, 2, 4). DENSE_RANK() assigns the same rank to ties without skipping subsequent ranks (1, 2, 2, 3)."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-09-01",
+        "question": "Which relational algebra operator selects specific columns from a relation?",
+        "options": [
+          "Selection (sigma)",
+          "Projection (pi)",
+          "Cartesian Product (X)",
+          "Join (bowtie)"
+        ],
+        "correct_answer": "B",
+        "explanation": "Projection (pi) extracts specified attribute columns and removes duplicate rows."
+      },
+      {
+        "id": "CS-09-02",
+        "question": "Which clause must be used to filter groups based on aggregate function values in SQL?",
+        "options": [
+          "WHERE",
+          "HAVING",
+          "GROUP BY",
+          "ORDER BY"
+        ],
+        "correct_answer": "B",
+        "explanation": "HAVING filters groups post-aggregation; WHERE cannot take aggregate functions."
+      },
+      {
+        "id": "CS-09-03",
+        "question": "If Table A has 5 rows and Table B has 4 rows, how many rows are returned by a CROSS JOIN?",
+        "options": [
+          "9",
+          "20",
+          "1",
+          "5"
+        ],
+        "correct_answer": "B",
+        "explanation": "CROSS JOIN produces the Cartesian product: 5 * 4 = 20 rows."
+      },
+      {
+        "id": "CS-09-04",
+        "question": "If two employees tie for salary rank 2, what rank will DENSE_RANK() assign to the next employee?",
+        "options": [
+          "3",
+          "4",
+          "2",
+          "NULL"
+        ],
+        "correct_answer": "A",
+        "explanation": "DENSE_RANK() does not skip rank values after ties: 1, 2, 2, 3."
+      },
+      {
+        "id": "CS-09-05",
+        "question": "A LEFT OUTER JOIN returns:",
+        "options": [
+          "Only matching rows from both tables",
+          "All rows from the left table and matched rows from the right table",
+          "Only non-matching rows from left table",
+          "All rows from right table only"
+        ],
+        "correct_answer": "B",
+        "explanation": "LEFT JOIN preserves every row from the left relation, filling NULL for unmatched right attributes."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "TerraStract",
+    "repo_path": "D:\\Projects\\terra_extract",
+    "feature_focus": "Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nPreventing HTTP gateway timeouts when processing 50-page PDF documents.\n\nWHAT TO MEMORIZE:\nHTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.\n\n60-SECOND INTERVIEW PITCH:\nProcessing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts.",
+    "interview_qa": [
+      {
+        "q": "How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?",
+        "a": "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the uploaded file, generates a UUID task ID, enqueues the extraction job to an async background worker queue, and immediately returns HTTP 202 Accepted with a status URL. Clients poll `/api/extract/status/{task_id}` or receive a webhook callback upon completion."
+      },
+      {
+        "q": "How do you clean up temporary PDF files and memory buffers after processing?",
+        "a": "We use Python context managers (`tempfile.NamedTemporaryFile`) and wrap the processing block in `try...finally` constructs to guarantee that temporary decrypted PDF fragments and image slices are deleted from disk and unlinked, preventing disk exhaustion and data leakage."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 9 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 9 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'NSE2 / BulkBeat TV', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In NSE2 / BulkBeat TV (Python aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Dhan API), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of NSE2 / BulkBeat TV.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 08 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5004 — Regula-Falsi & Newton-Raphson Methods.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks.\n• Algorithmic Invariant: Optimal time and space complexity rules for Fast & Slow Pointers (Linked List Mid/Cycle).\n• Systems Law: Architectural equations, protocols, and complexity bounds for DBMS Architecture & Three-Schema Model.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Regula-Falsi & Newton-Raphson Methods.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Fast & Slow Pointers (Linked List Mid/Cycle).\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: TerraStract.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 9 Q1: What is the primary academic thesis of Regula-Falsi & Newton-Raphson Methods?",
+        "a": "Core theoretical and practical mastery of Regula-Falsi & Newton-Raphson Methods under the CSJM University BCA-5004 syllabus."
+      },
+      {
+        "q": "Day 9 Q2: What is the key speed calculation formula applied in Boats, Streams & Circular Tracks?",
+        "a": "High-speed corporate placement arithmetic shortcut for Boats, Streams & Circular Tracks in campus recruitment exams."
+      },
+      {
+        "q": "Day 9 Q3: What is the time complexity of Fast & Slow Pointers (Linked List Mid/Cycle)?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 9 Q4: What is the central architectural principle of DBMS Architecture & Three-Schema Model?",
+        "a": "Foundational systems engineering rule governing DBMS Architecture & Three-Schema Model in production environments."
+      },
+      {
+        "q": "Day 9 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 9 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 9 Q7: What is the verified technical foundation of TerraStract?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 9 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 9 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 9 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5004 — Regula-Falsi & Newton-Raphson Methods.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks.\n• Algorithmic Invariant: Optimal time and space complexity rules for Fast & Slow Pointers (Linked List Mid/Cycle).\n• Systems Law: Architectural equations, protocols, and complexity bounds for DBMS Architecture & Three-Schema Model."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5004 — Regula-Falsi & Newton-Raphson Methods."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Fast & Slow Pointers (Linked List Mid/Cycle)."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: TerraStract."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 09 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "What is the order of convergence for the Newton-Raphson iterative method for solving f(x) = 0 with simple roots?",
+        "a": "Answer: C\n\nNewton-Raphson exhibits quadratic convergence (order 2), meaning the number of correct decimal places approximately doubles each iteration."
+      },
+      {
+        "q": "What is the Newton-Raphson iteration formula for finding root x_{n+1} from current estimate x_n?",
+        "a": "Answer: A\n\nNewton-Raphson uses the tangent slope at x_n: x_{n+1} = x_n - f(x_n) / f'(x_n)."
+      },
+      {
+        "q": "Under what condition does the Newton-Raphson method fail or breakdown completely?",
+        "a": "Answer: B\n\nIf the first derivative f'(x_n) becomes zero, division by zero occurs because the tangent line is horizontal and never intersects the x-axis."
+      },
+      {
+        "q": "How does the Regula-Falsi (False Position) method differ geometrically from the Bisection method?",
+        "a": "Answer: B\n\nRegula-Falsi replaces the midpoint subdivision with the x-intercept of the secant chord joining (a, f(a)) and (b, f(b)): c = [a*f(b) - b*f(a)] / [f(b) - f(a)]."
+      },
+      {
+        "q": "Using the Newton-Raphson iteration formula x_{n+1} = 0.5 * (x_n + N / x_n), what value is being computed?",
+        "a": "Answer: C\n\nApplying Newton-Raphson to f(x) = x^2 - N = 0 yields x_{n+1} = x_n - (x_n^2 - N)/(2x_n) = 0.5 * (x_n + N / x_n), which computes sqrt(N)."
+      },
+      {
+        "q": "A boat can travel with a speed of 13 km/hr in still water. If the speed of the stream is 4 km/hr, find the time taken by the boat to go 68 km downstream.",
+        "a": "Answer: A\n\nDownstream speed = 13 + 4 = 17 km/hr. Time = 68 / 17 = 4 hours."
+      },
+      {
+        "q": "A boat running upstream takes 8 hours 48 minutes to cover a certain distance, while it takes 4 hours to cover the same distance downstream. What is the ratio between the speed of the boat and speed of the water current?",
+        "a": "Answer: A\n\nUpstream time = 8 + 48/60 = 8.8 hrs = 44/5 hrs. Downstream time = 4 hrs. Distance is equal: (u - v) * (44/5) = (u + v) * 4 => 11(u - v) = 5(u + v) => 6u = 16v => u/v = 16/6 = 8/3."
+      },
+      {
+        "q": "A man rows downstream 32 km and 14 km upstream, taking 6 hours for each journey. What is the velocity of the current?",
+        "a": "Answer: A\n\nDownstream speed D = 32 / 6 km/hr. Upstream speed U = 14 / 6 km/hr. Speed of current = (D - U) / 2 = [(32 - 14)/6] / 2 = (18 / 6) / 2 = 3 / 2 = 1.5 km/hr."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-09-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the order of convergence for the Newton-Raphson iterative method for solving f(x) = 0 with simple roots?",
+        "options": [
+          "1 (Linear)",
+          "1.618 (Golden ratio)",
+          "2 (Quadratic)",
+          "3 (Cubic)"
+        ],
+        "correct_answer": "C",
+        "explanation": "Newton-Raphson exhibits quadratic convergence (order 2), meaning the number of correct decimal places approximately doubles each iteration."
+      },
+      {
+        "id": "TEST-09-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the Newton-Raphson iteration formula for finding root x_{n+1} from current estimate x_n?",
+        "options": [
+          "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "x_{n+1} = x_n + f(x_n) / f'(x_n)",
+          "x_{n+1} = x_n - f'(x_n) / f(x_n)",
+          "x_{n+1} = [x_n + f(x_n)] / 2"
+        ],
+        "correct_answer": "A",
+        "explanation": "Newton-Raphson uses the tangent slope at x_n: x_{n+1} = x_n - f(x_n) / f'(x_n)."
+      },
+      {
+        "id": "TEST-09-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Under what condition does the Newton-Raphson method fail or breakdown completely?",
+        "options": [
+          "When f(x_n) = 0",
+          "When f'(x_n) = 0 (tangent line is parallel to x-axis)",
+          "When f''(x_n) > 0",
+          "When the initial guess is an integer"
+        ],
+        "correct_answer": "B",
+        "explanation": "If the first derivative f'(x_n) becomes zero, division by zero occurs because the tangent line is horizontal and never intersects the x-axis."
+      },
+      {
+        "id": "TEST-09-04",
+        "category": "Academic (Academic Theory)",
+        "question": "How does the Regula-Falsi (False Position) method differ geometrically from the Bisection method?",
+        "options": [
+          "It uses the arithmetic midpoint (a + b) / 2 to divide the interval",
+          "It connects (a, f(a)) and (b, f(b)) with a secant straight line and finds its x-intercept",
+          "It uses the tangent line at the midpoint",
+          "It requires evaluating the second derivative"
+        ],
+        "correct_answer": "B",
+        "explanation": "Regula-Falsi replaces the midpoint subdivision with the x-intercept of the secant chord joining (a, f(a)) and (b, f(b)): c = [a*f(b) - b*f(a)] / [f(b) - f(a)]."
+      },
+      {
+        "id": "TEST-09-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Using the Newton-Raphson iteration formula x_{n+1} = 0.5 * (x_n + N / x_n), what value is being computed?",
+        "options": [
+          "N^2",
+          "1 / N",
+          "sqrt(N)",
+          "log(N)"
+        ],
+        "correct_answer": "C",
+        "explanation": "Applying Newton-Raphson to f(x) = x^2 - N = 0 yields x_{n+1} = x_n - (x_n^2 - N)/(2x_n) = 0.5 * (x_n + N / x_n), which computes sqrt(N)."
+      },
+      {
+        "id": "TEST-09-06",
+        "category": "Placement Aptitude",
+        "question": "A boat can travel with a speed of 13 km/hr in still water. If the speed of the stream is 4 km/hr, find the time taken by the boat to go 68 km downstream.",
+        "options": [
+          "4 hours",
+          "5 hours",
+          "3.5 hours",
+          "4.5 hours"
+        ],
+        "correct_answer": "A",
+        "explanation": "Downstream speed = 13 + 4 = 17 km/hr. Time = 68 / 17 = 4 hours."
+      },
+      {
+        "id": "TEST-09-07",
+        "category": "Placement Aptitude",
+        "question": "A boat running upstream takes 8 hours 48 minutes to cover a certain distance, while it takes 4 hours to cover the same distance downstream. What is the ratio between the speed of the boat and speed of the water current?",
+        "options": [
+          "8 : 3",
+          "7 : 3",
+          "5 : 2",
+          "9 : 4"
+        ],
+        "correct_answer": "A",
+        "explanation": "Upstream time = 8 + 48/60 = 8.8 hrs = 44/5 hrs. Downstream time = 4 hrs. Distance is equal: (u - v) * (44/5) = (u + v) * 4 => 11(u - v) = 5(u + v) => 6u = 16v => u/v = 16/6 = 8/3."
+      },
+      {
+        "id": "TEST-09-08",
+        "category": "Placement Aptitude",
+        "question": "A man rows downstream 32 km and 14 km upstream, taking 6 hours for each journey. What is the velocity of the current?",
+        "options": [
+          "1.5 km/hr",
+          "2 km/hr",
+          "1 km/hr",
+          "2.5 km/hr"
+        ],
+        "correct_answer": "A",
+        "explanation": "Downstream speed D = 32 / 6 km/hr. Upstream speed U = 14 / 6 km/hr. Speed of current = (D - U) / 2 = [(32 - 14)/6] / 2 = (18 / 6) / 2 = 3 / 2 = 1.5 km/hr."
+      },
+      {
+        "id": "TEST-09-09",
+        "category": "Placement Aptitude",
+        "question": "A motorboat whose speed in still water is 15 km/hr goes 30 km downstream and comes back in a total of 4 hours 30 minutes. What is the speed of the stream?",
+        "options": [
+          "5 km/hr",
+          "4 km/hr",
+          "6 km/hr",
+          "3 km/hr"
+        ],
+        "correct_answer": "A",
+        "explanation": "30/(15 + v) + 30/(15 - v) = 4.5 => 30 [ 30 / (225 - v^2) ] = 4.5 => 900 / (225 - v^2) = 4.5 => 225 - v^2 = 200 => v^2 = 25 => v = 5 km/hr."
+      },
+      {
+        "id": "TEST-09-10",
+        "category": "Placement Aptitude",
+        "question": "Two cyclists start from the same point on a circular track of 600 meters in the same direction at speeds of 10 m/s and 15 m/s. When will they meet for the first time?",
+        "options": [
+          "120 seconds",
+          "60 seconds",
+          "90 seconds",
+          "150 seconds"
+        ],
+        "correct_answer": "A",
+        "explanation": "Relative speed in same direction = 15 - 10 = 5 m/s. Time to meet = Track length / Relative speed = 600 / 5 = 120 seconds."
+      },
+      {
+        "id": "TEST-09-11",
+        "category": "Core CS (DBMS)",
+        "question": "Which relational algebra operator selects specific columns from a relation?",
+        "options": [
+          "Selection (sigma)",
+          "Projection (pi)",
+          "Cartesian Product (X)",
+          "Join (bowtie)"
+        ],
+        "correct_answer": "B",
+        "explanation": "Projection (pi) extracts specified attribute columns and removes duplicate rows."
+      },
+      {
+        "id": "TEST-09-12",
+        "category": "Core CS (DBMS)",
+        "question": "Which clause must be used to filter groups based on aggregate function values in SQL?",
+        "options": [
+          "WHERE",
+          "HAVING",
+          "GROUP BY",
+          "ORDER BY"
+        ],
+        "correct_answer": "B",
+        "explanation": "HAVING filters groups post-aggregation; WHERE cannot take aggregate functions."
+      },
+      {
+        "id": "TEST-09-13",
+        "category": "Core CS (DBMS)",
+        "question": "If Table A has 5 rows and Table B has 4 rows, how many rows are returned by a CROSS JOIN?",
+        "options": [
+          "9",
+          "20",
+          "1",
+          "5"
+        ],
+        "correct_answer": "B",
+        "explanation": "CROSS JOIN produces the Cartesian product: 5 * 4 = 20 rows."
+      },
+      {
+        "id": "TEST-09-14",
+        "category": "Core CS (DBMS)",
+        "question": "If two employees tie for salary rank 2, what rank will DENSE_RANK() assign to the next employee?",
+        "options": [
+          "3",
+          "4",
+          "2",
+          "NULL"
+        ],
+        "correct_answer": "A",
+        "explanation": "DENSE_RANK() does not skip rank values after ties: 1, 2, 2, 3."
+      },
+      {
+        "id": "TEST-09-15",
+        "category": "Core CS (DBMS)",
+        "question": "A LEFT OUTER JOIN returns:",
+        "options": [
+          "Only matching rows from both tables",
+          "All rows from the left table and matched rows from the right table",
+          "Only non-matching rows from left table",
+          "All rows from right table only"
+        ],
+        "correct_answer": "B",
+        "explanation": "LEFT JOIN preserves every row from the left relation, filling NULL for unmatched right attributes."
+      },
+      {
+        "id": "TEST-09-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Fast & Slow Pointers (Cycle & Midpoint)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Fast & Slow Pointers (Cycle & Midpoint)' pattern operates with O(N) Time, O(1) Auxiliary Space: If list head is distance L from cycle entry, and collision occurs at distance k from entry: L = (m * C) - k. Resetting one pointer to head aligns both at cycle entry.."
+      },
+      {
+        "id": "TEST-09-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Fast & Slow Pointers (Cycle & Midpoint)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: No cycle present.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Fast & Slow Pointers (Cycle & Midpoint) include No cycle present, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-09-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Find the Duplicate Number', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-09-19",
+        "category": "Projects (TerraStract)",
+        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines'?",
+        "options": [
+          "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For TerraStract, the architectural invariant is: HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.."
+      },
+      {
+        "id": "TEST-09-20",
+        "category": "Projects (TerraStract)",
+        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?'?",
+        "options": [
+          "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` en."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-09",
+    "title": "Find the Duplicate Number (Fast & Slow Pointers (Cycle & Midpoint))",
+    "time_limit_minutes": 25,
+    "difficulty": "Easy",
+    "problem_statement": "Solve the core placement problem: Find the Duplicate Number.\n\nGiven an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive, find the duplicate number.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Fast & Slow Pointers (Cycle & Midpoint)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: No cycle present, Cycle spans entire list, Single node self cycle.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Fast & Slow Pointers (Cycle & Midpoint)\n    public int findDuplicate(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Fast & Slow Pointers (Cycle & Midpoint)\n    public int findDuplicate(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public int findDuplicate(int[] nums) {\n        int slow = nums[0];\n        int fast = nums[0];\n        do {\n            slow = nums[slow];\n            fast = nums[nums[fast]];\n        } while (slow != fast);\n        slow = nums[0];\n        while (slow != fast) {\n            slow = nums[slow];\n            fast = nums[fast];\n        }\n        return slow;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Fast & Slow Pointers (Cycle & Midpoint) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: No cycle present",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

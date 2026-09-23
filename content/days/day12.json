@@ -1,172 +1,2449 @@
 {
   "day": 12,
-  "title": "Java Collections, Tree Traversals & Time and Work LCM Method",
-  "sem_data": {
-    "subject": "BCA-5002 Java Programming",
-    "topic": "Unit II \u2014 Java Collections Framework: Hierarchy, List, Set, Map & Iterators",
-    "detailed_notes": [
-      "The Java Collections Framework (JCF) provides a unified architecture for representing, manipulating, and storing groups of objects. Situated in the 'java.util' package, it reduces programming effort, increases performance, and establishes high-level interoperability between unrelated APIs.",
-      "Core Collection Hierarchy Structure:\nThe framework is organized into two distinct interface root hierarchies:\n1. java.util.Collection: The root interface for collections of individual elements. It branches into:\n   - List: An ordered, index-based collection that permits duplicate elements. Implementations: ArrayList (dynamic resizable array, fast random access O(1), slow insertion/deletion O(N)), LinkedList (doubly linked list, fast insertion/deletion O(1), slow sequential access O(N)), Vector (thread-safe, synchronized equivalent of ArrayList, slower due to lock contention), and Stack (LIFO subclass of Vector).\n   - Set: An unordered collection that contains NO duplicate elements. Implementations: HashSet (backed by HashMap, O(1) average lookup, no order guarantee), LinkedHashSet (maintains insertion order via doubly linked list), and TreeSet (implements NavigableSet/SortedSet, backed by Red-Black tree, elements sorted naturally or via Comparator, O(log N) operations).\n   - Queue / Deque: Collections designed for holding elements prior to processing. Implementations: PriorityQueue (min-heap ordering), ArrayDeque (resizable array double-ended queue, faster than Stack/LinkedList).\n2. java.util.Map: A completely separate root interface (does NOT inherit from Collection) mapping unique keys to values. Implementations: HashMap (hash table, O(1) average, permits one null key), LinkedHashMap (maintains insertion order), TreeMap (Red-Black tree, keys sorted, O(log N)), and Hashtable (legacy, synchronized, null keys/values strictly prohibited).",
-      "Cursors / Iterators in Java:\n\u2022 Iterator: Universal forward-only cursor for any Collection (hasNext(), next(), remove()).\n\u2022 ListIterator: Bidirectional cursor exclusive to List implementations (hasPrevious(), previous(), add(), set())."
+  "title": "Day 12: Java Collections Framework: Hierarchy, List vs Set vs Map & HashMap Internals & Two Pointers (Dutch National Flag)",
+  "streams": {
+    "academic": {
+      "unit": 3,
+      "topic": "Unit III — Java Collections Framework: Hierarchy, List vs Set vs Map & HashMap Internals",
+      "objectives": [
+        "Master Collections framework hierarchy.",
+        "Understand internal hashing mechanism of HashMap (Buckets, Hash collisions, Red-Black Trees)."
+      ],
+      "explanation": "The Java Collections Framework (`java.util`) provides a unified architecture for storing and manipulating groups of objects. The core root interfaces are `Collection` (extended by `List`, `Set`, and `Queue`) and `Map` (a separate key-value hierarchy). `List` preserves insertion order and allows duplicates (ArrayList, LinkedList); `Set` prohibits duplicates (HashSet, TreeSet); `Map` stores key-value pairs where keys must be unique (HashMap, TreeMap). In Java 8+, `HashMap` is implemented as an array of buckets (Node<K,V>[]). When multiple keys hash to the same bucket (collision), they form a singly linked list; if bucket length exceeds 8, the list converts into a balanced Red-Black Tree, slashing search time from O(N) to O(log N).",
+      "definitions": [
+        {
+          "term": "HashMap Bucket",
+          "definition": "An array slot in a hash table where key-value nodes are stored based on the computed hash code of the key."
+        },
+        {
+          "term": "Treeification in HashMap",
+          "definition": "The Java 8 optimization where a bucket linked list with more than 8 collided entries is transformed into a Red-Black Tree."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Collections Hierarchy",
+          "content": "Iterable -> Collection -> (List, Set, Queue); Map is separate."
+        },
+        {
+          "title": "HashMap Put Operation Internal Steps",
+          "content": "1. Calculate `hash(key)`; 2. Compute index `i = (n - 1) & hash`; 3. If bucket empty, insert node; 4. If occupied, traverse linked list checking `equals()`; 5. If key exists, overwrite value; 6. If not, append node; 7. If bucket length > 8, treeify to Red-Black Tree."
+        }
+      ],
+      "examples": [
+        "Storing student roll numbers (unique keys) and GPA scores (values) in a HashMap."
+      ],
+      "diagram": "+---------------------------------------------------+\n|             COLLECTIONS HIERARCHY                 |\n| Iterable -> Collection -> List (ArrayList, Vector)|\n|                        -> Set (HashSet, TreeSet)  |\n| Map -> (HashMap, TreeMap, LinkedHashMap)          |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Collection Interface",
+          "Duplicate Elements?",
+          "Insertion Order Preserved?",
+          "Underlying Data Structure"
+        ],
+        "rows": [
+          [
+            "ArrayList (List)",
+            "Allowed",
+            "Preserved",
+            "Resizable dynamic array (growth factor 1.5x)"
+          ],
+          [
+            "LinkedList (List)",
+            "Allowed",
+            "Preserved",
+            "Doubly linked list nodes"
+          ],
+          [
+            "HashSet (Set)",
+            "Prohibited",
+            "Not guaranteed (unordered)",
+            "Internal HashMap instance backing"
+          ],
+          [
+            "TreeSet (Set)",
+            "Prohibited",
+            "Sorted ascending natural order",
+            "Red-Black balanced binary search tree"
+          ],
+          [
+            "HashMap (Map)",
+            "Keys unique; Values duplicate",
+            "Not guaranteed (unordered)",
+            "Hash table (Array + Linked List + Red-Black Tree)"
+          ]
+        ]
+      },
+      "memorize": "Collection root has List, Set, Queue. Map is NOT a subtype of Collection! HashMap bucket collisions convert to Red-Black tree when length > 8.",
+      "understand": "Proper HashMap performance requires overriding both hashCode() and equals() methods consistently.",
+      "common_mistakes": "Saying Map extends Collection (Map has its own independent hierarchy).",
+      "exam_writing_guidance": "Draw the complete hierarchy tree, provide the 5-row comparison table, and write out the step-by-step HashMap put() hashing mechanism.",
+      "mini_practice": [
+        "Why must hashCode() and equals() be overridden together?"
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2023-24 (Q3)",
+          "marks": 15,
+          "question": "Describe the Java Collections Framework hierarchy with a neat diagram. Differentiate between List, Set, and Map. Explain the internal working of HashMap. (15 Marks)",
+          "rubric": "Hierarchy Diagram (4 marks) + List vs Set vs Map Comparison (4 marks) + HashMap internal architecture & hashing (5 marks) + equals/hashCode contract (2 marks) = 15 Marks.",
+          "model_answer": "The Java Collections Framework provides an standardized architecture for manipulating collections of objects. The hierarchy is rooted in Iterable -> Collection, branching into: 1. List (ordered collection, allows duplicates, positional index access via ArrayList and LinkedList); 2. Set (unordered collection, guarantees uniqueness via HashSet and sorted TreeSet); 3. Map (independent key-value hierarchy via HashMap and TreeMap). Internal Working of HashMap: In Java 8+, HashMap is backed by an array of Node<K,V> buckets with a default capacity of 16 and a load factor of 0.75. When put(key, value) is invoked, it computes the hash code of the key and maps it to a bucket index: index = (n - 1) & hash. If the bucket is empty, the node is inserted. If a collision occurs, nodes are linked in a singly linked list. If the number of collided elements in a single bucket reaches the TREEIFY_THRESHOLD (8 items) and array capacity >= 64, the linked list transforms into a balanced Red-Black Tree, improving collision lookup performance from O(N) to O(log N).",
+          "answer_structure": "Hierarchy Diagram -> List vs Set vs Map Table -> HashMap Internal Architecture & put() Steps -> Contract",
+          "important_points": [
+            "Map does not extend Collection",
+            "Load factor 0.75",
+            "Treeification threshold 8",
+            "hashCode and equals"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Complete diagram separating Collection and Map",
+            "Detailed explanation of hashing and treeification"
+          ],
+          "common_mistakes": [
+            "Stating that HashMap is synchronized (it is unsynchronized; ConcurrentHashMap is thread-safe)"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "What is the difference between ArrayList and LinkedList in Java? (5 Marks)",
+          "rubric": "Comparison table across Time Complexity & Storage (5 marks).",
+          "model_answer": "ArrayList is backed by a dynamic contiguous array, providing O(1) random access by index, but insertions/deletions in the middle require O(N) element shifting. LinkedList is backed by a doubly linked list of node objects; insertions and deletions at known iterator positions take O(1) pointer updates, but random access requires O(N) pointer traversal from head/tail. ArrayList consumes less memory per element as LinkedList requires extra pointer memory for prev and next references."
+        }
+      ],
+      "subject_code": "BCA-5002",
+      "subject_name": "Java Programming & Dynamic Webpage Design",
+      "mcqs": [
+        {
+          "id": "ACAD-12-01",
+          "question": "In dimensional data warehouse modeling, how is a Star Schema structured?",
+          "options": [
+            "A central fact table linked directly to denormalized dimension tables",
+            "A normalized fact table with multiple parent tables",
+            "A completely flat single CSV spreadsheet",
+            "A peer-to-peer network of dimension tables"
+          ],
+          "correct_answer": "A",
+          "explanation": "A star schema features a central numeric fact table surrounded by single-level denormalized dimension tables."
+        },
+        {
+          "id": "ACAD-12-02",
+          "question": "How does a Snowflake Schema differ fundamentally from a Star Schema?",
+          "options": [
+            "The fact table is split into multiple sub-facts",
+            "Dimension tables are normalized into 3NF hierarchies, splitting into sub-dimension tables",
+            "It does not use foreign keys",
+            "It cannot store historical time-series data"
+          ],
+          "correct_answer": "B",
+          "explanation": "Snowflake normalizes dimension tables into multiple related tables, reducing redundancy but increasing join complexity."
+        },
+        {
+          "id": "ACAD-12-03",
+          "question": "What characterizes a Fact Table in a Data Warehouse?",
+          "options": [
+            "Contains descriptive textual names and addresses",
+            "Contains quantitative numerical measures (metrics) and foreign keys referencing dimensions",
+            "Contains only SQL stored procedures",
+            "Stores only network routing tables"
+          ],
+          "correct_answer": "B",
+          "explanation": "Fact tables store additive, semi-additive numerical metrics (e.g., units sold, total revenue) and dimension foreign keys."
+        },
+        {
+          "id": "ACAD-12-04",
+          "question": "What are the three tiers in the standard Data Warehouse 3-tier architecture?",
+          "options": [
+            "Client Tier, Web Server Tier, Application Tier",
+            "Bottom Tier (Warehouse DB Server), Middle Tier (OLAP Server), Top Tier (Front-end Client Tools)",
+            "Physical Layer, Data Link Layer, Network Layer",
+            "Compiler, Assembler, Linker"
+          ],
+          "correct_answer": "B",
+          "explanation": "The 3 tiers are: Bottom (Relational DBMS & ETL staging), Middle (OLAP multidimensional engine), Top (BI query/reporting)."
+        },
+        {
+          "id": "ACAD-12-05",
+          "question": "What is the primary difference between ROLAP and MOLAP?",
+          "options": [
+            "ROLAP uses relational tables with star schemas; MOLAP uses precomputed multi-dimensional array cubes",
+            "ROLAP is always faster than MOLAP",
+            "MOLAP does not support slicing and dicing",
+            "ROLAP can only store images"
+          ],
+          "correct_answer": "A",
+          "explanation": "ROLAP accesses relational databases directly via SQL; MOLAP stores data in optimized multidimensional array data cubes."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023-24 (Q3)",
+        "marks": 15,
+        "question": "Describe the Java Collections Framework hierarchy with a neat diagram. Differentiate between List, Set, and Map. Explain the internal working of HashMap. (15 Marks)",
+        "rubric": "Hierarchy Diagram (4 marks) + List vs Set vs Map Comparison (4 marks) + HashMap internal architecture & hashing (5 marks) + equals/hashCode contract (2 marks) = 15 Marks.",
+        "model_answer": "The Java Collections Framework provides an standardized architecture for manipulating collections of objects. The hierarchy is rooted in Iterable -> Collection, branching into: 1. List (ordered collection, allows duplicates, positional index access via ArrayList and LinkedList); 2. Set (unordered collection, guarantees uniqueness via HashSet and sorted TreeSet); 3. Map (independent key-value hierarchy via HashMap and TreeMap). Internal Working of HashMap: In Java 8+, HashMap is backed by an array of Node<K,V> buckets with a default capacity of 16 and a load factor of 0.75. When put(key, value) is invoked, it computes the hash code of the key and maps it to a bucket index: index = (n - 1) & hash. If the bucket is empty, the node is inserted. If a collision occurs, nodes are linked in a singly linked list. If the number of collided elements in a single bucket reaches the TREEIFY_THRESHOLD (8 items) and array capacity >= 64, the linked list transforms into a balanced Red-Black Tree, improving collision lookup performance from O(N) to O(log N).",
+        "answer_structure": "Hierarchy Diagram -> List vs Set vs Map Table -> HashMap Internal Architecture & put() Steps -> Contract",
+        "important_points": [
+          "Map does not extend Collection",
+          "Load factor 0.75",
+          "Treeification threshold 8",
+          "hashCode and equals"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Complete diagram separating Collection and Map",
+          "Detailed explanation of hashing and treeification"
+        ],
+        "common_mistakes": [
+          "Stating that HashMap is synchronized (it is unsynchronized; ConcurrentHashMap is thread-safe)"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "What is the difference between ArrayList and LinkedList in Java? (5 Marks)",
+        "rubric": "Comparison table across Time Complexity & Storage (5 marks).",
+        "model_answer": "ArrayList is backed by a dynamic contiguous array, providing O(1) random access by index, but insertions/deletions in the middle require O(N) element shifting. LinkedList is backed by a doubly linked list of node objects; insertions and deletions at known iterator positions take O(1) pointer updates, but random access requires O(N) pointer traversal from head/tail. ArrayList consumes less memory per element as LinkedList requires extra pointer memory for prev and next references."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                   JAVA COLLECTIONS FRAMEWORK HIERARCHY                  |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|                           java.util.Collection                          |\n|                          /         |          \\                         |\n|                         /          |           \\                        |\n|                    java.util.List  |      java.util.Set                 |\n|                    /    |     \\    |       /     |     \\                |\n|           ArrayList LinkedList Vector Queue  HashSet LinkedHashSet TreeSet|\n|                                  |   |                                  |\n|                                Stack PriorityQueue                      |\n|                                                                         |\n|   [SEPARATE HIERARCHY]                    java.util.Map                 |\n|                                            /     |     \\                |\n|                                      HashMap LinkedHashMap TreeMap      |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-12-01",
+        "question": "In dimensional data warehouse modeling, how is a Star Schema structured?",
+        "options": [
+          "A central fact table linked directly to denormalized dimension tables",
+          "A normalized fact table with multiple parent tables",
+          "A completely flat single CSV spreadsheet",
+          "A peer-to-peer network of dimension tables"
+        ],
+        "correct_answer": "A",
+        "explanation": "A star schema features a central numeric fact table surrounded by single-level denormalized dimension tables."
+      },
+      {
+        "id": "ACAD-12-02",
+        "question": "How does a Snowflake Schema differ fundamentally from a Star Schema?",
+        "options": [
+          "The fact table is split into multiple sub-facts",
+          "Dimension tables are normalized into 3NF hierarchies, splitting into sub-dimension tables",
+          "It does not use foreign keys",
+          "It cannot store historical time-series data"
+        ],
+        "correct_answer": "B",
+        "explanation": "Snowflake normalizes dimension tables into multiple related tables, reducing redundancy but increasing join complexity."
+      },
+      {
+        "id": "ACAD-12-03",
+        "question": "What characterizes a Fact Table in a Data Warehouse?",
+        "options": [
+          "Contains descriptive textual names and addresses",
+          "Contains quantitative numerical measures (metrics) and foreign keys referencing dimensions",
+          "Contains only SQL stored procedures",
+          "Stores only network routing tables"
+        ],
+        "correct_answer": "B",
+        "explanation": "Fact tables store additive, semi-additive numerical metrics (e.g., units sold, total revenue) and dimension foreign keys."
+      },
+      {
+        "id": "ACAD-12-04",
+        "question": "What are the three tiers in the standard Data Warehouse 3-tier architecture?",
+        "options": [
+          "Client Tier, Web Server Tier, Application Tier",
+          "Bottom Tier (Warehouse DB Server), Middle Tier (OLAP Server), Top Tier (Front-end Client Tools)",
+          "Physical Layer, Data Link Layer, Network Layer",
+          "Compiler, Assembler, Linker"
+        ],
+        "correct_answer": "B",
+        "explanation": "The 3 tiers are: Bottom (Relational DBMS & ETL staging), Middle (OLAP multidimensional engine), Top (BI query/reporting)."
+      },
+      {
+        "id": "ACAD-12-05",
+        "question": "What is the primary difference between ROLAP and MOLAP?",
+        "options": [
+          "ROLAP uses relational tables with star schemas; MOLAP uses precomputed multi-dimensional array cubes",
+          "ROLAP is always faster than MOLAP",
+          "MOLAP does not support slicing and dicing",
+          "ROLAP can only store images"
+        ],
+        "correct_answer": "A",
+        "explanation": "ROLAP accesses relational databases directly via SQL; MOLAP stores data in optimized multidimensional array data cubes."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Number Systems, Divisibility Rules & HCF/LCM",
+      "category": "Quantitative",
+      "subtopic": "Number Systems",
+      "formulas": "1. Product of two numbers = HCF * LCM.\n2. Divisibility: 3 & 9 (sum of digits), 4 (last 2 digits), 8 (last 3 digits), 11 (alternating sum difference is 0 or multiple of 11).\n3. Remainder Theorem: Remainder of [A * B] / N = [Rem(A/N) * Rem(B/N)] mod N.\n4. Number of Factors of N = p1^a * p2^b * p3^c is (a+1)(b+1)(c+1).",
+      "shortcuts": "Cyclicity of Units Digit: 2, 3, 7, 8 have cyclicity of 4. 4 and 9 have cyclicity of 2. 0, 1, 5, 6 have cyclicity of 1.",
+      "tutorial": [
+        "Number theory forms the gateway section of TCS NQT and AMCAT exams. Always check divisibility rules before attempting brute-force division. For large powers, divide the exponent by 4 to determine the active cycle index."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Number Systems",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Number Systems",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Number Systems",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Number Systems",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Number Systems",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "What is the remainder when 2^89 is divided by 89 (given that 89 is a prime number)?",
+        "options": {
+          "A": "2",
+          "B": "1",
+          "C": "0",
+          "D": "88"
+        },
+        "correct_answer": "A",
+        "explanation": "By Fermat's Little Theorem: a^p = a (mod p) for any prime p. Hence 2^89 = 2 (mod 89). Remainder is 2.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "If a number 653xy is completely divisible by 80, what is the value of (x + y)?",
+        "options": {
+          "A": "6",
+          "B": "2",
+          "C": "8",
+          "D": "4"
+        },
+        "correct_answer": "A",
+        "explanation": "Divisible by 80 means divisible by 10 and 8. y must be 0. 653x0 is divisible by 8 => last 3 digits 3x0 divisible by 8 => 320 or 360 => x = 2 or 6. For x=6, y=0 => x+y=6.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "The HCF of two numbers is 11 and their LCM is 693. If one of the numbers is 77, what is the other number?",
+        "options": {
+          "A": "99",
+          "B": "88",
+          "C": "101",
+          "D": "91"
+        },
+        "correct_answer": "A",
+        "explanation": "Product of two numbers = HCF * LCM => 77 * N = 11 * 693 => N = 7623 / 77 = 99.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "How many trailing zeros are there at the end of 100! (factorial of 100)?",
+        "options": {
+          "A": "24",
+          "B": "25",
+          "C": "20",
+          "D": "22"
+        },
+        "correct_answer": "A",
+        "explanation": "Legendre's formula: floor(100/5) + floor(100/25) = 20 + 4 = 24 trailing zeros.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "What is the unit digit in the product (7^95 - 3^58)?",
+        "options": {
+          "A": "4",
+          "B": "6",
+          "C": "0",
+          "D": "2"
+        },
+        "correct_answer": "A",
+        "explanation": "Cyclicity of 7 is 4: 95 mod 4 = 3 => 7^3 ends in 3. Cyclicity of 3 is 4: 58 mod 4 = 2 => 3^2 ends in 9. Unit digit = 13 - 9 = 4.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "What is the smallest number which when divided by 12, 15, and 20 leaves remainder 4 in each case?",
+        "options": {
+          "A": "64",
+          "B": "124",
+          "C": "60",
+          "D": "56"
+        },
+        "correct_answer": "A",
+        "explanation": "LCM(12, 15, 20) = 60. Required number = LCM + 4 = 60 + 4 = 64.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "The sum of two numbers is 528 and their HCF is 33. How many such pairs of numbers exist?",
+        "options": {
+          "A": "4 pairs",
+          "B": "6 pairs",
+          "C": "8 pairs",
+          "D": "2 pairs"
+        },
+        "correct_answer": "A",
+        "explanation": "Let numbers be 33a and 33b where a, b are co-prime. 33(a + b) = 528 => a + b = 16. Co-prime pairs summing to 16: (1, 15), (3, 13), (5, 11), (7, 9) = 4 pairs.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Find the largest number of four digits which is exactly divisible by 15, 25, 40, and 75:",
+        "options": {
+          "A": "9,600",
+          "B": "9,000",
+          "C": "9,400",
+          "D": "9,800"
+        },
+        "correct_answer": "A",
+        "explanation": "LCM(15, 25, 40, 75) = 600. Largest 4-digit number = 9999. 9999 mod 600 = 399. Required = 9999 - 399 = 9,600.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "What is the remainder when (67^67 + 67) is divided by 68?",
+        "options": {
+          "A": "66",
+          "B": "67",
+          "C": "0",
+          "D": "1"
+        },
+        "correct_answer": "A",
+        "explanation": "67 = -1 (mod 68). (-1)^67 + (-1) = -1 - 1 = -2 = 66 (mod 68). Remainder is 66.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "How many positive factors does the number 360 have?",
+        "options": {
+          "A": "24",
+          "B": "18",
+          "C": "12",
+          "D": "30"
+        },
+        "correct_answer": "A",
+        "explanation": "360 = 2^3 * 3^2 * 5^1. Number of factors = (3 + 1) * (2 + 1) * (1 + 1) = 4 * 3 * 2 = 24.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Number Systems (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Two Pointers (Dutch National Flag)",
+      "category": "Two Pointers",
+      "concept": "Partitions an array containing three distinct values into three contiguous segments using three pointers: low, mid, and high in a single pass.",
+      "why_it_works": "Maintains four regions: [0..low-1] contains 0s, [low..mid-1] contains 1s, [mid..high] unexamined, [high+1..n-1] contains 2s.",
+      "visual_explanation": "[ 2, 0, 2, 1, 1, 0 ]\\nMid encounters 2 -> Swap with High, High--\\nMid encounters 0 -> Swap with Low, Low++, Mid++\\nMid encounters 1 -> Mid++\\nResult: [0, 0, 1, 1, 2, 2]",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                swap(nums, low, mid);\n                low++;\n                mid++;\n            } else if (nums[mid] == 1) {\n                mid++;\n            } else {\n                swap(nums, mid, high);\n                high--;\n            }\n        }\n    }\n    private void swap(int[] nums, int i, int j) {\n        int temp = nums[i];\n        nums[i] = nums[j];\n        nums[j] = temp;\n    }\n}",
+      "code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                swap(nums, low, mid);\n                low++;\n                mid++;\n            } else if (nums[mid] == 1) {\n                mid++;\n            } else {\n                swap(nums, mid, high);\n                high--;\n            }\n        }\n    }\n    private void swap(int[] nums, int i, int j) {\n        int temp = nums[i];\n        nums[i] = nums[j];\n        nums[j] = temp;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 3: Initialize low=0, mid=0, high=nums.length-1.",
+        "Line 5-8: If nums[mid] is 0, swap with low and advance both low and mid.",
+        "Line 9-10: If nums[mid] is 1, mid is in correct middle region; advance mid.",
+        "Line 11-13: If nums[mid] is 2, swap with high and decrement high (do not advance mid)."
+      ],
+      "dry_run": "nums = [2, 0, 1]. mid=0(2): swap with high(1) -> [1, 0, 2], high=1. mid=0(1): mid++. mid=1(0): swap with low(1) -> [0, 1, 2], low=1, mid=2. Finished!",
+      "complexity": "O(N) Time, O(1) Auxiliary Space",
+      "edge_cases": "All elements equal, Array already sorted, Two elements inverted",
+      "edge_cases_list": [
+        "All elements equal",
+        "Array already sorted",
+        "Two elements inverted"
+      ],
+      "interview_variations": [
+        "Sort Colors (0, 1, 2)",
+        "Wiggle Sort II",
+        "Sort Array by Parity"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-12-01",
+        "title": "Problem 1: Sort Colors",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with colors 0, 1, and 2.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Two Pointers (Dutch National Flag) algorithmic technique.\n2. Partitions an array containing three distinct values into three contiguous segments using three pointers: low, mid, and high in a single pass.\n3. Invariants: Maintains four regions: [0..low-1] contains 0s, [low..mid-1] contains 1s, [mid..high] unexamined, [high+1..n-1] contains 2s.",
+        "solution_java": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+        "solution_python": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+        "code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+        "java_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-12-02",
+        "title": "Problem 2: 3Sum",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Two Pointers (Dutch National Flag).\n2. Handle edge cases: All elements equal, Array already sorted, Two elements inverted.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "DBMS",
+      "topic": "Concurrency Control: Isolation Levels & Read Phenomena",
+      "concept_lesson": "Concurrent execution of transactions increases throughput and resource utilization, but uncoordinated access leads to three classic Concurrency Read Phenomena:\n1. Dirty Read: Transaction T1 updates a row without committing; Transaction T2 reads the uncommitted row. If T1 rolls back, T2 has read non-existent data.\n2. Non-Repeatable Read (Fuzzy Read): T1 reads a row; T2 modifies or deletes that row and commits. T1 re-reads the same row and finds different values.\n3. Phantom Read: T1 executes a range query (e.g., SELECT * WHERE age > 20); T2 inserts new matching rows and commits. T1 re-executes the query and discovers new 'phantom' rows.\n\nSQL-92 Standard Isolation Levels:\n- Read Uncommitted: Allows Dirty Reads, Non-Repeatable Reads, Phantom Reads. Highest throughput, lowest consistency.\n- Read Committed: Prevents Dirty Reads. Still permits Non-Repeatable Reads and Phantom Reads. (Default in PostgreSQL & Oracle).\n- Repeatable Read: Prevents Dirty Reads and Non-Repeatable Reads. Still permits Phantom Reads in standard definitions (MySQL InnoDB prevents phantoms via Next-Key Locks).\n- Serializable: Prevents all read phenomena. Concurrent execution produces results identical to serial execution. Lowest throughput.\n\nMulti-Version Concurrency Control (MVCC):\nModern databases (PostgreSQL, MySQL InnoDB) implement isolation via MVCC: Readers never block Writers, and Writers never block Readers. Each update creates a new row version with transaction timestamp (xmin, xmax). Transactions view a consistent historical snapshot.",
+      "key_definitions": [
+        {
+          "term": "Dirty Read",
+          "definition": "Reading uncommitted data written by a concurrent transaction that might subsequently roll back."
+        },
+        {
+          "term": "Phantom Read",
+          "definition": "A transaction re-executing a range query discovering new rows inserted by a newly committed transaction."
+        },
+        {
+          "term": "MVCC",
+          "definition": "Multi-Version Concurrency Control: maintaining multiple row versions so readers read historical snapshots without blocking writers."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "Explain the difference between a Non-Repeatable Read and a Phantom Read.",
+          "a": "A Non-Repeatable Read occurs when a transaction re-reads a specific single row and discovers the data inside that row has changed because another transaction modified or deleted it. A Phantom Read occurs during range queries (e.g., WHERE score > 75) when a transaction re-executes the query and finds new rows that were inserted by another transaction fulfilling the range condition."
+        },
+        {
+          "q": "What is MVCC (Multi-Version Concurrency Control) and why is it preferred over lock-based concurrency?",
+          "a": "MVCC maintains multiple physical versions of each row tagged with creation and deletion transaction IDs (e.g., xmin, xmax in PostgreSQL). When a transaction reads data, it reads the snapshot version visible at its start timestamp. This achieves high concurrency because 'readers never block writers, and writers never block readers', eliminating read lock contention."
+        },
+        {
+          "q": "What is the default isolation level in PostgreSQL vs MySQL InnoDB?",
+          "a": "PostgreSQL defaults to Read Committed. MySQL InnoDB defaults to Repeatable Read (which additionally prevents phantom reads using Next-Key Locking)."
+        },
+        {
+          "q": "How does Snapshot Isolation differ from Strict Serializability?",
+          "a": "In Snapshot Isolation, a transaction reads from a private snapshot of the database taken when the transaction started. It avoids dirty reads, non-repeatable reads, and phantom reads. However, it can permit Write Skew anomalies (two concurrent transactions reading overlapping data, modifying disjoint rows, and violating a global constraint). Strict Serializability prevents write skew."
+        },
+        {
+          "q": "What is Write Skew anomaly, and provide a concrete example?",
+          "a": "Write skew occurs under Snapshot Isolation. Example: A hospital requires at least one doctor on call. Doctors Alice and Bob are both on call. Alice submits a transaction to take leave: her transaction checks the snapshot, sees Bob is on call, and sets her status to inactive. Simultaneously, Bob submits a transaction, checks his snapshot, sees Alice is on call, and sets his status to inactive. Both commit, leaving zero doctors on call."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-12-01",
+          "question": "Which SQL isolation level allows Dirty Reads?",
+          "options": [
+            "Read Uncommitted",
+            "Read Committed",
+            "Repeatable Read",
+            "Serializable"
+          ],
+          "correct_answer": "A",
+          "explanation": "Read Uncommitted allows reading uncommitted, dirty rows."
+        },
+        {
+          "id": "CS-12-02",
+          "question": "A transaction re-executes a range query and discovers newly inserted rows that match the predicate. This is a:",
+          "options": [
+            "Dirty Read",
+            "Non-Repeatable Read",
+            "Phantom Read",
+            "Lost Update"
+          ],
+          "correct_answer": "C",
+          "explanation": "Newly appearing rows in a range query are Phantom Reads."
+        },
+        {
+          "id": "CS-12-03",
+          "question": "What is the core principle of Multi-Version Concurrency Control (MVCC)?",
+          "options": [
+            "All transactions execute strictly serially",
+            "Readers never block writers, and writers never block readers",
+            "Exclusive locks are acquired for every SELECT",
+            "Rollbacks are prohibited"
+          ],
+          "correct_answer": "B",
+          "explanation": "MVCC creates versioned snapshots, allowing non-blocking reads and concurrent writes."
+        },
+        {
+          "id": "CS-12-04",
+          "question": "Which isolation level completely prevents all read phenomena, ensuring equivalence to serial execution?",
+          "options": [
+            "Read Committed",
+            "Repeatable Read",
+            "Serializable",
+            "Snapshot Isolation"
+          ],
+          "correct_answer": "C",
+          "explanation": "Serializable isolation guarantees equivalent results to a serial schedule."
+        },
+        {
+          "id": "CS-12-05",
+          "question": "What is the default isolation level in PostgreSQL?",
+          "options": [
+            "Read Uncommitted",
+            "Read Committed",
+            "Repeatable Read",
+            "Serializable"
+          ],
+          "correct_answer": "B",
+          "explanation": "PostgreSQL uses Read Committed as its default isolation level."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "NSE2 / BulkBeat TV",
+      "repo_path": "D:\\Projects\\nse2",
+      "topic": "Telegram Push Notification Infrastructure & Webhook Architecture",
+      "what_to_understand": "Transforming polling bots into event-driven push notification pipelines.",
+      "what_to_memorize": "Webhooks allow Telegram's edge servers to push user messages directly to our API server, eliminating idle socket polling.",
+      "interview_questions": [
+        {
+          "q": "Why migrate from Telegram long polling to Webhook architecture in NSE2?",
+          "a": "Long polling requires continuous outgoing HTTP requests every 1-2 seconds, which exhausts network sockets, consumes idle CPU, and increases latency when thousands of users interact with the bot. Webhooks transform the system into an event-driven push architecture: Telegram pushes updates to our HTTPS domain only when an event occurs, dramatically lowering server resource utilization."
+        },
+        {
+          "q": "How do you broadcast breaking alerts to thousands of subscribers without hitting Telegram rate limits?",
+          "a": "Telegram limits broadcast messages to approximately 30 messages per second across chats. We implement a distributed token-bucket rate-limiter: alerts are enqueued in priority batches and dispatched across an asynchronous worker pool that pauses automatically when Telegram returns an HTTP 429 (`retry_after`) header."
+        }
+      ],
+      "interview_pitch_exercise": "For instant alert delivery in BulkBeat TV, I architected an event-driven notification service using Telegram Bot Webhooks. It incorporates a token-bucket rate limiter to deliver real-time news cards to thousands of subscribers while strictly honoring Telegram's 30 msg/sec API broadcast limits."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 12 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 12 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'DevQBX & Sitekraft Engineering', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In DevQBX & Sitekraft Engineering (Project Management, Client Web Architecture, Microservices), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of DevQBX & Sitekraft Engineering.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 11 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5001 — Knowledge Management Architecture & Repositories.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Number Systems, Divisibility & HCF/LCM.\n• Algorithmic Invariant: Optimal time and space complexity rules for Two Pointers (Dutch National Flag).\n• Systems Law: Architectural equations, protocols, and complexity bounds for ACID Properties & Transaction Processing.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Knowledge Management Architecture & Repositories.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Two Pointers (Dutch National Flag).\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Biometric Electronic Voting System (BEVM).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 12 Q1: What is the primary academic thesis of Knowledge Management Architecture & Repositories?",
+          "a": "Core theoretical and practical mastery of Knowledge Management Architecture & Repositories under the CSJM University BCA-5001 syllabus."
+        },
+        {
+          "q": "Day 12 Q2: What is the key speed calculation formula applied in Number Systems, Divisibility & HCF/LCM?",
+          "a": "High-speed corporate placement arithmetic shortcut for Number Systems, Divisibility & HCF/LCM in campus recruitment exams."
+        },
+        {
+          "q": "Day 12 Q3: What is the time complexity of Two Pointers (Dutch National Flag)?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 12 Q4: What is the central architectural principle of ACID Properties & Transaction Processing?",
+          "a": "Foundational systems engineering rule governing ACID Properties & Transaction Processing in production environments."
+        },
+        {
+          "q": "Day 12 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 12 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 12 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 12 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 12 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 12 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5001 — Knowledge Management Architecture & Repositories.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Number Systems, Divisibility & HCF/LCM.\n• Algorithmic Invariant: Optimal time and space complexity rules for Two Pointers (Dutch National Flag).\n• Systems Law: Architectural equations, protocols, and complexity bounds for ACID Properties & Transaction Processing."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5001 — Knowledge Management Architecture & Repositories."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Number Systems, Divisibility & HCF/LCM."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Two Pointers (Dutch National Flag)."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: Biometric Electronic Voting System (BEVM)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-12-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In dimensional data warehouse modeling, how is a Star Schema structured?",
+        "options": [
+          "A central fact table linked directly to denormalized dimension tables",
+          "A normalized fact table with multiple parent tables",
+          "A completely flat single CSV spreadsheet",
+          "A peer-to-peer network of dimension tables"
+        ],
+        "correct_answer": "A",
+        "explanation": "A star schema features a central numeric fact table surrounded by single-level denormalized dimension tables."
+      },
+      {
+        "id": "TEST-12-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does a Snowflake Schema differ fundamentally from a Star Schema?",
+        "options": [
+          "The fact table is split into multiple sub-facts",
+          "Dimension tables are normalized into 3NF hierarchies, splitting into sub-dimension tables",
+          "It does not use foreign keys",
+          "It cannot store historical time-series data"
+        ],
+        "correct_answer": "B",
+        "explanation": "Snowflake normalizes dimension tables into multiple related tables, reducing redundancy but increasing join complexity."
+      },
+      {
+        "id": "TEST-12-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What characterizes a Fact Table in a Data Warehouse?",
+        "options": [
+          "Contains descriptive textual names and addresses",
+          "Contains quantitative numerical measures (metrics) and foreign keys referencing dimensions",
+          "Contains only SQL stored procedures",
+          "Stores only network routing tables"
+        ],
+        "correct_answer": "B",
+        "explanation": "Fact tables store additive, semi-additive numerical metrics (e.g., units sold, total revenue) and dimension foreign keys."
+      },
+      {
+        "id": "TEST-12-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What are the three tiers in the standard Data Warehouse 3-tier architecture?",
+        "options": [
+          "Client Tier, Web Server Tier, Application Tier",
+          "Bottom Tier (Warehouse DB Server), Middle Tier (OLAP Server), Top Tier (Front-end Client Tools)",
+          "Physical Layer, Data Link Layer, Network Layer",
+          "Compiler, Assembler, Linker"
+        ],
+        "correct_answer": "B",
+        "explanation": "The 3 tiers are: Bottom (Relational DBMS & ETL staging), Middle (OLAP multidimensional engine), Top (BI query/reporting)."
+      },
+      {
+        "id": "TEST-12-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary difference between ROLAP and MOLAP?",
+        "options": [
+          "ROLAP uses relational tables with star schemas; MOLAP uses precomputed multi-dimensional array cubes",
+          "ROLAP is always faster than MOLAP",
+          "MOLAP does not support slicing and dicing",
+          "ROLAP can only store images"
+        ],
+        "correct_answer": "A",
+        "explanation": "ROLAP accesses relational databases directly via SQL; MOLAP stores data in optimized multidimensional array data cubes."
+      },
+      {
+        "id": "TEST-12-06",
+        "category": "Placement Aptitude",
+        "question": "What is the greatest number that will divide 43, 91, and 183 so as to leave the same remainder in each case?",
+        "options": [
+          "4",
+          "7",
+          "9",
+          "13"
+        ],
+        "correct_answer": "A",
+        "explanation": "Required number = HCF(|91 - 43|, |183 - 91|, |183 - 43|) = HCF(48, 92, 140) = 4."
+      },
+      {
+        "id": "TEST-12-07",
+        "category": "Placement Aptitude",
+        "question": "What is the least number of soldiers that can be drawn up in troops of 12, 15, and 18, and also in form of a solid square?",
+        "options": [
+          "900",
+          "400",
+          "1,600",
+          "3,600"
+        ],
+        "correct_answer": "A",
+        "explanation": "LCM(12, 15, 18) = 180 = 2^2 * 3^2 * 5^1. To make a perfect square, multiply by 5: 180 * 5 = 900 soldiers."
+      },
+      {
+        "id": "TEST-12-08",
+        "category": "Placement Aptitude",
+        "question": "What is the unit digit in (3^65 * 6^59 * 7^71)?",
+        "options": [
+          "4",
+          "6",
+          "2",
+          "8"
+        ],
+        "correct_answer": "A",
+        "explanation": "Unit digit of 3^65 (65 mod 4 = 1) is 3^1 = 3. Unit digit of 6^59 is always 6. Unit digit of 7^71 (71 mod 4 = 3) is 7^3 = 343 => 3. Product = 3 * 6 * 3 = 54 => unit digit 4."
+      },
+      {
+        "id": "TEST-12-09",
+        "category": "Placement Aptitude",
+        "question": "How many numbers between 100 and 300 are divisible by both 4 and 6?",
+        "options": [
+          "17",
+          "16",
+          "18",
+          "15"
+        ],
+        "correct_answer": "A",
+        "explanation": "Divisible by LCM(4, 6) = 12. Smallest multiple of 12 > 100 is 108 (12 * 9). Largest multiple < 300 is 288 (12 * 24). Total = 24 - 9 + 1 = 16 numbers (or if inclusive 100-300: 300 is 12*25, 25 - 9 + 1 = 17)."
+      },
+      {
+        "id": "TEST-12-10",
+        "category": "Placement Aptitude",
+        "question": "What is the remainder when (9^6 + 1) is divided by 8?",
+        "options": [
+          "2",
+          "1",
+          "0",
+          "7"
+        ],
+        "correct_answer": "A",
+        "explanation": "9 = 1 (mod 8). Therefore 9^6 + 1 = 1^6 + 1 = 2 (mod 8). Remainder is 2."
+      },
+      {
+        "id": "TEST-12-11",
+        "category": "Core CS (DBMS)",
+        "question": "Which SQL isolation level allows Dirty Reads?",
+        "options": [
+          "Read Uncommitted",
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable"
+        ],
+        "correct_answer": "A",
+        "explanation": "Read Uncommitted allows reading uncommitted, dirty rows."
+      },
+      {
+        "id": "TEST-12-12",
+        "category": "Core CS (DBMS)",
+        "question": "A transaction re-executes a range query and discovers newly inserted rows that match the predicate. This is a:",
+        "options": [
+          "Dirty Read",
+          "Non-Repeatable Read",
+          "Phantom Read",
+          "Lost Update"
+        ],
+        "correct_answer": "C",
+        "explanation": "Newly appearing rows in a range query are Phantom Reads."
+      },
+      {
+        "id": "TEST-12-13",
+        "category": "Core CS (DBMS)",
+        "question": "What is the core principle of Multi-Version Concurrency Control (MVCC)?",
+        "options": [
+          "All transactions execute strictly serially",
+          "Readers never block writers, and writers never block readers",
+          "Exclusive locks are acquired for every SELECT",
+          "Rollbacks are prohibited"
+        ],
+        "correct_answer": "B",
+        "explanation": "MVCC creates versioned snapshots, allowing non-blocking reads and concurrent writes."
+      },
+      {
+        "id": "TEST-12-14",
+        "category": "Core CS (DBMS)",
+        "question": "Which isolation level completely prevents all read phenomena, ensuring equivalence to serial execution?",
+        "options": [
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable",
+          "Snapshot Isolation"
+        ],
+        "correct_answer": "C",
+        "explanation": "Serializable isolation guarantees equivalent results to a serial schedule."
+      },
+      {
+        "id": "TEST-12-15",
+        "category": "Core CS (DBMS)",
+        "question": "What is the default isolation level in PostgreSQL?",
+        "options": [
+          "Read Uncommitted",
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable"
+        ],
+        "correct_answer": "B",
+        "explanation": "PostgreSQL uses Read Committed as its default isolation level."
+      },
+      {
+        "id": "TEST-12-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Two Pointers (Dutch National Flag)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Two Pointers (Dutch National Flag)' pattern operates with O(N) Time, O(1) Auxiliary Space: Maintains four regions: [0..low-1] contains 0s, [low..mid-1] contains 1s, [mid..high] unexamined, [high+1..n-1] contains 2s.."
+      },
+      {
+        "id": "TEST-12-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Two Pointers (Dutch National Flag)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: All elements equal.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Two Pointers (Dutch National Flag) include All elements equal, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-12-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Sort Colors', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-12-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Telegram Push Notification Infrastructure & Webhook Architecture'?",
+        "options": [
+          "Webhooks allow Telegram's edge servers to push user messages directly to our API server, eliminating idle socket polling.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: Webhooks allow Telegram's edge servers to push user messages directly to our API server, eliminating idle socket polling.."
+      },
+      {
+        "id": "TEST-12-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'Why migrate from Telegram long polling to Webhook architecture in NSE2?'?",
+        "options": [
+          "Long polling requires continuous outgoing HTTP requests every 1-2 seconds, which exhausts network sockets, consumes idle CPU, and increases latency when thousan...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Long polling requires continuous outgoing HTTP requests every 1-2 seconds, which exhausts network sockets, consumes idle CPU, and increases ."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-12",
+      "title": "Sort Colors (Two Pointers (Dutch National Flag))",
+      "time_limit_minutes": 35,
+      "difficulty": "Medium",
+      "problem_statement": "Solve the core placement problem: Sort Colors.\n\nGiven an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with colors 0, 1, and 2.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Two Pointers (Dutch National Flag)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: All elements equal, Array already sorted, Two elements inverted.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Two Pointers (Dutch National Flag)\n    public void sortColors(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Two Pointers (Dutch National Flag)\n    public void sortColors(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Two Pointers (Dutch National Flag) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: All elements equal",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Java Programming & Dynamic Webpage Design",
+    "subject_code": "BCA-5002",
+    "unit": 3,
+    "topic": "Unit III — Java Collections Framework: Hierarchy, List vs Set vs Map & HashMap Internals",
+    "objectives": [
+      "Master Collections framework hierarchy.",
+      "Understand internal hashing mechanism of HashMap (Buckets, Hash collisions, Red-Black Trees)."
+    ],
+    "detailed_notes": [
+      "The Java Collections Framework (`java.util`) provides a unified architecture for storing and manipulating groups of objects. The core root interfaces are `Collection` (extended by `List`, `Set`, and `Queue`) and `Map` (a separate key-value hierarchy). `List` preserves insertion order and allows duplicates (ArrayList, LinkedList); `Set` prohibits duplicates (HashSet, TreeSet); `Map` stores key-value pairs where keys must be unique (HashMap, TreeMap). In Java 8+, `HashMap` is implemented as an array of buckets (Node<K,V>[]). When multiple keys hash to the same bucket (collision), they form a singly linked list; if bucket length exceeds 8, the list converts into a balanced Red-Black Tree, slashing search time from O(N) to O(log N).",
+      "Iterable -> Collection -> (List, Set, Queue); Map is separate.",
+      "1. Calculate `hash(key)`; 2. Compute index `i = (n - 1) & hash`; 3. If bucket empty, insert node; 4. If occupied, traverse linked list checking `equals()`; 5. If key exists, overwrite value; 6. If not, append node; 7. If bucket length > 8, treeify to Red-Black Tree."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|             COLLECTIONS HIERARCHY                 |\n| Iterable -> Collection -> List (ArrayList, Vector)|\n|                        -> Set (HashSet, TreeSet)  |\n| Map -> (HashMap, TreeMap, LinkedHashMap)          |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Dimension",
-        "ArrayList",
-        "LinkedList",
-        "Vector"
+        "Collection Interface",
+        "Duplicate Elements?",
+        "Insertion Order Preserved?",
+        "Underlying Data Structure"
       ],
       "rows": [
         [
-          "Internal Structure",
-          "Dynamic resizable array",
-          "Doubly linked list",
-          "Synchronized dynamic array"
+          "ArrayList (List)",
+          "Allowed",
+          "Preserved",
+          "Resizable dynamic array (growth factor 1.5x)"
         ],
         [
-          "Random Access (get/set)",
-          "O(1) instant index access",
-          "O(N) sequential traversal",
-          "O(1) index access (synchronized)"
+          "LinkedList (List)",
+          "Allowed",
+          "Preserved",
+          "Doubly linked list nodes"
         ],
         [
-          "Insertion / Deletion",
-          "O(N) due to element shifting",
-          "O(1) pointer updates once node found",
-          "O(N) due to element shifting"
+          "HashSet (Set)",
+          "Prohibited",
+          "Not guaranteed (unordered)",
+          "Internal HashMap instance backing"
         ],
         [
-          "Thread Safety",
-          "Non-synchronized (Not thread-safe)",
-          "Non-synchronized (Not thread-safe)",
-          "Synchronized (Thread-safe)"
+          "TreeSet (Set)",
+          "Prohibited",
+          "Sorted ascending natural order",
+          "Red-Black balanced binary search tree"
         ],
         [
-          "Performance Speed",
-          "High speed; standard default",
-          "High for frequent insertions",
-          "Low speed due to synchronization lock overhead"
-        ],
-        [
-          "Growth Factor",
-          "Increases size by 50% (new = old * 1.5)",
-          "Grows node-by-node dynamically",
-          "Doubles size by 100% (new = old * 2)"
+          "HashMap (Map)",
+          "Keys unique; Values duplicate",
+          "Not guaranteed (unordered)",
+          "Hash table (Array + Linked List + Red-Black Tree)"
         ]
       ]
     },
-    "memorize": "Root interfaces: Collection (List, Set, Queue) and Map (Key-Value, separate tree). ArrayList = Resizable Array O(1) access; LinkedList = Doubly Linked List O(1) insert; HashSet = O(1) no order; TreeSet = O(log N) sorted; HashMap = O(1) hash table.",
-    "understand": "Why is Map not a Collection? A Collection is a collection of individual elements (values), whereas a Map is a collection of key-value pairs (entries). Treating keys and values as a single element breaks standard Collection operations like add(Object) and contains(Object).",
-    "common_mistakes": "1. Stating that Map implements the Collection interface (Map is a separate root interface). 2. Modifying a Collection directly while iterating over it with a for-each loop (throws ConcurrentModificationException; use Iterator.remove() instead).",
-    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2024-25)",
-    "pyq_freq": "3 University Sessions: 2021 (Q4 - 15m), 2022-23 (Q1b - 15m), 2024-25 (Q4 - 15m)",
-    "pyq_question": "Explain the Java Collections Framework hierarchy with a neat diagram. Differentiate between ArrayList and Vector, and between Iterator and ListIterator with code examples. (15 Marks)",
-    "pyq_rubric": "JCF Architecture tree diagram (4 marks) + List, Set, Map breakdown (4 marks) + ArrayList vs Vector comparison (4 marks) + Iterator vs ListIterator distinction & code (3 marks) = 15 Marks.",
+    "memorize": "Collection root has List, Set, Queue. Map is NOT a subtype of Collection! HashMap bucket collisions convert to Red-Black tree when length > 8.",
+    "understand": "Proper HashMap performance requires overriding both hashCode() and equals() methods consistently.",
+    "common_mistakes": "Saying Map extends Collection (Map has its own independent hierarchy).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023-24 (Q3)",
+        "marks": 15,
+        "question": "Describe the Java Collections Framework hierarchy with a neat diagram. Differentiate between List, Set, and Map. Explain the internal working of HashMap. (15 Marks)",
+        "rubric": "Hierarchy Diagram (4 marks) + List vs Set vs Map Comparison (4 marks) + HashMap internal architecture & hashing (5 marks) + equals/hashCode contract (2 marks) = 15 Marks.",
+        "model_answer": "The Java Collections Framework provides an standardized architecture for manipulating collections of objects. The hierarchy is rooted in Iterable -> Collection, branching into: 1. List (ordered collection, allows duplicates, positional index access via ArrayList and LinkedList); 2. Set (unordered collection, guarantees uniqueness via HashSet and sorted TreeSet); 3. Map (independent key-value hierarchy via HashMap and TreeMap). Internal Working of HashMap: In Java 8+, HashMap is backed by an array of Node<K,V> buckets with a default capacity of 16 and a load factor of 0.75. When put(key, value) is invoked, it computes the hash code of the key and maps it to a bucket index: index = (n - 1) & hash. If the bucket is empty, the node is inserted. If a collision occurs, nodes are linked in a singly linked list. If the number of collided elements in a single bucket reaches the TREEIFY_THRESHOLD (8 items) and array capacity >= 64, the linked list transforms into a balanced Red-Black Tree, improving collision lookup performance from O(N) to O(log N).",
+        "answer_structure": "Hierarchy Diagram -> List vs Set vs Map Table -> HashMap Internal Architecture & put() Steps -> Contract",
+        "important_points": [
+          "Map does not extend Collection",
+          "Load factor 0.75",
+          "Treeification threshold 8",
+          "hashCode and equals"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Complete diagram separating Collection and Map",
+          "Detailed explanation of hashing and treeification"
+        ],
+        "common_mistakes": [
+          "Stating that HashMap is synchronized (it is unsynchronized; ConcurrentHashMap is thread-safe)"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "What is the difference between ArrayList and LinkedList in Java? (5 Marks)",
+        "rubric": "Comparison table across Time Complexity & Storage (5 marks).",
+        "model_answer": "ArrayList is backed by a dynamic contiguous array, providing O(1) random access by index, but insertions/deletions in the middle require O(N) element shifting. LinkedList is backed by a doubly linked list of node objects; insertions and deletions at known iterator positions take O(1) pointer updates, but random access requires O(N) pointer traversal from head/tail. ArrayList consumes less memory per element as LinkedList requires extra pointer memory for prev and next references."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-12-01",
+        "question": "In dimensional data warehouse modeling, how is a Star Schema structured?",
+        "options": [
+          "A central fact table linked directly to denormalized dimension tables",
+          "A normalized fact table with multiple parent tables",
+          "A completely flat single CSV spreadsheet",
+          "A peer-to-peer network of dimension tables"
+        ],
+        "correct_answer": "A",
+        "explanation": "A star schema features a central numeric fact table surrounded by single-level denormalized dimension tables."
+      },
+      {
+        "id": "ACAD-12-02",
+        "question": "How does a Snowflake Schema differ fundamentally from a Star Schema?",
+        "options": [
+          "The fact table is split into multiple sub-facts",
+          "Dimension tables are normalized into 3NF hierarchies, splitting into sub-dimension tables",
+          "It does not use foreign keys",
+          "It cannot store historical time-series data"
+        ],
+        "correct_answer": "B",
+        "explanation": "Snowflake normalizes dimension tables into multiple related tables, reducing redundancy but increasing join complexity."
+      },
+      {
+        "id": "ACAD-12-03",
+        "question": "What characterizes a Fact Table in a Data Warehouse?",
+        "options": [
+          "Contains descriptive textual names and addresses",
+          "Contains quantitative numerical measures (metrics) and foreign keys referencing dimensions",
+          "Contains only SQL stored procedures",
+          "Stores only network routing tables"
+        ],
+        "correct_answer": "B",
+        "explanation": "Fact tables store additive, semi-additive numerical metrics (e.g., units sold, total revenue) and dimension foreign keys."
+      },
+      {
+        "id": "ACAD-12-04",
+        "question": "What are the three tiers in the standard Data Warehouse 3-tier architecture?",
+        "options": [
+          "Client Tier, Web Server Tier, Application Tier",
+          "Bottom Tier (Warehouse DB Server), Middle Tier (OLAP Server), Top Tier (Front-end Client Tools)",
+          "Physical Layer, Data Link Layer, Network Layer",
+          "Compiler, Assembler, Linker"
+        ],
+        "correct_answer": "B",
+        "explanation": "The 3 tiers are: Bottom (Relational DBMS & ETL staging), Middle (OLAP multidimensional engine), Top (BI query/reporting)."
+      },
+      {
+        "id": "ACAD-12-05",
+        "question": "What is the primary difference between ROLAP and MOLAP?",
+        "options": [
+          "ROLAP uses relational tables with star schemas; MOLAP uses precomputed multi-dimensional array cubes",
+          "ROLAP is always faster than MOLAP",
+          "MOLAP does not support slicing and dicing",
+          "ROLAP can only store images"
+        ],
+        "correct_answer": "A",
+        "explanation": "ROLAP accesses relational databases directly via SQL; MOLAP stores data in optimized multidimensional array data cubes."
+      }
+    ],
+    "pyq_year": "2023-24 (Q3)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Describe the Java Collections Framework hierarchy with a neat diagram. Differentiate between List, Set, and Map. Explain the internal working of HashMap. (15 Marks)",
+    "pyq_rubric": "Hierarchy Diagram (4 marks) + List vs Set vs Map Comparison (4 marks) + HashMap internal architecture & hashing (5 marks) + equals/hashCode contract (2 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. JCF Architectural Design & Roots:",
-        "The Java Collections Framework (JCF), introduced in JDK 1.2, provides a standardized, high-performance architecture for data structures. It decouples core interfaces from concrete implementations, allowing developers to write flexible algorithms that operate on abstract collections rather than specific implementations. The framework is divided into two primary root hierarchies: java.util.Collection and java.util.Map."
+        "1. Model Answer & Technical Presentation",
+        "The Java Collections Framework provides an standardized architecture for manipulating collections of objects. The hierarchy is rooted in Iterable -> Collection, branching into: 1. List (ordered collection, allows duplicates, positional index access via ArrayList and LinkedList); 2. Set (unordered collection, guarantees uniqueness via HashSet and sorted TreeSet); 3. Map (independent key-value hierarchy via HashMap and TreeMap). Internal Working of HashMap: In Java 8+, HashMap is backed by an array of Node<K,V> buckets with a default capacity of 16 and a load factor of 0.75. When put(key, value) is invoked, it computes the hash code of the key and maps it to a bucket index: index = (n - 1) & hash. If the bucket is empty, the node is inserted. If a collision occurs, nodes are linked in a singly linked list. If the number of collided elements in a single bucket reaches the TREEIFY_THRESHOLD (8 items) and array capacity >= 64, the linked list transforms into a balanced Red-Black Tree, improving collision lookup performance from O(N) to O(log N)."
       ],
       [
-        "2. Primary Interfaces & Implementations:",
-        "\u2022 List Interface: Preserves insertion order, accessible via zero-based integer index. Permits duplicates. Key classes: ArrayList (ideal for frequent reads via contiguous memory), LinkedList (ideal for frequent insertions at arbitrary positions via pointers), and Vector (legacy synchronized thread-safe array).\n\u2022 Set Interface: Unordered collection prohibiting duplicate elements. HashSet uses hash codes for O(1) lookups; LinkedHashSet maintains insertion order via a linked list; TreeSet guarantees sorted ascending order via Red-Black trees.\n\u2022 Map Interface: Maps unique keys to values. HashMap provides O(1) lookups using bucket hashing and treeification of collided buckets; TreeMap maintains sorted keys in O(log N) time."
-      ],
-      [
-        "3. Comparative Analysis: ArrayList vs Vector:",
-        "While both ArrayList and Vector implement List using internal arrays, their concurrency and memory growth models diverge fundamentally. Vector's methods are declared 'synchronized', acquiring intrinsic object locks on every call, making it thread-safe but introducing severe performance penalties in single-threaded programs. ArrayList is unsynchronized and fast. Furthermore, when capacity is exhausted, Vector doubles its size (100% expansion), whereas ArrayList grows by 50% (newCapacity = oldCapacity + (oldCapacity >> 1)), consuming memory more conservatively."
-      ],
-      [
-        "4. Cursors: Iterator vs ListIterator:",
-        "\u2022 Iterator: Can traverse any Collection in the forward direction only using hasNext() and next(). It supports safe in-place element removal via remove().\n\u2022 ListIterator: Exclusive to List implementations. It supports bidirectional traversal using previous() and hasPrevious(), allows element modification via set(obj), element insertion via add(obj), and index inspection via nextIndex() and previousIndex()."
-      ],
-      [
-        "5. Summary & Code Walkthrough:",
-        "List<String> list = new ArrayList<>();\nlist.add(\"Java\"); list.add(\"Python\");\nListIterator<String> lit = list.listIterator();\nwhile (lit.hasNext()) {\n    String val = lit.next();\n    if (val.equals(\"Java\")) lit.set(\"Core Java\");\n}\nThis demonstrates safe bidirectional element replacement using ListIterator."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Explain how HashMap works internally in Java 8, including buckets, hashing, and Red-Black tree conversion. (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "Differentiate between Comparable and Comparator interfaces in Java with an example. (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Complete diagram separating Collection and Map",
+          "Detailed explanation of hashing and treeification"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Java Collections Framework Tree, ArrayList vs Vector, and ListIterator.",
-    "milestone": "Full 15/15 marks on University Question 4 (BCA-5002 Java Collections)."
-  },
   "apt_data": {
-    "topic": "Time & Work \u2014 Foundations, One-Day Work Concept & The LCM Efficiency Method",
+    "topic": "Number Systems, Divisibility Rules & HCF/LCM",
+    "category": "Quantitative",
+    "subtopic": "Number Systems",
+    "formulas": "1. Product of two numbers = HCF * LCM.\n2. Divisibility: 3 & 9 (sum of digits), 4 (last 2 digits), 8 (last 3 digits), 11 (alternating sum difference is 0 or multiple of 11).\n3. Remainder Theorem: Remainder of [A * B] / N = [Rem(A/N) * Rem(B/N)] mod N.\n4. Number of Factors of N = p1^a * p2^b * p3^c is (a+1)(b+1)(c+1).",
+    "shortcut": "Cyclicity of Units Digit: 2, 3, 7, 8 have cyclicity of 4. 4 and 9 have cyclicity of 2. 0, 1, 5, 6 have cyclicity of 1.",
     "tutorial": [
-      "Time and Work problems are based on the principle of inverse proportionality: if a person can complete a total work in 'n' days, then in 1 day they complete exactly (1 / n)th part of the work.",
-      "The Two Classical Problem-Solving Methods:\n1. The Traditional Unitary / Fractional Method: Work is taken as 1 whole unit. If A takes 10 days and B takes 15 days, 1-day combined work = (1/10) + (1/15) = (3 + 2)/30 = 5/30 = 1/6. Total days = 6 days.\n2. The Professional LCM Efficiency Method (The Preferred Placement Strategy):\nInstead of working with cumbersome fractions, assume Total Work = LCM of individual days.\nEfficiency = (Total Units of Work) / (Days Taken).\nExample: A takes 10 days, B takes 15 days. Total Work = LCM(10, 15) = 30 units.\n\u2022 A's daily efficiency = 30 / 10 = 3 units/day.\n\u2022 B's daily efficiency = 30 / 15 = 2 units/day.\nCombined daily efficiency = 3 + 2 = 5 units/day.\nTotal time taken together = Total Work / Combined Efficiency = 30 / 5 = 6 days instantly!",
-      "Man-Days Equivalence Formula (Chain Rule):\n(M1 * D1 * H1) / W1 = (M2 * D2 * H2) / W2, where M = workers, D = days, H = hours/day, W = work done."
+      "Number theory forms the gateway section of TCS NQT and AMCAT exams. Always check divisibility rules before attempting brute-force division. For large powers, divide the exponent by 4 to determine the active cycle index."
     ],
-    "formulas": "1. LCM Efficiency: Total Work = LCM(days); Efficiency = Work / Time\n2. Combined Work of Two Persons: Time = (A * B) / (A + B)\n3. Combined Work of Three Persons: Time = (A * B * C) / (AB + BC + CA)\n4. Chain Rule: (M1 * D1 * H1 * E1) / W1 = (M2 * D2 * H2 * E2) / W2",
-    "shortcut": "The Product-over-Sum Shortcut for Two Workers:\nIf A takes 12 days and B takes 24 days:\nCombined Time = (A * B) / (A + B) = (12 * 24) / (12 + 24) = 288 / 36 = 8 days instantly!",
-    "recognition": "Look for 'A can do a piece of work in X days and B in Y days', 'A and B working together can do a piece of work in...', or 'A is twice as efficient as B'.",
-    "p1_q": "[Foundation] A can complete a work in 12 days, and B can complete the same work in 24 days. In how many days can both of them together complete the work?",
-    "p1_s": "Method 1: Product-over-Sum Shortcut:\nTime = (A * B) / (A + B) = (12 * 24) / (12 + 24) = 288 / 36 = 8 days.\nMethod 2: LCM Efficiency Verification:\nTotal Work = LCM(12, 24) = 24 units.\n- A's efficiency = 24 / 12 = 2 units/day.\n- B's efficiency = 24 / 24 = 1 unit/day.\nCombined efficiency = 2 + 1 = 3 units/day.\nDays needed = 24 / 3 = 8 days.\nAnswer: 8 days.",
-    "p2_q": "[Standard Placement] A and B together can do a piece of work in 10 days. A alone can do it in 15 days. In how many days can B alone complete the work?",
-    "p2_s": "Step 1: Total Work = LCM(10, 15) = 30 units.\nStep 2: Calculate daily efficiencies:\n- (A + B)'s combined efficiency = 30 / 10 = 3 units/day.\n- A's individual efficiency = 30 / 15 = 2 units/day.\nStep 3: B's individual efficiency = Combined - A = 3 - 2 = 1 unit/day.\nStep 4: Time taken by B alone = Total Work / B's efficiency = 30 / 1 = 30 days.\nAlternative Shortcut: Time_B = (Combined * A) / (A - Combined) = (10 * 15) / (15 - 10) = 150 / 5 = 30 days.\nAnswer: 30 days.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS NQT / Cognizant GenC Quantitative]",
-    "p3_q": "A can do a piece of work in 20 days and B in 30 days. They work together for 5 days, and then A leaves. In how many more days will B finish the remaining work?",
-    "p3_s": "Step 1: Determine Total Work via LCM:\nTotal Work = LCM(20, 30) = 60 units.\nStep 2: Calculate individual efficiencies:\n- A's efficiency = 60 / 20 = 3 units/day.\n- B's efficiency = 60 / 30 = 2 units/day.\nCombined efficiency = 3 + 2 = 5 units/day.\nStep 3: Work completed in first 5 days together:\nWork done = 5 days * 5 units/day = 25 units.\nStep 4: Calculate remaining work after A leaves:\nRemaining Work = 60 - 25 = 35 units.\nStep 5: Time taken by B alone to finish remaining work:\nTime = Remaining Work / B's efficiency = 35 / 2 = 17.5 days (or 17 1/2 days).\nAnswer: 17.5 days.",
-    "p4_q": "[Hard / Time-Pressure] A is twice as good a workman as B, and together they finish a piece of work in 18 days. In how many days will A alone finish the work?",
-    "p4_s": "Step 1: Ratio of efficiencies:\nA is twice as good as B ==> Efficiency A : Efficiency B = 2 : 1.\nLet B's efficiency = 1 unit/day, then A's efficiency = 2 units/day.\nStep 2: Combined efficiency = 2 + 1 = 3 units/day.\nStep 3: Calculate Total Work:\nThey finish the work together in 18 days:\nTotal Work = Combined Efficiency * Days = 3 units/day * 18 days = 54 units.\nStep 4: Time taken by A alone:\nTime_A = Total Work / A's efficiency = 54 / 2 = 27 days.\nTime taken by B alone = 54 / 1 = 54 days.\nAnswer: 27 days.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "A can do a work in 15 days, B in 20 days, and C in 30 days. In how many days will all three finish it together?"
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "12 men can complete a project in 16 days. In how many days can 8 men complete the same project?"
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "A is thrice as efficient as B and is able to finish a job in 60 days less than B. Find time taken together."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "A can finish a work in 18 days and B in 15 days. B worked for 10 days and left. In how many days can A finish remaining work?"
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "If 3 men or 6 women can do a piece of work in 16 days, in how many days will 12 men and 8 women do it?"
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Number Systems",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Number Systems",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Number Systems",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Number Systems",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Number Systems",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "What is the remainder when 2^89 is divided by 89 (given that 89 is a prime number)?",
+        "options": {
+          "A": "2",
+          "B": "1",
+          "C": "0",
+          "D": "88"
+        },
+        "correct_answer": "A",
+        "explanation": "By Fermat's Little Theorem: a^p = a (mod p) for any prime p. Hence 2^89 = 2 (mod 89). Remainder is 2.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "If a number 653xy is completely divisible by 80, what is the value of (x + y)?",
+        "options": {
+          "A": "6",
+          "B": "2",
+          "C": "8",
+          "D": "4"
+        },
+        "correct_answer": "A",
+        "explanation": "Divisible by 80 means divisible by 10 and 8. y must be 0. 653x0 is divisible by 8 => last 3 digits 3x0 divisible by 8 => 320 or 360 => x = 2 or 6. For x=6, y=0 => x+y=6.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "The HCF of two numbers is 11 and their LCM is 693. If one of the numbers is 77, what is the other number?",
+        "options": {
+          "A": "99",
+          "B": "88",
+          "C": "101",
+          "D": "91"
+        },
+        "correct_answer": "A",
+        "explanation": "Product of two numbers = HCF * LCM => 77 * N = 11 * 693 => N = 7623 / 77 = 99.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "How many trailing zeros are there at the end of 100! (factorial of 100)?",
+        "options": {
+          "A": "24",
+          "B": "25",
+          "C": "20",
+          "D": "22"
+        },
+        "correct_answer": "A",
+        "explanation": "Legendre's formula: floor(100/5) + floor(100/25) = 20 + 4 = 24 trailing zeros.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "What is the unit digit in the product (7^95 - 3^58)?",
+        "options": {
+          "A": "4",
+          "B": "6",
+          "C": "0",
+          "D": "2"
+        },
+        "correct_answer": "A",
+        "explanation": "Cyclicity of 7 is 4: 95 mod 4 = 3 => 7^3 ends in 3. Cyclicity of 3 is 4: 58 mod 4 = 2 => 3^2 ends in 9. Unit digit = 13 - 9 = 4.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "What is the smallest number which when divided by 12, 15, and 20 leaves remainder 4 in each case?",
+        "options": {
+          "A": "64",
+          "B": "124",
+          "C": "60",
+          "D": "56"
+        },
+        "correct_answer": "A",
+        "explanation": "LCM(12, 15, 20) = 60. Required number = LCM + 4 = 60 + 4 = 64.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "The sum of two numbers is 528 and their HCF is 33. How many such pairs of numbers exist?",
+        "options": {
+          "A": "4 pairs",
+          "B": "6 pairs",
+          "C": "8 pairs",
+          "D": "2 pairs"
+        },
+        "correct_answer": "A",
+        "explanation": "Let numbers be 33a and 33b where a, b are co-prime. 33(a + b) = 528 => a + b = 16. Co-prime pairs summing to 16: (1, 15), (3, 13), (5, 11), (7, 9) = 4 pairs.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Find the largest number of four digits which is exactly divisible by 15, 25, 40, and 75:",
+        "options": {
+          "A": "9,600",
+          "B": "9,000",
+          "C": "9,400",
+          "D": "9,800"
+        },
+        "correct_answer": "A",
+        "explanation": "LCM(15, 25, 40, 75) = 600. Largest 4-digit number = 9999. 9999 mod 600 = 399. Required = 9999 - 399 = 9,600.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "What is the remainder when (67^67 + 67) is divided by 68?",
+        "options": {
+          "A": "66",
+          "B": "67",
+          "C": "0",
+          "D": "1"
+        },
+        "correct_answer": "A",
+        "explanation": "67 = -1 (mod 68). (-1)^67 + (-1) = -1 - 1 = -2 = 66 (mod 68). Remainder is 66.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "How many positive factors does the number 360 have?",
+        "options": {
+          "A": "24",
+          "B": "18",
+          "C": "12",
+          "D": "30"
+        },
+        "correct_answer": "A",
+        "explanation": "360 = 2^3 * 3^2 * 5^1. Number of factors = (3 + 1) * (2 + 1) * (1 + 1) = 4 * 3 * 2 = 24.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Number Systems (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "LCM(15, 20, 30) = 60. Efficiencies: A=4, B=3, C=2. Total = 9. Days = 60 / 9 = 20 / 3 = 6.67 days. Answer: 6.67 days."
-      ],
-      [
-        "Solution Q2:",
-        "M1 * D1 = M2 * D2 ==> 12 * 16 = 8 * D2 ==> D2 = (12 * 16) / 8 = 24 days. Answer: 24 days."
-      ],
-      [
-        "Solution Q3:",
-        "Efficiency 3:1 ==> Time 1:3. Difference = 2 units = 60 days ==> 1 unit = 30 days (A=30, B=90). Together = (30 * 90) / 120 = 2700 / 120 = 22.5 days. Answer: 22.5 days."
-      ],
-      [
-        "Solution Q4:",
-        "Work = 90. A=5, B=6. B does 10 * 6 = 60 units. Remaining = 30 units. A takes 30 / 5 = 6 days. Answer: 6 days."
-      ],
-      [
-        "Solution Q5:",
-        "3 Men = 6 Women ==> 1 Man = 2 Women. 12 Men + 8 Women = 24 + 8 = 32 Women. W1 * D1 = W2 * D2 ==> 6 * 16 = 32 * D2 ==> D2 = 96 / 32 = 3 days. Answer: 3 days."
-      ]
-    ],
-    "trap": "Do not confuse efficiency ratio with time ratio! Efficiency is INVERSELY proportional to time: if Efficiency is 2 : 1, then Time is 1 : 2."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Sort Colors",
+      "difficulty": "Medium",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with colors 0, 1, and 2.",
+      "solution_approach": "1. Apply Two Pointers (Dutch National Flag) algorithmic technique.\n2. Partitions an array containing three distinct values into three contiguous segments using three pointers: low, mid, and high in a single pass.\n3. Invariants: Maintains four regions: [0..low-1] contains 0s, [low..mid-1] contains 1s, [mid..high] unexamined, [high+1..n-1] contains 2s.",
+      "code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+      "java_solution": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+      "solution_java": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: 3Sum",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.",
+      "solution_approach": "1. Identify interview variation of Two Pointers (Dutch National Flag).\n2. Handle edge cases: All elements equal, Array already sorted, Two elements inverted.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Two Pointers (Dutch National Flag)",
+    "category": "Two Pointers",
+    "concept": "Partitions an array containing three distinct values into three contiguous segments using three pointers: low, mid, and high in a single pass.",
+    "why_it_works": "Maintains four regions: [0..low-1] contains 0s, [low..mid-1] contains 1s, [mid..high] unexamined, [high+1..n-1] contains 2s.",
+    "visual_explanation": "[ 2, 0, 2, 1, 1, 0 ]\\nMid encounters 2 -> Swap with High, High--\\nMid encounters 0 -> Swap with Low, Low++, Mid++\\nMid encounters 1 -> Mid++\\nResult: [0, 0, 1, 1, 2, 2]",
+    "java_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                swap(nums, low, mid);\n                low++;\n                mid++;\n            } else if (nums[mid] == 1) {\n                mid++;\n            } else {\n                swap(nums, mid, high);\n                high--;\n            }\n        }\n    }\n    private void swap(int[] nums, int i, int j) {\n        int temp = nums[i];\n        nums[i] = nums[j];\n        nums[j] = temp;\n    }\n}",
+    "code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                swap(nums, low, mid);\n                low++;\n                mid++;\n            } else if (nums[mid] == 1) {\n                mid++;\n            } else {\n                swap(nums, mid, high);\n                high--;\n            }\n        }\n    }\n    private void swap(int[] nums, int i, int j) {\n        int temp = nums[i];\n        nums[i] = nums[j];\n        nums[j] = temp;\n    }\n}",
+    "python_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                swap(nums, low, mid);\n                low++;\n                mid++;\n            } else if (nums[mid] == 1) {\n                mid++;\n            } else {\n                swap(nums, mid, high);\n                high--;\n            }\n        }\n    }\n    private void swap(int[] nums, int i, int j) {\n        int temp = nums[i];\n        nums[i] = nums[j];\n        nums[j] = temp;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 3: Initialize low=0, mid=0, high=nums.length-1.",
+      "Line 5-8: If nums[mid] is 0, swap with low and advance both low and mid.",
+      "Line 9-10: If nums[mid] is 1, mid is in correct middle region; advance mid.",
+      "Line 11-13: If nums[mid] is 2, swap with high and decrement high (do not advance mid)."
+    ],
+    "dry_run": "nums = [2, 0, 1]. mid=0(2): swap with high(1) -> [1, 0, 2], high=1. mid=0(1): mid++. mid=1(0): swap with low(1) -> [0, 1, 2], low=1, mid=2. Finished!",
+    "complexity": "O(N) Time, O(1) Auxiliary Space",
+    "edge_cases": [
+      "All elements equal",
+      "Array already sorted",
+      "Two elements inverted"
+    ],
+    "interview_variations": [
+      "Sort Colors (0, 1, 2)",
+      "Wiggle Sort II",
+      "Sort Array by Parity"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-12-01",
+        "title": "Problem 1: Sort Colors",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with colors 0, 1, and 2.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Two Pointers (Dutch National Flag) algorithmic technique.\n2. Partitions an array containing three distinct values into three contiguous segments using three pointers: low, mid, and high in a single pass.\n3. Invariants: Maintains four regions: [0..low-1] contains 0s, [low..mid-1] contains 1s, [mid..high] unexamined, [high+1..n-1] contains 2s.",
+        "solution_java": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+        "solution_python": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+        "code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+        "java_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-12-02",
+        "title": "Problem 2: 3Sum",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Two Pointers (Dutch National Flag).\n2. Handle edge cases: All elements equal, Array already sorted, Two elements inverted.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        Arrays.sort(nums);\n        List<List<Integer>> res = new ArrayList<>();\n        for (int i = 0; i < nums.length - 2; i++) {\n            if (i > 0 && nums[i] == nums[i - 1]) continue;\n            int l = i + 1, r = nums.length - 1;\n            while (l < r) {\n                int sum = nums[i] + nums[l] + nums[r];\n                if (sum == 0) {\n                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));\n                    while (l < r && nums[l] == nums[l + 1]) l++;\n                    while (l < r && nums[r] == nums[r - 1]) r--;\n                    l++; r--;\n                } else if (sum < 0) l++;\n                else r--;\n            }\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "DBMS",
+    "topic": "Concurrency Control: Isolation Levels & Read Phenomena",
+    "detailed_notes": [
+      "Concurrent execution of transactions increases throughput and resource utilization, but uncoordinated access leads to three classic Concurrency Read Phenomena:\n1. Dirty Read: Transaction T1 updates a row without committing; Transaction T2 reads the uncommitted row. If T1 rolls back, T2 has read non-existent data.\n2. Non-Repeatable Read (Fuzzy Read): T1 reads a row; T2 modifies or deletes that row and commits. T1 re-reads the same row and finds different values.\n3. Phantom Read: T1 executes a range query (e.g., SELECT * WHERE age > 20); T2 inserts new matching rows and commits. T1 re-executes the query and discovers new 'phantom' rows.\n\nSQL-92 Standard Isolation Levels:\n- Read Uncommitted: Allows Dirty Reads, Non-Repeatable Reads, Phantom Reads. Highest throughput, lowest consistency.\n- Read Committed: Prevents Dirty Reads. Still permits Non-Repeatable Reads and Phantom Reads. (Default in PostgreSQL & Oracle).\n- Repeatable Read: Prevents Dirty Reads and Non-Repeatable Reads. Still permits Phantom Reads in standard definitions (MySQL InnoDB prevents phantoms via Next-Key Locks).\n- Serializable: Prevents all read phenomena. Concurrent execution produces results identical to serial execution. Lowest throughput.\n\nMulti-Version Concurrency Control (MVCC):\nModern databases (PostgreSQL, MySQL InnoDB) implement isolation via MVCC: Readers never block Writers, and Writers never block Readers. Each update creates a new row version with transaction timestamp (xmin, xmax). Transactions view a consistent historical snapshot."
+    ],
+    "key_definitions": [
+      {
+        "term": "Dirty Read",
+        "definition": "Reading uncommitted data written by a concurrent transaction that might subsequently roll back."
+      },
+      {
+        "term": "Phantom Read",
+        "definition": "A transaction re-executing a range query discovering new rows inserted by a newly committed transaction."
+      },
+      {
+        "term": "MVCC",
+        "definition": "Multi-Version Concurrency Control: maintaining multiple row versions so readers read historical snapshots without blocking writers."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "Explain the difference between a Non-Repeatable Read and a Phantom Read.",
+        "a": "A Non-Repeatable Read occurs when a transaction re-reads a specific single row and discovers the data inside that row has changed because another transaction modified or deleted it. A Phantom Read occurs during range queries (e.g., WHERE score > 75) when a transaction re-executes the query and finds new rows that were inserted by another transaction fulfilling the range condition."
+      },
+      {
+        "q": "What is MVCC (Multi-Version Concurrency Control) and why is it preferred over lock-based concurrency?",
+        "a": "MVCC maintains multiple physical versions of each row tagged with creation and deletion transaction IDs (e.g., xmin, xmax in PostgreSQL). When a transaction reads data, it reads the snapshot version visible at its start timestamp. This achieves high concurrency because 'readers never block writers, and writers never block readers', eliminating read lock contention."
+      },
+      {
+        "q": "What is the default isolation level in PostgreSQL vs MySQL InnoDB?",
+        "a": "PostgreSQL defaults to Read Committed. MySQL InnoDB defaults to Repeatable Read (which additionally prevents phantom reads using Next-Key Locking)."
+      },
+      {
+        "q": "How does Snapshot Isolation differ from Strict Serializability?",
+        "a": "In Snapshot Isolation, a transaction reads from a private snapshot of the database taken when the transaction started. It avoids dirty reads, non-repeatable reads, and phantom reads. However, it can permit Write Skew anomalies (two concurrent transactions reading overlapping data, modifying disjoint rows, and violating a global constraint). Strict Serializability prevents write skew."
+      },
+      {
+        "q": "What is Write Skew anomaly, and provide a concrete example?",
+        "a": "Write skew occurs under Snapshot Isolation. Example: A hospital requires at least one doctor on call. Doctors Alice and Bob are both on call. Alice submits a transaction to take leave: her transaction checks the snapshot, sees Bob is on call, and sets her status to inactive. Simultaneously, Bob submits a transaction, checks his snapshot, sees Alice is on call, and sets his status to inactive. Both commit, leaving zero doctors on call."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-12-01",
+        "question": "Which SQL isolation level allows Dirty Reads?",
+        "options": [
+          "Read Uncommitted",
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable"
+        ],
+        "correct_answer": "A",
+        "explanation": "Read Uncommitted allows reading uncommitted, dirty rows."
+      },
+      {
+        "id": "CS-12-02",
+        "question": "A transaction re-executes a range query and discovers newly inserted rows that match the predicate. This is a:",
+        "options": [
+          "Dirty Read",
+          "Non-Repeatable Read",
+          "Phantom Read",
+          "Lost Update"
+        ],
+        "correct_answer": "C",
+        "explanation": "Newly appearing rows in a range query are Phantom Reads."
+      },
+      {
+        "id": "CS-12-03",
+        "question": "What is the core principle of Multi-Version Concurrency Control (MVCC)?",
+        "options": [
+          "All transactions execute strictly serially",
+          "Readers never block writers, and writers never block readers",
+          "Exclusive locks are acquired for every SELECT",
+          "Rollbacks are prohibited"
+        ],
+        "correct_answer": "B",
+        "explanation": "MVCC creates versioned snapshots, allowing non-blocking reads and concurrent writes."
+      },
+      {
+        "id": "CS-12-04",
+        "question": "Which isolation level completely prevents all read phenomena, ensuring equivalence to serial execution?",
+        "options": [
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable",
+          "Snapshot Isolation"
+        ],
+        "correct_answer": "C",
+        "explanation": "Serializable isolation guarantees equivalent results to a serial schedule."
+      },
+      {
+        "id": "CS-12-05",
+        "question": "What is the default isolation level in PostgreSQL?",
+        "options": [
+          "Read Uncommitted",
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable"
+        ],
+        "correct_answer": "B",
+        "explanation": "PostgreSQL uses Read Committed as its default isolation level."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "NSE2 / BulkBeat TV",
+    "repo_path": "D:\\Projects\\nse2",
+    "feature_focus": "Telegram Push Notification Infrastructure & Webhook Architecture",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nTransforming polling bots into event-driven push notification pipelines.\n\nWHAT TO MEMORIZE:\nWebhooks allow Telegram's edge servers to push user messages directly to our API server, eliminating idle socket polling.\n\n60-SECOND INTERVIEW PITCH:\nFor instant alert delivery in BulkBeat TV, I architected an event-driven notification service using Telegram Bot Webhooks. It incorporates a token-bucket rate limiter to deliver real-time news cards to thousands of subscribers while strictly honoring Telegram's 30 msg/sec API broadcast limits.",
+    "interview_qa": [
+      {
+        "q": "Why migrate from Telegram long polling to Webhook architecture in NSE2?",
+        "a": "Long polling requires continuous outgoing HTTP requests every 1-2 seconds, which exhausts network sockets, consumes idle CPU, and increases latency when thousands of users interact with the bot. Webhooks transform the system into an event-driven push architecture: Telegram pushes updates to our HTTPS domain only when an event occurs, dramatically lowering server resource utilization."
+      },
+      {
+        "q": "How do you broadcast breaking alerts to thousands of subscribers without hitting Telegram rate limits?",
+        "a": "Telegram limits broadcast messages to approximately 30 messages per second across chats. We implement a distributed token-bucket rate-limiter: alerts are enqueued in priority batches and dispatched across an asynchronous worker pool that pauses automatically when Telegram returns an HTTP 429 (`retry_after`) header."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 12 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 12 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'DevQBX & Sitekraft Engineering', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In DevQBX & Sitekraft Engineering (Project Management, Client Web Architecture, Microservices), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of DevQBX & Sitekraft Engineering.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 11 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5001 — Knowledge Management Architecture & Repositories.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Number Systems, Divisibility & HCF/LCM.\n• Algorithmic Invariant: Optimal time and space complexity rules for Two Pointers (Dutch National Flag).\n• Systems Law: Architectural equations, protocols, and complexity bounds for ACID Properties & Transaction Processing.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Knowledge Management Architecture & Repositories.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Two Pointers (Dutch National Flag).\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Biometric Electronic Voting System (BEVM).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 12 Q1: What is the primary academic thesis of Knowledge Management Architecture & Repositories?",
+        "a": "Core theoretical and practical mastery of Knowledge Management Architecture & Repositories under the CSJM University BCA-5001 syllabus."
+      },
+      {
+        "q": "Day 12 Q2: What is the key speed calculation formula applied in Number Systems, Divisibility & HCF/LCM?",
+        "a": "High-speed corporate placement arithmetic shortcut for Number Systems, Divisibility & HCF/LCM in campus recruitment exams."
+      },
+      {
+        "q": "Day 12 Q3: What is the time complexity of Two Pointers (Dutch National Flag)?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 12 Q4: What is the central architectural principle of ACID Properties & Transaction Processing?",
+        "a": "Foundational systems engineering rule governing ACID Properties & Transaction Processing in production environments."
+      },
+      {
+        "q": "Day 12 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 12 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 12 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 12 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 12 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 12 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5001 — Knowledge Management Architecture & Repositories.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Number Systems, Divisibility & HCF/LCM.\n• Algorithmic Invariant: Optimal time and space complexity rules for Two Pointers (Dutch National Flag).\n• Systems Law: Architectural equations, protocols, and complexity bounds for ACID Properties & Transaction Processing."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5001 — Knowledge Management Architecture & Repositories."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Number Systems, Divisibility & HCF/LCM."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Two Pointers (Dutch National Flag)."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: Biometric Electronic Voting System (BEVM)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 12 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "In dimensional data warehouse modeling, how is a Star Schema structured?",
+        "a": "Answer: A\n\nA star schema features a central numeric fact table surrounded by single-level denormalized dimension tables."
+      },
+      {
+        "q": "How does a Snowflake Schema differ fundamentally from a Star Schema?",
+        "a": "Answer: B\n\nSnowflake normalizes dimension tables into multiple related tables, reducing redundancy but increasing join complexity."
+      },
+      {
+        "q": "What characterizes a Fact Table in a Data Warehouse?",
+        "a": "Answer: B\n\nFact tables store additive, semi-additive numerical metrics (e.g., units sold, total revenue) and dimension foreign keys."
+      },
+      {
+        "q": "What are the three tiers in the standard Data Warehouse 3-tier architecture?",
+        "a": "Answer: B\n\nThe 3 tiers are: Bottom (Relational DBMS & ETL staging), Middle (OLAP multidimensional engine), Top (BI query/reporting)."
+      },
+      {
+        "q": "What is the primary difference between ROLAP and MOLAP?",
+        "a": "Answer: A\n\nROLAP accesses relational databases directly via SQL; MOLAP stores data in optimized multidimensional array data cubes."
+      },
+      {
+        "q": "What is the greatest number that will divide 43, 91, and 183 so as to leave the same remainder in each case?",
+        "a": "Answer: A\n\nRequired number = HCF(|91 - 43|, |183 - 91|, |183 - 43|) = HCF(48, 92, 140) = 4."
+      },
+      {
+        "q": "What is the least number of soldiers that can be drawn up in troops of 12, 15, and 18, and also in form of a solid square?",
+        "a": "Answer: A\n\nLCM(12, 15, 18) = 180 = 2^2 * 3^2 * 5^1. To make a perfect square, multiply by 5: 180 * 5 = 900 soldiers."
+      },
+      {
+        "q": "What is the unit digit in (3^65 * 6^59 * 7^71)?",
+        "a": "Answer: A\n\nUnit digit of 3^65 (65 mod 4 = 1) is 3^1 = 3. Unit digit of 6^59 is always 6. Unit digit of 7^71 (71 mod 4 = 3) is 7^3 = 343 => 3. Product = 3 * 6 * 3 = 54 => unit digit 4."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-12-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In dimensional data warehouse modeling, how is a Star Schema structured?",
+        "options": [
+          "A central fact table linked directly to denormalized dimension tables",
+          "A normalized fact table with multiple parent tables",
+          "A completely flat single CSV spreadsheet",
+          "A peer-to-peer network of dimension tables"
+        ],
+        "correct_answer": "A",
+        "explanation": "A star schema features a central numeric fact table surrounded by single-level denormalized dimension tables."
+      },
+      {
+        "id": "TEST-12-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does a Snowflake Schema differ fundamentally from a Star Schema?",
+        "options": [
+          "The fact table is split into multiple sub-facts",
+          "Dimension tables are normalized into 3NF hierarchies, splitting into sub-dimension tables",
+          "It does not use foreign keys",
+          "It cannot store historical time-series data"
+        ],
+        "correct_answer": "B",
+        "explanation": "Snowflake normalizes dimension tables into multiple related tables, reducing redundancy but increasing join complexity."
+      },
+      {
+        "id": "TEST-12-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What characterizes a Fact Table in a Data Warehouse?",
+        "options": [
+          "Contains descriptive textual names and addresses",
+          "Contains quantitative numerical measures (metrics) and foreign keys referencing dimensions",
+          "Contains only SQL stored procedures",
+          "Stores only network routing tables"
+        ],
+        "correct_answer": "B",
+        "explanation": "Fact tables store additive, semi-additive numerical metrics (e.g., units sold, total revenue) and dimension foreign keys."
+      },
+      {
+        "id": "TEST-12-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What are the three tiers in the standard Data Warehouse 3-tier architecture?",
+        "options": [
+          "Client Tier, Web Server Tier, Application Tier",
+          "Bottom Tier (Warehouse DB Server), Middle Tier (OLAP Server), Top Tier (Front-end Client Tools)",
+          "Physical Layer, Data Link Layer, Network Layer",
+          "Compiler, Assembler, Linker"
+        ],
+        "correct_answer": "B",
+        "explanation": "The 3 tiers are: Bottom (Relational DBMS & ETL staging), Middle (OLAP multidimensional engine), Top (BI query/reporting)."
+      },
+      {
+        "id": "TEST-12-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary difference between ROLAP and MOLAP?",
+        "options": [
+          "ROLAP uses relational tables with star schemas; MOLAP uses precomputed multi-dimensional array cubes",
+          "ROLAP is always faster than MOLAP",
+          "MOLAP does not support slicing and dicing",
+          "ROLAP can only store images"
+        ],
+        "correct_answer": "A",
+        "explanation": "ROLAP accesses relational databases directly via SQL; MOLAP stores data in optimized multidimensional array data cubes."
+      },
+      {
+        "id": "TEST-12-06",
+        "category": "Placement Aptitude",
+        "question": "What is the greatest number that will divide 43, 91, and 183 so as to leave the same remainder in each case?",
+        "options": [
+          "4",
+          "7",
+          "9",
+          "13"
+        ],
+        "correct_answer": "A",
+        "explanation": "Required number = HCF(|91 - 43|, |183 - 91|, |183 - 43|) = HCF(48, 92, 140) = 4."
+      },
+      {
+        "id": "TEST-12-07",
+        "category": "Placement Aptitude",
+        "question": "What is the least number of soldiers that can be drawn up in troops of 12, 15, and 18, and also in form of a solid square?",
+        "options": [
+          "900",
+          "400",
+          "1,600",
+          "3,600"
+        ],
+        "correct_answer": "A",
+        "explanation": "LCM(12, 15, 18) = 180 = 2^2 * 3^2 * 5^1. To make a perfect square, multiply by 5: 180 * 5 = 900 soldiers."
+      },
+      {
+        "id": "TEST-12-08",
+        "category": "Placement Aptitude",
+        "question": "What is the unit digit in (3^65 * 6^59 * 7^71)?",
+        "options": [
+          "4",
+          "6",
+          "2",
+          "8"
+        ],
+        "correct_answer": "A",
+        "explanation": "Unit digit of 3^65 (65 mod 4 = 1) is 3^1 = 3. Unit digit of 6^59 is always 6. Unit digit of 7^71 (71 mod 4 = 3) is 7^3 = 343 => 3. Product = 3 * 6 * 3 = 54 => unit digit 4."
+      },
+      {
+        "id": "TEST-12-09",
+        "category": "Placement Aptitude",
+        "question": "How many numbers between 100 and 300 are divisible by both 4 and 6?",
+        "options": [
+          "17",
+          "16",
+          "18",
+          "15"
+        ],
+        "correct_answer": "A",
+        "explanation": "Divisible by LCM(4, 6) = 12. Smallest multiple of 12 > 100 is 108 (12 * 9). Largest multiple < 300 is 288 (12 * 24). Total = 24 - 9 + 1 = 16 numbers (or if inclusive 100-300: 300 is 12*25, 25 - 9 + 1 = 17)."
+      },
+      {
+        "id": "TEST-12-10",
+        "category": "Placement Aptitude",
+        "question": "What is the remainder when (9^6 + 1) is divided by 8?",
+        "options": [
+          "2",
+          "1",
+          "0",
+          "7"
+        ],
+        "correct_answer": "A",
+        "explanation": "9 = 1 (mod 8). Therefore 9^6 + 1 = 1^6 + 1 = 2 (mod 8). Remainder is 2."
+      },
+      {
+        "id": "TEST-12-11",
+        "category": "Core CS (DBMS)",
+        "question": "Which SQL isolation level allows Dirty Reads?",
+        "options": [
+          "Read Uncommitted",
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable"
+        ],
+        "correct_answer": "A",
+        "explanation": "Read Uncommitted allows reading uncommitted, dirty rows."
+      },
+      {
+        "id": "TEST-12-12",
+        "category": "Core CS (DBMS)",
+        "question": "A transaction re-executes a range query and discovers newly inserted rows that match the predicate. This is a:",
+        "options": [
+          "Dirty Read",
+          "Non-Repeatable Read",
+          "Phantom Read",
+          "Lost Update"
+        ],
+        "correct_answer": "C",
+        "explanation": "Newly appearing rows in a range query are Phantom Reads."
+      },
+      {
+        "id": "TEST-12-13",
+        "category": "Core CS (DBMS)",
+        "question": "What is the core principle of Multi-Version Concurrency Control (MVCC)?",
+        "options": [
+          "All transactions execute strictly serially",
+          "Readers never block writers, and writers never block readers",
+          "Exclusive locks are acquired for every SELECT",
+          "Rollbacks are prohibited"
+        ],
+        "correct_answer": "B",
+        "explanation": "MVCC creates versioned snapshots, allowing non-blocking reads and concurrent writes."
+      },
+      {
+        "id": "TEST-12-14",
+        "category": "Core CS (DBMS)",
+        "question": "Which isolation level completely prevents all read phenomena, ensuring equivalence to serial execution?",
+        "options": [
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable",
+          "Snapshot Isolation"
+        ],
+        "correct_answer": "C",
+        "explanation": "Serializable isolation guarantees equivalent results to a serial schedule."
+      },
+      {
+        "id": "TEST-12-15",
+        "category": "Core CS (DBMS)",
+        "question": "What is the default isolation level in PostgreSQL?",
+        "options": [
+          "Read Uncommitted",
+          "Read Committed",
+          "Repeatable Read",
+          "Serializable"
+        ],
+        "correct_answer": "B",
+        "explanation": "PostgreSQL uses Read Committed as its default isolation level."
+      },
+      {
+        "id": "TEST-12-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Two Pointers (Dutch National Flag)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Two Pointers (Dutch National Flag)' pattern operates with O(N) Time, O(1) Auxiliary Space: Maintains four regions: [0..low-1] contains 0s, [low..mid-1] contains 1s, [mid..high] unexamined, [high+1..n-1] contains 2s.."
+      },
+      {
+        "id": "TEST-12-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Two Pointers (Dutch National Flag)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: All elements equal.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Two Pointers (Dutch National Flag) include All elements equal, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-12-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Sort Colors', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-12-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Telegram Push Notification Infrastructure & Webhook Architecture'?",
+        "options": [
+          "Webhooks allow Telegram's edge servers to push user messages directly to our API server, eliminating idle socket polling.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: Webhooks allow Telegram's edge servers to push user messages directly to our API server, eliminating idle socket polling.."
+      },
+      {
+        "id": "TEST-12-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'Why migrate from Telegram long polling to Webhook architecture in NSE2?'?",
+        "options": [
+          "Long polling requires continuous outgoing HTTP requests every 1-2 seconds, which exhausts network sockets, consumes idle CPU, and increases latency when thousan...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Long polling requires continuous outgoing HTTP requests every 1-2 seconds, which exhausts network sockets, consumes idle CPU, and increases ."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-12",
+    "title": "Sort Colors (Two Pointers (Dutch National Flag))",
+    "time_limit_minutes": 35,
+    "difficulty": "Medium",
+    "problem_statement": "Solve the core placement problem: Sort Colors.\n\nGiven an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with colors 0, 1, and 2.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Two Pointers (Dutch National Flag)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: All elements equal, Array already sorted, Two elements inverted.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Two Pointers (Dutch National Flag)\n    public void sortColors(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Two Pointers (Dutch National Flag)\n    public void sortColors(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public void sortColors(int[] nums) {\n        int low = 0, mid = 0, high = nums.length - 1;\n        while (mid <= high) {\n            if (nums[mid] == 0) {\n                int t = nums[low]; nums[low] = nums[mid]; nums[mid] = t;\n                low++; mid++;\n            } else if (nums[mid] == 1) mid++;\n            else {\n                int t = nums[mid]; nums[mid] = nums[high]; nums[high] = t;\n                high--;\n            }\n        }\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Two Pointers (Dutch National Flag) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: All elements equal",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

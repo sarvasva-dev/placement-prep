@@ -1368,7 +1368,7 @@ def get_days_25_to_30():
                 "Final Verification of Flagship Portfolio Assets:\n\n"
                 "• BulkBeat TV: Real-time media streaming, aiohttp backend, Telegram bot webhooks, SQLite WAL concurrency, token bucket rate limiting.\n"
                 "• TerraStract: Hybrid document AI, PyMuPDF vector extraction, Tesseract OCR PSM 6 fallback, Hindi Unicode regex normalization, async exception queue.\n"
-                "• CSMS: Car Showroom Management System, FastAPI, SQLAlchemy ORM, Alembic migrations, PostgreSQL, JWT role-based access control.\n"
+                "• CSMS: College Student Management System, FastAPI, SQLAlchemy ORM, Alembic migrations, PostgreSQL, JWT role-based access control.\n"
                 "• BEVM: Biometric Electronic Voting Machine, Fernet AES-256 encryption, chained SHA-256 tamper-evident audit logs.\n\n"
                 "All 4 projects stand verified, documented, and ready for technical demonstration."
             ),

@@ -1,211 +1,2438 @@
 {
   "day": 23,
-  "title": "Numerical Integration (Trapezoidal & Simpson's), Pie Charts & Coin Change DP",
-  "sem_data": {
-    "subject": "BCA-5004 Numerical Methods",
-    "topic": "Unit IV \u2014 Numerical Integration: Trapezoidal Rule, Simpson's 1/3 Rule & Simpson's 3/8 Rule",
-    "detailed_notes": [
-      "Numerical integration (Numerical Quadrature) evaluates the definite integral I = int_a^b f(x) dx of a function known only at discrete tabulated points (x0, y0), (x1, y1), ..., (xn, yn), or when an analytical antiderivative cannot be expressed in elementary terms.",
-      "General Newton-Cotes Quadrature Formula:\nDerived by replacing the integrand f(x) with an interpolating polynomial P_n(x) of degree n using Newton's Forward Difference formula.\nLet step size h = (b - a) / n, where x_i = x0 + i*h.",
-      "1. Trapezoidal Rule (n = 1, Linear Interpolation):\n\u2022 Approximates the curve between adjacent points as straight line segments (trapezoids).\n\u2022 Formula: int_a^b f(x) dx = (h/2) * [ (y0 + yn) + 2*(y1 + y2 + ... + y_{n-1}) ].\n\u2022 Global Truncation Error: E_T = - [(b - a) * h^2 / 12] * f''(xi) = O(h^2).\n\u2022 Degree of Precision = 1 (Exact for polynomials of degree <= 1).",
-      "2. Simpson's 1/3 Rule (n = 2, Parabolic Interpolation):\n\u2022 Approximates the curve through sets of 3 points as second-degree parabolas.\n\u2022 Requirement: The total number of subintervals n MUST BE EVEN (n = 2, 4, 6, 8, ...).\n\u2022 Formula: int_a^b f(x) dx = (h/3) * [ (y0 + yn) + 4*(Odd Ordinates: y1 + y3 + ...) + 2*(Even Ordinates: y2 + y4 + ...) ].\n\u2022 Global Truncation Error: E_S13 = - [(b - a) * h^4 / 180] * f^(4)(xi) = O(h^4).\n\u2022 Degree of Precision = 3 (Exact for cubics, even though derived with parabolas!).",
-      "3. Simpson's 3/8 Rule (n = 3, Cubic Interpolation):\n\u2022 Approximates curve through sets of 4 points using third-degree cubics.\n\u2022 Requirement: Total number of subintervals n MUST BE A MULTIPLE OF 3 (n = 3, 6, 9, ...).\n\u2022 Formula: int_a^b f(x) dx = (3h/8) * [ (y0 + yn) + 3*(y1 + y2 + y4 + y5 + ...) + 2*(y3 + y6 + ...) ].\n\u2022 Global Truncation Error: E_S38 = - [(b - a) * h^4 / 80] * f^(4)(xi) = O(h^4)."
+  "title": "Day 23: Numerical Integration: Trapezoidal Rule, Simpson's 1/3 Rule & Simpson's 3/8 Rule & Dijkstra's Shortest Path Algorithm",
+  "streams": {
+    "academic": {
+      "unit": 4,
+      "topic": "Unit IV — Numerical Integration: Trapezoidal Rule, Simpson's 1/3 Rule & Simpson's 3/8 Rule",
+      "objectives": [
+        "Master Newton-Cotes quadrature formulas.",
+        "Understand sub-interval parity rules (Simpson 1/3 requires EVEN n; 3/8 requires multiple of 3)."
+      ],
+      "explanation": "Numerical integration evaluates definite integrals `∫_a^b f(x) dx` from tabulated discrete points when analytical anti-derivatives do not exist.\n1. General Newton-Cotes Formula:\n   Subdivide `[a, b]` into `n` equal sub-intervals of width `h = (b - a) / n`, giving points `x0, x1, ... xn` with ordinates `y0, y1, ... yn`.\n2. Trapezoidal Rule (Linear interpolation per strip):\n   `∫ f(x) dx = (h / 2) * [ (y0 + yn) + 2 * (y1 + y2 + ... + y_{n-1}) ]`\n   • Condition: Valid for any number of sub-intervals `n`.\n   • Error: `O(h^2)`. Degree of precision = 1.\n3. Simpson's 1/3 Rule (Parabolic interpolation per pair of strips):\n   `∫ f(x) dx = (h / 3) * [ (y0 + yn) + 4 * (odd ordinates: y1+y3+y5...) + 2 * (even ordinates: y2+y4+y6...) ]`\n   • CRITICAL Condition: `n` MUST BE AN EVEN NUMBER (multiple of 2)!\n   • Error: `O(h^4)`. Degree of precision = 3 (exact for polynomials up to cubic degree).\n4. Simpson's 3/8 Rule (Cubic interpolation):\n   `∫ f(x) dx = (3h / 8) * [ (y0 + yn) + 3 * (y1+y2+y4+y5...) + 2 * (multiples of 3: y3+y6+y9...) ]`\n   • Condition: `n` MUST BE A MULTIPLE OF 3!\n   • Error: `O(h^4)`.",
+      "definitions": [
+        {
+          "term": "Numerical Quadrature",
+          "definition": "The numerical approximation of a definite integral using a weighted sum of function values at discrete points: sum(w_i * f(x_i))."
+        },
+        {
+          "term": "Degree of Precision",
+          "definition": "The highest degree of polynomial for which a numerical integration formula yields the exact analytical result."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Sub-interval Parity Rules",
+          "content": "Trapezoidal: any n; Simpson's 1/3: n MUST be even; Simpson's 3/8: n MUST be a multiple of 3."
+        },
+        {
+          "title": "Simpson's 1/3 vs Trapezoidal Accuracy",
+          "content": "Simpson's 1/3 has error O(h^4) compared to Trapezoidal's O(h^2), offering superior accuracy for curved functions."
+        }
+      ],
+      "examples": [
+        "Evaluating ∫_0^6 (1 / (1 + x^2)) dx to approximate pi using Trapezoidal and Simpson's rules."
+      ],
+      "diagram": "+---------------------------------------------------+\n|              NUMERICAL INTEGRATION                |\n| Trapezoidal:  (h/2) * [Ends + 2*(Remaining)]      |\n| Simpson 1/3:  (h/3) * [Ends + 4*(Odds) + 2*(Evens)] (n EVEN!)\n| Simpson 3/8: (3h/8) * [Ends + 3*(Non-3s) + 2*(Multiples of 3)]\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Rule",
+          "Polynomial Degree",
+          "Sub-intervals n Required",
+          "Global Truncation Error",
+          "Degree of Precision"
+        ],
+        "rows": [
+          [
+            "Trapezoidal Rule",
+            "Linear (Degree 1)",
+            "Any integer n >= 1",
+            "O(h^2)",
+            "1"
+          ],
+          [
+            "Simpson's 1/3 Rule",
+            "Quadratic (Degree 2)",
+            "Must be EVEN (n = 2, 4, 6...)",
+            "O(h^4)",
+            "3 (Exact for cubics!)"
+          ],
+          [
+            "Simpson's 3/8 Rule",
+            "Cubic (Degree 3)",
+            "Multiple of 3 (n = 3, 6, 9...)",
+            "O(h^4)",
+            "3"
+          ]
+        ]
+      },
+      "memorize": "Simpson 1/3 formula: (h/3)*[Ends + 4*Odds + 2*Evens]. n MUST BE EVEN! Trapezoidal: (h/2)*[Ends + 2*Rest].",
+      "understand": "Even though Simpson's 1/3 uses parabolic (2nd-degree) segments, odd-symmetry causes cubic error terms to cancel, making it exact for 3rd-degree cubics!",
+      "common_mistakes": "Applying Simpson's 1/3 rule when n is an odd number (mathematically invalid!).",
+      "exam_writing_guidance": "Calculate h = (b-a)/n, construct the (x_i, y_i) values table, state the formula explicitly with odd/even labels, and compute final decimal.",
+      "mini_practice": [
+        "Evaluate ∫_0^1 (1 / (1 + x)) dx with n = 4 using Simpson's 1/3 rule."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5004 Numerical Methods",
+          "year": "2024-25 (Q4)",
+          "marks": 15,
+          "question": "Evaluate the integral I = ∫_0^6 (1 / (1 + x^2)) dx by using:\n(a) Trapezoidal Rule\n(b) Simpson's 1/3 Rule\n(c) Simpson's 3/8 Rule\nTake n = 6. Compare with exact analytical value and compute percentage error. (15 Marks)",
+          "rubric": "Table of ordinates for n=6 (3 marks) + Trapezoidal calculation (3 marks) + Simpson's 1/3 calculation (3 marks) + Simpson's 3/8 calculation (3 marks) + Exact comparison & errors (3 marks) = 15 Marks.",
+          "model_answer": "1. Ordinates Table:\nGiven limits a = 0, b = 6, n = 6 sub-intervals.\nStep size h = (b - a) / n = (6 - 0) / 6 = 1.0.\nf(x) = 1 / (1 + x^2).\n• x0 = 0: y0 = 1 / (1 + 0) = 1.00000\n• x1 = 1: y1 = 1 / (1 + 1) = 0.50000\n• x2 = 2: y2 = 1 / (1 + 4) = 0.20000\n• x3 = 3: y3 = 1 / (1 + 9) = 0.10000\n• x4 = 4: y4 = 1 / (1 + 16) = 0.05882\n• x5 = 5: y5 = 1 / (1 + 25) = 0.03846\n• x6 = 6: y6 = 1 / (1 + 36) = 0.02703\n\n2. (a) Trapezoidal Rule:\nI_Trap = (h / 2) * [ (y0 + y6) + 2 * (y1 + y2 + y3 + y4 + y5) ]\nSum of ends = 1.00000 + 0.02703 = 1.02703\nSum of remaining = 0.50000 + 0.20000 + 0.10000 + 0.05882 + 0.03846 = 0.89728\nI_Trap = (1.0 / 2) * [ 1.02703 + 2 * (0.89728) ] = 0.5 * [ 1.02703 + 1.79456 ] = 0.5 * 2.82159 = 1.4108.\n\n3. (b) Simpson's 1/3 Rule (Valid since n=6 is EVEN):\nI_Simp13 = (h / 3) * [ (y0 + y6) + 4 * (y1 + y3 + y5) + 2 * (y2 + y4) ]\nSum of odds (y1 + y3 + y5) = 0.50000 + 0.10000 + 0.03846 = 0.63846\nSum of evens (y2 + y4) = 0.20000 + 0.05882 = 0.25882\nI_Simp13 = (1.0 / 3) * [ 1.02703 + 4 * (0.63846) + 2 * (0.25882) ]\n= (1.0 / 3) * [ 1.02703 + 2.55384 + 0.51764 ] = (1.0 / 3) * [ 4.09851 ] = 1.3662.\n\n4. (c) Simpson's 3/8 Rule (Valid since n=6 is a multiple of 3):\nI_Simp38 = (3h / 8) * [ (y0 + y6) + 3 * (y1 + y2 + y4 + y5) + 2 * (y3) ]\nSum of non-3s = 0.50000 + 0.20000 + 0.05882 + 0.03846 = 0.79728\nSum of multiples of 3 = y3 = 0.10000\nI_Simp38 = (3 / 8) * [ 1.02703 + 3 * (0.79728) + 2 * (0.10000) ]\n= 0.375 * [ 1.02703 + 2.39184 + 0.20000 ] = 0.375 * [ 3.61887 ] = 1.3571.\n\n5. Exact Analytical Value & Error Comparison:\nExact I = ∫_0^6 1/(1+x^2) dx = [arctan(x)]_0^6 = arctan(6) - arctan(0) = 1.4056 radians.\n• Trapezoidal Error = |1.4056 - 1.4108| = 0.0052 (0.37% error)\n• Simpson's 1/3 Error = |1.4056 - 1.3662| = 0.0394\n• Simpson's 3/8 Error = |1.4056 - 1.3571| = 0.0485.",
+          "answer_structure": "Ordinates Table -> Trapezoidal Formula & Calc -> Simpson 1/3 Formula & Calc -> Simpson 3/8 Formula & Calc -> Error Comparison",
+          "important_points": [
+            "h = (6-0)/6 = 1",
+            "Simpson 1/3: 4*odds + 2*evens",
+            "Simpson 3/8: 3*rest + 2*multiples of 3",
+            "Exact arctan(6) = 1.4056"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Accurate table of y values",
+            "All 3 formulas stated with correct coefficients",
+            "Exact arctan comparison"
+          ],
+          "common_mistakes": [
+            "Multiplying even ordinates by 4 instead of 2 in Simpson's 1/3"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5004 Numerical Methods",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "Why does Simpson's 1/3 Rule require an EVEN number of sub-intervals? (5 Marks)",
+          "rubric": "Parabolic interpolation explanation across paired strips (5 marks).",
+          "model_answer": "Simpson's 1/3 Rule approximates the integrand f(x) by fitting a 2nd-degree parabola `y = ax^2 + bx + c` across points. Since a quadratic parabola has 3 unknown coefficients (a, b, c), it requires exactly 3 distinct points (2 adjacent sub-interval strips) to determine. Therefore, numerical integration using Simpson's 1/3 rule must group strips in pairs. To evaluate an integral across an entire range, the total number of strips `n` must be a multiple of 2 (i.e., an EVEN number). If n is odd, the final strip cannot be paired into a parabola."
+        }
+      ],
+      "subject_code": "BCA-5004",
+      "subject_name": "Numerical Methods",
+      "mcqs": [
+        {
+          "id": "ACAD-23-01",
+          "question": "In the TCP 3-way handshake to establish a reliable connection, what sequence of control flags is exchanged between client and server?",
+          "options": [
+            "SYN -> SYN-ACK -> ACK",
+            "ACK -> SYN -> FIN",
+            "SYN -> ACK -> RST",
+            "PING -> PONG -> ACK"
+          ],
+          "correct_answer": "A",
+          "explanation": "Connection establishment: Client sends SYN, Server replies with SYN + ACK, and Client confirms with final ACK."
+        },
+        {
+          "id": "ACAD-23-02",
+          "question": "How does TCP handle Congestion Control during the initial 'Slow Start' phase upon connection startup?",
+          "options": [
+            "It sets window size to maximum bandwidth immediately",
+            "It initializes Congestion Window (cwnd) to 1 MSS and doubles cwnd every RTT (exponential growth) until ssthresh is reached",
+            "It drops every alternate packet",
+            "It transmits UDP datagrams instead"
+          ],
+          "correct_answer": "B",
+          "explanation": "Slow Start probes network capacity exponentially: cwnd doubles every round-trip time until reaching the slow start threshold (ssthresh)."
+        },
+        {
+          "id": "ACAD-23-03",
+          "question": "What mechanism does TCP use during Congestion Avoidance after cwnd exceeds ssthresh?",
+          "options": [
+            "Additive Increase Multiplicative Decrease (AIMD) — increasing cwnd by 1 MSS per RTT",
+            "Exponential doubling",
+            "Immediate connection reset",
+            "Halving the window every second"
+          ],
+          "correct_answer": "A",
+          "explanation": "In Congestion Avoidance, AIMD provides linear window expansion (+1 MSS per RTT) to stabilize throughput near link capacity."
+        },
+        {
+          "id": "ACAD-23-04",
+          "question": "What is the primary architectural difference between TCP and UDP?",
+          "options": [
+            "TCP is connection-oriented, reliable, and provides byte-stream ordering; UDP is connectionless, unreliable, and datagram-oriented",
+            "UDP provides guaranteed packet delivery while TCP does not",
+            "TCP only runs over optical fiber while UDP runs over copper",
+            "UDP uses 64-bit port numbers"
+          ],
+          "correct_answer": "A",
+          "explanation": "TCP guarantees in-order reliable delivery via acknowledgments and retries; UDP provides lightweight, low-latency best-effort transmission."
+        },
+        {
+          "id": "ACAD-23-05",
+          "question": "What is the size of the standard base IPv4 and TCP headers without options?",
+          "options": [
+            "20 bytes for IPv4 and 20 bytes for TCP (40 bytes total overhead)",
+            "8 bytes for IPv4 and 8 bytes for TCP",
+            "64 bytes each",
+            "4 bytes each"
+          ],
+          "correct_answer": "A",
+          "explanation": "Both IPv4 and TCP base headers have a minimum length of 20 bytes each (5 32-bit words), yielding a combined 40-byte base header."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2024-25 (Q4)",
+        "marks": 15,
+        "question": "Evaluate the integral I = ∫_0^6 (1 / (1 + x^2)) dx by using:\n(a) Trapezoidal Rule\n(b) Simpson's 1/3 Rule\n(c) Simpson's 3/8 Rule\nTake n = 6. Compare with exact analytical value and compute percentage error. (15 Marks)",
+        "rubric": "Table of ordinates for n=6 (3 marks) + Trapezoidal calculation (3 marks) + Simpson's 1/3 calculation (3 marks) + Simpson's 3/8 calculation (3 marks) + Exact comparison & errors (3 marks) = 15 Marks.",
+        "model_answer": "1. Ordinates Table:\nGiven limits a = 0, b = 6, n = 6 sub-intervals.\nStep size h = (b - a) / n = (6 - 0) / 6 = 1.0.\nf(x) = 1 / (1 + x^2).\n• x0 = 0: y0 = 1 / (1 + 0) = 1.00000\n• x1 = 1: y1 = 1 / (1 + 1) = 0.50000\n• x2 = 2: y2 = 1 / (1 + 4) = 0.20000\n• x3 = 3: y3 = 1 / (1 + 9) = 0.10000\n• x4 = 4: y4 = 1 / (1 + 16) = 0.05882\n• x5 = 5: y5 = 1 / (1 + 25) = 0.03846\n• x6 = 6: y6 = 1 / (1 + 36) = 0.02703\n\n2. (a) Trapezoidal Rule:\nI_Trap = (h / 2) * [ (y0 + y6) + 2 * (y1 + y2 + y3 + y4 + y5) ]\nSum of ends = 1.00000 + 0.02703 = 1.02703\nSum of remaining = 0.50000 + 0.20000 + 0.10000 + 0.05882 + 0.03846 = 0.89728\nI_Trap = (1.0 / 2) * [ 1.02703 + 2 * (0.89728) ] = 0.5 * [ 1.02703 + 1.79456 ] = 0.5 * 2.82159 = 1.4108.\n\n3. (b) Simpson's 1/3 Rule (Valid since n=6 is EVEN):\nI_Simp13 = (h / 3) * [ (y0 + y6) + 4 * (y1 + y3 + y5) + 2 * (y2 + y4) ]\nSum of odds (y1 + y3 + y5) = 0.50000 + 0.10000 + 0.03846 = 0.63846\nSum of evens (y2 + y4) = 0.20000 + 0.05882 = 0.25882\nI_Simp13 = (1.0 / 3) * [ 1.02703 + 4 * (0.63846) + 2 * (0.25882) ]\n= (1.0 / 3) * [ 1.02703 + 2.55384 + 0.51764 ] = (1.0 / 3) * [ 4.09851 ] = 1.3662.\n\n4. (c) Simpson's 3/8 Rule (Valid since n=6 is a multiple of 3):\nI_Simp38 = (3h / 8) * [ (y0 + y6) + 3 * (y1 + y2 + y4 + y5) + 2 * (y3) ]\nSum of non-3s = 0.50000 + 0.20000 + 0.05882 + 0.03846 = 0.79728\nSum of multiples of 3 = y3 = 0.10000\nI_Simp38 = (3 / 8) * [ 1.02703 + 3 * (0.79728) + 2 * (0.10000) ]\n= 0.375 * [ 1.02703 + 2.39184 + 0.20000 ] = 0.375 * [ 3.61887 ] = 1.3571.\n\n5. Exact Analytical Value & Error Comparison:\nExact I = ∫_0^6 1/(1+x^2) dx = [arctan(x)]_0^6 = arctan(6) - arctan(0) = 1.4056 radians.\n• Trapezoidal Error = |1.4056 - 1.4108| = 0.0052 (0.37% error)\n• Simpson's 1/3 Error = |1.4056 - 1.3662| = 0.0394\n• Simpson's 3/8 Error = |1.4056 - 1.3571| = 0.0485.",
+        "answer_structure": "Ordinates Table -> Trapezoidal Formula & Calc -> Simpson 1/3 Formula & Calc -> Simpson 3/8 Formula & Calc -> Error Comparison",
+        "important_points": [
+          "h = (6-0)/6 = 1",
+          "Simpson 1/3: 4*odds + 2*evens",
+          "Simpson 3/8: 3*rest + 2*multiples of 3",
+          "Exact arctan(6) = 1.4056"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Accurate table of y values",
+          "All 3 formulas stated with correct coefficients",
+          "Exact arctan comparison"
+        ],
+        "common_mistakes": [
+          "Multiplying even ordinates by 4 instead of 2 in Simpson's 1/3"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Why does Simpson's 1/3 Rule require an EVEN number of sub-intervals? (5 Marks)",
+        "rubric": "Parabolic interpolation explanation across paired strips (5 marks).",
+        "model_answer": "Simpson's 1/3 Rule approximates the integrand f(x) by fitting a 2nd-degree parabola `y = ax^2 + bx + c` across points. Since a quadratic parabola has 3 unknown coefficients (a, b, c), it requires exactly 3 distinct points (2 adjacent sub-interval strips) to determine. Therefore, numerical integration using Simpson's 1/3 rule must group strips in pairs. To evaluate an integral across an entire range, the total number of strips `n` must be a multiple of 2 (i.e., an EVEN number). If n is odd, the final strip cannot be paired into a parabola."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|             NUMERICAL INTEGRATION CURVE PARTITIONING                    |\n+-------------------------------------------------------------------------+\n|  y ^                                                                    |\n|    |             * y2                                                   |\n|    |            / \\                                                     |\n|    |      * y1 /   \\   * y3                                             |\n|    |     / \\  /     \\ / \\                                               |\n|    | y0 *   \\/       *   * yn                                           |\n|    |    |   |   |    |   |                                              |\n|    +----+---+---+----+---+-----> x                                      |\n|        x0  x1  x2   x3  xn                                              |\n|         <--h--><--h-->                                                  |\n|  Trapezoidal: Chords (n=1) | Simpson 1/3: Parabolas (n=2, n even)       |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-23-01",
+        "question": "In the TCP 3-way handshake to establish a reliable connection, what sequence of control flags is exchanged between client and server?",
+        "options": [
+          "SYN -> SYN-ACK -> ACK",
+          "ACK -> SYN -> FIN",
+          "SYN -> ACK -> RST",
+          "PING -> PONG -> ACK"
+        ],
+        "correct_answer": "A",
+        "explanation": "Connection establishment: Client sends SYN, Server replies with SYN + ACK, and Client confirms with final ACK."
+      },
+      {
+        "id": "ACAD-23-02",
+        "question": "How does TCP handle Congestion Control during the initial 'Slow Start' phase upon connection startup?",
+        "options": [
+          "It sets window size to maximum bandwidth immediately",
+          "It initializes Congestion Window (cwnd) to 1 MSS and doubles cwnd every RTT (exponential growth) until ssthresh is reached",
+          "It drops every alternate packet",
+          "It transmits UDP datagrams instead"
+        ],
+        "correct_answer": "B",
+        "explanation": "Slow Start probes network capacity exponentially: cwnd doubles every round-trip time until reaching the slow start threshold (ssthresh)."
+      },
+      {
+        "id": "ACAD-23-03",
+        "question": "What mechanism does TCP use during Congestion Avoidance after cwnd exceeds ssthresh?",
+        "options": [
+          "Additive Increase Multiplicative Decrease (AIMD) — increasing cwnd by 1 MSS per RTT",
+          "Exponential doubling",
+          "Immediate connection reset",
+          "Halving the window every second"
+        ],
+        "correct_answer": "A",
+        "explanation": "In Congestion Avoidance, AIMD provides linear window expansion (+1 MSS per RTT) to stabilize throughput near link capacity."
+      },
+      {
+        "id": "ACAD-23-04",
+        "question": "What is the primary architectural difference between TCP and UDP?",
+        "options": [
+          "TCP is connection-oriented, reliable, and provides byte-stream ordering; UDP is connectionless, unreliable, and datagram-oriented",
+          "UDP provides guaranteed packet delivery while TCP does not",
+          "TCP only runs over optical fiber while UDP runs over copper",
+          "UDP uses 64-bit port numbers"
+        ],
+        "correct_answer": "A",
+        "explanation": "TCP guarantees in-order reliable delivery via acknowledgments and retries; UDP provides lightweight, low-latency best-effort transmission."
+      },
+      {
+        "id": "ACAD-23-05",
+        "question": "What is the size of the standard base IPv4 and TCP headers without options?",
+        "options": [
+          "20 bytes for IPv4 and 20 bytes for TCP (40 bytes total overhead)",
+          "8 bytes for IPv4 and 8 bytes for TCP",
+          "64 bytes each",
+          "4 bytes each"
+        ],
+        "correct_answer": "A",
+        "explanation": "Both IPv4 and TCP base headers have a minimum length of 20 bytes each (5 32-bit words), yielding a combined 40-byte base header."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Sentence Correction & Subject-Verb Agreement",
+      "category": "Verbal Ability",
+      "subtopic": "Grammar",
+      "formulas": "1. A singular subject takes a singular verb; a plural subject takes a plural verb.\n2. 'Either... or' and 'Neither... nor': Verb agrees with the NEAREST subject.\n3. Indefinite Pronouns: 'Each', 'Every', 'Everyone', 'Neither', 'Either' take SINGULAR verbs.\n4. Parenthetical phrases ('along with', 'as well as', 'together with') do NOT change subject number.",
+      "shortcuts": "Ignore intervening prepositional phrases: In 'The bouquet of red roses (was/were) beautiful', cross out 'of red roses'. The subject is 'bouquet' (singular) ==> was.",
+      "tutorial": [
+        "Grammar errors in campus hiring tests (Wipro, TCS, Cognizant) focus heavily on subject-verb agreement, modifier placement (dangling modifiers), and parallel structure in lists. Always isolate the true grammatical subject."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Grammar",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Grammar",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Grammar",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Grammar",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Grammar",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Choose the correct sentence: 'Neither of the two candidates _____ qualified for the leadership role.'",
+        "options": {
+          "A": "is",
+          "B": "are",
+          "C": "were",
+          "D": "have been"
+        },
+        "correct_answer": "A",
+        "explanation": "'Neither' is a singular distributive pronoun and requires the singular verb 'is'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Identify the grammatically correct option:",
+        "options": {
+          "A": "The committee has submitted its unanimous report.",
+          "B": "The committee have submitted their unanimous report.",
+          "C": "The committee are submitting its report.",
+          "D": "The committee have submit its report."
+        },
+        "correct_answer": "A",
+        "explanation": "A collective noun acting as a single unified unit takes a singular verb ('has') and singular pronoun ('its').",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Select the correctly punctuated and formatted sentence:",
+        "options": {
+          "A": "Each of the participants was given a certificate of merit.",
+          "B": "Each of the participants were given a certificate of merit.",
+          "C": "Each of the participant was given certificate.",
+          "D": "Every participants were given certificates."
+        },
+        "correct_answer": "A",
+        "explanation": "'Each' followed by 'of the [plural noun]' strictly takes a singular verb ('was').",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Choose the grammatically sound construction:",
+        "options": {
+          "A": "Hardly had the meeting started when the projector malfunctioned.",
+          "B": "Hardly had the meeting started than the projector malfunctioned.",
+          "C": "Hardly did the meeting started when projector broke.",
+          "D": "No sooner the meeting started when the projector stopped."
+        },
+        "correct_answer": "A",
+        "explanation": "Correlative conjunction 'Hardly ... when' takes inverted auxiliary structure ('Hardly had [subject] [verb-ed] when...').",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Select the correct conditional sentence:",
+        "options": {
+          "A": "If I were the CEO, I would implement employee wellness programs.",
+          "B": "If I was the CEO, I will implement wellness programs.",
+          "C": "If I am the CEO, I would have implemented programs.",
+          "D": "If I had been CEO, I will implement programs."
+        },
+        "correct_answer": "A",
+        "explanation": "Subjunctive mood for hypothetical unreal present states requires 'If I were...', paired with conditional 'would [verb]'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Identify the correct comparative sentence:",
+        "options": {
+          "A": "Mount Everest is higher than any other mountain in the world.",
+          "B": "Mount Everest is higher than any mountain in the world.",
+          "C": "Mount Everest is more higher than other mountains.",
+          "D": "Mount Everest is highest than any mountain."
+        },
+        "correct_answer": "A",
+        "explanation": "When comparing an entity within its own class, 'any other' must be used to exclude the entity itself from the comparison.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Choose the correct sentence regarding agreement:",
+        "options": {
+          "A": "The quality of these mangoes is exceptional.",
+          "B": "The quality of these mangoes are exceptional.",
+          "C": "The qualities of this mango are exceptional.",
+          "D": "The quality of these mango have been exceptional."
+        },
+        "correct_answer": "A",
+        "explanation": "The subject is the singular noun 'quality', not the prepositional object 'mangoes', requiring the singular verb 'is'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Select the error-free sentence:",
+        "options": {
+          "A": "She is one of those engineers who always excel in problem solving.",
+          "B": "She is one of those engineers who always excels in problem solving.",
+          "C": "She is one of engineer who always excels.",
+          "D": "She is one among those engineer who excel."
+        },
+        "correct_answer": "A",
+        "explanation": "In 'one of those [plural noun] who...', the relative pronoun 'who' refers to 'engineers' (plural), taking the plural verb 'excel'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Choose the correct sentence:",
+        "options": {
+          "A": "No sooner did the bell ring than the students rushed out.",
+          "B": "No sooner did the bell ring when the students rushed out.",
+          "C": "No sooner had the bell rang than the students rushed out.",
+          "D": "No sooner the bell rang than students rushed."
+        },
+        "correct_answer": "A",
+        "explanation": "'No sooner ... than' is the mandatory correlative pair with auxiliary inversion.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Select the sentence with correct modifier placement:",
+        "options": {
+          "A": "Walking across the campus, Sarthak spotted a rare migratory bird.",
+          "B": "Walking across the campus, a rare migratory bird was spotted by Sarthak.",
+          "C": "Walking across the campus, the bird flew over Sarthak.",
+          "D": "A rare bird was spotted walking across the campus by Sarthak."
+        },
+        "correct_answer": "A",
+        "explanation": "In option A, the participial phrase 'Walking across the campus' correctly modifies the subject 'Sarthak' who is doing the walking.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Grammar (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Dijkstra's Shortest Path Algorithm",
+      "category": "Graph / Greedy",
+      "concept": "Finds the shortest path from a single source to all other vertices in a weighted graph with non-negative edge weights using a min-heap PriorityQueue.",
+      "why_it_works": "Greedily expands the vertex with the lowest tentative distance; non-negative weights guarantee that once visited, its optimal distance is finalized.",
+      "visual_explanation": "Source = 1\\nDist: [1:0, 2:inf, 3:inf]\\nEdge (1, 2, wt=4) -> Dist[2] = 4\\nEdge (1, 3, wt=2) -> Dist[3] = 2\\nNext smallest is 3 -> Edge (3, 2, wt=1) -> Dist[2] = min(4, 2+1) = 3!",
+      "language": "Java",
+      "java_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        Map<Integer, List<int[]>> graph = new HashMap<>();\n        for (int[] time : times) {\n            graph.computeIfAbsent(time[0], x -> new ArrayList<>()).add(new int[]{time[1], time[2]});\n        }\n        \n        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));\n        minHeap.offer(new int[]{k, 0}); // {node, distance}\n        Map<Integer, Integer> dist = new HashMap<>();\n        \n        while (!minHeap.isEmpty()) {\n            int[] curr = minHeap.poll();\n            int node = curr[0], d = curr[1];\n            if (dist.containsKey(node)) continue;\n            dist.put(node, d);\n            \n            if (graph.containsKey(node)) {\n                for (int[] edge : graph.get(node)) {\n                    int neighbor = edge[0], weight = edge[1];\n                    if (!dist.containsKey(neighbor)) {\n                        minHeap.offer(new int[]{neighbor, d + weight});\n                    }\n                }\n            }\n        }\n        if (dist.size() != n) return -1;\n        int maxDist = 0;\n        for (int d : dist.values()) maxDist = Math.max(maxDist, d);\n        return maxDist;\n    }\n}",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        Map<Integer, List<int[]>> graph = new HashMap<>();\n        for (int[] time : times) {\n            graph.computeIfAbsent(time[0], x -> new ArrayList<>()).add(new int[]{time[1], time[2]});\n        }\n        \n        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));\n        minHeap.offer(new int[]{k, 0}); // {node, distance}\n        Map<Integer, Integer> dist = new HashMap<>();\n        \n        while (!minHeap.isEmpty()) {\n            int[] curr = minHeap.poll();\n            int node = curr[0], d = curr[1];\n            if (dist.containsKey(node)) continue;\n            dist.put(node, d);\n            \n            if (graph.containsKey(node)) {\n                for (int[] edge : graph.get(node)) {\n                    int neighbor = edge[0], weight = edge[1];\n                    if (!dist.containsKey(neighbor)) {\n                        minHeap.offer(new int[]{neighbor, d + weight});\n                    }\n                }\n            }\n        }\n        if (dist.size() != n) return -1;\n        int maxDist = 0;\n        for (int d : dist.values()) maxDist = Math.max(maxDist, d);\n        return maxDist;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4-7: Build adjacency list graph where node maps to (target, weight).",
+        "Line 9-10: Initialize min-heap with source node k at distance 0.",
+        "Line 14-17: Pop node with lowest distance; if already finalized, skip.",
+        "Line 19-25: Relax outward edges from current node.",
+        "Line 28-31: Return max distance if all nodes reached, else -1."
+      ],
+      "dry_run": "Times: [[2,1,1],[2,3,1],[3,4,1]], N=4, K=2. Distance to 1 is 1, to 3 is 1, to 4 is 2. Max distance = 2. Returns 2.",
+      "complexity": "O((V + E) log V) Time, O(V + E) Auxiliary Space",
+      "edge_cases": "Unreachable destination (returns -1), Source has no outgoing edges, Cycles with positive weights",
+      "edge_cases_list": [
+        "Unreachable destination (returns -1)",
+        "Source has no outgoing edges",
+        "Cycles with positive weights"
+      ],
+      "interview_variations": [
+        "Cheapest Flights Within K Stops",
+        "Path with Minimum Effort",
+        "Swim in Rising Water"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-23-01",
+        "title": "Problem 1: Network Delay Time",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are given a network of n nodes, labeled from 1 to n. Return the minimum time it takes for all the n nodes to receive the signal.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dijkstra's Shortest Path Algorithm algorithmic technique.\n2. Finds the shortest path from a single source to all other vertices in a weighted graph with non-negative edge weights using a min-heap PriorityQueue.\n3. Invariants: Greedily expands the vertex with the lowest tentative distance; non-negative weights guarantee that once visited, its optimal distance is finalized.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+        "time_complexity": "O((V + E) log V) Time",
+        "space_complexity": "O(V + E) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-23-02",
+        "title": "Problem 2: Path with Minimum Effort",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Find a route from top-left to bottom-right that requires the minimum effort (maximum absolute difference in heights between consecutive cells).",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dijkstra's Shortest Path Algorithm.\n2. Handle edge cases: Unreachable destination (returns -1), Source has no outgoing edges, Cycles with positive weights.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+        "time_complexity": "O((V + E) log V) Time",
+        "space_complexity": "O(V + E) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Python Internals",
+      "topic": "Global Interpreter Lock (GIL), Threading vs Multiprocessing & AsyncIO Event Loop",
+      "concept_lesson": "Concurrency in Python is shaped by the Global Interpreter Lock (GIL).\n\nThe Global Interpreter Lock (GIL):\nThe GIL is a mutual-exclusion mutex used by CPython to prevent multiple native OS threads from executing Python bytecode simultaneously on multiple CPU cores. It was introduced to make CPython's memory management (reference count updates) thread-safe without adding fine-grained lock overhead to every single object.\n\nConcurrency Paradigms in Python:\n1. `threading` (Multi-Threading):\n- Native OS threads managed by the kernel, but constrained by the GIL.\n- CPU-Bound Tasks: Running multiple threads on CPU-heavy code provides ZERO speedup (and often slows down execution due to GIL contention).\n- I/O-Bound Tasks: Highly effective. When a thread performs network I/O, file reads, or sleep, CPython voluntarily releases the GIL, allowing other threads to execute concurrently.\n\n2. `multiprocessing` (Multi-Processing):\n- Spawns completely separate OS processes, each with its own independent Python interpreter, memory space, and GIL.\n- Enables true parallel execution across multi-core CPUs for CPU-bound tasks.\n- Inter-Process Communication (IPC) requires data serialization (`pickle`) over pipes or queues, incurring IPC overhead.\n\n3. `asyncio` (Cooperative Asynchronous I/O):\n- Single-threaded, single-process concurrency based on an Event Loop and Coroutines (`async def`, `await`).\n- Extremely lightweight (thousands of concurrent connections take minimal RAM). Coroutines cooperatively yield control back to the event loop during non-blocking socket operations.",
+      "key_definitions": [
+        {
+          "term": "Global Interpreter Lock (GIL)",
+          "definition": "A mutex in CPython allowing only one thread to execute Python bytecode at any instant."
+        },
+        {
+          "term": "Event Loop",
+          "definition": "A single-threaded scheduling engine in asyncio coordinating non-blocking tasks and I/O callbacks."
+        },
+        {
+          "term": "Coroutine",
+          "definition": "A Python function defined with async def that can pause execution (await) and yield control back to the event loop."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "Why does Python have the GIL, and what are its trade-offs?",
+          "a": "CPython's memory management relies on reference counting (`ob_refcnt`). Without the GIL, every increment/decrement of a reference count would require thread synchronization locks, causing massive performance degradation in single-threaded programs and risking race condition memory corruptions. The GIL simplifies C extensions and guarantees thread-safe memory management, but prevents multi-threaded Python programs from executing CPU-bound code in parallel across multiple cores."
+        },
+        {
+          "q": "When should you use `threading`, `multiprocessing`, or `asyncio`?",
+          "a": "- Use `multiprocessing` for CPU-bound tasks (image processing, data science, mathematical simulations) to utilize multiple physical CPU cores in parallel. - Use `threading` for legacy I/O-bound tasks where libraries block synchronously (file system reads, synchronous database drivers). - Use `asyncio` for high-concurrency, network-heavy I/O-bound tasks (FastAPI servers, microservices, web scrapers) where tens of thousands of idle socket connections can be handled on a single thread with minimal RAM."
+        },
+        {
+          "q": "Does Python's GIL prevent race conditions in multi-threaded programs?",
+          "a": "No. The GIL only guarantees CPython internal interpreter memory safety (protecting reference counts and C pointers); it does NOT protect application-level shared state. In Python, an operation like `counter += 1` compiles to multiple bytecode instructions (LOAD_FAST, LOAD_CONST, BINARY_ADD, STORE_FAST). The thread can be context-switched between these instructions, producing race conditions. Programmers must still use `threading.Lock`."
+        },
+        {
+          "q": "How does an `asyncio` event loop differ from multi-threading?",
+          "a": "Multi-threading uses preemptive scheduling where the OS kernel arbitrarily interrupts threads at any instruction. `asyncio` uses cooperative multitasking on a single thread: coroutines yield execution control explicitly using `await`. Because only one coroutine executes at any millisecond, there is zero thread context-switch overhead and no shared-memory race conditions during synchronous blocks."
+        },
+        {
+          "q": "What happens if you execute a blocking synchronous operation (like `time.sleep(5)`) inside an `asyncio` coroutine?",
+          "a": "Because `asyncio` runs on a single thread, a blocking synchronous call halts the entire event loop. No other coroutines or tasks can execute or handle incoming network traffic during those 5 seconds. To run blocking operations safely in asyncio, you must offload them to a thread pool executor via `asyncio.to_thread(func)` or `loop.run_in_executor()`."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-23-01",
+          "question": "What is the primary constraint imposed by CPython's Global Interpreter Lock (GIL)?",
+          "options": [
+            "Files cannot be read concurrently",
+            "Only one thread can execute Python bytecode at a time within a single process",
+            "Subprocesses are prohibited",
+            "Recursion depth is limited to 100"
+          ],
+          "correct_answer": "B",
+          "explanation": "The GIL restricts bytecode execution to one thread at any given instant per process."
+        },
+        {
+          "id": "CS-23-02",
+          "question": "Which Python module enables true parallel execution across multi-core CPUs for CPU-bound computations?",
+          "options": [
+            "threading",
+            "multiprocessing",
+            "asyncio",
+            "socket"
+          ],
+          "correct_answer": "B",
+          "explanation": "multiprocessing spawns independent processes with separate GILs, running across multiple cores."
+        },
+        {
+          "id": "CS-23-03",
+          "question": "In Python, which operation is NOT atomic and requires a threading Lock?",
+          "options": [
+            "list.append(x)",
+            "dict[key] = val",
+            "counter += 1",
+            "queue.pop()"
+          ],
+          "correct_answer": "C",
+          "explanation": "`counter += 1` compiles to multiple bytecode instructions (read, add, write), requiring synchronization."
+        },
+        {
+          "id": "CS-23-04",
+          "question": "Coroutines in `asyncio` yield control back to the event loop using which keyword?",
+          "options": [
+            "yield from",
+            "await",
+            "defer",
+            "pass"
+          ],
+          "correct_answer": "B",
+          "explanation": "The `await` keyword pauses coroutine execution and returns control to the event loop."
+        },
+        {
+          "id": "CS-23-05",
+          "question": "How should a blocking synchronous I/O function be executed in an asyncio application?",
+          "options": [
+            "Invoke it directly inside async def",
+            "Wrap it with asyncio.to_thread() to run in a thread pool",
+            "Call sys.exit()",
+            "Increase the recursion limit"
+          ],
+          "correct_answer": "B",
+          "explanation": "Blocking operations must be offloaded to worker threads via asyncio.to_thread() to avoid freezing the event loop."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "Caloriv",
+      "repo_path": "D:\\Projects\\Caloriv",
+      "topic": "Camera Integration, Image Preprocessing & Cloudinary Asset Optimization",
+      "what_to_understand": "Device camera capture, client-side image compression, and cloud asset pipelines.",
+      "what_to_memorize": "Compressing images before mobile upload saves cellular data and prevents network timeout failures.",
+      "interview_questions": [
+        {
+          "q": "How does Caloriv handle meal photo uploads efficiently over slow mobile networks?",
+          "a": "When a user captures a food photo, rather than uploading raw 12MB camera images, we use `expo-image-manipulator` to downsample the image resolution to a maximum 1080px width and compress it to JPEG format with 75% quality. This reduces file size to under 250KB before streaming the binary data to Cloudinary via authenticated upload signatures."
+        },
+        {
+          "q": "Why use Cloudinary CDN instead of saving food photos directly on the backend server?",
+          "a": "Storing images on application servers consumes expensive block storage and burdens the CPU with image resizing. Cloudinary automatically generates dynamic responsive thumbnails (`w_300,h_300,c_fill,f_auto,q_auto`), reducing mobile data usage by over 60% when rendering meal history grids."
+        }
+      ],
+      "interview_pitch_exercise": "For visual food journaling in Caloriv, I built an image processing pipeline. The mobile client compresses raw camera captures to under 250KB before uploading them to Cloudinary CDN, ensuring lightning-fast meal logging even on restricted 3G/4G connections."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 23 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 23 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'TerraStract', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In TerraStract (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of TerraStract.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 22 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5003 — Transport Layer: TCP Handshake, Sliding Window & UDP.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Sentence Correction & Subject-Verb Agreement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dijkstra's Shortest Path Algorithm.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Memory Model: PyObject, GIL & RefCount.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Transport Layer: TCP Handshake, Sliding Window & UDP.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Dijkstra's Shortest Path Algorithm.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: TerraStract.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 23 Q1: What is the primary academic thesis of Transport Layer: TCP Handshake, Sliding Window & UDP?",
+          "a": "Core theoretical and practical mastery of Transport Layer: TCP Handshake, Sliding Window & UDP under the CSJM University BCA-5003 syllabus."
+        },
+        {
+          "q": "Day 23 Q2: What is the key speed calculation formula applied in Sentence Correction & Subject-Verb Agreement?",
+          "a": "High-speed corporate placement arithmetic shortcut for Sentence Correction & Subject-Verb Agreement in campus recruitment exams."
+        },
+        {
+          "q": "Day 23 Q3: What is the time complexity of Dijkstra's Shortest Path Algorithm?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 23 Q4: What is the central architectural principle of Python Memory Model: PyObject, GIL & RefCount?",
+          "a": "Foundational systems engineering rule governing Python Memory Model: PyObject, GIL & RefCount in production environments."
+        },
+        {
+          "q": "Day 23 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 23 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 23 Q7: What is the verified technical foundation of TerraStract?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 23 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 23 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 23 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5003 — Transport Layer: TCP Handshake, Sliding Window & UDP.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Sentence Correction & Subject-Verb Agreement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dijkstra's Shortest Path Algorithm.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Memory Model: PyObject, GIL & RefCount."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5003 — Transport Layer: TCP Handshake, Sliding Window & UDP."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Sentence Correction & Subject-Verb Agreement."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Dijkstra's Shortest Path Algorithm."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: TerraStract."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-23-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In the TCP 3-way handshake to establish a reliable connection, what sequence of control flags is exchanged between client and server?",
+        "options": [
+          "SYN -> SYN-ACK -> ACK",
+          "ACK -> SYN -> FIN",
+          "SYN -> ACK -> RST",
+          "PING -> PONG -> ACK"
+        ],
+        "correct_answer": "A",
+        "explanation": "Connection establishment: Client sends SYN, Server replies with SYN + ACK, and Client confirms with final ACK."
+      },
+      {
+        "id": "TEST-23-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does TCP handle Congestion Control during the initial 'Slow Start' phase upon connection startup?",
+        "options": [
+          "It sets window size to maximum bandwidth immediately",
+          "It initializes Congestion Window (cwnd) to 1 MSS and doubles cwnd every RTT (exponential growth) until ssthresh is reached",
+          "It drops every alternate packet",
+          "It transmits UDP datagrams instead"
+        ],
+        "correct_answer": "B",
+        "explanation": "Slow Start probes network capacity exponentially: cwnd doubles every round-trip time until reaching the slow start threshold (ssthresh)."
+      },
+      {
+        "id": "TEST-23-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What mechanism does TCP use during Congestion Avoidance after cwnd exceeds ssthresh?",
+        "options": [
+          "Additive Increase Multiplicative Decrease (AIMD) — increasing cwnd by 1 MSS per RTT",
+          "Exponential doubling",
+          "Immediate connection reset",
+          "Halving the window every second"
+        ],
+        "correct_answer": "A",
+        "explanation": "In Congestion Avoidance, AIMD provides linear window expansion (+1 MSS per RTT) to stabilize throughput near link capacity."
+      },
+      {
+        "id": "TEST-23-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary architectural difference between TCP and UDP?",
+        "options": [
+          "TCP is connection-oriented, reliable, and provides byte-stream ordering; UDP is connectionless, unreliable, and datagram-oriented",
+          "UDP provides guaranteed packet delivery while TCP does not",
+          "TCP only runs over optical fiber while UDP runs over copper",
+          "UDP uses 64-bit port numbers"
+        ],
+        "correct_answer": "A",
+        "explanation": "TCP guarantees in-order reliable delivery via acknowledgments and retries; UDP provides lightweight, low-latency best-effort transmission."
+      },
+      {
+        "id": "TEST-23-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the size of the standard base IPv4 and TCP headers without options?",
+        "options": [
+          "20 bytes for IPv4 and 20 bytes for TCP (40 bytes total overhead)",
+          "8 bytes for IPv4 and 8 bytes for TCP",
+          "64 bytes each",
+          "4 bytes each"
+        ],
+        "correct_answer": "A",
+        "explanation": "Both IPv4 and TCP base headers have a minimum length of 20 bytes each (5 32-bit words), yielding a combined 40-byte base header."
+      },
+      {
+        "id": "TEST-23-06",
+        "category": "Placement Aptitude",
+        "question": "In subject-verb agreement with correlative conjunctions, which sentence is correct?",
+        "options": [
+          "Neither the manager nor the employees were present at the briefing.",
+          "Neither the manager nor the employees was present at the briefing.",
+          "Neither the manager or the employees were present at the briefing.",
+          "Neither the manager nor the employees is present at the briefing."
+        ],
+        "correct_answer": "A",
+        "explanation": "In 'Neither... nor', the verb agrees with the closer subject ('employees', plural => 'were')."
+      },
+      {
+        "id": "TEST-23-07",
+        "category": "Placement Aptitude",
+        "question": "Regarding distributive pronoun agreement with 'Each', which statement is correct?",
+        "options": [
+          "Each of the candidates has submitted his or her resume.",
+          "Each of the candidates have submitted their resume.",
+          "Each of the candidate has submitted their resume.",
+          "Each of the candidates are submitting resumes."
+        ],
+        "correct_answer": "A",
+        "explanation": "'Each' is a singular distributive pronoun and requires the singular verb 'has'."
+      },
+      {
+        "id": "TEST-23-08",
+        "category": "Placement Aptitude",
+        "question": "Identify the part containing a grammatical error in: 'The quality of these mangoes (A) / are not good (B) / according to the buyer (C) / No error (D)'",
+        "options": [
+          "Part B",
+          "Part A",
+          "Part C",
+          "Part D"
+        ],
+        "correct_answer": "A",
+        "explanation": "The subject is 'quality' (singular), so the verb should be 'is not good', not 'are'."
+      },
+      {
+        "id": "TEST-23-09",
+        "category": "Placement Aptitude",
+        "question": "Regarding the collective construction 'One of the...', which sentence is grammatically sound?",
+        "options": [
+          "One of my friends is an aerospace engineer.",
+          "One of my friends are an aerospace engineer.",
+          "One of my friend is an aerospace engineer.",
+          "One of my friend are an aerospace engineer."
+        ],
+        "correct_answer": "A",
+        "explanation": "'One of' is followed by a plural noun ('friends') and a singular verb ('is')."
+      },
+      {
+        "id": "TEST-23-10",
+        "category": "Placement Aptitude",
+        "question": "Regarding negative inversion and correlative conjunctions with 'Scarcely', choose the correct sentence:",
+        "options": [
+          "Scarcely had he entered the room when the phone rang.",
+          "Scarcely had he entered the room than the phone rang.",
+          "Scarcely did he entered the room when the phone rang.",
+          "Scarcely he had entered the room then the phone rang."
+        ],
+        "correct_answer": "A",
+        "explanation": "'Scarcely' pairs correlatively with 'when' and requires inverted auxiliary verb syntax ('had he entered')."
+      },
+      {
+        "id": "TEST-23-11",
+        "category": "Core CS (Python Internals)",
+        "question": "What is the primary constraint imposed by CPython's Global Interpreter Lock (GIL)?",
+        "options": [
+          "Files cannot be read concurrently",
+          "Only one thread can execute Python bytecode at a time within a single process",
+          "Subprocesses are prohibited",
+          "Recursion depth is limited to 100"
+        ],
+        "correct_answer": "B",
+        "explanation": "The GIL restricts bytecode execution to one thread at any given instant per process."
+      },
+      {
+        "id": "TEST-23-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which Python module enables true parallel execution across multi-core CPUs for CPU-bound computations?",
+        "options": [
+          "threading",
+          "multiprocessing",
+          "asyncio",
+          "socket"
+        ],
+        "correct_answer": "B",
+        "explanation": "multiprocessing spawns independent processes with separate GILs, running across multiple cores."
+      },
+      {
+        "id": "TEST-23-13",
+        "category": "Core CS (Python Internals)",
+        "question": "In Python, which operation is NOT atomic and requires a threading Lock?",
+        "options": [
+          "list.append(x)",
+          "dict[key] = val",
+          "counter += 1",
+          "queue.pop()"
+        ],
+        "correct_answer": "C",
+        "explanation": "`counter += 1` compiles to multiple bytecode instructions (read, add, write), requiring synchronization."
+      },
+      {
+        "id": "TEST-23-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Coroutines in `asyncio` yield control back to the event loop using which keyword?",
+        "options": [
+          "yield from",
+          "await",
+          "defer",
+          "pass"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `await` keyword pauses coroutine execution and returns control to the event loop."
+      },
+      {
+        "id": "TEST-23-15",
+        "category": "Core CS (Python Internals)",
+        "question": "How should a blocking synchronous I/O function be executed in an asyncio application?",
+        "options": [
+          "Invoke it directly inside async def",
+          "Wrap it with asyncio.to_thread() to run in a thread pool",
+          "Call sys.exit()",
+          "Increase the recursion limit"
+        ],
+        "correct_answer": "B",
+        "explanation": "Blocking operations must be offloaded to worker threads via asyncio.to_thread() to avoid freezing the event loop."
+      },
+      {
+        "id": "TEST-23-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dijkstra's Shortest Path Algorithm' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O((V + E) log V) Time, O(V + E) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dijkstra's Shortest Path Algorithm' pattern operates with O((V + E) log V) Time, O(V + E) Auxiliary Space: Greedily expands the vertex with the lowest tentative distance; non-negative weights guarantee that once visited, its optimal distance is finalized.."
+      },
+      {
+        "id": "TEST-23-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dijkstra's Shortest Path Algorithm' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Unreachable destination (returns -1).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dijkstra's Shortest Path Algorithm include Unreachable destination (returns -1), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-23-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Network Delay Time', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(V + E) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O((V + E) log V) Time, O(V + E) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-23-19",
+        "category": "Projects (Caloriv)",
+        "question": "In Sarthak's project 'Caloriv', what is the core architectural principle regarding 'Camera Integration, Image Preprocessing & Cloudinary Asset Optimization'?",
+        "options": [
+          "Compressing images before mobile upload saves cellular data and prevents network timeout failures.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For Caloriv, the architectural invariant is: Compressing images before mobile upload saves cellular data and prevents network timeout failures.."
+      },
+      {
+        "id": "TEST-23-20",
+        "category": "Projects (Caloriv)",
+        "question": "Regarding 'Caloriv', how should you defend this design decision in a technical interview: 'How does Caloriv handle meal photo uploads efficiently over slow mobile networks?'?",
+        "options": [
+          "When a user captures a food photo, rather than uploading raw 12MB camera images, we use `expo-image-manipulator` to downsample the image resolution to a maximum...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When a user captures a food photo, rather than uploading raw 12MB camera images, we use `expo-image-manipulator` to downsample the image res."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-23",
+      "title": "Network Delay Time (Dijkstra's Shortest Path Algorithm)",
+      "time_limit_minutes": 45,
+      "difficulty": "Hard",
+      "problem_statement": "Solve the core placement problem: Network Delay Time.\n\nYou are given a network of n nodes, labeled from 1 to n. Return the minimum time it takes for all the n nodes to receive the signal.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dijkstra's Shortest Path Algorithm\n- Time Complexity Target: O((V + E) log V) Time\n- Space Complexity Target: O(V + E) Auxiliary Space\n- Handle all edge cases: Unreachable destination (returns -1), Source has no outgoing edges, Cycles with positive weights.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dijkstra's Shortest Path Algorithm\n    public int networkDelayTime(int[][] times, int n, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dijkstra's Shortest Path Algorithm\n    public int networkDelayTime(int[][] times, int n, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+      "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Dijkstra's Shortest Path Algorithm logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Unreachable destination (returns -1)",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O((V + E) log V) Time)",
+        "Space Complexity": "20 points (Meets O(V + E) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Numerical Methods",
+    "subject_code": "BCA-5004",
+    "unit": 4,
+    "topic": "Unit IV — Numerical Integration: Trapezoidal Rule, Simpson's 1/3 Rule & Simpson's 3/8 Rule",
+    "objectives": [
+      "Master Newton-Cotes quadrature formulas.",
+      "Understand sub-interval parity rules (Simpson 1/3 requires EVEN n; 3/8 requires multiple of 3)."
+    ],
+    "detailed_notes": [
+      "Numerical integration evaluates definite integrals `∫_a^b f(x) dx` from tabulated discrete points when analytical anti-derivatives do not exist.\n1. General Newton-Cotes Formula:\n   Subdivide `[a, b]` into `n` equal sub-intervals of width `h = (b - a) / n`, giving points `x0, x1, ... xn` with ordinates `y0, y1, ... yn`.\n2. Trapezoidal Rule (Linear interpolation per strip):\n   `∫ f(x) dx = (h / 2) * [ (y0 + yn) + 2 * (y1 + y2 + ... + y_{n-1}) ]`\n   • Condition: Valid for any number of sub-intervals `n`.\n   • Error: `O(h^2)`. Degree of precision = 1.\n3. Simpson's 1/3 Rule (Parabolic interpolation per pair of strips):\n   `∫ f(x) dx = (h / 3) * [ (y0 + yn) + 4 * (odd ordinates: y1+y3+y5...) + 2 * (even ordinates: y2+y4+y6...) ]`\n   • CRITICAL Condition: `n` MUST BE AN EVEN NUMBER (multiple of 2)!\n   • Error: `O(h^4)`. Degree of precision = 3 (exact for polynomials up to cubic degree).\n4. Simpson's 3/8 Rule (Cubic interpolation):\n   `∫ f(x) dx = (3h / 8) * [ (y0 + yn) + 3 * (y1+y2+y4+y5...) + 2 * (multiples of 3: y3+y6+y9...) ]`\n   • Condition: `n` MUST BE A MULTIPLE OF 3!\n   • Error: `O(h^4)`.",
+      "Trapezoidal: any n; Simpson's 1/3: n MUST be even; Simpson's 3/8: n MUST be a multiple of 3.",
+      "Simpson's 1/3 has error O(h^4) compared to Trapezoidal's O(h^2), offering superior accuracy for curved functions."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|              NUMERICAL INTEGRATION                |\n| Trapezoidal:  (h/2) * [Ends + 2*(Remaining)]      |\n| Simpson 1/3:  (h/3) * [Ends + 4*(Odds) + 2*(Evens)] (n EVEN!)\n| Simpson 3/8: (3h/8) * [Ends + 3*(Non-3s) + 2*(Multiples of 3)]\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
         "Rule",
-        "Subintervals Constraint",
-        "Interpolating Polynomial",
-        "Global Error",
+        "Polynomial Degree",
+        "Sub-intervals n Required",
+        "Global Truncation Error",
         "Degree of Precision"
       ],
       "rows": [
         [
           "Trapezoidal Rule",
-          "Any number of intervals n >= 1",
           "Linear (Degree 1)",
+          "Any integer n >= 1",
           "O(h^2)",
           "1"
         ],
         [
           "Simpson's 1/3 Rule",
-          "n must be strictly EVEN (2, 4, 6...)",
           "Quadratic (Degree 2)",
+          "Must be EVEN (n = 2, 4, 6...)",
           "O(h^4)",
-          "3"
+          "3 (Exact for cubics!)"
         ],
         [
           "Simpson's 3/8 Rule",
-          "n must be a MULTIPLE OF 3 (3, 6, 9...)",
           "Cubic (Degree 3)",
+          "Multiple of 3 (n = 3, 6, 9...)",
           "O(h^4)",
           "3"
         ]
       ]
     },
-    "memorize": "Trapezoidal: (h/2)[Ends + 2*Others]. Simpson 1/3: (h/3)[Ends + 4*Odds + 2*Evens] (n even!). Simpson 3/8: (3h/8)[Ends + 3*Non-multiples + 2*Multiples-of-3].",
-    "understand": "Why does Simpson's 1/3 rule have precision 3 when derived with a quadratic (degree 2) parabola? Due to symmetry: the odd error term of degree 3 cancels out exactly over symmetric interval [-h, +h], granting cubic accuracy for free!",
-    "common_mistakes": "1. Applying Simpson's 1/3 rule when n is odd. 2. Forgetting to divide by 2 or 3 in the leading factor ((h/2) or (h/3)).",
-    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "4 Consecutive University Sessions (Q7/Q8 - 15 Marks Core Question)",
-    "pyq_question": "Evaluate the integral I = int_0^1 (1 / (1 + x^2)) dx by dividing the interval into 6 equal parts using: (i) Trapezoidal Rule, (ii) Simpson's 1/3 Rule, and (iii) Simpson's 3/8 Rule. Hence, find the approximate value of pi. (15 Marks)",
-    "pyq_rubric": "Interval partition & table of values (3 marks) + Trapezoidal calculation (3 marks) + Simpson's 1/3 calculation & pi value (4 marks) + Simpson's 3/8 calculation (3 marks) + Comparison of accuracy (2 marks) = 15 Marks.",
+    "memorize": "Simpson 1/3 formula: (h/3)*[Ends + 4*Odds + 2*Evens]. n MUST BE EVEN! Trapezoidal: (h/2)*[Ends + 2*Rest].",
+    "understand": "Even though Simpson's 1/3 uses parabolic (2nd-degree) segments, odd-symmetry causes cubic error terms to cancel, making it exact for 3rd-degree cubics!",
+    "common_mistakes": "Applying Simpson's 1/3 rule when n is an odd number (mathematically invalid!).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2024-25 (Q4)",
+        "marks": 15,
+        "question": "Evaluate the integral I = ∫_0^6 (1 / (1 + x^2)) dx by using:\n(a) Trapezoidal Rule\n(b) Simpson's 1/3 Rule\n(c) Simpson's 3/8 Rule\nTake n = 6. Compare with exact analytical value and compute percentage error. (15 Marks)",
+        "rubric": "Table of ordinates for n=6 (3 marks) + Trapezoidal calculation (3 marks) + Simpson's 1/3 calculation (3 marks) + Simpson's 3/8 calculation (3 marks) + Exact comparison & errors (3 marks) = 15 Marks.",
+        "model_answer": "1. Ordinates Table:\nGiven limits a = 0, b = 6, n = 6 sub-intervals.\nStep size h = (b - a) / n = (6 - 0) / 6 = 1.0.\nf(x) = 1 / (1 + x^2).\n• x0 = 0: y0 = 1 / (1 + 0) = 1.00000\n• x1 = 1: y1 = 1 / (1 + 1) = 0.50000\n• x2 = 2: y2 = 1 / (1 + 4) = 0.20000\n• x3 = 3: y3 = 1 / (1 + 9) = 0.10000\n• x4 = 4: y4 = 1 / (1 + 16) = 0.05882\n• x5 = 5: y5 = 1 / (1 + 25) = 0.03846\n• x6 = 6: y6 = 1 / (1 + 36) = 0.02703\n\n2. (a) Trapezoidal Rule:\nI_Trap = (h / 2) * [ (y0 + y6) + 2 * (y1 + y2 + y3 + y4 + y5) ]\nSum of ends = 1.00000 + 0.02703 = 1.02703\nSum of remaining = 0.50000 + 0.20000 + 0.10000 + 0.05882 + 0.03846 = 0.89728\nI_Trap = (1.0 / 2) * [ 1.02703 + 2 * (0.89728) ] = 0.5 * [ 1.02703 + 1.79456 ] = 0.5 * 2.82159 = 1.4108.\n\n3. (b) Simpson's 1/3 Rule (Valid since n=6 is EVEN):\nI_Simp13 = (h / 3) * [ (y0 + y6) + 4 * (y1 + y3 + y5) + 2 * (y2 + y4) ]\nSum of odds (y1 + y3 + y5) = 0.50000 + 0.10000 + 0.03846 = 0.63846\nSum of evens (y2 + y4) = 0.20000 + 0.05882 = 0.25882\nI_Simp13 = (1.0 / 3) * [ 1.02703 + 4 * (0.63846) + 2 * (0.25882) ]\n= (1.0 / 3) * [ 1.02703 + 2.55384 + 0.51764 ] = (1.0 / 3) * [ 4.09851 ] = 1.3662.\n\n4. (c) Simpson's 3/8 Rule (Valid since n=6 is a multiple of 3):\nI_Simp38 = (3h / 8) * [ (y0 + y6) + 3 * (y1 + y2 + y4 + y5) + 2 * (y3) ]\nSum of non-3s = 0.50000 + 0.20000 + 0.05882 + 0.03846 = 0.79728\nSum of multiples of 3 = y3 = 0.10000\nI_Simp38 = (3 / 8) * [ 1.02703 + 3 * (0.79728) + 2 * (0.10000) ]\n= 0.375 * [ 1.02703 + 2.39184 + 0.20000 ] = 0.375 * [ 3.61887 ] = 1.3571.\n\n5. Exact Analytical Value & Error Comparison:\nExact I = ∫_0^6 1/(1+x^2) dx = [arctan(x)]_0^6 = arctan(6) - arctan(0) = 1.4056 radians.\n• Trapezoidal Error = |1.4056 - 1.4108| = 0.0052 (0.37% error)\n• Simpson's 1/3 Error = |1.4056 - 1.3662| = 0.0394\n• Simpson's 3/8 Error = |1.4056 - 1.3571| = 0.0485.",
+        "answer_structure": "Ordinates Table -> Trapezoidal Formula & Calc -> Simpson 1/3 Formula & Calc -> Simpson 3/8 Formula & Calc -> Error Comparison",
+        "important_points": [
+          "h = (6-0)/6 = 1",
+          "Simpson 1/3: 4*odds + 2*evens",
+          "Simpson 3/8: 3*rest + 2*multiples of 3",
+          "Exact arctan(6) = 1.4056"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Accurate table of y values",
+          "All 3 formulas stated with correct coefficients",
+          "Exact arctan comparison"
+        ],
+        "common_mistakes": [
+          "Multiplying even ordinates by 4 instead of 2 in Simpson's 1/3"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Why does Simpson's 1/3 Rule require an EVEN number of sub-intervals? (5 Marks)",
+        "rubric": "Parabolic interpolation explanation across paired strips (5 marks).",
+        "model_answer": "Simpson's 1/3 Rule approximates the integrand f(x) by fitting a 2nd-degree parabola `y = ax^2 + bx + c` across points. Since a quadratic parabola has 3 unknown coefficients (a, b, c), it requires exactly 3 distinct points (2 adjacent sub-interval strips) to determine. Therefore, numerical integration using Simpson's 1/3 rule must group strips in pairs. To evaluate an integral across an entire range, the total number of strips `n` must be a multiple of 2 (i.e., an EVEN number). If n is odd, the final strip cannot be paired into a parabola."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-23-01",
+        "question": "In the TCP 3-way handshake to establish a reliable connection, what sequence of control flags is exchanged between client and server?",
+        "options": [
+          "SYN -> SYN-ACK -> ACK",
+          "ACK -> SYN -> FIN",
+          "SYN -> ACK -> RST",
+          "PING -> PONG -> ACK"
+        ],
+        "correct_answer": "A",
+        "explanation": "Connection establishment: Client sends SYN, Server replies with SYN + ACK, and Client confirms with final ACK."
+      },
+      {
+        "id": "ACAD-23-02",
+        "question": "How does TCP handle Congestion Control during the initial 'Slow Start' phase upon connection startup?",
+        "options": [
+          "It sets window size to maximum bandwidth immediately",
+          "It initializes Congestion Window (cwnd) to 1 MSS and doubles cwnd every RTT (exponential growth) until ssthresh is reached",
+          "It drops every alternate packet",
+          "It transmits UDP datagrams instead"
+        ],
+        "correct_answer": "B",
+        "explanation": "Slow Start probes network capacity exponentially: cwnd doubles every round-trip time until reaching the slow start threshold (ssthresh)."
+      },
+      {
+        "id": "ACAD-23-03",
+        "question": "What mechanism does TCP use during Congestion Avoidance after cwnd exceeds ssthresh?",
+        "options": [
+          "Additive Increase Multiplicative Decrease (AIMD) — increasing cwnd by 1 MSS per RTT",
+          "Exponential doubling",
+          "Immediate connection reset",
+          "Halving the window every second"
+        ],
+        "correct_answer": "A",
+        "explanation": "In Congestion Avoidance, AIMD provides linear window expansion (+1 MSS per RTT) to stabilize throughput near link capacity."
+      },
+      {
+        "id": "ACAD-23-04",
+        "question": "What is the primary architectural difference between TCP and UDP?",
+        "options": [
+          "TCP is connection-oriented, reliable, and provides byte-stream ordering; UDP is connectionless, unreliable, and datagram-oriented",
+          "UDP provides guaranteed packet delivery while TCP does not",
+          "TCP only runs over optical fiber while UDP runs over copper",
+          "UDP uses 64-bit port numbers"
+        ],
+        "correct_answer": "A",
+        "explanation": "TCP guarantees in-order reliable delivery via acknowledgments and retries; UDP provides lightweight, low-latency best-effort transmission."
+      },
+      {
+        "id": "ACAD-23-05",
+        "question": "What is the size of the standard base IPv4 and TCP headers without options?",
+        "options": [
+          "20 bytes for IPv4 and 20 bytes for TCP (40 bytes total overhead)",
+          "8 bytes for IPv4 and 8 bytes for TCP",
+          "64 bytes each",
+          "4 bytes each"
+        ],
+        "correct_answer": "A",
+        "explanation": "Both IPv4 and TCP base headers have a minimum length of 20 bytes each (5 32-bit words), yielding a combined 40-byte base header."
+      }
+    ],
+    "pyq_year": "2024-25 (Q4)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Evaluate the integral I = ∫_0^6 (1 / (1 + x^2)) dx by using:\n(a) Trapezoidal Rule\n(b) Simpson's 1/3 Rule\n(c) Simpson's 3/8 Rule\nTake n = 6. Compare with exact analytical value and compute percentage error. (15 Marks)",
+    "pyq_rubric": "Table of ordinates for n=6 (3 marks) + Trapezoidal calculation (3 marks) + Simpson's 1/3 calculation (3 marks) + Simpson's 3/8 calculation (3 marks) + Exact comparison & errors (3 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Table of Ordinates:",
-        "Let f(x) = 1 / (1 + x^2), lower limit a = 0, upper limit b = 1, number of subintervals n = 6.\nStep size h = (b - a) / n = (1 - 0) / 6 = 1/6 \u2248 0.16667.\nx0 = 0.0000 ==> y0 = 1 / (1 + 0^2) = 1.00000\nx1 = 1/6 ==> y1 = 1 / (1 + 1/36) = 36/37 \u2248 0.97297\nx2 = 2/6 ==> y2 = 1 / (1 + 4/36) = 36/40 = 0.90000\nx3 = 3/6 ==> y3 = 1 / (1 + 9/36) = 36/45 = 0.80000\nx4 = 4/6 ==> y4 = 1 / (1 + 16/36) = 36/52 = 9/13 \u2248 0.69231\nx5 = 5/6 ==> y5 = 1 / (1 + 25/36) = 36/61 \u2248 0.59016\nx6 = 6/6 = 1 ==> y6 = 1 / (1 + 1) = 0.50000"
+        "1. Model Answer & Technical Presentation",
+        "1. Ordinates Table:\nGiven limits a = 0, b = 6, n = 6 sub-intervals.\nStep size h = (b - a) / n = (6 - 0) / 6 = 1.0.\nf(x) = 1 / (1 + x^2).\n• x0 = 0: y0 = 1 / (1 + 0) = 1.00000\n• x1 = 1: y1 = 1 / (1 + 1) = 0.50000\n• x2 = 2: y2 = 1 / (1 + 4) = 0.20000\n• x3 = 3: y3 = 1 / (1 + 9) = 0.10000\n• x4 = 4: y4 = 1 / (1 + 16) = 0.05882\n• x5 = 5: y5 = 1 / (1 + 25) = 0.03846\n• x6 = 6: y6 = 1 / (1 + 36) = 0.02703\n\n2. (a) Trapezoidal Rule:\nI_Trap = (h / 2) * [ (y0 + y6) + 2 * (y1 + y2 + y3 + y4 + y5) ]\nSum of ends = 1.00000 + 0.02703 = 1.02703\nSum of remaining = 0.50000 + 0.20000 + 0.10000 + 0.05882 + 0.03846 = 0.89728\nI_Trap = (1.0 / 2) * [ 1.02703 + 2 * (0.89728) ] = 0.5 * [ 1.02703 + 1.79456 ] = 0.5 * 2.82159 = 1.4108.\n\n3. (b) Simpson's 1/3 Rule (Valid since n=6 is EVEN):\nI_Simp13 = (h / 3) * [ (y0 + y6) + 4 * (y1 + y3 + y5) + 2 * (y2 + y4) ]\nSum of odds (y1 + y3 + y5) = 0.50000 + 0.10000 + 0.03846 = 0.63846\nSum of evens (y2 + y4) = 0.20000 + 0.05882 = 0.25882\nI_Simp13 = (1.0 / 3) * [ 1.02703 + 4 * (0.63846) + 2 * (0.25882) ]\n= (1.0 / 3) * [ 1.02703 + 2.55384 + 0.51764 ] = (1.0 / 3) * [ 4.09851 ] = 1.3662.\n\n4. (c) Simpson's 3/8 Rule (Valid since n=6 is a multiple of 3):\nI_Simp38 = (3h / 8) * [ (y0 + y6) + 3 * (y1 + y2 + y4 + y5) + 2 * (y3) ]\nSum of non-3s = 0.50000 + 0.20000 + 0.05882 + 0.03846 = 0.79728\nSum of multiples of 3 = y3 = 0.10000\nI_Simp38 = (3 / 8) * [ 1.02703 + 3 * (0.79728) + 2 * (0.10000) ]\n= 0.375 * [ 1.02703 + 2.39184 + 0.20000 ] = 0.375 * [ 3.61887 ] = 1.3571.\n\n5. Exact Analytical Value & Error Comparison:\nExact I = ∫_0^6 1/(1+x^2) dx = [arctan(x)]_0^6 = arctan(6) - arctan(0) = 1.4056 radians.\n• Trapezoidal Error = |1.4056 - 1.4108| = 0.0052 (0.37% error)\n• Simpson's 1/3 Error = |1.4056 - 1.3662| = 0.0394\n• Simpson's 3/8 Error = |1.4056 - 1.3571| = 0.0485."
       ],
       [
-        "2. Evaluation by Trapezoidal Rule:",
-        "Formula: I_T = (h/2) * [ (y0 + y6) + 2*(y1 + y2 + y3 + y4 + y5) ]\nEnds = y0 + y6 = 1.00000 + 0.50000 = 1.50000\nOthers = 0.97297 + 0.90000 + 0.80000 + 0.69231 + 0.59016 = 3.95544\nI_T = (1/12) * [ 1.50000 + 2*(3.95544) ] = (1/12) * [ 1.50000 + 7.91088 ] = 9.41088 / 12 = 0.78424."
-      ],
-      [
-        "3. Evaluation by Simpson's 1/3 Rule:",
-        "Formula: I_S13 = (h/3) * [ (y0 + y6) + 4*(y1 + y3 + y5) + 2*(y2 + y4) ]\nEnds = 1.50000\nOdds (y1 + y3 + y5) = 0.97297 + 0.80000 + 0.59016 = 2.36313\nEvens (y2 + y4) = 0.90000 + 0.69231 = 1.59231\nI_S13 = (1/18) * [ 1.50000 + 4*(2.36313) + 2*(1.59231) ]\n= (1/18) * [ 1.50000 + 9.45252 + 3.18462 ] = 14.13714 / 18 = 0.785396 \u2248 0.78540."
-      ],
-      [
-        "4. Evaluation by Simpson's 3/8 Rule & Pi Estimation:",
-        "Formula: I_S38 = (3h/8) * [ (y0 + y6) + 3*(y1 + y2 + y4 + y5) + 2*(y3) ]\nNon-multiples of 3 = 0.97297 + 0.90000 + 0.69231 + 0.59016 = 3.15544\nMultiples of 3 = y3 = 0.80000\nI_S38 = (3/48) * [ 1.50000 + 3*(3.15544) + 2*(0.80000) ] = (1/16) * [ 1.50000 + 9.46632 + 1.60000 ] = 12.56632 / 16 = 0.785395.\n\nEstimation of Pi:\nAnalytically, int_0^1 (1 / (1 + x^2)) dx = [arctan(x)]_0^1 = arctan(1) - arctan(0) = pi / 4.\nTherefore, pi \u2248 4 * I_S13 = 4 * 0.785396 = 3.141584 \u2248 3.1416. Matches true pi to 4 decimal places!"
+        "2. Expected Examiner Criteria",
+        [
+          "Accurate table of y values",
+          "All 3 formulas stated with correct coefficients",
+          "Exact arctan comparison"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Trapezoidal & Simpson's 1/3, 3/8 Hand Calculations",
-    "milestone": "Full 15/15 on Numerical Integration Exam Question"
-  },
   "apt_data": {
-    "topic": "Data Interpretation (DI) \u2014 Pie Charts & Degree Conversions",
+    "topic": "Sentence Correction & Subject-Verb Agreement",
+    "category": "Verbal Ability",
+    "subtopic": "Grammar",
+    "formulas": "1. A singular subject takes a singular verb; a plural subject takes a plural verb.\n2. 'Either... or' and 'Neither... nor': Verb agrees with the NEAREST subject.\n3. Indefinite Pronouns: 'Each', 'Every', 'Everyone', 'Neither', 'Either' take SINGULAR verbs.\n4. Parenthetical phrases ('along with', 'as well as', 'together with') do NOT change subject number.",
+    "shortcut": "Ignore intervening prepositional phrases: In 'The bouquet of red roses (was/were) beautiful', cross out 'of red roses'. The subject is 'bouquet' (singular) ==> was.",
     "tutorial": [
-      "Pie Chart Fundamentals:\n\u2022 A pie chart displays data as sectors of a circle where the central angle is proportional to the quantity.\n\u2022 Full Circle = 360 degrees = 100%.\n\u2022 Conversion Formulas:\n  - Degrees to Percentage: Percentage = (Angle in Degrees / 360) * 100.\n  - Percentage to Degrees: Angle in Degrees = (Percentage / 100) * 360 = Percentage * 3.6.\n  - Crucial Constant: 1% = 3.6 degrees | 10% = 36 degrees | 25% = 90 degrees."
+      "Grammar errors in campus hiring tests (Wipro, TCS, Cognizant) focus heavily on subject-verb agreement, modifier placement (dangling modifiers), and parallel structure in lists. Always isolate the true grammatical subject."
     ],
-    "formulas": "Degrees = % * 3.6. Percentage = (Degrees / 3.6). Sector Value = (Angle / 360) * Total Value.",
-    "shortcut": "Calculate in Percentages First: Convert degrees to percentages before computing actual numeric values to keep arithmetic mental and fast.",
-    "recognition": "Look for circular sector diagrams with degree markings (e.g. 72\u00b0, 108\u00b0, 54\u00b0) in TCS NQT, Wipro, and Infosys.",
-    "tier1_problem": "A student spends time across 24 hours: School = 108 degrees, Sleep = 120 degrees, Play = 60 degrees, Study = 72 degrees. How many hours are spent on Study?",
-    "tier1_solution": "Total hours = 24. Full circle = 360 degrees.\nStudy angle = 72 degrees.\nHours spent = (72 / 360) * 24 = (1 / 5) * 24 = 4.8 hours (4 hours 48 minutes). Answer: 4.8 hours.",
-    "tier2_problem": "In a pie chart, expenditure on Food is 25%, Rent is 20%, Transport is 15%, and Others is 40%. What is the central angle for Transport?",
-    "tier2_solution": "Angle = Percentage * 3.6 = 15 * 3.6 = 54 degrees. Answer: 54 degrees.",
-    "tier3_problem": "[Infosys Placement DI] A company's total annual budget is Rs 72 Crores. A pie chart shows departmental allocation: R&D = 90 degrees, Marketing = 75 degrees, Operations = 120 degrees, HR = 45 degrees, Legal = 30 degrees. How much more money is allocated to Operations than Marketing?",
-    "tier3_solution": "Angle difference between Operations and Marketing = 120 - 75 = 45 degrees.\nDifference in money = (45 / 360) * 72 Crores = (1 / 8) * 72 = 9 Crores. Answer: Rs 9 Crores.",
-    "tier4_problem": "A pie chart represents revenue of 4 divisions: A=108\u00b0, B=72\u00b0, C=126\u00b0, D=54\u00b0. If division C's revenue is Rs 42 lakhs, find the total revenue of all divisions combined.",
-    "tier4_solution": "Angle for division C = 126 degrees.\nFraction of total = 126 / 360 = 7 / 20.\nLet total revenue be T.\n(7 / 20) * T = 42 lakhs.\nT = 42 * (20 / 7) = 6 * 20 = 120 lakhs = Rs 1.2 Crores. Answer: Rs 120 lakhs.",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "Convert 30% into degrees.",
-        "a": "30 * 3.6 = 108 degrees."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "Convert 90 degrees into percentage.",
-        "a": "90 / 3.6 = 25%."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "If total is 1,200 and sector is 54 degrees, find value.",
-        "a": "(54 / 360) * 1200 = (3/20) * 1200 = 180."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "Sector A = 144 degrees, Sector B = 72 degrees. Ratio of A to B?",
-        "a": "144 : 72 = 2 : 1."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "Angles in pie chart: 100\u00b0, 80\u00b0, 120\u00b0, X\u00b0. Find X.",
-        "a": "360 - (100+80+120) = 360 - 300 = 60 degrees."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Grammar",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Grammar",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Grammar",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Grammar",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Grammar",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Choose the correct sentence: 'Neither of the two candidates _____ qualified for the leadership role.'",
+        "options": {
+          "A": "is",
+          "B": "are",
+          "C": "were",
+          "D": "have been"
+        },
+        "correct_answer": "A",
+        "explanation": "'Neither' is a singular distributive pronoun and requires the singular verb 'is'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Identify the grammatically correct option:",
+        "options": {
+          "A": "The committee has submitted its unanimous report.",
+          "B": "The committee have submitted their unanimous report.",
+          "C": "The committee are submitting its report.",
+          "D": "The committee have submit its report."
+        },
+        "correct_answer": "A",
+        "explanation": "A collective noun acting as a single unified unit takes a singular verb ('has') and singular pronoun ('its').",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Select the correctly punctuated and formatted sentence:",
+        "options": {
+          "A": "Each of the participants was given a certificate of merit.",
+          "B": "Each of the participants were given a certificate of merit.",
+          "C": "Each of the participant was given certificate.",
+          "D": "Every participants were given certificates."
+        },
+        "correct_answer": "A",
+        "explanation": "'Each' followed by 'of the [plural noun]' strictly takes a singular verb ('was').",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Choose the grammatically sound construction:",
+        "options": {
+          "A": "Hardly had the meeting started when the projector malfunctioned.",
+          "B": "Hardly had the meeting started than the projector malfunctioned.",
+          "C": "Hardly did the meeting started when projector broke.",
+          "D": "No sooner the meeting started when the projector stopped."
+        },
+        "correct_answer": "A",
+        "explanation": "Correlative conjunction 'Hardly ... when' takes inverted auxiliary structure ('Hardly had [subject] [verb-ed] when...').",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Select the correct conditional sentence:",
+        "options": {
+          "A": "If I were the CEO, I would implement employee wellness programs.",
+          "B": "If I was the CEO, I will implement wellness programs.",
+          "C": "If I am the CEO, I would have implemented programs.",
+          "D": "If I had been CEO, I will implement programs."
+        },
+        "correct_answer": "A",
+        "explanation": "Subjunctive mood for hypothetical unreal present states requires 'If I were...', paired with conditional 'would [verb]'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Identify the correct comparative sentence:",
+        "options": {
+          "A": "Mount Everest is higher than any other mountain in the world.",
+          "B": "Mount Everest is higher than any mountain in the world.",
+          "C": "Mount Everest is more higher than other mountains.",
+          "D": "Mount Everest is highest than any mountain."
+        },
+        "correct_answer": "A",
+        "explanation": "When comparing an entity within its own class, 'any other' must be used to exclude the entity itself from the comparison.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Choose the correct sentence regarding agreement:",
+        "options": {
+          "A": "The quality of these mangoes is exceptional.",
+          "B": "The quality of these mangoes are exceptional.",
+          "C": "The qualities of this mango are exceptional.",
+          "D": "The quality of these mango have been exceptional."
+        },
+        "correct_answer": "A",
+        "explanation": "The subject is the singular noun 'quality', not the prepositional object 'mangoes', requiring the singular verb 'is'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Select the error-free sentence:",
+        "options": {
+          "A": "She is one of those engineers who always excel in problem solving.",
+          "B": "She is one of those engineers who always excels in problem solving.",
+          "C": "She is one of engineer who always excels.",
+          "D": "She is one among those engineer who excel."
+        },
+        "correct_answer": "A",
+        "explanation": "In 'one of those [plural noun] who...', the relative pronoun 'who' refers to 'engineers' (plural), taking the plural verb 'excel'.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Choose the correct sentence:",
+        "options": {
+          "A": "No sooner did the bell ring than the students rushed out.",
+          "B": "No sooner did the bell ring when the students rushed out.",
+          "C": "No sooner had the bell rang than the students rushed out.",
+          "D": "No sooner the bell rang than students rushed."
+        },
+        "correct_answer": "A",
+        "explanation": "'No sooner ... than' is the mandatory correlative pair with auxiliary inversion.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Select the sentence with correct modifier placement:",
+        "options": {
+          "A": "Walking across the campus, Sarthak spotted a rare migratory bird.",
+          "B": "Walking across the campus, a rare migratory bird was spotted by Sarthak.",
+          "C": "Walking across the campus, the bird flew over Sarthak.",
+          "D": "A rare bird was spotted walking across the campus by Sarthak."
+        },
+        "correct_answer": "A",
+        "explanation": "In option A, the participial phrase 'Walking across the campus' correctly modifies the subject 'Sarthak' who is doing the walking.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Grammar (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "Coin Change (LeetCode 322 - Medium)",
+      "title": "Problem 1: Network Delay Time",
       "difficulty": "Medium",
-      "importance": "Unbounded Knapsack Foundation Problem (Amazon, Microsoft, Google)",
-      "problem_statement": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1. You may assume you have an infinite number of each kind of coin.",
-      "solution_approach": "Bottom-Up Dynamic Programming (Unbounded Knapsack):\n1. Define `dp[a]` as the minimum coins needed to make amount `a`.\n2. Initialize `dp = [float('inf')] * (amount + 1)` and `dp[0] = 0`.\n3. For every sub-amount from 1 to `amount`:\n   For every coin in `coins`:\n     if `a - coin >= 0`: dp[a] = min(dp[a], 1 + dp[a - coin])\n4. Return `dp[amount]` if not infinity, else -1.",
-      "code": "def coinChange(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    \n    for a in range(1, amount + 1):\n        for c in coins:\n            if a - c >= 0:\n                dp[a] = min(dp[a], 1 + dp[a - c])\n                \n    return dp[amount] if dp[amount] != float('inf') else -1",
-      "line_by_line": [
-        [
-          "dp = [float('inf')] * (amount + 1)",
-          "Fill DP array with infinity sentinel representing unreachable states."
-        ],
-        [
-          "dp[0] = 0",
-          "Base case: 0 coins needed to make amount 0."
-        ],
-        [
-          "dp[a] = min(dp[a], 1 + dp[a - c])",
-          "Take minimum between skipping coin and taking coin c."
-        ]
-      ],
-      "time_complexity": "O(amount * len(coins)).",
-      "space_complexity": "O(amount) space for DP table.",
-      "edge_cases": "amount = 0 (returns 0); no valid combination (returns -1); coin value > amount."
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "You are given a network of n nodes, labeled from 1 to n. Return the minimum time it takes for all the n nodes to receive the signal.",
+      "solution_approach": "1. Apply Dijkstra's Shortest Path Algorithm algorithmic technique.\n2. Finds the shortest path from a single source to all other vertices in a weighted graph with non-negative edge weights using a min-heap PriorityQueue.\n3. Invariants: Greedily expands the vertex with the lowest tentative distance; non-negative weights guarantee that once visited, its optimal distance is finalized.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+      "time_complexity": "O((V + E) log V) Time",
+      "space_complexity": "O(V + E) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Path with Minimum Effort",
+      "difficulty": "Hard",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Find a route from top-left to bottom-right that requires the minimum effort (maximum absolute difference in heights between consecutive cells).",
+      "solution_approach": "1. Identify interview variation of Dijkstra's Shortest Path Algorithm.\n2. Handle edge cases: Unreachable destination (returns -1), Source has no outgoing edges, Cycles with positive weights.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+      "time_complexity": "O((V + E) log V) Time",
+      "space_complexity": "O(V + E) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Dijkstra's Shortest Path Algorithm",
+    "category": "Graph / Greedy",
+    "concept": "Finds the shortest path from a single source to all other vertices in a weighted graph with non-negative edge weights using a min-heap PriorityQueue.",
+    "why_it_works": "Greedily expands the vertex with the lowest tentative distance; non-negative weights guarantee that once visited, its optimal distance is finalized.",
+    "visual_explanation": "Source = 1\\nDist: [1:0, 2:inf, 3:inf]\\nEdge (1, 2, wt=4) -> Dist[2] = 4\\nEdge (1, 3, wt=2) -> Dist[3] = 2\\nNext smallest is 3 -> Edge (3, 2, wt=1) -> Dist[2] = min(4, 2+1) = 3!",
+    "java_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        Map<Integer, List<int[]>> graph = new HashMap<>();\n        for (int[] time : times) {\n            graph.computeIfAbsent(time[0], x -> new ArrayList<>()).add(new int[]{time[1], time[2]});\n        }\n        \n        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));\n        minHeap.offer(new int[]{k, 0}); // {node, distance}\n        Map<Integer, Integer> dist = new HashMap<>();\n        \n        while (!minHeap.isEmpty()) {\n            int[] curr = minHeap.poll();\n            int node = curr[0], d = curr[1];\n            if (dist.containsKey(node)) continue;\n            dist.put(node, d);\n            \n            if (graph.containsKey(node)) {\n                for (int[] edge : graph.get(node)) {\n                    int neighbor = edge[0], weight = edge[1];\n                    if (!dist.containsKey(neighbor)) {\n                        minHeap.offer(new int[]{neighbor, d + weight});\n                    }\n                }\n            }\n        }\n        if (dist.size() != n) return -1;\n        int maxDist = 0;\n        for (int d : dist.values()) maxDist = Math.max(maxDist, d);\n        return maxDist;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        Map<Integer, List<int[]>> graph = new HashMap<>();\n        for (int[] time : times) {\n            graph.computeIfAbsent(time[0], x -> new ArrayList<>()).add(new int[]{time[1], time[2]});\n        }\n        \n        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));\n        minHeap.offer(new int[]{k, 0}); // {node, distance}\n        Map<Integer, Integer> dist = new HashMap<>();\n        \n        while (!minHeap.isEmpty()) {\n            int[] curr = minHeap.poll();\n            int node = curr[0], d = curr[1];\n            if (dist.containsKey(node)) continue;\n            dist.put(node, d);\n            \n            if (graph.containsKey(node)) {\n                for (int[] edge : graph.get(node)) {\n                    int neighbor = edge[0], weight = edge[1];\n                    if (!dist.containsKey(neighbor)) {\n                        minHeap.offer(new int[]{neighbor, d + weight});\n                    }\n                }\n            }\n        }\n        if (dist.size() != n) return -1;\n        int maxDist = 0;\n        for (int d : dist.values()) maxDist = Math.max(maxDist, d);\n        return maxDist;\n    }\n}",
+    "python_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        Map<Integer, List<int[]>> graph = new HashMap<>();\n        for (int[] time : times) {\n            graph.computeIfAbsent(time[0], x -> new ArrayList<>()).add(new int[]{time[1], time[2]});\n        }\n        \n        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));\n        minHeap.offer(new int[]{k, 0}); // {node, distance}\n        Map<Integer, Integer> dist = new HashMap<>();\n        \n        while (!minHeap.isEmpty()) {\n            int[] curr = minHeap.poll();\n            int node = curr[0], d = curr[1];\n            if (dist.containsKey(node)) continue;\n            dist.put(node, d);\n            \n            if (graph.containsKey(node)) {\n                for (int[] edge : graph.get(node)) {\n                    int neighbor = edge[0], weight = edge[1];\n                    if (!dist.containsKey(neighbor)) {\n                        minHeap.offer(new int[]{neighbor, d + weight});\n                    }\n                }\n            }\n        }\n        if (dist.size() != n) return -1;\n        int maxDist = 0;\n        for (int d : dist.values()) maxDist = Math.max(maxDist, d);\n        return maxDist;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4-7: Build adjacency list graph where node maps to (target, weight).",
+      "Line 9-10: Initialize min-heap with source node k at distance 0.",
+      "Line 14-17: Pop node with lowest distance; if already finalized, skip.",
+      "Line 19-25: Relax outward edges from current node.",
+      "Line 28-31: Return max distance if all nodes reached, else -1."
+    ],
+    "dry_run": "Times: [[2,1,1],[2,3,1],[3,4,1]], N=4, K=2. Distance to 1 is 1, to 3 is 1, to 4 is 2. Max distance = 2. Returns 2.",
+    "complexity": "O((V + E) log V) Time, O(V + E) Auxiliary Space",
+    "edge_cases": [
+      "Unreachable destination (returns -1)",
+      "Source has no outgoing edges",
+      "Cycles with positive weights"
+    ],
+    "interview_variations": [
+      "Cheapest Flights Within K Stops",
+      "Path with Minimum Effort",
+      "Swim in Rising Water"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-23-01",
+        "title": "Problem 1: Network Delay Time",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are given a network of n nodes, labeled from 1 to n. Return the minimum time it takes for all the n nodes to receive the signal.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dijkstra's Shortest Path Algorithm algorithmic technique.\n2. Finds the shortest path from a single source to all other vertices in a weighted graph with non-negative edge weights using a min-heap PriorityQueue.\n3. Invariants: Greedily expands the vertex with the lowest tentative distance; non-negative weights guarantee that once visited, its optimal distance is finalized.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+        "time_complexity": "O((V + E) log V) Time",
+        "space_complexity": "O(V + E) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-23-02",
+        "title": "Problem 2: Path with Minimum Effort",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Find a route from top-left to bottom-right that requires the minimum effort (maximum absolute difference in heights between consecutive cells).",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dijkstra's Shortest Path Algorithm.\n2. Handle edge cases: Unreachable destination (returns -1), Source has no outgoing edges, Cycles with positive weights.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int minimumEffortPath(int[][] heights) {\n        int r = heights.length, c = heights[0].length;\n        int[][] dist = new int[r][c];\n        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);\n        dist[0][0] = 0;\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);\n        pq.offer(new int[]{0, 0, 0});\n        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};\n        while (!pq.isEmpty()) {\n            int[] cur = pq.poll();\n            if (cur[0] == r - 1 && cur[1] == c - 1) return cur[2];\n            for (int[] d : dirs) {\n                int ni = cur[0] + d[0], nj = cur[1] + d[1];\n                if (ni >= 0 && ni < r && nj >= 0 && nj < c) {\n                    int effort = Math.max(cur[2], Math.abs(heights[cur[0]][cur[1]] - heights[ni][nj]));\n                    if (effort < dist[ni][nj]) {\n                        dist[ni][nj] = effort;\n                        pq.offer(new int[]{ni, nj, effort});\n                    }\n                }\n            }\n        }\n        return 0;\n    }\n}",
+        "time_complexity": "O((V + E) log V) Time",
+        "space_complexity": "O(V + E) Auxiliary Space"
+      }
+    ]
+  },
   "cs_core": {
-    "subject": "Computer Networks",
-    "topic": "Application Protocols Evolution: HTTP/1.1 vs HTTP/2 vs HTTP/3 (QUIC)",
+    "subject": "Python Internals",
+    "topic": "Global Interpreter Lock (GIL), Threading vs Multiprocessing & AsyncIO Event Loop",
     "detailed_notes": [
-      "The Evolution of Web Transport:\n1. HTTP/1.1 (1997):\n\u2022 Plaintext protocol using TCP sockets.\n\u2022 Keep-Alive allows persistent TCP connections, but suffers from Head-of-Line (HoL) Blocking at the application layer: subsequent HTTP requests must wait for the preceding response to finish.\n\u2022 Browsers worked around this by opening up to 6 parallel TCP connections per host.\n2. HTTP/2 (2015):\n\u2022 Binary Framing Layer replacing textual headers.\n\u2022 Multiplexing: Multiple bidirectional request/response streams over a single shared TCP socket, eliminating application-layer HoL blocking.\n\u2022 HPACK Header Compression: Eliminates repetitive header overhead.\n\u2022 Remaining Flaw: TCP-level HoL blocking! If a single TCP packet drops on a lossy Wi-Fi network, the OS kernel stalls all streams until the missing segment is retransmitted.\n3. HTTP/3 (2022):\n\u2022 Completely replaces TCP with QUIC over UDP!\n\u2022 Stream Independence: Streams are independent at the transport layer; a dropped packet in Stream 1 never blocks Stream 2.\n\u2022 0-RTT Connection Establishment: Combines transport handshake and TLS 1.3 encryption in 1 round trip.\n\u2022 Connection Migration: Uses Connection IDs instead of IP/Port tuples, allowing smooth roaming from Wi-Fi to 5G without socket teardown."
+      "Concurrency in Python is shaped by the Global Interpreter Lock (GIL).\n\nThe Global Interpreter Lock (GIL):\nThe GIL is a mutual-exclusion mutex used by CPython to prevent multiple native OS threads from executing Python bytecode simultaneously on multiple CPU cores. It was introduced to make CPython's memory management (reference count updates) thread-safe without adding fine-grained lock overhead to every single object.\n\nConcurrency Paradigms in Python:\n1. `threading` (Multi-Threading):\n- Native OS threads managed by the kernel, but constrained by the GIL.\n- CPU-Bound Tasks: Running multiple threads on CPU-heavy code provides ZERO speedup (and often slows down execution due to GIL contention).\n- I/O-Bound Tasks: Highly effective. When a thread performs network I/O, file reads, or sleep, CPython voluntarily releases the GIL, allowing other threads to execute concurrently.\n\n2. `multiprocessing` (Multi-Processing):\n- Spawns completely separate OS processes, each with its own independent Python interpreter, memory space, and GIL.\n- Enables true parallel execution across multi-core CPUs for CPU-bound tasks.\n- Inter-Process Communication (IPC) requires data serialization (`pickle`) over pipes or queues, incurring IPC overhead.\n\n3. `asyncio` (Cooperative Asynchronous I/O):\n- Single-threaded, single-process concurrency based on an Event Loop and Coroutines (`async def`, `await`).\n- Extremely lightweight (thousands of concurrent connections take minimal RAM). Coroutines cooperatively yield control back to the event loop during non-blocking socket operations."
+    ],
+    "key_definitions": [
+      {
+        "term": "Global Interpreter Lock (GIL)",
+        "definition": "A mutex in CPython allowing only one thread to execute Python bytecode at any instant."
+      },
+      {
+        "term": "Event Loop",
+        "definition": "A single-threaded scheduling engine in asyncio coordinating non-blocking tasks and I/O callbacks."
+      },
+      {
+        "term": "Coroutine",
+        "definition": "A Python function defined with async def that can pause execution (await) and yield control back to the event loop."
+      }
     ],
     "interview_qa": [
       {
-        "q": "Why did HTTP/3 replace TCP with UDP?",
-        "a": "Because TCP suffers from transport-layer Head-of-Line (HoL) blocking: if one packet is lost, the operating system holds back all subsequent data in its buffer until the lost segment is retransmitted, stalling all multiplexed HTTP/2 streams. HTTP/3 uses QUIC over UDP, implementing independent stream reliability, zero-RTT connection establishment, and connection migration across networks."
+        "q": "Why does Python have the GIL, and what are its trade-offs?",
+        "a": "CPython's memory management relies on reference counting (`ob_refcnt`). Without the GIL, every increment/decrement of a reference count would require thread synchronization locks, causing massive performance degradation in single-threaded programs and risking race condition memory corruptions. The GIL simplifies C extensions and guarantees thread-safe memory management, but prevents multi-threaded Python programs from executing CPU-bound code in parallel across multiple cores."
       },
       {
-        "q": "What is HPACK compression in HTTP/2?",
-        "a": "HPACK is a specialized header compression algorithm that eliminates redundant HTTP headers. It maintains static and dynamic lookup tables between client and server: headers like `User-Agent` or `Cookie` sent in the first request are indexed, allowing subsequent requests to transmit only a 1-byte integer reference instead of repeating the entire header string."
+        "q": "When should you use `threading`, `multiprocessing`, or `asyncio`?",
+        "a": "- Use `multiprocessing` for CPU-bound tasks (image processing, data science, mathematical simulations) to utilize multiple physical CPU cores in parallel. - Use `threading` for legacy I/O-bound tasks where libraries block synchronously (file system reads, synchronous database drivers). - Use `asyncio` for high-concurrency, network-heavy I/O-bound tasks (FastAPI servers, microservices, web scrapers) where tens of thousands of idle socket connections can be handled on a single thread with minimal RAM."
+      },
+      {
+        "q": "Does Python's GIL prevent race conditions in multi-threaded programs?",
+        "a": "No. The GIL only guarantees CPython internal interpreter memory safety (protecting reference counts and C pointers); it does NOT protect application-level shared state. In Python, an operation like `counter += 1` compiles to multiple bytecode instructions (LOAD_FAST, LOAD_CONST, BINARY_ADD, STORE_FAST). The thread can be context-switched between these instructions, producing race conditions. Programmers must still use `threading.Lock`."
+      },
+      {
+        "q": "How does an `asyncio` event loop differ from multi-threading?",
+        "a": "Multi-threading uses preemptive scheduling where the OS kernel arbitrarily interrupts threads at any instruction. `asyncio` uses cooperative multitasking on a single thread: coroutines yield execution control explicitly using `await`. Because only one coroutine executes at any millisecond, there is zero thread context-switch overhead and no shared-memory race conditions during synchronous blocks."
+      },
+      {
+        "q": "What happens if you execute a blocking synchronous operation (like `time.sleep(5)`) inside an `asyncio` coroutine?",
+        "a": "Because `asyncio` runs on a single thread, a blocking synchronous call halts the entire event loop. No other coroutines or tasks can execute or handle incoming network traffic during those 5 seconds. To run blocking operations safely in asyncio, you must offload them to a thread pool executor via `asyncio.to_thread(func)` or `loop.run_in_executor()`."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-23-01",
+        "question": "What is the primary constraint imposed by CPython's Global Interpreter Lock (GIL)?",
+        "options": [
+          "Files cannot be read concurrently",
+          "Only one thread can execute Python bytecode at a time within a single process",
+          "Subprocesses are prohibited",
+          "Recursion depth is limited to 100"
+        ],
+        "correct_answer": "B",
+        "explanation": "The GIL restricts bytecode execution to one thread at any given instant per process."
+      },
+      {
+        "id": "CS-23-02",
+        "question": "Which Python module enables true parallel execution across multi-core CPUs for CPU-bound computations?",
+        "options": [
+          "threading",
+          "multiprocessing",
+          "asyncio",
+          "socket"
+        ],
+        "correct_answer": "B",
+        "explanation": "multiprocessing spawns independent processes with separate GILs, running across multiple cores."
+      },
+      {
+        "id": "CS-23-03",
+        "question": "In Python, which operation is NOT atomic and requires a threading Lock?",
+        "options": [
+          "list.append(x)",
+          "dict[key] = val",
+          "counter += 1",
+          "queue.pop()"
+        ],
+        "correct_answer": "C",
+        "explanation": "`counter += 1` compiles to multiple bytecode instructions (read, add, write), requiring synchronization."
+      },
+      {
+        "id": "CS-23-04",
+        "question": "Coroutines in `asyncio` yield control back to the event loop using which keyword?",
+        "options": [
+          "yield from",
+          "await",
+          "defer",
+          "pass"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `await` keyword pauses coroutine execution and returns control to the event loop."
+      },
+      {
+        "id": "CS-23-05",
+        "question": "How should a blocking synchronous I/O function be executed in an asyncio application?",
+        "options": [
+          "Invoke it directly inside async def",
+          "Wrap it with asyncio.to_thread() to run in a thread pool",
+          "Call sys.exit()",
+          "Increase the recursion limit"
+        ],
+        "correct_answer": "B",
+        "explanation": "Blocking operations must be offloaded to worker threads via asyncio.to_thread() to avoid freezing the event loop."
       }
     ]
   },
   "project_defense": {
-    "project_name": "Freelance Proposal Engineering",
-    "feature_focus": "Freelancing Scope Definition & Technical Proposal Writing",
-    "architecture_deep_dive": "Packaging Technical Competencies into High-Value Client Deliverables:\n\n1. The 3 Core Freelance Offerings based on verified code:\n\u2022 Offering 1 (Document Automation & OCR Pipelines): Extracting structured tabular data from PDFs/scans using TerraStract's hybrid PyMuPDF/Tesseract engine.\n\u2022 Offering 2 (API Backend & Webhook Integration): Building production FastAPI microservices, JWT authentication, and Telegram/WhatsApp bot notifications.\n\u2022 Offering 3 (Web Scraping & Real-Time Monitoring): Scheduled headless browsers and aiohttp workers with anti-blocking headers.\n\n2. Statement of Work (SOW) Structure:\nEvery proposal must define: Executive Summary, Exact Deliverables, Acceptance Criteria, Out-of-Scope boundaries (to prevent scope creep), and Milestone-Based Payment schedules (30% upfront, 40% on staging demo, 30% on handover).",
+    "project_name": "Caloriv",
+    "repo_path": "D:\\Projects\\Caloriv",
+    "feature_focus": "Camera Integration, Image Preprocessing & Cloudinary Asset Optimization",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nDevice camera capture, client-side image compression, and cloud asset pipelines.\n\nWHAT TO MEMORIZE:\nCompressing images before mobile upload saves cellular data and prevents network timeout failures.\n\n60-SECOND INTERVIEW PITCH:\nFor visual food journaling in Caloriv, I built an image processing pipeline. The mobile client compresses raw camera captures to under 250KB before uploading them to Cloudinary CDN, ensuring lightning-fast meal logging even on restricted 3G/4G connections.",
     "interview_qa": [
       {
-        "q": "How do you protect yourself against scope creep when executing client projects?",
-        "a": "By drafting a strict Statement of Work (SOW) that lists both 'In-Scope' deliverables and explicit 'Out-of-Scope' features before accepting the project. Any client request outside the agreed SOW is formally treated as a Change Request (CR) with a separate timeline and billing quote."
+        "q": "How does Caloriv handle meal photo uploads efficiently over slow mobile networks?",
+        "a": "When a user captures a food photo, rather than uploading raw 12MB camera images, we use `expo-image-manipulator` to downsample the image resolution to a maximum 1080px width and compress it to JPEG format with 75% quality. This reduces file size to under 250KB before streaming the binary data to Cloudinary via authenticated upload signatures."
       },
       {
-        "q": "What payment structure do you use for technical freelance contracts?",
-        "a": "I use a 3-stage milestone structure: 30% upfront advance to begin architecture, 40% upon deploying a functional staging demo on a private VPS for client review, and the final 30% prior to releasing repository ownership, production credentials, and final documentation."
+        "q": "Why use Cloudinary CDN instead of saving food photos directly on the backend server?",
+        "a": "Storing images on application servers consumes expensive block storage and burdens the CPU with image resizing. Cloudinary automatically generates dynamic responsive thumbnails (`w_300,h_300,c_fill,f_auto,q_auto`), reducing mobile data usage by over 60% when rendering meal history grids."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 23 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 23 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'TerraStract', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In TerraStract (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of TerraStract.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 22 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5003 — Transport Layer: TCP Handshake, Sliding Window & UDP.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Sentence Correction & Subject-Verb Agreement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dijkstra's Shortest Path Algorithm.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Memory Model: PyObject, GIL & RefCount.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Transport Layer: TCP Handshake, Sliding Window & UDP.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Dijkstra's Shortest Path Algorithm.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: TerraStract.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 23 Q1: What is the primary academic thesis of Transport Layer: TCP Handshake, Sliding Window & UDP?",
+        "a": "Core theoretical and practical mastery of Transport Layer: TCP Handshake, Sliding Window & UDP under the CSJM University BCA-5003 syllabus."
+      },
+      {
+        "q": "Day 23 Q2: What is the key speed calculation formula applied in Sentence Correction & Subject-Verb Agreement?",
+        "a": "High-speed corporate placement arithmetic shortcut for Sentence Correction & Subject-Verb Agreement in campus recruitment exams."
+      },
+      {
+        "q": "Day 23 Q3: What is the time complexity of Dijkstra's Shortest Path Algorithm?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 23 Q4: What is the central architectural principle of Python Memory Model: PyObject, GIL & RefCount?",
+        "a": "Foundational systems engineering rule governing Python Memory Model: PyObject, GIL & RefCount in production environments."
+      },
+      {
+        "q": "Day 23 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 23 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 23 Q7: What is the verified technical foundation of TerraStract?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 23 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 23 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 23 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5003 — Transport Layer: TCP Handshake, Sliding Window & UDP.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Sentence Correction & Subject-Verb Agreement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dijkstra's Shortest Path Algorithm.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Memory Model: PyObject, GIL & RefCount."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5003 — Transport Layer: TCP Handshake, Sliding Window & UDP."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Sentence Correction & Subject-Verb Agreement."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Dijkstra's Shortest Path Algorithm."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: TerraStract."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 23,
+    "title": "Day 23 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "What is the subinterval constraint for Simpson's 1/3 Rule?",
-        "a": "The number of subintervals n must be strictly EVEN (n = 2, 4, 6, 8, ...)."
+        "q": "In the TCP 3-way handshake to establish a reliable connection, what sequence of control flags is exchanged between client and server?",
+        "a": "Answer: A\n\nConnection establishment: Client sends SYN, Server replies with SYN + ACK, and Client confirms with final ACK."
       },
       {
-        "q": "What is the global truncation error order of Simpson's 3/8 Rule?",
-        "a": "O(h^4)."
+        "q": "How does TCP handle Congestion Control during the initial 'Slow Start' phase upon connection startup?",
+        "a": "Answer: B\n\nSlow Start probes network capacity exponentially: cwnd doubles every round-trip time until reaching the slow start threshold (ssthresh)."
       },
       {
-        "q": "Convert 72 degrees in a pie chart into a percentage.",
-        "a": "72 / 3.6 = 20%."
+        "q": "What mechanism does TCP use during Congestion Avoidance after cwnd exceeds ssthresh?",
+        "a": "Answer: A\n\nIn Congestion Avoidance, AIMD provides linear window expansion (+1 MSS per RTT) to stabilize throughput near link capacity."
       },
       {
-        "q": "What is the state transition formula for LeetCode 322 (Coin Change)?",
-        "a": "dp[a] = min(dp[a], 1 + dp[a - c]) for every coin c where a - c >= 0."
+        "q": "What is the primary architectural difference between TCP and UDP?",
+        "a": "Answer: A\n\nTCP guarantees in-order reliable delivery via acknowledgments and retries; UDP provides lightweight, low-latency best-effort transmission."
       },
       {
-        "q": "What is Head-of-Line (HoL) blocking in HTTP/1.1?",
-        "a": "A condition where subsequent HTTP requests on a persistent TCP connection must wait in line until the current response finishes transferring."
+        "q": "What is the size of the standard base IPv4 and TCP headers without options?",
+        "a": "Answer: A\n\nBoth IPv4 and TCP base headers have a minimum length of 20 bytes each (5 32-bit words), yielding a combined 40-byte base header."
       },
       {
-        "q": "Why does HTTP/3 use QUIC over UDP instead of TCP?",
-        "a": "To eliminate transport-layer Head-of-Line blocking across streams and support 0-RTT connection establishment and connection migration."
+        "q": "In subject-verb agreement with correlative conjunctions, which sentence is correct?",
+        "a": "Answer: A\n\nIn 'Neither... nor', the verb agrees with the closer subject ('employees', plural => 'were')."
       },
       {
-        "q": "What is the degree of precision of Simpson's 1/3 Rule?",
-        "a": "3 (Exact for polynomials up to cubic degree due to interval symmetry)."
+        "q": "Regarding distributive pronoun agreement with 'Each', which statement is correct?",
+        "a": "Answer: A\n\n'Each' is a singular distributive pronoun and requires the singular verb 'has'."
       },
       {
-        "q": "Name two key components of a Statement of Work (SOW) in freelancing.",
-        "a": "Acceptance criteria and an explicit list of Out-of-Scope features."
+        "q": "Identify the part containing a grammatical error in: 'The quality of these mangoes (A) / are not good (B) / according to the buyer (C) / No error (D)'",
+        "a": "Answer: A\n\nThe subject is 'quality' (singular), so the verb should be 'is not good', not 'are'."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-23-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In the TCP 3-way handshake to establish a reliable connection, what sequence of control flags is exchanged between client and server?",
+        "options": [
+          "SYN -> SYN-ACK -> ACK",
+          "ACK -> SYN -> FIN",
+          "SYN -> ACK -> RST",
+          "PING -> PONG -> ACK"
+        ],
+        "correct_answer": "A",
+        "explanation": "Connection establishment: Client sends SYN, Server replies with SYN + ACK, and Client confirms with final ACK."
+      },
+      {
+        "id": "TEST-23-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does TCP handle Congestion Control during the initial 'Slow Start' phase upon connection startup?",
+        "options": [
+          "It sets window size to maximum bandwidth immediately",
+          "It initializes Congestion Window (cwnd) to 1 MSS and doubles cwnd every RTT (exponential growth) until ssthresh is reached",
+          "It drops every alternate packet",
+          "It transmits UDP datagrams instead"
+        ],
+        "correct_answer": "B",
+        "explanation": "Slow Start probes network capacity exponentially: cwnd doubles every round-trip time until reaching the slow start threshold (ssthresh)."
+      },
+      {
+        "id": "TEST-23-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What mechanism does TCP use during Congestion Avoidance after cwnd exceeds ssthresh?",
+        "options": [
+          "Additive Increase Multiplicative Decrease (AIMD) — increasing cwnd by 1 MSS per RTT",
+          "Exponential doubling",
+          "Immediate connection reset",
+          "Halving the window every second"
+        ],
+        "correct_answer": "A",
+        "explanation": "In Congestion Avoidance, AIMD provides linear window expansion (+1 MSS per RTT) to stabilize throughput near link capacity."
+      },
+      {
+        "id": "TEST-23-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary architectural difference between TCP and UDP?",
+        "options": [
+          "TCP is connection-oriented, reliable, and provides byte-stream ordering; UDP is connectionless, unreliable, and datagram-oriented",
+          "UDP provides guaranteed packet delivery while TCP does not",
+          "TCP only runs over optical fiber while UDP runs over copper",
+          "UDP uses 64-bit port numbers"
+        ],
+        "correct_answer": "A",
+        "explanation": "TCP guarantees in-order reliable delivery via acknowledgments and retries; UDP provides lightweight, low-latency best-effort transmission."
+      },
+      {
+        "id": "TEST-23-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the size of the standard base IPv4 and TCP headers without options?",
+        "options": [
+          "20 bytes for IPv4 and 20 bytes for TCP (40 bytes total overhead)",
+          "8 bytes for IPv4 and 8 bytes for TCP",
+          "64 bytes each",
+          "4 bytes each"
+        ],
+        "correct_answer": "A",
+        "explanation": "Both IPv4 and TCP base headers have a minimum length of 20 bytes each (5 32-bit words), yielding a combined 40-byte base header."
+      },
+      {
+        "id": "TEST-23-06",
+        "category": "Placement Aptitude",
+        "question": "In subject-verb agreement with correlative conjunctions, which sentence is correct?",
+        "options": [
+          "Neither the manager nor the employees were present at the briefing.",
+          "Neither the manager nor the employees was present at the briefing.",
+          "Neither the manager or the employees were present at the briefing.",
+          "Neither the manager nor the employees is present at the briefing."
+        ],
+        "correct_answer": "A",
+        "explanation": "In 'Neither... nor', the verb agrees with the closer subject ('employees', plural => 'were')."
+      },
+      {
+        "id": "TEST-23-07",
+        "category": "Placement Aptitude",
+        "question": "Regarding distributive pronoun agreement with 'Each', which statement is correct?",
+        "options": [
+          "Each of the candidates has submitted his or her resume.",
+          "Each of the candidates have submitted their resume.",
+          "Each of the candidate has submitted their resume.",
+          "Each of the candidates are submitting resumes."
+        ],
+        "correct_answer": "A",
+        "explanation": "'Each' is a singular distributive pronoun and requires the singular verb 'has'."
+      },
+      {
+        "id": "TEST-23-08",
+        "category": "Placement Aptitude",
+        "question": "Identify the part containing a grammatical error in: 'The quality of these mangoes (A) / are not good (B) / according to the buyer (C) / No error (D)'",
+        "options": [
+          "Part B",
+          "Part A",
+          "Part C",
+          "Part D"
+        ],
+        "correct_answer": "A",
+        "explanation": "The subject is 'quality' (singular), so the verb should be 'is not good', not 'are'."
+      },
+      {
+        "id": "TEST-23-09",
+        "category": "Placement Aptitude",
+        "question": "Regarding the collective construction 'One of the...', which sentence is grammatically sound?",
+        "options": [
+          "One of my friends is an aerospace engineer.",
+          "One of my friends are an aerospace engineer.",
+          "One of my friend is an aerospace engineer.",
+          "One of my friend are an aerospace engineer."
+        ],
+        "correct_answer": "A",
+        "explanation": "'One of' is followed by a plural noun ('friends') and a singular verb ('is')."
+      },
+      {
+        "id": "TEST-23-10",
+        "category": "Placement Aptitude",
+        "question": "Regarding negative inversion and correlative conjunctions with 'Scarcely', choose the correct sentence:",
+        "options": [
+          "Scarcely had he entered the room when the phone rang.",
+          "Scarcely had he entered the room than the phone rang.",
+          "Scarcely did he entered the room when the phone rang.",
+          "Scarcely he had entered the room then the phone rang."
+        ],
+        "correct_answer": "A",
+        "explanation": "'Scarcely' pairs correlatively with 'when' and requires inverted auxiliary verb syntax ('had he entered')."
+      },
+      {
+        "id": "TEST-23-11",
+        "category": "Core CS (Python Internals)",
+        "question": "What is the primary constraint imposed by CPython's Global Interpreter Lock (GIL)?",
+        "options": [
+          "Files cannot be read concurrently",
+          "Only one thread can execute Python bytecode at a time within a single process",
+          "Subprocesses are prohibited",
+          "Recursion depth is limited to 100"
+        ],
+        "correct_answer": "B",
+        "explanation": "The GIL restricts bytecode execution to one thread at any given instant per process."
+      },
+      {
+        "id": "TEST-23-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which Python module enables true parallel execution across multi-core CPUs for CPU-bound computations?",
+        "options": [
+          "threading",
+          "multiprocessing",
+          "asyncio",
+          "socket"
+        ],
+        "correct_answer": "B",
+        "explanation": "multiprocessing spawns independent processes with separate GILs, running across multiple cores."
+      },
+      {
+        "id": "TEST-23-13",
+        "category": "Core CS (Python Internals)",
+        "question": "In Python, which operation is NOT atomic and requires a threading Lock?",
+        "options": [
+          "list.append(x)",
+          "dict[key] = val",
+          "counter += 1",
+          "queue.pop()"
+        ],
+        "correct_answer": "C",
+        "explanation": "`counter += 1` compiles to multiple bytecode instructions (read, add, write), requiring synchronization."
+      },
+      {
+        "id": "TEST-23-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Coroutines in `asyncio` yield control back to the event loop using which keyword?",
+        "options": [
+          "yield from",
+          "await",
+          "defer",
+          "pass"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `await` keyword pauses coroutine execution and returns control to the event loop."
+      },
+      {
+        "id": "TEST-23-15",
+        "category": "Core CS (Python Internals)",
+        "question": "How should a blocking synchronous I/O function be executed in an asyncio application?",
+        "options": [
+          "Invoke it directly inside async def",
+          "Wrap it with asyncio.to_thread() to run in a thread pool",
+          "Call sys.exit()",
+          "Increase the recursion limit"
+        ],
+        "correct_answer": "B",
+        "explanation": "Blocking operations must be offloaded to worker threads via asyncio.to_thread() to avoid freezing the event loop."
+      },
+      {
+        "id": "TEST-23-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dijkstra's Shortest Path Algorithm' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O((V + E) log V) Time, O(V + E) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dijkstra's Shortest Path Algorithm' pattern operates with O((V + E) log V) Time, O(V + E) Auxiliary Space: Greedily expands the vertex with the lowest tentative distance; non-negative weights guarantee that once visited, its optimal distance is finalized.."
+      },
+      {
+        "id": "TEST-23-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dijkstra's Shortest Path Algorithm' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Unreachable destination (returns -1).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dijkstra's Shortest Path Algorithm include Unreachable destination (returns -1), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-23-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Network Delay Time', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(V + E) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O((V + E) log V) Time, O(V + E) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-23-19",
+        "category": "Projects (Caloriv)",
+        "question": "In Sarthak's project 'Caloriv', what is the core architectural principle regarding 'Camera Integration, Image Preprocessing & Cloudinary Asset Optimization'?",
+        "options": [
+          "Compressing images before mobile upload saves cellular data and prevents network timeout failures.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For Caloriv, the architectural invariant is: Compressing images before mobile upload saves cellular data and prevents network timeout failures.."
+      },
+      {
+        "id": "TEST-23-20",
+        "category": "Projects (Caloriv)",
+        "question": "Regarding 'Caloriv', how should you defend this design decision in a technical interview: 'How does Caloriv handle meal photo uploads efficiently over slow mobile networks?'?",
+        "options": [
+          "When a user captures a food photo, rather than uploading raw 12MB camera images, we use `expo-image-manipulator` to downsample the image resolution to a maximum...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When a user captures a food photo, rather than uploading raw 12MB camera images, we use `expo-image-manipulator` to downsample the image res."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-23",
+    "title": "Network Delay Time (Dijkstra's Shortest Path Algorithm)",
+    "time_limit_minutes": 45,
+    "difficulty": "Hard",
+    "problem_statement": "Solve the core placement problem: Network Delay Time.\n\nYou are given a network of n nodes, labeled from 1 to n. Return the minimum time it takes for all the n nodes to receive the signal.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dijkstra's Shortest Path Algorithm\n- Time Complexity Target: O((V + E) log V) Time\n- Space Complexity Target: O(V + E) Auxiliary Space\n- Handle all edge cases: Unreachable destination (returns -1), Source has no outgoing edges, Cycles with positive weights.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dijkstra's Shortest Path Algorithm\n    public int networkDelayTime(int[][] times, int n, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dijkstra's Shortest Path Algorithm\n    public int networkDelayTime(int[][] times, int n, int k) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+    "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public int networkDelayTime(int[][] times, int n, int k) {\n        int[] dist = new int[n + 1];\n        Arrays.fill(dist, Integer.MAX_VALUE);\n        dist[k] = 0;\n        for (int i = 1; i <= n - 1; i++) {\n            for (int[] e : times) {\n                if (dist[e[0]] != Integer.MAX_VALUE && dist[e[0]] + e[2] < dist[e[1]]) {\n                    dist[e[1]] = dist[e[0]] + e[2];\n                }\n            }\n        }\n        int max = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == Integer.MAX_VALUE) return -1;\n            max = Math.max(max, dist[i]);\n        }\n        return max;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Dijkstra's Shortest Path Algorithm logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Unreachable destination (returns -1)",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O((V + E) log V) Time)",
+      "Space Complexity": "20 points (Meets O(V + E) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }

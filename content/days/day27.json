@@ -1,206 +1,2448 @@
 {
   "day": 27,
-  "title": "Ordinary Differential Equations (RK4), Speed Math Marathon & Backtracking",
-  "sem_data": {
-    "subject": "BCA-5004 Numerical Methods",
-    "topic": "Unit V \u2014 Numerical Solution of Ordinary Differential Equations (ODEs): Euler's Method & Runge-Kutta 4th Order (RK4)",
-    "detailed_notes": [
-      "An Initial Value Problem (IVP) for a first-order Ordinary Differential Equation is defined as: dy/dx = f(x, y), with initial condition y(x0) = y0. Numerical methods generate discrete approximations y1, y2, ..., yn at points x1, x2, ..., xn separated by uniform step size h.",
-      "1. Euler's Method (First-Order):\n\u2022 Approximates curve by tangent line at initial point: y_{n+1} = y_n + h * f(x_n, y_n).\n\u2022 Truncation Error: Local error = O(h^2); Global error = O(h). Computationally crude; requires very small h to prevent runaway error accumulation.",
-      "2. Modified Euler's Method (Predictor-Corrector / Heun's Method):\n\u2022 Predictor: y*_{n+1} = y_n + h * f(x_n, y_n).\n\u2022 Corrector: y_{n+1} = y_n + (h/2) * [ f(x_n, y_n) + f(x_{n+1}, y*_{n+1}) ].\n\u2022 Global Error = O(h^2). Averages slopes at beginning and predicted end of interval.",
-      "3. Runge-Kutta 4th Order Method (RK4):\n\u2022 The industry-standard gold standard for solving initial value problems numerically without needing higher-order analytical derivatives!\n\u2022 Computes a weighted average of 4 sample slopes across the step interval [x_n, x_n + h]:\n  k1 = h * f(x_n, y_n)                     [Slope at beginning of interval]\n  k2 = h * f(x_n + h/2, y_n + k1/2)         [Slope at midpoint using slope k1]\n  k3 = h * f(x_n + h/2, y_n + k2/2)         [Slope at midpoint using slope k2]\n  k4 = h * f(x_n + h, y_n + k3)             [Slope at end of interval using slope k3]\n\u2022 Step Update Formula: y_{n+1} = y_n + (1/6) * [ k1 + 2*k2 + 2*k3 + k4 ].\n\u2022 Global Truncation Error = O(h^4). Fourth-order accuracy achieves precision with large step sizes."
+  "title": "Day 27: Numerical Solutions of ODEs: Euler's Method & Runge-Kutta 4th Order (RK4) Method & Dynamic Programming: Longest Increasing Subsequence (LIS)",
+  "streams": {
+    "academic": {
+      "unit": 5,
+      "topic": "Unit V — Numerical Solutions of ODEs: Euler's Method & Runge-Kutta 4th Order (RK4) Method",
+      "objectives": [
+        "Understand Initial Value Problems (IVPs).",
+        "Master Euler's method and Runge-Kutta 4th Order (RK4) weighted slope algorithm."
+      ],
+      "explanation": "Ordinary Differential Equations (ODEs) of the form `dy/dx = f(x, y)` with initial condition `y(x0) = y0` frequently model physical systems where analytical integration is impossible.\n1. Euler's Method:\n   Approximates the curve using the tangent line slope at the beginning of each step:\n   `y_{n+1} = y_n + h * f(x_n, y_n)`\n   • Local truncation error: `O(h^2)`; Global error: `O(h)`. It is a 1st-order method—simple but inaccurate unless step size h is tiny.\n2. Runge-Kutta 4th Order (RK4) Method:\n   The gold standard for solving ODEs. It achieves 4th-order accuracy (`O(h^4)`) without requiring analytical higher-order derivatives of f(x, y). It computes four representative slope estimates across step interval `h`:\n   • `k1 = h * f(x_n, y_n)` (Slope at beginning of step);\n   • `k2 = h * f(x_n + h/2, y_n + k1/2)` (Estimated slope at midpoint using k1);\n   • `k3 = h * f(x_n + h/2, y_n + k2/2)` (Refined slope at midpoint using k2);\n   • `k4 = h * f(x_n + h, y_n + k3)` (Estimated slope at endpoint using k3);\n   • Final weighted average:\n     `y_{n+1} = y_n + (1/6) * (k1 + 2*k2 + 2*k3 + k4)`\n   • Error: Global truncation error is `O(h^4)`, providing outstanding stability.",
+      "definitions": [
+        {
+          "term": "Initial Value Problem (IVP)",
+          "definition": "A differential equation dy/dx = f(x, y) accompanied by a known initial state y(x0) = y0 at starting point x0."
+        },
+        {
+          "term": "RK4 Method",
+          "definition": "A 4th-order numerical method that computes a weighted average of four slope evaluations per step interval to advance the solution of an ODE."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Geometric Meaning of RK4 Slopes",
+          "content": "k1 is initial slope; k2 and k3 evaluate midpoints; k4 evaluates the endpoint. Midpoint slopes receive double weighting (2/6 each) in Simpson-like weighting."
+        },
+        {
+          "title": "Euler vs RK4 Tradeoff",
+          "content": "Euler requires 1 function evaluation per step (error O(h)); RK4 requires 4 evaluations per step (error O(h^4), allowing 100x larger step size h)."
+        }
+      ],
+      "examples": [
+        "Solving dy/dx = x + y with y(0) = 1 to find y(0.1) using step h = 0.1."
+      ],
+      "diagram": "+---------------------------------------------------+\n|              RUNGE-KUTTA 4TH ORDER (RK4)          |\n| k1 = h*f(x0, y0)                                  |\n| k2 = h*f(x0 + h/2, y0 + k1/2)                     |\n| k3 = h*f(x0 + h/2, y0 + k2/2)                     |\n| k4 = h*f(x0 + h, y0 + k3)                         |\n| y1 = y0 + (1/6) * [k1 + 2*k2 + 2*k3 + k4]         |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Method",
+          "Order of Method",
+          "Evaluations per Step",
+          "Global Truncation Error",
+          "Stability & Accuracy"
+        ],
+        "rows": [
+          [
+            "Standard Euler",
+            "1st Order",
+            "1 evaluation",
+            "O(h)",
+            "Poor accuracy, requires tiny step h"
+          ],
+          [
+            "Modified Euler (Heun)",
+            "2nd Order",
+            "2 evaluations",
+            "O(h^2)",
+            "Moderate accuracy"
+          ],
+          [
+            "Runge-Kutta 2nd Order",
+            "2nd Order",
+            "2 evaluations",
+            "O(h^2)",
+            "Moderate accuracy"
+          ],
+          [
+            "Runge-Kutta 4th Order (RK4)",
+            "4th Order",
+            "4 evaluations",
+            "O(h^4)",
+            "Outstanding accuracy, industry benchmark"
+          ]
+        ]
+      },
+      "memorize": "RK4 formulas: k1=h*f(x,y); k2=h*f(x+h/2, y+k1/2); k3=h*f(x+h/2, y+k2/2); k4=h*f(x+h, y+k3). Weighted average: y1 = y0 + (1/6)*(k1 + 2*k2 + 2*k3 + k4).",
+      "understand": "RK4 matches the Taylor series expansion up to the h^4 term without having to take partial derivatives of f(x, y).",
+      "common_mistakes": "Forgetting to halve k1 and k2 inside the y-arguments of k2 and k3 (writing y0 + k1 instead of y0 + k1/2).",
+      "exam_writing_guidance": "State all 4 slope formulas clearly, show intermediate substitutions for k1, k2, k3, k4 step-by-step, and compute y1 with 4 decimal places.",
+      "mini_practice": [
+        "Apply Euler's method to dy/dx = y with y(0) = 1, h = 0.1 for 2 steps."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5004 Numerical Methods",
+          "year": "2024-25 (Q5)",
+          "marks": 15,
+          "question": "Apply the Runge-Kutta 4th Order (RK4) method to find y(0.1) and y(0.2) given the differential equation:\ndy/dx = x + y, with initial condition y(0) = 1.\nTake step size h = 0.1. Compare with analytical solution y = 2*e^x - x - 1. (15 Marks)",
+          "rubric": "RK4 Formulas stated (3 marks) + Step 1 for y(0.1) with k1..k4 calculated (5 marks) + Step 2 for y(0.2) with k1..k4 calculated (5 marks) + Exact comparison (2 marks) = 15 Marks.",
+          "model_answer": "1. Problem Setup:\ndy/dx = f(x, y) = x + y, x0 = 0, y0 = 1, h = 0.1.\n\n2. Step 1: Compute y(0.1):\n• k1 = h * f(x0, y0) = 0.1 * (0 + 1) = 0.10000\n• k2 = h * f(x0 + h/2, y0 + k1/2) = 0.1 * f(0 + 0.05, 1 + 0.05) = 0.1 * (0.05 + 1.05) = 0.1 * 1.10 = 0.11000\n• k3 = h * f(x0 + h/2, y0 + k2/2) = 0.1 * f(0.05, 1 + 0.055) = 0.1 * (0.05 + 1.055) = 0.1 * 1.105 = 0.11050\n• k4 = h * f(x0 + h, y0 + k3) = 0.1 * f(0.1, 1 + 0.1105) = 0.1 * (0.1 + 1.1105) = 0.1 * 1.2105 = 0.12105\n• y(0.1) = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4)\n  y(0.1) = 1 + (1/6) * (0.10000 + 2(0.11000) + 2(0.11050) + 0.12105)\n  = 1 + (1/6) * (0.10000 + 0.22000 + 0.22100 + 0.12105) = 1 + (1/6) * (0.66205) = 1 + 0.11034 = 1.11034.\n\n3. Step 2: Compute y(0.2) from x1 = 0.1, y1 = 1.11034:\n• k1 = 0.1 * (0.1 + 1.11034) = 0.1 * 1.21034 = 0.12103\n• k2 = 0.1 * f(0.15, 1.11034 + 0.06052) = 0.1 * (0.15 + 1.17086) = 0.1 * 1.32086 = 0.13209\n• k3 = 0.1 * f(0.15, 1.11034 + 0.06605) = 0.1 * (0.15 + 1.17639) = 0.1 * 1.32639 = 0.13264\n• k4 = 0.1 * f(0.2, 1.11034 + 0.13264) = 0.1 * (0.2 + 1.24298) = 0.1 * 1.44298 = 0.14430\n• y(0.2) = 1.11034 + (1/6) * (0.12103 + 2(0.13209) + 2(0.13264) + 0.14430)\n  = 1.11034 + (1/6) * (0.12103 + 0.26418 + 0.26528 + 0.14430) = 1.11034 + (1/6) * (0.79479) = 1.11034 + 0.13247 = 1.24281.\n\n4. Analytical Verification:\nExact solution y(x) = 2*e^x - x - 1.\n• Exact y(0.1) = 2*e^(0.1) - 0.1 - 1 = 2(1.10517) - 1.1 = 2.21034 - 1.1 = 1.11034. Matches RK4 to 5 decimal places!\n• Exact y(0.2) = 2*e^(0.2) - 0.2 - 1 = 2(1.22140) - 1.2 = 2.44280 - 1.2 = 1.24280. Matches RK4 to 4 decimal places!\nFinal Answer: y(0.1) = 1.1103, y(0.2) = 1.2428.",
+          "answer_structure": "Formulas -> Step 1 Calculations (k1..k4) -> Step 2 Calculations -> Exact Comparison & Verification",
+          "important_points": [
+            "k1..k4 formulas",
+            "Simpson-like 1/6 weighting",
+            "Step-by-step arithmetic",
+            "Exact match: y(0.1)=1.1103, y(0.2)=1.2428"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "All intermediate k values written explicitly",
+            "Exact analytical comparison shown"
+          ],
+          "common_mistakes": [
+            "Using x0 instead of x1 in step 2"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5004 Numerical Methods",
+          "year": "2023 / Model",
+          "marks": 5,
+          "question": "What is the advantage of the Runge-Kutta 4th Order method over Taylor's Series method for solving ODEs? (5 Marks)",
+          "rubric": "Comparison across derivatives and implementation (5 marks).",
+          "model_answer": "Taylor series method requires calculating successive higher-order analytical derivatives of f(x, y) (i.e., f', f'', f'''), which becomes algebraically monstrous or impossible for non-linear multi-variable functions. The Runge-Kutta 4th Order method achieves identical 4th-order Taylor accuracy (error O(h^4)) purely by evaluating the first-order function f(x, y) at four strategic points across the step interval, completely bypassing the need for higher-order symbolic differentiation."
+        }
+      ],
+      "subject_code": "BCA-5004",
+      "subject_name": "Numerical Methods",
+      "mcqs": [
+        {
+          "id": "ACAD-27-01",
+          "question": "What geometric curve does Simpson's 1/3 Rule fit across consecutive sets of three equidistant points to approximate the integral?",
+          "options": [
+            "Straight lines (degree 1 polynomials)",
+            "Parabolic arcs (degree 2 quadratic polynomials)",
+            "Cubic splines (degree 3 polynomials)",
+            "Exponential curves"
+          ],
+          "correct_answer": "B",
+          "explanation": "Simpson's 1/3 rule approximates the integrand by a 2nd-degree parabola over pairs of subintervals, requiring an EVEN number of intervals."
+        },
+        {
+          "id": "ACAD-27-02",
+          "question": "What restriction MUST the number of subintervals (n) satisfy when applying Simpson's 1/3 Rule?",
+          "options": [
+            "n must be an odd number",
+            "n must be an even number (or multiple of 2)",
+            "n must be a multiple of 3",
+            "n must be a prime number"
+          ],
+          "correct_answer": "B",
+          "explanation": "Since each parabolic segment spans two adjacent subintervals, Simpson's 1/3 Rule strictly requires an EVEN number of intervals (n = 2, 4, 6...)."
+        },
+        {
+          "id": "ACAD-27-03",
+          "question": "What is the mathematical formula for the composite Trapezoidal Rule for interval [a, b] with step size h?",
+          "options": [
+            "(h / 2) * [ (y_0 + y_n) + 2*(y_1 + y_2 + ... + y_{n-1}) ]",
+            "(h / 3) * [ (y_0 + y_n) + 4*(odd) + 2*(even) ]",
+            "h * (y_0 + y_1 + ... + y_n)",
+            "(3h / 8) * (sum of all y)"
+          ],
+          "correct_answer": "A",
+          "explanation": "Trapezoidal rule sums linear trapezoids: (h/2) * [First + Last + 2 * (Sum of all intermediate ordinates)]."
+        },
+        {
+          "id": "ACAD-27-04",
+          "question": "Which numerical integration rule requires the number of subintervals (n) to be a multiple of 3?",
+          "options": [
+            "Trapezoidal Rule",
+            "Simpson's 1/3 Rule",
+            "Simpson's 3/8 Rule",
+            "Euler's Method"
+          ],
+          "correct_answer": "C",
+          "explanation": "Simpson's 3/8 rule fits cubic polynomials over groups of three subintervals, necessitating n to be a multiple of 3 (n = 3, 6, 9...)."
+        },
+        {
+          "id": "ACAD-27-05",
+          "question": "What is the global truncation error order of the composite Simpson's 1/3 Rule?",
+          "options": [
+            "O(h)",
+            "O(h^2)",
+            "O(h^4)",
+            "O(h^6)"
+          ],
+          "correct_answer": "C",
+          "explanation": "The composite Simpson's 1/3 rule has a global truncation error of O(h^4), providing significantly higher precision than the O(h^2) Trapezoidal rule."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2024-25 (Q5)",
+        "marks": 15,
+        "question": "Apply the Runge-Kutta 4th Order (RK4) method to find y(0.1) and y(0.2) given the differential equation:\ndy/dx = x + y, with initial condition y(0) = 1.\nTake step size h = 0.1. Compare with analytical solution y = 2*e^x - x - 1. (15 Marks)",
+        "rubric": "RK4 Formulas stated (3 marks) + Step 1 for y(0.1) with k1..k4 calculated (5 marks) + Step 2 for y(0.2) with k1..k4 calculated (5 marks) + Exact comparison (2 marks) = 15 Marks.",
+        "model_answer": "1. Problem Setup:\ndy/dx = f(x, y) = x + y, x0 = 0, y0 = 1, h = 0.1.\n\n2. Step 1: Compute y(0.1):\n• k1 = h * f(x0, y0) = 0.1 * (0 + 1) = 0.10000\n• k2 = h * f(x0 + h/2, y0 + k1/2) = 0.1 * f(0 + 0.05, 1 + 0.05) = 0.1 * (0.05 + 1.05) = 0.1 * 1.10 = 0.11000\n• k3 = h * f(x0 + h/2, y0 + k2/2) = 0.1 * f(0.05, 1 + 0.055) = 0.1 * (0.05 + 1.055) = 0.1 * 1.105 = 0.11050\n• k4 = h * f(x0 + h, y0 + k3) = 0.1 * f(0.1, 1 + 0.1105) = 0.1 * (0.1 + 1.1105) = 0.1 * 1.2105 = 0.12105\n• y(0.1) = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4)\n  y(0.1) = 1 + (1/6) * (0.10000 + 2(0.11000) + 2(0.11050) + 0.12105)\n  = 1 + (1/6) * (0.10000 + 0.22000 + 0.22100 + 0.12105) = 1 + (1/6) * (0.66205) = 1 + 0.11034 = 1.11034.\n\n3. Step 2: Compute y(0.2) from x1 = 0.1, y1 = 1.11034:\n• k1 = 0.1 * (0.1 + 1.11034) = 0.1 * 1.21034 = 0.12103\n• k2 = 0.1 * f(0.15, 1.11034 + 0.06052) = 0.1 * (0.15 + 1.17086) = 0.1 * 1.32086 = 0.13209\n• k3 = 0.1 * f(0.15, 1.11034 + 0.06605) = 0.1 * (0.15 + 1.17639) = 0.1 * 1.32639 = 0.13264\n• k4 = 0.1 * f(0.2, 1.11034 + 0.13264) = 0.1 * (0.2 + 1.24298) = 0.1 * 1.44298 = 0.14430\n• y(0.2) = 1.11034 + (1/6) * (0.12103 + 2(0.13209) + 2(0.13264) + 0.14430)\n  = 1.11034 + (1/6) * (0.12103 + 0.26418 + 0.26528 + 0.14430) = 1.11034 + (1/6) * (0.79479) = 1.11034 + 0.13247 = 1.24281.\n\n4. Analytical Verification:\nExact solution y(x) = 2*e^x - x - 1.\n• Exact y(0.1) = 2*e^(0.1) - 0.1 - 1 = 2(1.10517) - 1.1 = 2.21034 - 1.1 = 1.11034. Matches RK4 to 5 decimal places!\n• Exact y(0.2) = 2*e^(0.2) - 0.2 - 1 = 2(1.22140) - 1.2 = 2.44280 - 1.2 = 1.24280. Matches RK4 to 4 decimal places!\nFinal Answer: y(0.1) = 1.1103, y(0.2) = 1.2428.",
+        "answer_structure": "Formulas -> Step 1 Calculations (k1..k4) -> Step 2 Calculations -> Exact Comparison & Verification",
+        "important_points": [
+          "k1..k4 formulas",
+          "Simpson-like 1/6 weighting",
+          "Step-by-step arithmetic",
+          "Exact match: y(0.1)=1.1103, y(0.2)=1.2428"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "All intermediate k values written explicitly",
+          "Exact analytical comparison shown"
+        ],
+        "common_mistakes": [
+          "Using x0 instead of x1 in step 2"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "What is the advantage of the Runge-Kutta 4th Order method over Taylor's Series method for solving ODEs? (5 Marks)",
+        "rubric": "Comparison across derivatives and implementation (5 marks).",
+        "model_answer": "Taylor series method requires calculating successive higher-order analytical derivatives of f(x, y) (i.e., f', f'', f'''), which becomes algebraically monstrous or impossible for non-linear multi-variable functions. The Runge-Kutta 4th Order method achieves identical 4th-order Taylor accuracy (error O(h^4)) purely by evaluating the first-order function f(x, y) at four strategic points across the step interval, completely bypassing the need for higher-order symbolic differentiation."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                  RUNGE-KUTTA 4TH ORDER (RK4) SLOPE WEIGHTING            |\n+-------------------------------------------------------------------------+\n|  y ^                                                                    |\n|    |                               * (x+h, y + k4)                      |\n|    |               * k2, k3        /                                    |\n|    |              / (Midpoint)    /                                     |\n|    |       k1    /               /                                      |\n|    |  * --------*---------------*                                       |\n|    | (x0, y0)                                                           |\n|    +----+---------------+-------+-----> x                               |\n|        x0             x0+h/2   x0+h                                     |\n|  Weighted Slope = (k1 + 2*k2 + 2*k3 + k4) / 6  ==> O(h^4) Precision!   |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-27-01",
+        "question": "What geometric curve does Simpson's 1/3 Rule fit across consecutive sets of three equidistant points to approximate the integral?",
+        "options": [
+          "Straight lines (degree 1 polynomials)",
+          "Parabolic arcs (degree 2 quadratic polynomials)",
+          "Cubic splines (degree 3 polynomials)",
+          "Exponential curves"
+        ],
+        "correct_answer": "B",
+        "explanation": "Simpson's 1/3 rule approximates the integrand by a 2nd-degree parabola over pairs of subintervals, requiring an EVEN number of intervals."
+      },
+      {
+        "id": "ACAD-27-02",
+        "question": "What restriction MUST the number of subintervals (n) satisfy when applying Simpson's 1/3 Rule?",
+        "options": [
+          "n must be an odd number",
+          "n must be an even number (or multiple of 2)",
+          "n must be a multiple of 3",
+          "n must be a prime number"
+        ],
+        "correct_answer": "B",
+        "explanation": "Since each parabolic segment spans two adjacent subintervals, Simpson's 1/3 Rule strictly requires an EVEN number of intervals (n = 2, 4, 6...)."
+      },
+      {
+        "id": "ACAD-27-03",
+        "question": "What is the mathematical formula for the composite Trapezoidal Rule for interval [a, b] with step size h?",
+        "options": [
+          "(h / 2) * [ (y_0 + y_n) + 2*(y_1 + y_2 + ... + y_{n-1}) ]",
+          "(h / 3) * [ (y_0 + y_n) + 4*(odd) + 2*(even) ]",
+          "h * (y_0 + y_1 + ... + y_n)",
+          "(3h / 8) * (sum of all y)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Trapezoidal rule sums linear trapezoids: (h/2) * [First + Last + 2 * (Sum of all intermediate ordinates)]."
+      },
+      {
+        "id": "ACAD-27-04",
+        "question": "Which numerical integration rule requires the number of subintervals (n) to be a multiple of 3?",
+        "options": [
+          "Trapezoidal Rule",
+          "Simpson's 1/3 Rule",
+          "Simpson's 3/8 Rule",
+          "Euler's Method"
+        ],
+        "correct_answer": "C",
+        "explanation": "Simpson's 3/8 rule fits cubic polynomials over groups of three subintervals, necessitating n to be a multiple of 3 (n = 3, 6, 9...)."
+      },
+      {
+        "id": "ACAD-27-05",
+        "question": "What is the global truncation error order of the composite Simpson's 1/3 Rule?",
+        "options": [
+          "O(h)",
+          "O(h^2)",
+          "O(h^4)",
+          "O(h^6)"
+        ],
+        "correct_answer": "C",
+        "explanation": "The composite Simpson's 1/3 rule has a global truncation error of O(h^4), providing significantly higher precision than the O(h^2) Trapezoidal rule."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Reading Comprehension & Critical Extraction",
+      "category": "Verbal Ability",
+      "subtopic": "Reading Comprehension",
+      "formulas": "1. Question-First Strategy: Read question stems (not options) before reading the passage to prime your brain for key target terms.\n2. Structural Reading: First paragraph (thesis), topic sentences of body paragraphs (supporting arguments), final paragraph (conclusion).\n3. Fact vs Inference: Facts are explicitly stated; inferences must logically follow without speculation.",
+      "shortcuts": "Extreme Language Trap: Options containing 'always', 'never', 'all', 'completely', 'impossible' are incorrect 90% of the time in RC tests.",
+      "tutorial": [
+        "Campus recruitment RC passages are typically 250-400 words testing main idea, specific details, vocabulary in context, and author tone (analytical, critical, optimistic, neutral). Do not re-read entire paragraphs; locate keywords."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Reading Comprehension",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Reading Comprehension",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Reading Comprehension",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Reading Comprehension",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Reading Comprehension",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Based on software architectural principles, what is the primary benefit of decoupling microservices via asynchronous message queues?",
+        "options": {
+          "A": "Temporal decoupling and buffering against downstream traffic spikes",
+          "B": "Eliminating database storage entirely",
+          "C": "Enforcing synchronous HTTP blocking",
+          "D": "Reducing code readability"
+        },
+        "correct_answer": "A",
+        "explanation": "Message queues provide temporal decoupling, allowing services to produce messages without waiting for consumers, smoothing load spikes.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "In computer science literature, what does 'Amdahl's Law' predict regarding parallel computing?",
+        "options": {
+          "A": "The maximum theoretical speedup of a program is strictly bounded by its sequential, unparallelizable portion",
+          "B": "Parallel programs run with infinite linear speedup",
+          "C": "Adding more RAM always halves execution time",
+          "D": "Network latency is always zero in local clusters"
+        },
+        "correct_answer": "A",
+        "explanation": "Amdahl's law demonstrates that even with infinite processors, speedup is limited by the fraction of code that must run sequentially.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Why does the 'CAP Theorem' state that a distributed data store can guarantee at most two out of Consistency, Availability, and Partition Tolerance?",
+        "options": {
+          "A": "Network partitions are unavoidable across physical networks; during a partition, a system must choose between consistency or availability",
+          "B": "CPUs cannot process more than two instructions simultaneously",
+          "C": "Disk storage cannot handle concurrent writes",
+          "D": "It is a legal restriction enforced by international law"
+        },
+        "correct_answer": "A",
+        "explanation": "Because network partitions (P) are physical realities, distributed systems must trade off strong consistency (C) vs high availability (A) when partitions occur.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "What does the 'Two Generals Problem' in distributed systems prove mathematically?",
+        "options": {
+          "A": "It is impossible for two nodes to reach guaranteed agreement over an unreliable communication channel",
+          "B": "Two servers can always agree in 2 network hops",
+          "C": "Encryption guarantees packet delivery",
+          "D": "Generals cannot use wireless radios"
+        },
+        "correct_answer": "A",
+        "explanation": "The Two Generals thought experiment proves that no finite protocol can guarantee mutual consensus over an unreliable network link.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "What does the 'Fallacy of Distributed Computing' that 'Latency is zero' imply for application architects?",
+        "options": {
+          "A": "Remote procedure calls must be designed assuming variable network delays and potential timeouts rather than instantaneous memory lookups",
+          "B": "Fiber optic cables transmit data instantaneously",
+          "C": "Networks never drop packets",
+          "D": "Local method calls are slower than remote APIs"
+        },
+        "correct_answer": "A",
+        "explanation": "Network latency is non-zero; treating remote calls as local in-memory invocations causes hanging threads and cascading system outages.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "In concurrency analysis, what is a 'Race Condition'?",
+        "options": {
+          "A": "A flaw where system behavior depends on the uncontrollable execution sequence or timing of concurrent threads",
+          "B": "A benchmarking competition between two different algorithms",
+          "C": "A network cable transmitting data too quickly",
+          "D": "A database running out of disk space"
+        },
+        "correct_answer": "A",
+        "explanation": "A race condition occurs when concurrent threads access shared state without proper synchronization, making output non-deterministic.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "What is the primary cause of 'Cache Invalidation' being considered one of the hardest problems in computer science?",
+        "options": {
+          "A": "Ensuring that distributed caches reflect state updates made in the source database without stale reads or high invalidation latency",
+          "B": "RAM chips frequently lose physical power",
+          "C": "CPUs do not have internal registers",
+          "D": "Operating systems delete cache files every minute"
+        },
+        "correct_answer": "A",
+        "explanation": "Keeping distributed cache copies strictly synchronized with evolving underlying databases involves complex timing and distributed state trade-offs.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Why is 'Premature Optimization' described by Donald Knuth as 'the root of all evil'?",
+        "options": {
+          "A": "Developers spend critical time optimizing uncritical micro-paths, introducing bugs and complexity before measuring real bottlenecks",
+          "B": "Compilers cannot optimize C code",
+          "C": "Optimized code runs slower than unoptimized code",
+          "D": "Computers do not need fast code"
+        },
+        "correct_answer": "A",
+        "explanation": "Knuth noted that ~97% of run time is spent in tiny code pockets. Optimizing everything early complicates architecture without measurable gains.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "What architectural objective does 'Idempotency' achieve in RESTful API design?",
+        "options": {
+          "A": "Guaranteeing that executing the same request multiple times produces the identical side-effect as executing it once",
+          "B": "Encrypting passwords with MD5",
+          "C": "Forcing all API requests to use HTTP GET",
+          "D": "Deleting user sessions after 5 minutes"
+        },
+        "correct_answer": "A",
+        "explanation": "Idempotency ensures that accidental duplicate API retries (e.g., payment submissions) do not cause duplicate state mutations.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "In software reliability engineering, what does 'Graceful Degradation' mean?",
+        "options": {
+          "A": "A system's ability to maintain core functionality at reduced performance during partial subsystem failures rather than crashing entirely",
+          "B": "A computer catching fire slowly",
+          "C": "Software deleting user data when an error occurs",
+          "D": "Shutting down the entire data center immediately"
+        },
+        "correct_answer": "A",
+        "explanation": "Graceful degradation ensures that if a secondary service (e.g., recommendation engine) fails, primary workflows (e.g., checkout) remain operational.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Reading Comprehension (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Dynamic Programming: Longest Increasing Subsequence (LIS)",
+      "category": "Dynamic Programming",
+      "concept": "Finds the length of the longest strictly increasing subsequence using Patience Sorting and Binary Search.",
+      "why_it_works": "Maintains tails array where tails[i] stores smallest tail element of all increasing subsequences of length i+1. Binary search replaces or extends in O(log N).",
+      "visual_explanation": "nums = [10, 9, 2, 5, 3, 7, 101, 18]\\ntails array:\\n[10] -> [9] -> [2] -> [2, 5] -> [2, 3] -> [2, 3, 7] -> [2, 3, 7, 101] -> [2, 3, 7, 18]\\nLength of tails = 4 (e.g. [2, 3, 7, 18])",
+      "language": "Java",
+      "java_code": "import java.util.*;\n\npublic class Solution {\n    public int lengthOfLIS(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        int[] tails = new int[nums.length];\n        int size = 0;\n        \n        for (int x : nums) {\n            int left = 0, right = size;\n            while (left < right) {\n                int mid = left + (right - left) / 2;\n                if (tails[mid] < x) left = mid + 1;\n                else right = mid;\n            }\n            tails[left] = x;\n            if (left == size) size++;\n        }\n        return size;\n    }\n}",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int lengthOfLIS(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        int[] tails = new int[nums.length];\n        int size = 0;\n        \n        for (int x : nums) {\n            int left = 0, right = size;\n            while (left < right) {\n                int mid = left + (right - left) / 2;\n                if (tails[mid] < x) left = mid + 1;\n                else right = mid;\n            }\n            tails[left] = x;\n            if (left == size) size++;\n        }\n        return size;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4: Guard check for empty input.",
+        "Line 5: tails[i] holds lowest tail value of length i+1.",
+        "Line 8: For each element x in nums, perform binary search on tails.",
+        "Line 15: If x is greater than all existing tails, extend size by 1.",
+        "Line 17: Return size, which represents maximum LIS length."
+      ],
+      "dry_run": "nums = [0, 1, 0, 3, 2, 3]. tails transitions: [0] -> [0, 1] -> [0, 1, 3] -> [0, 1, 2] -> [0, 1, 2, 3]. Length = 4.",
+      "complexity": "O(N log N) Time, O(N) Auxiliary Space",
+      "edge_cases": "Strictly decreasing array (size = 1), All equal elements (size = 1 for strictly increasing), Already sorted array",
+      "edge_cases_list": [
+        "Strictly decreasing array (size = 1)",
+        "All equal elements (size = 1 for strictly increasing)",
+        "Already sorted array"
+      ],
+      "interview_variations": [
+        "Russian Doll Envelopes",
+        "Number of Longest Increasing Subsequence",
+        "Maximum Length of Pair Chain"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-27-01",
+        "title": "Problem 1: Longest Increasing Subsequence",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dynamic Programming: Longest Increasing Subsequence (LIS) algorithmic technique.\n2. Finds the length of the longest strictly increasing subsequence using Patience Sorting and Binary Search.\n3. Invariants: Maintains tails array where tails[i] stores smallest tail element of all increasing subsequences of length i+1. Binary search replaces or extends in O(log N).",
+        "solution_java": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "java_code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "time_complexity": "O(N log N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-27-02",
+        "title": "Problem 2: Russian Doll Envelopes",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given a 2D array of integers envelopes where envelopes[i] = [wi, hi]. Return the maximum number of envelopes you can Russian doll.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dynamic Programming: Longest Increasing Subsequence (LIS).\n2. Handle edge cases: Strictly decreasing array (size = 1), All equal elements (size = 1 for strictly increasing), Already sorted array.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "time_complexity": "O(N log N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "System Design",
+      "topic": "Scalability, High Availability, Load Balancing & Consistent Hashing",
+      "concept_lesson": "System design is the process of architecting scalable, reliable, and maintainable software systems serving millions of users.\n\nVertical vs Horizontal Scaling:\n- Vertical Scaling (Scale Up): Adding more CPU, RAM, or disk to a single machine. Hard physical limits, expensive, single point of failure (SPOF).\n- Horizontal Scaling (Scale Out): Adding more commodity machines to a cluster. Requires stateless application layers and distributed data storage.\n\nLoad Balancing Algorithms:\nLoad balancers (NGINX, HAProxy, AWS ALB) distribute incoming network traffic across backend server pools:\n1. Round Robin: Distributes requests sequentially across servers.\n2. Least Connections: Routes traffic to the server with fewest active connections (ideal for long-lived sessions).\n3. IP Hash: Hashes client IP to ensure session stickiness without server-side shared state.\nOperates at Layer 4 (Transport/TCP: fast, byte-level routing) or Layer 7 (Application/HTTP: smart routing based on URI, cookies, headers).\n\nConsistent Hashing:\nTraditional hash routing (`server = hash(key) % N`) causes catastrophic cache invalidation when server count N changes (almost 100% of keys remap). Consistent Hashing maps both servers and keys onto a virtual circular 360-degree ring (Hash Ring). A key is assigned to the first server encountered clockwise. When a server is added or removed, ONLY K/N keys are remapped on average. Virtual Nodes (vnodes) replicate each physical server across multiple ring positions, preventing hotspot skew and ensuring uniform data distribution.",
+      "key_definitions": [
+        {
+          "term": "Horizontal Scaling",
+          "definition": "Expanding system capacity by adding more server instances to the resource pool."
+        },
+        {
+          "term": "Load Balancer",
+          "definition": "A reverse proxy routing network traffic across multiple servers to prevent overload and ensure availability."
+        },
+        {
+          "term": "Consistent Hashing",
+          "definition": "A hashing technique mapping keys and servers to a circular ring so adding/removing nodes remaps only K/N keys."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What problem does Consistent Hashing solve in distributed caching and storage?",
+          "a": "In a distributed system using standard modulo hashing `server = hash(key) % N`, adding or removing a single server changes N, causing nearly 100% of all cached keys to remap to different servers. This triggers a catastrophic cache avalanche where the underlying database is swamped with requests. Consistent Hashing maps both keys and servers to a circular 2^32 hash ring. Adding or removing a server remaps only K/N keys (where K is total keys, N is server count), localizing redistribution."
+        },
+        {
+          "q": "What are Virtual Nodes in Consistent Hashing, and why are they necessary?",
+          "a": "Without virtual nodes, physical servers placed randomly on the hash ring can lead to non-uniform, highly unequal partition sizes, creating Hotspots where one server receives 80% of traffic. Virtual nodes assign multiple (e.g., 100-200) distinct hash labels across the ring for each physical machine, smoothing out variance and ensuring uniformly balanced load."
+        },
+        {
+          "q": "Explain the difference between Layer 4 and Layer 7 Load Balancing.",
+          "a": "Layer 4 load balancing operates at the Transport layer (TCP/UDP); it inspects only IP addresses and port numbers, forwarding raw packets without decrypting TLS or inspecting HTTP content (ultra-fast, low CPU). Layer 7 load balancing operates at the Application layer (HTTP/HTTPS); it can inspect URLs, HTTP headers, cookies, and POST bodies, allowing content-based routing (e.g., `/api/payments` routes to payment cluster, `/static` routes to CDN) and TLS termination."
+        },
+        {
+          "q": "What is a Single Point of Failure (SPOF) and how do redundancy and failover eliminate it?",
+          "a": "A SPOF is any single component whose failure brings down the entire system. It is eliminated through Redundancy (deploying duplicate active or passive components) paired with Automated Failover. For example, deploying redundant load balancers using VRRP / Keepalived with a shared floating IP ensures that if the primary load balancer crashes, the backup takes over the IP within milliseconds."
+        },
+        {
+          "q": "What is the difference between High Availability (HA) and Fault Tolerance?",
+          "a": "High Availability aims to minimize downtime across a system (e.g., '99.999% uptime', allowing ~5 minutes of downtime per year) through rapid automated recovery and failover. Fault Tolerance guarantees zero interruption or degradation of service even when hardware components fail, typically requiring fully synchronized duplicate hardware executing lockstep."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-27-01",
+          "question": "What proportion of keys must be remapped on average when adding a server to a Consistent Hashing ring with N nodes?",
+          "options": [
+            "100%",
+            "50%",
+            "K / N",
+            "0%"
+          ],
+          "correct_answer": "C",
+          "explanation": "Consistent hashing minimizes redistribution: only K/N keys must be remapped when adding/removing nodes."
+        },
+        {
+          "id": "CS-27-02",
+          "question": "What is the primary function of Virtual Nodes in Consistent Hashing?",
+          "options": [
+            "To encrypt network packets",
+            "To ensure uniform key distribution across physical servers and prevent hotspots",
+            "To eliminate the need for hash functions",
+            "To replace load balancers"
+          ],
+          "correct_answer": "B",
+          "explanation": "Virtual nodes distribute partitions uniformly across the ring, preventing hot spots."
+        },
+        {
+          "id": "CS-27-03",
+          "question": "A Layer 7 Load Balancer can route incoming traffic based on which of the following?",
+          "options": [
+            "Source IP only",
+            "TCP port only",
+            "HTTP request URI path and Cookie headers",
+            "MAC address"
+          ],
+          "correct_answer": "C",
+          "explanation": "Layer 7 balancers inspect application-layer HTTP headers, URLs, and cookies."
+        },
+        {
+          "id": "CS-27-04",
+          "question": "Scaling a system by adding more physical server nodes to a cluster is termed:",
+          "options": [
+            "Vertical Scaling",
+            "Horizontal Scaling",
+            "Deep Paging",
+            "B+ Tree splitting"
+          ],
+          "correct_answer": "B",
+          "explanation": "Horizontal scaling (scaling out) adds more servers to a distributed pool."
+        },
+        {
+          "id": "CS-27-05",
+          "question": "Which load balancing algorithm sends each incoming request to the server with the fewest active TCP sessions?",
+          "options": [
+            "Round Robin",
+            "Least Connections",
+            "IP Hash",
+            "Weighted Random"
+          ],
+          "correct_answer": "B",
+          "explanation": "Least Connections selects the server with the lowest concurrent connection load."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "NSE2 / BulkBeat TV",
+      "repo_path": "D:\\Projects\\nse2",
+      "topic": "Production Linux Deployment, Systemd Supervision & Zero-Downtime Daemon Watchdogs",
+      "what_to_understand": "Process management, crash recovery, and daemon lifecycle on a cloud VPS.",
+      "what_to_memorize": "`systemd` manages long-running Python background processes, restarting workers on failure and logging to `journalctl`.",
+      "interview_questions": [
+        {
+          "q": "How did you achieve 99.8% uptime for NSE2 on a cloud Linux VPS?",
+          "a": "All services (`api_server.py`, `admin_bot_main.py`, `sync_worker.py`) run as supervised systemd service units with `Restart=always` and `RestartSec=5s`. I implemented a dedicated `watchdog_service.py` that sends heartbeat pings to an internal health endpoint every 30 seconds; if the worker hangs or deadlocks, the watchdog kills the PID, triggering systemd to spawn a fresh instance."
+        },
+        {
+          "q": "How do you monitor server logs and memory leaks in production?",
+          "a": "We stream logs through Python's `logging.handlers.RotatingFileHandler` to prevent disk saturation, and use custom bash scripts (`status-logs.ps1`, `view_logs.sh`) and Telegram admin alerts that notify me immediately if unhandled exceptions spike."
+        }
+      ],
+      "interview_pitch_exercise": "I deployed and maintained BulkBeat TV on a cloud Linux VPS, configuring systemd unit files, process supervisors, and an automated health watchdog. This ensured seamless crash recovery, zero orphaned background processes, and 99.8% server availability."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 27 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 27 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'NSE2 / BulkBeat TV', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In NSE2 / BulkBeat TV (Python aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Dhan API), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of NSE2 / BulkBeat TV.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 26 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5004 — Numerical Quadrature: Trapezoidal & Simpson's Rules.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Reading Comprehension & Critical Extraction.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Increasing Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for System Design: Scaling, Load Balancing & Hashing.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Numerical Quadrature: Trapezoidal & Simpson's Rules.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Dynamic Programming: Longest Increasing Subsequence.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 27 Q1: What is the primary academic thesis of Numerical Quadrature: Trapezoidal & Simpson's Rules?",
+          "a": "Core theoretical and practical mastery of Numerical Quadrature: Trapezoidal & Simpson's Rules under the CSJM University BCA-5004 syllabus."
+        },
+        {
+          "q": "Day 27 Q2: What is the key speed calculation formula applied in Reading Comprehension & Critical Extraction?",
+          "a": "High-speed corporate placement arithmetic shortcut for Reading Comprehension & Critical Extraction in campus recruitment exams."
+        },
+        {
+          "q": "Day 27 Q3: What is the time complexity of Dynamic Programming: Longest Increasing Subsequence?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 27 Q4: What is the central architectural principle of System Design: Scaling, Load Balancing & Hashing?",
+          "a": "Foundational systems engineering rule governing System Design: Scaling, Load Balancing & Hashing in production environments."
+        },
+        {
+          "q": "Day 27 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 27 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 27 Q7: What is the verified technical foundation of College Student Management System (CSMS)?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 27 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 27 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 27 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5004 — Numerical Quadrature: Trapezoidal & Simpson's Rules.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Reading Comprehension & Critical Extraction.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Increasing Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for System Design: Scaling, Load Balancing & Hashing."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5004 — Numerical Quadrature: Trapezoidal & Simpson's Rules."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Reading Comprehension & Critical Extraction."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Dynamic Programming: Longest Increasing Subsequence."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: College Student Management System (CSMS)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-27-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What geometric curve does Simpson's 1/3 Rule fit across consecutive sets of three equidistant points to approximate the integral?",
+        "options": [
+          "Straight lines (degree 1 polynomials)",
+          "Parabolic arcs (degree 2 quadratic polynomials)",
+          "Cubic splines (degree 3 polynomials)",
+          "Exponential curves"
+        ],
+        "correct_answer": "B",
+        "explanation": "Simpson's 1/3 rule approximates the integrand by a 2nd-degree parabola over pairs of subintervals, requiring an EVEN number of intervals."
+      },
+      {
+        "id": "TEST-27-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What restriction MUST the number of subintervals (n) satisfy when applying Simpson's 1/3 Rule?",
+        "options": [
+          "n must be an odd number",
+          "n must be an even number (or multiple of 2)",
+          "n must be a multiple of 3",
+          "n must be a prime number"
+        ],
+        "correct_answer": "B",
+        "explanation": "Since each parabolic segment spans two adjacent subintervals, Simpson's 1/3 Rule strictly requires an EVEN number of intervals (n = 2, 4, 6...)."
+      },
+      {
+        "id": "TEST-27-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the mathematical formula for the composite Trapezoidal Rule for interval [a, b] with step size h?",
+        "options": [
+          "(h / 2) * [ (y_0 + y_n) + 2*(y_1 + y_2 + ... + y_{n-1}) ]",
+          "(h / 3) * [ (y_0 + y_n) + 4*(odd) + 2*(even) ]",
+          "h * (y_0 + y_1 + ... + y_n)",
+          "(3h / 8) * (sum of all y)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Trapezoidal rule sums linear trapezoids: (h/2) * [First + Last + 2 * (Sum of all intermediate ordinates)]."
+      },
+      {
+        "id": "TEST-27-04",
+        "category": "Academic (Academic Theory)",
+        "question": "Which numerical integration rule requires the number of subintervals (n) to be a multiple of 3?",
+        "options": [
+          "Trapezoidal Rule",
+          "Simpson's 1/3 Rule",
+          "Simpson's 3/8 Rule",
+          "Euler's Method"
+        ],
+        "correct_answer": "C",
+        "explanation": "Simpson's 3/8 rule fits cubic polynomials over groups of three subintervals, necessitating n to be a multiple of 3 (n = 3, 6, 9...)."
+      },
+      {
+        "id": "TEST-27-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the global truncation error order of the composite Simpson's 1/3 Rule?",
+        "options": [
+          "O(h)",
+          "O(h^2)",
+          "O(h^4)",
+          "O(h^6)"
+        ],
+        "correct_answer": "C",
+        "explanation": "The composite Simpson's 1/3 rule has a global truncation error of O(h^4), providing significantly higher precision than the O(h^2) Trapezoidal rule."
+      },
+      {
+        "id": "TEST-27-06",
+        "category": "Placement Aptitude",
+        "question": "In a Reading Comprehension passage, what distinguishes a 'Direct Fact' from an 'Inference'?",
+        "options": [
+          "A fact is explicitly stated in the text; an inference is logically deduced from stated facts.",
+          "Inferences are opinions made up by the reader.",
+          "Facts cannot be proven from text.",
+          "Inferences are always false in corporate tests."
+        ],
+        "correct_answer": "A",
+        "explanation": "Direct facts appear verbatim in the text; inferences are logical conclusions deduced from underlying evidence."
+      },
+      {
+        "id": "TEST-27-07",
+        "category": "Placement Aptitude",
+        "question": "Which tone is indicated when an author presents factual statistical data without emotive adjectives?",
+        "options": [
+          "Objective / Analytical",
+          "Sarcastic",
+          "Cynical",
+          "Nostalgic"
+        ],
+        "correct_answer": "A",
+        "explanation": "Objective and analytical tone presents verified empirical findings neutrally without emotional bias."
+      },
+      {
+        "id": "TEST-27-08",
+        "category": "Placement Aptitude",
+        "question": "In placement Reading Comprehension questions, options containing extreme words like 'always', 'never', 'all' are usually:",
+        "options": [
+          "Incorrect because authors rarely make absolute universal claims without qualifiers",
+          "Always the correct answer",
+          "Mandated by corporate testing standards",
+          "Indicative of factual statements"
+        ],
+        "correct_answer": "A",
+        "explanation": "Absolute universal quantifiers ('always', 'never', 'all') rarely reflect qualified academic discourse and are usually distractors."
+      },
+      {
+        "id": "TEST-27-09",
+        "category": "Placement Aptitude",
+        "question": "What does determining the 'Main Idea' of a reading passage require?",
+        "options": [
+          "Synthesizing the primary thesis supported across all paragraphs",
+          "Memorizing every numerical statistic",
+          "Counting the total word count",
+          "Focusing exclusively on the first sentence"
+        ],
+        "correct_answer": "A",
+        "explanation": "The main idea encapsulates the overarching thesis and primary communicative objective of the author."
+      },
+      {
+        "id": "TEST-27-10",
+        "category": "Placement Aptitude",
+        "question": "When a passage states 'Electric vehicle adoption doubled, yet charging infrastructure grid bottlenecks persist', the author's primary perspective is:",
+        "options": [
+          "Acknowledging growth while highlighting critical implementation obstacles",
+          "Opposing clean transportation",
+          "Predicting immediate failure of electric cars",
+          "Celebrating complete transportation transition"
+        ],
+        "correct_answer": "A",
+        "explanation": "The conjunction 'yet' balances progress with infrastructural constraints."
+      },
+      {
+        "id": "TEST-27-11",
+        "category": "Core CS (System Design)",
+        "question": "What proportion of keys must be remapped on average when adding a server to a Consistent Hashing ring with N nodes?",
+        "options": [
+          "100%",
+          "50%",
+          "K / N",
+          "0%"
+        ],
+        "correct_answer": "C",
+        "explanation": "Consistent hashing minimizes redistribution: only K/N keys must be remapped when adding/removing nodes."
+      },
+      {
+        "id": "TEST-27-12",
+        "category": "Core CS (System Design)",
+        "question": "What is the primary function of Virtual Nodes in Consistent Hashing?",
+        "options": [
+          "To encrypt network packets",
+          "To ensure uniform key distribution across physical servers and prevent hotspots",
+          "To eliminate the need for hash functions",
+          "To replace load balancers"
+        ],
+        "correct_answer": "B",
+        "explanation": "Virtual nodes distribute partitions uniformly across the ring, preventing hot spots."
+      },
+      {
+        "id": "TEST-27-13",
+        "category": "Core CS (System Design)",
+        "question": "A Layer 7 Load Balancer can route incoming traffic based on which of the following?",
+        "options": [
+          "Source IP only",
+          "TCP port only",
+          "HTTP request URI path and Cookie headers",
+          "MAC address"
+        ],
+        "correct_answer": "C",
+        "explanation": "Layer 7 balancers inspect application-layer HTTP headers, URLs, and cookies."
+      },
+      {
+        "id": "TEST-27-14",
+        "category": "Core CS (System Design)",
+        "question": "Scaling a system by adding more physical server nodes to a cluster is termed:",
+        "options": [
+          "Vertical Scaling",
+          "Horizontal Scaling",
+          "Deep Paging",
+          "B+ Tree splitting"
+        ],
+        "correct_answer": "B",
+        "explanation": "Horizontal scaling (scaling out) adds more servers to a distributed pool."
+      },
+      {
+        "id": "TEST-27-15",
+        "category": "Core CS (System Design)",
+        "question": "Which load balancing algorithm sends each incoming request to the server with the fewest active TCP sessions?",
+        "options": [
+          "Round Robin",
+          "Least Connections",
+          "IP Hash",
+          "Weighted Random"
+        ],
+        "correct_answer": "B",
+        "explanation": "Least Connections selects the server with the lowest concurrent connection load."
+      },
+      {
+        "id": "TEST-27-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: Longest Increasing Subsequence (LIS)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N log N) Time, O(N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: Longest Increasing Subsequence (LIS)' pattern operates with O(N log N) Time, O(N) Auxiliary Space: Maintains tails array where tails[i] stores smallest tail element of all increasing subsequences of length i+1. Binary search replaces or extends in O(log N).."
+      },
+      {
+        "id": "TEST-27-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: Longest Increasing Subsequence (LIS)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Strictly decreasing array (size = 1).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: Longest Increasing Subsequence (LIS) include Strictly decreasing array (size = 1), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-27-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Longest Increasing Subsequence', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N log N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-27-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Production Linux Deployment, Systemd Supervision & Zero-Downtime Daemon Watchdogs'?",
+        "options": [
+          "`systemd` manages long-running Python background processes, restarting workers on failure and logging to `journalctl`.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: `systemd` manages long-running Python background processes, restarting workers on failure and logging to `journalctl`.."
+      },
+      {
+        "id": "TEST-27-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How did you achieve 99.8% uptime for NSE2 on a cloud Linux VPS?'?",
+        "options": [
+          "All services (`api_server.py`, `admin_bot_main.py`, `sync_worker.py`) run as supervised systemd service units with `Restart=always` and `RestartSec=5s`. I imple...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: All services (`api_server.py`, `admin_bot_main.py`, `sync_worker.py`) run as supervised systemd service units with `Restart=always` and `Res."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-27",
+      "title": "Longest Increasing Subsequence (Dynamic Programming: Longest Increasing Subsequence (LIS))",
+      "time_limit_minutes": 45,
+      "difficulty": "Hard",
+      "problem_statement": "Solve the core placement problem: Longest Increasing Subsequence.\n\nGiven an integer array nums, return the length of the longest strictly increasing subsequence.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dynamic Programming: Longest Increasing Subsequence (LIS)\n- Time Complexity Target: O(N log N) Time\n- Space Complexity Target: O(N) Auxiliary Space\n- Handle all edge cases: Strictly decreasing array (size = 1), All equal elements (size = 1 for strictly increasing), Already sorted array.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: Longest Increasing Subsequence (LIS)\n    public int lengthOfLIS(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: Longest Increasing Subsequence (LIS)\n    public int lengthOfLIS(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Dynamic Programming: Longest Increasing Subsequence (LIS) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Strictly decreasing array (size = 1)",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N log N) Time)",
+        "Space Complexity": "20 points (Meets O(N) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Numerical Methods",
+    "subject_code": "BCA-5004",
+    "unit": 5,
+    "topic": "Unit V — Numerical Solutions of ODEs: Euler's Method & Runge-Kutta 4th Order (RK4) Method",
+    "objectives": [
+      "Understand Initial Value Problems (IVPs).",
+      "Master Euler's method and Runge-Kutta 4th Order (RK4) weighted slope algorithm."
+    ],
+    "detailed_notes": [
+      "Ordinary Differential Equations (ODEs) of the form `dy/dx = f(x, y)` with initial condition `y(x0) = y0` frequently model physical systems where analytical integration is impossible.\n1. Euler's Method:\n   Approximates the curve using the tangent line slope at the beginning of each step:\n   `y_{n+1} = y_n + h * f(x_n, y_n)`\n   • Local truncation error: `O(h^2)`; Global error: `O(h)`. It is a 1st-order method—simple but inaccurate unless step size h is tiny.\n2. Runge-Kutta 4th Order (RK4) Method:\n   The gold standard for solving ODEs. It achieves 4th-order accuracy (`O(h^4)`) without requiring analytical higher-order derivatives of f(x, y). It computes four representative slope estimates across step interval `h`:\n   • `k1 = h * f(x_n, y_n)` (Slope at beginning of step);\n   • `k2 = h * f(x_n + h/2, y_n + k1/2)` (Estimated slope at midpoint using k1);\n   • `k3 = h * f(x_n + h/2, y_n + k2/2)` (Refined slope at midpoint using k2);\n   • `k4 = h * f(x_n + h, y_n + k3)` (Estimated slope at endpoint using k3);\n   • Final weighted average:\n     `y_{n+1} = y_n + (1/6) * (k1 + 2*k2 + 2*k3 + k4)`\n   • Error: Global truncation error is `O(h^4)`, providing outstanding stability.",
+      "k1 is initial slope; k2 and k3 evaluate midpoints; k4 evaluates the endpoint. Midpoint slopes receive double weighting (2/6 each) in Simpson-like weighting.",
+      "Euler requires 1 function evaluation per step (error O(h)); RK4 requires 4 evaluations per step (error O(h^4), allowing 100x larger step size h)."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|              RUNGE-KUTTA 4TH ORDER (RK4)          |\n| k1 = h*f(x0, y0)                                  |\n| k2 = h*f(x0 + h/2, y0 + k1/2)                     |\n| k3 = h*f(x0 + h/2, y0 + k2/2)                     |\n| k4 = h*f(x0 + h, y0 + k3)                         |\n| y1 = y0 + (1/6) * [k1 + 2*k2 + 2*k3 + k4]         |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
         "Method",
-        "Formula Order",
-        "Function Evaluations per Step",
-        "Global Error",
-        "Computational Stability"
+        "Order of Method",
+        "Evaluations per Step",
+        "Global Truncation Error",
+        "Stability & Accuracy"
       ],
       "rows": [
         [
-          "Euler's Method",
+          "Standard Euler",
           "1st Order",
-          "1 evaluation: f(xn, yn)",
-          "O(h) \u2014 Poor",
-          "Unstable for large h"
+          "1 evaluation",
+          "O(h)",
+          "Poor accuracy, requires tiny step h"
         ],
         [
-          "Modified Euler",
+          "Modified Euler (Heun)",
           "2nd Order",
-          "2 evaluations: f(xn, yn) & f(x*, y*)",
-          "O(h^2) \u2014 Moderate",
-          "Fair stability"
+          "2 evaluations",
+          "O(h^2)",
+          "Moderate accuracy"
         ],
         [
-          "Runge-Kutta 4th Order",
+          "Runge-Kutta 2nd Order",
+          "2nd Order",
+          "2 evaluations",
+          "O(h^2)",
+          "Moderate accuracy"
+        ],
+        [
+          "Runge-Kutta 4th Order (RK4)",
           "4th Order",
-          "4 evaluations: k1, k2, k3, k4",
-          "O(h^4) \u2014 Exceptional",
-          "Highly stable and accurate"
+          "4 evaluations",
+          "O(h^4)",
+          "Outstanding accuracy, industry benchmark"
         ]
       ]
     },
-    "memorize": "RK4 Formulas: k1 = h*f(x, y); k2 = h*f(x + h/2, y + k1/2); k3 = h*f(x + h/2, y + k2/2); k4 = h*f(x + h, y + k3). y(next) = y + (k1 + 2*k2 + 2*k3 + k4)/6. Global Error = O(h^4).",
-    "understand": "Why is RK4 favored over Taylor Series expansion? Both achieve O(h^4) accuracy. However, Taylor Series requires calculating high-order analytical partial derivatives (f', f'', f'''), which are mathematically horrific or impossible for complex empirical functions. RK4 achieves the identical 4th-order accuracy purely through function evaluations without evaluating a single derivative!",
-    "common_mistakes": "1. Forgetting to divide k1 and k2 by 2 inside the arguments for k2 and k3: `y + k1/2`. 2. Forgetting the leading (1/6) factor in the final increment sum.",
-    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "4 Consecutive University Sessions (Q8/Q9 - 15 Marks Core Final Question)",
-    "pyq_question": "Apply Runge-Kutta 4th order method to find an approximate value of y when x = 0.1, given that dy/dx = x + y, with initial condition y(0) = 1. Take step size h = 0.1. (15 Marks)",
-    "pyq_rubric": "Formula statement for k1, k2, k3, k4 (3 marks) + Accurate hand evaluation of k1, k2, k3, k4 (8 marks) + Final y(0.1) value (3 marks) + Comparison with analytical solution (1 mark) = 15 Marks.",
+    "memorize": "RK4 formulas: k1=h*f(x,y); k2=h*f(x+h/2, y+k1/2); k3=h*f(x+h/2, y+k2/2); k4=h*f(x+h, y+k3). Weighted average: y1 = y0 + (1/6)*(k1 + 2*k2 + 2*k3 + k4).",
+    "understand": "RK4 matches the Taylor series expansion up to the h^4 term without having to take partial derivatives of f(x, y).",
+    "common_mistakes": "Forgetting to halve k1 and k2 inside the y-arguments of k2 and k3 (writing y0 + k1 instead of y0 + k1/2).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2024-25 (Q5)",
+        "marks": 15,
+        "question": "Apply the Runge-Kutta 4th Order (RK4) method to find y(0.1) and y(0.2) given the differential equation:\ndy/dx = x + y, with initial condition y(0) = 1.\nTake step size h = 0.1. Compare with analytical solution y = 2*e^x - x - 1. (15 Marks)",
+        "rubric": "RK4 Formulas stated (3 marks) + Step 1 for y(0.1) with k1..k4 calculated (5 marks) + Step 2 for y(0.2) with k1..k4 calculated (5 marks) + Exact comparison (2 marks) = 15 Marks.",
+        "model_answer": "1. Problem Setup:\ndy/dx = f(x, y) = x + y, x0 = 0, y0 = 1, h = 0.1.\n\n2. Step 1: Compute y(0.1):\n• k1 = h * f(x0, y0) = 0.1 * (0 + 1) = 0.10000\n• k2 = h * f(x0 + h/2, y0 + k1/2) = 0.1 * f(0 + 0.05, 1 + 0.05) = 0.1 * (0.05 + 1.05) = 0.1 * 1.10 = 0.11000\n• k3 = h * f(x0 + h/2, y0 + k2/2) = 0.1 * f(0.05, 1 + 0.055) = 0.1 * (0.05 + 1.055) = 0.1 * 1.105 = 0.11050\n• k4 = h * f(x0 + h, y0 + k3) = 0.1 * f(0.1, 1 + 0.1105) = 0.1 * (0.1 + 1.1105) = 0.1 * 1.2105 = 0.12105\n• y(0.1) = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4)\n  y(0.1) = 1 + (1/6) * (0.10000 + 2(0.11000) + 2(0.11050) + 0.12105)\n  = 1 + (1/6) * (0.10000 + 0.22000 + 0.22100 + 0.12105) = 1 + (1/6) * (0.66205) = 1 + 0.11034 = 1.11034.\n\n3. Step 2: Compute y(0.2) from x1 = 0.1, y1 = 1.11034:\n• k1 = 0.1 * (0.1 + 1.11034) = 0.1 * 1.21034 = 0.12103\n• k2 = 0.1 * f(0.15, 1.11034 + 0.06052) = 0.1 * (0.15 + 1.17086) = 0.1 * 1.32086 = 0.13209\n• k3 = 0.1 * f(0.15, 1.11034 + 0.06605) = 0.1 * (0.15 + 1.17639) = 0.1 * 1.32639 = 0.13264\n• k4 = 0.1 * f(0.2, 1.11034 + 0.13264) = 0.1 * (0.2 + 1.24298) = 0.1 * 1.44298 = 0.14430\n• y(0.2) = 1.11034 + (1/6) * (0.12103 + 2(0.13209) + 2(0.13264) + 0.14430)\n  = 1.11034 + (1/6) * (0.12103 + 0.26418 + 0.26528 + 0.14430) = 1.11034 + (1/6) * (0.79479) = 1.11034 + 0.13247 = 1.24281.\n\n4. Analytical Verification:\nExact solution y(x) = 2*e^x - x - 1.\n• Exact y(0.1) = 2*e^(0.1) - 0.1 - 1 = 2(1.10517) - 1.1 = 2.21034 - 1.1 = 1.11034. Matches RK4 to 5 decimal places!\n• Exact y(0.2) = 2*e^(0.2) - 0.2 - 1 = 2(1.22140) - 1.2 = 2.44280 - 1.2 = 1.24280. Matches RK4 to 4 decimal places!\nFinal Answer: y(0.1) = 1.1103, y(0.2) = 1.2428.",
+        "answer_structure": "Formulas -> Step 1 Calculations (k1..k4) -> Step 2 Calculations -> Exact Comparison & Verification",
+        "important_points": [
+          "k1..k4 formulas",
+          "Simpson-like 1/6 weighting",
+          "Step-by-step arithmetic",
+          "Exact match: y(0.1)=1.1103, y(0.2)=1.2428"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "All intermediate k values written explicitly",
+          "Exact analytical comparison shown"
+        ],
+        "common_mistakes": [
+          "Using x0 instead of x1 in step 2"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "What is the advantage of the Runge-Kutta 4th Order method over Taylor's Series method for solving ODEs? (5 Marks)",
+        "rubric": "Comparison across derivatives and implementation (5 marks).",
+        "model_answer": "Taylor series method requires calculating successive higher-order analytical derivatives of f(x, y) (i.e., f', f'', f'''), which becomes algebraically monstrous or impossible for non-linear multi-variable functions. The Runge-Kutta 4th Order method achieves identical 4th-order Taylor accuracy (error O(h^4)) purely by evaluating the first-order function f(x, y) at four strategic points across the step interval, completely bypassing the need for higher-order symbolic differentiation."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-27-01",
+        "question": "What geometric curve does Simpson's 1/3 Rule fit across consecutive sets of three equidistant points to approximate the integral?",
+        "options": [
+          "Straight lines (degree 1 polynomials)",
+          "Parabolic arcs (degree 2 quadratic polynomials)",
+          "Cubic splines (degree 3 polynomials)",
+          "Exponential curves"
+        ],
+        "correct_answer": "B",
+        "explanation": "Simpson's 1/3 rule approximates the integrand by a 2nd-degree parabola over pairs of subintervals, requiring an EVEN number of intervals."
+      },
+      {
+        "id": "ACAD-27-02",
+        "question": "What restriction MUST the number of subintervals (n) satisfy when applying Simpson's 1/3 Rule?",
+        "options": [
+          "n must be an odd number",
+          "n must be an even number (or multiple of 2)",
+          "n must be a multiple of 3",
+          "n must be a prime number"
+        ],
+        "correct_answer": "B",
+        "explanation": "Since each parabolic segment spans two adjacent subintervals, Simpson's 1/3 Rule strictly requires an EVEN number of intervals (n = 2, 4, 6...)."
+      },
+      {
+        "id": "ACAD-27-03",
+        "question": "What is the mathematical formula for the composite Trapezoidal Rule for interval [a, b] with step size h?",
+        "options": [
+          "(h / 2) * [ (y_0 + y_n) + 2*(y_1 + y_2 + ... + y_{n-1}) ]",
+          "(h / 3) * [ (y_0 + y_n) + 4*(odd) + 2*(even) ]",
+          "h * (y_0 + y_1 + ... + y_n)",
+          "(3h / 8) * (sum of all y)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Trapezoidal rule sums linear trapezoids: (h/2) * [First + Last + 2 * (Sum of all intermediate ordinates)]."
+      },
+      {
+        "id": "ACAD-27-04",
+        "question": "Which numerical integration rule requires the number of subintervals (n) to be a multiple of 3?",
+        "options": [
+          "Trapezoidal Rule",
+          "Simpson's 1/3 Rule",
+          "Simpson's 3/8 Rule",
+          "Euler's Method"
+        ],
+        "correct_answer": "C",
+        "explanation": "Simpson's 3/8 rule fits cubic polynomials over groups of three subintervals, necessitating n to be a multiple of 3 (n = 3, 6, 9...)."
+      },
+      {
+        "id": "ACAD-27-05",
+        "question": "What is the global truncation error order of the composite Simpson's 1/3 Rule?",
+        "options": [
+          "O(h)",
+          "O(h^2)",
+          "O(h^4)",
+          "O(h^6)"
+        ],
+        "correct_answer": "C",
+        "explanation": "The composite Simpson's 1/3 rule has a global truncation error of O(h^4), providing significantly higher precision than the O(h^2) Trapezoidal rule."
+      }
+    ],
+    "pyq_year": "2024-25 (Q5)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Apply the Runge-Kutta 4th Order (RK4) method to find y(0.1) and y(0.2) given the differential equation:\ndy/dx = x + y, with initial condition y(0) = 1.\nTake step size h = 0.1. Compare with analytical solution y = 2*e^x - x - 1. (15 Marks)",
+    "pyq_rubric": "RK4 Formulas stated (3 marks) + Step 1 for y(0.1) with k1..k4 calculated (5 marks) + Step 2 for y(0.2) with k1..k4 calculated (5 marks) + Exact comparison (2 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Statement of Initial Value Problem and RK4 Formulas:",
-        "Given ODE: dy/dx = f(x, y) = x + y.\nInitial conditions: x0 = 0, y0 = 1, step size h = 0.1. Goal: find y(0.1).\nRK4 Step Formulas:\nk1 = h * f(x0, y0)\nk2 = h * f(x0 + h/2, y0 + k1/2)\nk3 = h * f(x0 + h/2, y0 + k2/2)\nk4 = h * f(x0 + h, y0 + k3)\ny1 = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4)"
+        "1. Model Answer & Technical Presentation",
+        "1. Problem Setup:\ndy/dx = f(x, y) = x + y, x0 = 0, y0 = 1, h = 0.1.\n\n2. Step 1: Compute y(0.1):\n• k1 = h * f(x0, y0) = 0.1 * (0 + 1) = 0.10000\n• k2 = h * f(x0 + h/2, y0 + k1/2) = 0.1 * f(0 + 0.05, 1 + 0.05) = 0.1 * (0.05 + 1.05) = 0.1 * 1.10 = 0.11000\n• k3 = h * f(x0 + h/2, y0 + k2/2) = 0.1 * f(0.05, 1 + 0.055) = 0.1 * (0.05 + 1.055) = 0.1 * 1.105 = 0.11050\n• k4 = h * f(x0 + h, y0 + k3) = 0.1 * f(0.1, 1 + 0.1105) = 0.1 * (0.1 + 1.1105) = 0.1 * 1.2105 = 0.12105\n• y(0.1) = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4)\n  y(0.1) = 1 + (1/6) * (0.10000 + 2(0.11000) + 2(0.11050) + 0.12105)\n  = 1 + (1/6) * (0.10000 + 0.22000 + 0.22100 + 0.12105) = 1 + (1/6) * (0.66205) = 1 + 0.11034 = 1.11034.\n\n3. Step 2: Compute y(0.2) from x1 = 0.1, y1 = 1.11034:\n• k1 = 0.1 * (0.1 + 1.11034) = 0.1 * 1.21034 = 0.12103\n• k2 = 0.1 * f(0.15, 1.11034 + 0.06052) = 0.1 * (0.15 + 1.17086) = 0.1 * 1.32086 = 0.13209\n• k3 = 0.1 * f(0.15, 1.11034 + 0.06605) = 0.1 * (0.15 + 1.17639) = 0.1 * 1.32639 = 0.13264\n• k4 = 0.1 * f(0.2, 1.11034 + 0.13264) = 0.1 * (0.2 + 1.24298) = 0.1 * 1.44298 = 0.14430\n• y(0.2) = 1.11034 + (1/6) * (0.12103 + 2(0.13209) + 2(0.13264) + 0.14430)\n  = 1.11034 + (1/6) * (0.12103 + 0.26418 + 0.26528 + 0.14430) = 1.11034 + (1/6) * (0.79479) = 1.11034 + 0.13247 = 1.24281.\n\n4. Analytical Verification:\nExact solution y(x) = 2*e^x - x - 1.\n• Exact y(0.1) = 2*e^(0.1) - 0.1 - 1 = 2(1.10517) - 1.1 = 2.21034 - 1.1 = 1.11034. Matches RK4 to 5 decimal places!\n• Exact y(0.2) = 2*e^(0.2) - 0.2 - 1 = 2(1.22140) - 1.2 = 2.44280 - 1.2 = 1.24280. Matches RK4 to 4 decimal places!\nFinal Answer: y(0.1) = 1.1103, y(0.2) = 1.2428."
       ],
       [
-        "2. Hand Calculation of Slopes (k1, k2, k3, k4):",
-        "\u2022 Calculation of k1:\nk1 = 0.1 * f(0, 1) = 0.1 * (0 + 1) = 0.100000.\n\n\u2022 Calculation of k2:\nx0 + h/2 = 0 + 0.05 = 0.05\ny0 + k1/2 = 1 + 0.100000 / 2 = 1.050000\nk2 = 0.1 * f(0.05, 1.05) = 0.1 * (0.05 + 1.050000) = 0.1 * 1.100000 = 0.110000.\n\n\u2022 Calculation of k3:\nx0 + h/2 = 0.05\ny0 + k2/2 = 1 + 0.110000 / 2 = 1.055000\nk3 = 0.1 * f(0.05, 1.055) = 0.1 * (0.05 + 1.055000) = 0.1 * 1.105000 = 0.110500.\n\n\u2022 Calculation of k4:\nx0 + h = 0 + 0.1 = 0.1\ny0 + k3 = 1 + 0.110500 = 1.110500\nk4 = 0.1 * f(0.1, 1.1105) = 0.1 * (0.1 + 1.110500) = 0.1 * 1.210500 = 0.121050."
-      ],
-      [
-        "3. Final Step Update:",
-        "y(0.1) = y0 + (1/6) * [ k1 + 2*k2 + 2*k3 + k4 ]\nSum of weighted slopes:\nk1 + 2*k2 + 2*k3 + k4 = 0.100000 + 2*(0.110000) + 2*(0.110500) + 0.121050\n= 0.100000 + 0.220000 + 0.221000 + 0.121050 = 0.662050.\ny(0.1) = 1 + (0.662050 / 6) = 1 + 0.1103417 = 1.110342.\n\nAnalytical Verification:\nThe exact analytical solution of dy/dx - y = x with y(0)=1 is y(x) = 2*e^x - x - 1.\nAt x = 0.1: y(0.1) = 2*e^0.1 - 0.1 - 1 = 2*(1.1051709) - 1.1 = 2.2103418 - 1.1 = 1.110342!\nRK4 solution matches the exact analytical answer to SIX decimal places in a single step!"
+        "2. Expected Examiner Criteria",
+        [
+          "All intermediate k values written explicitly",
+          "Exact analytical comparison shown"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master RK4 Step-by-Step Hand Evaluation",
-    "milestone": "Full 15/15 on Numerical ODE Exam Question"
-  },
   "apt_data": {
-    "topic": "Quantitative Aptitude \u2014 Rapid Speed Math Marathon (25 High-Frequency Placement Drills)",
+    "topic": "Reading Comprehension & Critical Extraction",
+    "category": "Verbal Ability",
+    "subtopic": "Reading Comprehension",
+    "formulas": "1. Question-First Strategy: Read question stems (not options) before reading the passage to prime your brain for key target terms.\n2. Structural Reading: First paragraph (thesis), topic sentences of body paragraphs (supporting arguments), final paragraph (conclusion).\n3. Fact vs Inference: Facts are explicitly stated; inferences must logically follow without speculation.",
+    "shortcut": "Extreme Language Trap: Options containing 'always', 'never', 'all', 'completely', 'impossible' are incorrect 90% of the time in RC tests.",
     "tutorial": [
-      "Final Quantitative Crunch \u2014 Solving questions under extreme time limits:\n\u2022 Percentage to Fraction Conversions: 16.66% = 1/6 | 14.28% = 1/7 | 12.5% = 1/8 | 11.11% = 1/9 | 9.09% = 1/11.\n\u2022 Compound Interest 2-Year Difference: D = P * (R / 100)^2.\n\u2022 Time and Work Efficiency: Efficiency is inversely proportional to time taken. Total Work = LCM of individual times.\n\u2022 Relative Speed: Same direction = S1 - S2; Opposite direction = S1 + S2."
+      "Campus recruitment RC passages are typically 250-400 words testing main idea, specific details, vocabulary in context, and author tone (analytical, critical, optimistic, neutral). Do not re-read entire paragraphs; locate keywords."
     ],
-    "formulas": "CI-SI 2-Yr Diff: D = P(R/100)^2. Harm. Mean: 2ab/(a+b). Work = Rate * Time.",
-    "shortcut": "Unit Digit & Option Elimination: Before doing full multiplication, compute only the last digit (e.g. 7 * 3 = 1) to eliminate 3 out of 4 options immediately.",
-    "recognition": "Mixed rapid-fire sections appearing in round 1 online placement assessments across recruiters.",
-    "tier1_problem": "A sum of money doubles itself at simple interest in 5 years. What is the rate of interest per annum?",
-    "tier1_solution": "Simple Interest SI = Principal P. SI = (P * R * T) / 100 ==> P = (P * R * 5) / 100 ==> R = 100 / 5 = 20% p.a. Answer: 20%.",
-    "tier2_problem": "The difference between CI and SI on a sum of Rs 5,000 for 2 years at 10% per annum is?",
-    "tier2_solution": "D = P * (R / 100)^2 = 5000 * (10 / 100)^2 = 5000 * (1/100) = Rs 50. Answer: Rs 50.",
-    "tier3_problem": "A can do a piece of work in 12 days and B in 18 days. They worked together for 4 days, then A left. How many days will B take to finish the remaining work?",
-    "tier3_solution": "Total Work = LCM(12, 18) = 36 units.\nA's efficiency = 36 / 12 = 3 units/day.\nB's efficiency = 36 / 18 = 2 units/day.\nCombined efficiency = 3 + 2 = 5 units/day.\nWork done in 4 days = 4 * 5 = 20 units.\nRemaining work = 36 - 20 = 16 units.\nTime taken by B = 16 / 2 = 8 days. Answer: 8 days.",
-    "tier4_problem": "A train traveling at 72 km/h crosses a 200m long platform in 22 seconds. What is the length of the train?",
-    "tier4_solution": "Speed in m/s = 72 * (5 / 18) = 20 m/s.\nTotal distance covered = Speed * Time = 20 * 22 = 440 m.\nTotal distance = Length of train + Length of platform.\n440 = Length of train + 200 ==> Length of train = 240 m. Answer: 240 m.",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "What is 12.5% of 640?",
-        "a": "1/8 of 640 = 80."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "A car covers 180 km in 3 hours. Speed in m/s?",
-        "a": "60 km/h * (5/18) = 16.67 m/s."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "Cost Price = Rs 400, Selling Price = Rs 500. Profit %?",
-        "a": "(100 / 400) * 100 = 25%."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "Ratio of ages of A and B is 3:4. Sum is 35 years. Age of A?",
-        "a": "3/7 * 35 = 15 years."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "If 15 workers build a wall in 48 hours, how many hours for 30 workers?",
-        "a": "15 * 48 / 30 = 24 hours."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Reading Comprehension",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Reading Comprehension",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Reading Comprehension",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Reading Comprehension",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Reading Comprehension",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Based on software architectural principles, what is the primary benefit of decoupling microservices via asynchronous message queues?",
+        "options": {
+          "A": "Temporal decoupling and buffering against downstream traffic spikes",
+          "B": "Eliminating database storage entirely",
+          "C": "Enforcing synchronous HTTP blocking",
+          "D": "Reducing code readability"
+        },
+        "correct_answer": "A",
+        "explanation": "Message queues provide temporal decoupling, allowing services to produce messages without waiting for consumers, smoothing load spikes.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "In computer science literature, what does 'Amdahl's Law' predict regarding parallel computing?",
+        "options": {
+          "A": "The maximum theoretical speedup of a program is strictly bounded by its sequential, unparallelizable portion",
+          "B": "Parallel programs run with infinite linear speedup",
+          "C": "Adding more RAM always halves execution time",
+          "D": "Network latency is always zero in local clusters"
+        },
+        "correct_answer": "A",
+        "explanation": "Amdahl's law demonstrates that even with infinite processors, speedup is limited by the fraction of code that must run sequentially.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Why does the 'CAP Theorem' state that a distributed data store can guarantee at most two out of Consistency, Availability, and Partition Tolerance?",
+        "options": {
+          "A": "Network partitions are unavoidable across physical networks; during a partition, a system must choose between consistency or availability",
+          "B": "CPUs cannot process more than two instructions simultaneously",
+          "C": "Disk storage cannot handle concurrent writes",
+          "D": "It is a legal restriction enforced by international law"
+        },
+        "correct_answer": "A",
+        "explanation": "Because network partitions (P) are physical realities, distributed systems must trade off strong consistency (C) vs high availability (A) when partitions occur.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "What does the 'Two Generals Problem' in distributed systems prove mathematically?",
+        "options": {
+          "A": "It is impossible for two nodes to reach guaranteed agreement over an unreliable communication channel",
+          "B": "Two servers can always agree in 2 network hops",
+          "C": "Encryption guarantees packet delivery",
+          "D": "Generals cannot use wireless radios"
+        },
+        "correct_answer": "A",
+        "explanation": "The Two Generals thought experiment proves that no finite protocol can guarantee mutual consensus over an unreliable network link.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "What does the 'Fallacy of Distributed Computing' that 'Latency is zero' imply for application architects?",
+        "options": {
+          "A": "Remote procedure calls must be designed assuming variable network delays and potential timeouts rather than instantaneous memory lookups",
+          "B": "Fiber optic cables transmit data instantaneously",
+          "C": "Networks never drop packets",
+          "D": "Local method calls are slower than remote APIs"
+        },
+        "correct_answer": "A",
+        "explanation": "Network latency is non-zero; treating remote calls as local in-memory invocations causes hanging threads and cascading system outages.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "In concurrency analysis, what is a 'Race Condition'?",
+        "options": {
+          "A": "A flaw where system behavior depends on the uncontrollable execution sequence or timing of concurrent threads",
+          "B": "A benchmarking competition between two different algorithms",
+          "C": "A network cable transmitting data too quickly",
+          "D": "A database running out of disk space"
+        },
+        "correct_answer": "A",
+        "explanation": "A race condition occurs when concurrent threads access shared state without proper synchronization, making output non-deterministic.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "What is the primary cause of 'Cache Invalidation' being considered one of the hardest problems in computer science?",
+        "options": {
+          "A": "Ensuring that distributed caches reflect state updates made in the source database without stale reads or high invalidation latency",
+          "B": "RAM chips frequently lose physical power",
+          "C": "CPUs do not have internal registers",
+          "D": "Operating systems delete cache files every minute"
+        },
+        "correct_answer": "A",
+        "explanation": "Keeping distributed cache copies strictly synchronized with evolving underlying databases involves complex timing and distributed state trade-offs.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Why is 'Premature Optimization' described by Donald Knuth as 'the root of all evil'?",
+        "options": {
+          "A": "Developers spend critical time optimizing uncritical micro-paths, introducing bugs and complexity before measuring real bottlenecks",
+          "B": "Compilers cannot optimize C code",
+          "C": "Optimized code runs slower than unoptimized code",
+          "D": "Computers do not need fast code"
+        },
+        "correct_answer": "A",
+        "explanation": "Knuth noted that ~97% of run time is spent in tiny code pockets. Optimizing everything early complicates architecture without measurable gains.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "What architectural objective does 'Idempotency' achieve in RESTful API design?",
+        "options": {
+          "A": "Guaranteeing that executing the same request multiple times produces the identical side-effect as executing it once",
+          "B": "Encrypting passwords with MD5",
+          "C": "Forcing all API requests to use HTTP GET",
+          "D": "Deleting user sessions after 5 minutes"
+        },
+        "correct_answer": "A",
+        "explanation": "Idempotency ensures that accidental duplicate API retries (e.g., payment submissions) do not cause duplicate state mutations.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "In software reliability engineering, what does 'Graceful Degradation' mean?",
+        "options": {
+          "A": "A system's ability to maintain core functionality at reduced performance during partial subsystem failures rather than crashing entirely",
+          "B": "A computer catching fire slowly",
+          "C": "Software deleting user data when an error occurs",
+          "D": "Shutting down the entire data center immediately"
+        },
+        "correct_answer": "A",
+        "explanation": "Graceful degradation ensures that if a secondary service (e.g., recommendation engine) fails, primary workflows (e.g., checkout) remain operational.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Reading Comprehension (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "Combination Sum (LeetCode 39 - Medium)",
+      "title": "Problem 1: Longest Increasing Subsequence",
       "difficulty": "Medium",
-      "importance": "The Fundamental Backtracking Placement Problem (Amazon, Microsoft, Google)",
-      "problem_statement": "Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order. The same number may be chosen from candidates an unlimited number of times.",
-      "solution_approach": "Decision Tree Backtracking:\nAt each recursive step, we decide whether to INCLUDE the candidate at index `i` or SKIP it:\n1. Include `candidates[i]`: append to current path, recursively call with `target - candidates[i]` and same index `i` (unlimited reuse).\n2. Skip `candidates[i]`: pop from path, recursively call with same target and index `i + 1`.\nBase Cases: if `target == 0`, record path; if `target < 0` or `i >= len`, backtrack.",
-      "code": "def combinationSum(candidates: list[int], target: int) -> list[list[int]]:\n    res = []\n    \n    def dfs(i: int, cur: list[int], total: int):\n        if total == target:\n            res.append(cur[:])\n            return\n        if i >= len(candidates) or total > target:\n            return\n            \n        # Choice 1: Include candidates[i]\n        cur.append(candidates[i])\n        dfs(i, cur, total + candidates[i])\n        cur.pop() # Backtrack\n        \n        # Choice 2: Skip candidates[i]\n        dfs(i + 1, cur, total)\n        \n    dfs(0, [], 0)\n    return res",
-      "line_by_line": [
-        [
-          "if total == target: res.append(cur[:])",
-          "Base case success: deep-copy valid combination path."
-        ],
-        [
-          "cur.append(candidates[i]); dfs(i, cur, total + candidates[i])",
-          "Recurse retaining same index i to permit unlimited element reuse."
-        ],
-        [
-          "cur.pop()",
-          "Backtrack: undo choice to explore skipping branch."
-        ]
-      ],
-      "time_complexity": "O(2^T) where T is target / min(candidates).",
-      "space_complexity": "O(T) recursion depth.",
-      "edge_cases": "Target smaller than minimum candidate (returns []); single element matching target."
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
+      "solution_approach": "1. Apply Dynamic Programming: Longest Increasing Subsequence (LIS) algorithmic technique.\n2. Finds the length of the longest strictly increasing subsequence using Patience Sorting and Binary Search.\n3. Invariants: Maintains tails array where tails[i] stores smallest tail element of all increasing subsequences of length i+1. Binary search replaces or extends in O(log N).",
+      "code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+      "java_solution": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+      "solution_java": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+      "time_complexity": "O(N log N) Time",
+      "space_complexity": "O(N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Russian Doll Envelopes",
+      "difficulty": "Hard",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "You are given a 2D array of integers envelopes where envelopes[i] = [wi, hi]. Return the maximum number of envelopes you can Russian doll.",
+      "solution_approach": "1. Identify interview variation of Dynamic Programming: Longest Increasing Subsequence (LIS).\n2. Handle edge cases: Strictly decreasing array (size = 1), All equal elements (size = 1 for strictly increasing), Already sorted array.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+      "time_complexity": "O(N log N) Time",
+      "space_complexity": "O(N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Dynamic Programming: Longest Increasing Subsequence (LIS)",
+    "category": "Dynamic Programming",
+    "concept": "Finds the length of the longest strictly increasing subsequence using Patience Sorting and Binary Search.",
+    "why_it_works": "Maintains tails array where tails[i] stores smallest tail element of all increasing subsequences of length i+1. Binary search replaces or extends in O(log N).",
+    "visual_explanation": "nums = [10, 9, 2, 5, 3, 7, 101, 18]\\ntails array:\\n[10] -> [9] -> [2] -> [2, 5] -> [2, 3] -> [2, 3, 7] -> [2, 3, 7, 101] -> [2, 3, 7, 18]\\nLength of tails = 4 (e.g. [2, 3, 7, 18])",
+    "java_code": "import java.util.*;\n\npublic class Solution {\n    public int lengthOfLIS(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        int[] tails = new int[nums.length];\n        int size = 0;\n        \n        for (int x : nums) {\n            int left = 0, right = size;\n            while (left < right) {\n                int mid = left + (right - left) / 2;\n                if (tails[mid] < x) left = mid + 1;\n                else right = mid;\n            }\n            tails[left] = x;\n            if (left == size) size++;\n        }\n        return size;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Solution {\n    public int lengthOfLIS(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        int[] tails = new int[nums.length];\n        int size = 0;\n        \n        for (int x : nums) {\n            int left = 0, right = size;\n            while (left < right) {\n                int mid = left + (right - left) / 2;\n                if (tails[mid] < x) left = mid + 1;\n                else right = mid;\n            }\n            tails[left] = x;\n            if (left == size) size++;\n        }\n        return size;\n    }\n}",
+    "python_code": "import java.util.*;\n\npublic class Solution {\n    public int lengthOfLIS(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        int[] tails = new int[nums.length];\n        int size = 0;\n        \n        for (int x : nums) {\n            int left = 0, right = size;\n            while (left < right) {\n                int mid = left + (right - left) / 2;\n                if (tails[mid] < x) left = mid + 1;\n                else right = mid;\n            }\n            tails[left] = x;\n            if (left == size) size++;\n        }\n        return size;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4: Guard check for empty input.",
+      "Line 5: tails[i] holds lowest tail value of length i+1.",
+      "Line 8: For each element x in nums, perform binary search on tails.",
+      "Line 15: If x is greater than all existing tails, extend size by 1.",
+      "Line 17: Return size, which represents maximum LIS length."
+    ],
+    "dry_run": "nums = [0, 1, 0, 3, 2, 3]. tails transitions: [0] -> [0, 1] -> [0, 1, 3] -> [0, 1, 2] -> [0, 1, 2, 3]. Length = 4.",
+    "complexity": "O(N log N) Time, O(N) Auxiliary Space",
+    "edge_cases": [
+      "Strictly decreasing array (size = 1)",
+      "All equal elements (size = 1 for strictly increasing)",
+      "Already sorted array"
+    ],
+    "interview_variations": [
+      "Russian Doll Envelopes",
+      "Number of Longest Increasing Subsequence",
+      "Maximum Length of Pair Chain"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-27-01",
+        "title": "Problem 1: Longest Increasing Subsequence",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dynamic Programming: Longest Increasing Subsequence (LIS) algorithmic technique.\n2. Finds the length of the longest strictly increasing subsequence using Patience Sorting and Binary Search.\n3. Invariants: Maintains tails array where tails[i] stores smallest tail element of all increasing subsequences of length i+1. Binary search replaces or extends in O(log N).",
+        "solution_java": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "java_code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "time_complexity": "O(N log N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-27-02",
+        "title": "Problem 2: Russian Doll Envelopes",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are given a 2D array of integers envelopes where envelopes[i] = [wi, hi]. Return the maximum number of envelopes you can Russian doll.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dynamic Programming: Longest Increasing Subsequence (LIS).\n2. Handle edge cases: Strictly decreasing array (size = 1), All equal elements (size = 1 for strictly increasing), Already sorted array.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int maxEnvelopes(int[][] envelopes) {\n        Arrays.sort(envelopes, (a, b) -> a[0] == b[0] ? b[1] - a[1] : a[0] - b[0]);\n        int[] tails = new int[envelopes.length];\n        int sz = 0;\n        for (int[] env : envelopes) {\n            int h = env[1];\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < h) l = m + 1;\n                else r = m;\n            }\n            tails[l] = h;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+        "time_complexity": "O(N log N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      }
+    ]
+  },
   "cs_core": {
-    "subject": "Core Computer Science",
-    "topic": "Rapid-Fire Placement Technical Drill (Top High-Frequency Questions)",
+    "subject": "System Design",
+    "topic": "Scalability, High Availability, Load Balancing & Consistent Hashing",
     "detailed_notes": [
-      "Comprehensive Placement Technical Flashcards:\n\u2022 1. DBMS: What is a BCNF violation? When a functional dependency X -> Y exists where X is not a superkey.\n\u2022 2. Networks: What is the difference between TCP and UDP? TCP is connection-oriented, reliable, with congestion control; UDP is connectionless, lightweight, and unordered.\n\u2022 3. Operating Systems: What is a Deadlock? A situation where two or more processes are unable to proceed because each is holding a resource and waiting for another resource held by the other. Requires 4 Coffman conditions: Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.\n\u2022 4. Python: What is the difference between `is` and `==`? `==` checks value equality (`a.__eq__(b)`); `is` checks memory address identity (`id(a) == id(b)`).\n\u2022 5. System Design: What is Database Indexing? A data structure (B+ tree) that improves data retrieval speed at the cost of slower writes and additional disk storage."
+      "System design is the process of architecting scalable, reliable, and maintainable software systems serving millions of users.\n\nVertical vs Horizontal Scaling:\n- Vertical Scaling (Scale Up): Adding more CPU, RAM, or disk to a single machine. Hard physical limits, expensive, single point of failure (SPOF).\n- Horizontal Scaling (Scale Out): Adding more commodity machines to a cluster. Requires stateless application layers and distributed data storage.\n\nLoad Balancing Algorithms:\nLoad balancers (NGINX, HAProxy, AWS ALB) distribute incoming network traffic across backend server pools:\n1. Round Robin: Distributes requests sequentially across servers.\n2. Least Connections: Routes traffic to the server with fewest active connections (ideal for long-lived sessions).\n3. IP Hash: Hashes client IP to ensure session stickiness without server-side shared state.\nOperates at Layer 4 (Transport/TCP: fast, byte-level routing) or Layer 7 (Application/HTTP: smart routing based on URI, cookies, headers).\n\nConsistent Hashing:\nTraditional hash routing (`server = hash(key) % N`) causes catastrophic cache invalidation when server count N changes (almost 100% of keys remap). Consistent Hashing maps both servers and keys onto a virtual circular 360-degree ring (Hash Ring). A key is assigned to the first server encountered clockwise. When a server is added or removed, ONLY K/N keys are remapped on average. Virtual Nodes (vnodes) replicate each physical server across multiple ring positions, preventing hotspot skew and ensuring uniform data distribution."
+    ],
+    "key_definitions": [
+      {
+        "term": "Horizontal Scaling",
+        "definition": "Expanding system capacity by adding more server instances to the resource pool."
+      },
+      {
+        "term": "Load Balancer",
+        "definition": "A reverse proxy routing network traffic across multiple servers to prevent overload and ensure availability."
+      },
+      {
+        "term": "Consistent Hashing",
+        "definition": "A hashing technique mapping keys and servers to a circular ring so adding/removing nodes remaps only K/N keys."
+      }
     ],
     "interview_qa": [
       {
-        "q": "What is the difference between a Process and a Thread in modern operating systems?",
-        "a": "A Process is an executing instance of a program with its own dedicated, isolated virtual address space, file descriptor table, and security context. A Thread is the smallest unit of CPU execution within a process; multiple threads inside the same process share identical memory (heap, code, global data), having only private registers and call stacks. Creating a thread consumes ~10x fewer CPU cycles than spawning a process."
+        "q": "What problem does Consistent Hashing solve in distributed caching and storage?",
+        "a": "In a distributed system using standard modulo hashing `server = hash(key) % N`, adding or removing a single server changes N, causing nearly 100% of all cached keys to remap to different servers. This triggers a catastrophic cache avalanche where the underlying database is swamped with requests. Consistent Hashing maps both keys and servers to a circular 2^32 hash ring. Adding or removing a server remaps only K/N keys (where K is total keys, N is server count), localizing redistribution."
       },
       {
-        "q": "Explain the concept of Database Normalization and why BCNF is preferred over 3NF.",
-        "a": "Normalization organizes database tables to minimize redundancy and eliminate insertion, update, and deletion anomalies. While 3NF permits non-superkey determinants if the dependent attribute is part of a candidate key (prime attribute), BCNF strictly mandates that for every functional dependency X -> Y, X MUST be a superkey, eliminating subtle redundancies in tables with multiple overlapping candidate keys."
+        "q": "What are Virtual Nodes in Consistent Hashing, and why are they necessary?",
+        "a": "Without virtual nodes, physical servers placed randomly on the hash ring can lead to non-uniform, highly unequal partition sizes, creating Hotspots where one server receives 80% of traffic. Virtual nodes assign multiple (e.g., 100-200) distinct hash labels across the ring for each physical machine, smoothing out variance and ensuring uniformly balanced load."
+      },
+      {
+        "q": "Explain the difference between Layer 4 and Layer 7 Load Balancing.",
+        "a": "Layer 4 load balancing operates at the Transport layer (TCP/UDP); it inspects only IP addresses and port numbers, forwarding raw packets without decrypting TLS or inspecting HTTP content (ultra-fast, low CPU). Layer 7 load balancing operates at the Application layer (HTTP/HTTPS); it can inspect URLs, HTTP headers, cookies, and POST bodies, allowing content-based routing (e.g., `/api/payments` routes to payment cluster, `/static` routes to CDN) and TLS termination."
+      },
+      {
+        "q": "What is a Single Point of Failure (SPOF) and how do redundancy and failover eliminate it?",
+        "a": "A SPOF is any single component whose failure brings down the entire system. It is eliminated through Redundancy (deploying duplicate active or passive components) paired with Automated Failover. For example, deploying redundant load balancers using VRRP / Keepalived with a shared floating IP ensures that if the primary load balancer crashes, the backup takes over the IP within milliseconds."
+      },
+      {
+        "q": "What is the difference between High Availability (HA) and Fault Tolerance?",
+        "a": "High Availability aims to minimize downtime across a system (e.g., '99.999% uptime', allowing ~5 minutes of downtime per year) through rapid automated recovery and failover. Fault Tolerance guarantees zero interruption or degradation of service even when hardware components fail, typically requiring fully synchronized duplicate hardware executing lockstep."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-27-01",
+        "question": "What proportion of keys must be remapped on average when adding a server to a Consistent Hashing ring with N nodes?",
+        "options": [
+          "100%",
+          "50%",
+          "K / N",
+          "0%"
+        ],
+        "correct_answer": "C",
+        "explanation": "Consistent hashing minimizes redistribution: only K/N keys must be remapped when adding/removing nodes."
+      },
+      {
+        "id": "CS-27-02",
+        "question": "What is the primary function of Virtual Nodes in Consistent Hashing?",
+        "options": [
+          "To encrypt network packets",
+          "To ensure uniform key distribution across physical servers and prevent hotspots",
+          "To eliminate the need for hash functions",
+          "To replace load balancers"
+        ],
+        "correct_answer": "B",
+        "explanation": "Virtual nodes distribute partitions uniformly across the ring, preventing hot spots."
+      },
+      {
+        "id": "CS-27-03",
+        "question": "A Layer 7 Load Balancer can route incoming traffic based on which of the following?",
+        "options": [
+          "Source IP only",
+          "TCP port only",
+          "HTTP request URI path and Cookie headers",
+          "MAC address"
+        ],
+        "correct_answer": "C",
+        "explanation": "Layer 7 balancers inspect application-layer HTTP headers, URLs, and cookies."
+      },
+      {
+        "id": "CS-27-04",
+        "question": "Scaling a system by adding more physical server nodes to a cluster is termed:",
+        "options": [
+          "Vertical Scaling",
+          "Horizontal Scaling",
+          "Deep Paging",
+          "B+ Tree splitting"
+        ],
+        "correct_answer": "B",
+        "explanation": "Horizontal scaling (scaling out) adds more servers to a distributed pool."
+      },
+      {
+        "id": "CS-27-05",
+        "question": "Which load balancing algorithm sends each incoming request to the server with the fewest active TCP sessions?",
+        "options": [
+          "Round Robin",
+          "Least Connections",
+          "IP Hash",
+          "Weighted Random"
+        ],
+        "correct_answer": "B",
+        "explanation": "Least Connections selects the server with the lowest concurrent connection load."
       }
     ]
   },
   "project_defense": {
-    "project_name": "Portfolio Curation & Git Readiness",
-    "feature_focus": "GitHub Portfolio Optimization & Live Recruiter Screen-Sharing Strategy",
-    "architecture_deep_dive": "Preparing Sarthak's GitHub Repositories for Placement Technical Screeners:\n\n1. Repository Cleanliness & Presentation:\n\u2022 Pin the top 4 flagship repositories: `BulkBeat TV` (FastAPI/Telegram), `TerraStract` (Document AI/OCR), `CSMS` (Enterprise Backend), `BEVM` (Cryptographic Voting).\n\u2022 Add descriptive badges (FastAPI, Python 3.11, Docker, PostgreSQL, MIT License).\n\u2022 Include architecture diagrams (Mermaid or ASCII flowcharts) directly in the root `README.md`.\n\n2. Live Screen-Sharing Script:\n\u2022 Have Docker Compose pre-warmed so typing `docker compose up` starts the service in 3 seconds.\n\u2022 Open Swagger interactive UI (`/docs`) to demonstrate live API execution.\n\u2022 Walk through a complex code block (e.g. SQLite WAL pragma in BulkBeat or Tesseract fallback in TerraStract) with confidence.",
+    "project_name": "NSE2 / BulkBeat TV",
+    "repo_path": "D:\\Projects\\nse2",
+    "feature_focus": "Production Linux Deployment, Systemd Supervision & Zero-Downtime Daemon Watchdogs",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nProcess management, crash recovery, and daemon lifecycle on a cloud VPS.\n\nWHAT TO MEMORIZE:\n`systemd` manages long-running Python background processes, restarting workers on failure and logging to `journalctl`.\n\n60-SECOND INTERVIEW PITCH:\nI deployed and maintained BulkBeat TV on a cloud Linux VPS, configuring systemd unit files, process supervisors, and an automated health watchdog. This ensured seamless crash recovery, zero orphaned background processes, and 99.8% server availability.",
     "interview_qa": [
       {
-        "q": "How do you present your personal projects to an interviewer when asked 'Walk me through your code'?",
-        "a": "I follow a 3-minute executive narrative: 1. The Problem (why the project was built), 2. Architecture & Data Flow (frontend to backend to database), 3. The Hardest Technical Hurdle (e.g., resolving SQLite write contention in BulkBeat TV using WAL mode), and 4. The Measurable Result (handling concurrent streams with sub-50ms latency)."
+        "q": "How did you achieve 99.8% uptime for NSE2 on a cloud Linux VPS?",
+        "a": "All services (`api_server.py`, `admin_bot_main.py`, `sync_worker.py`) run as supervised systemd service units with `Restart=always` and `RestartSec=5s`. I implemented a dedicated `watchdog_service.py` that sends heartbeat pings to an internal health endpoint every 30 seconds; if the worker hangs or deadlocks, the watchdog kills the PID, triggering systemd to spawn a fresh instance."
       },
       {
-        "q": "Why is an interactive OpenAPI/Swagger page valuable in placement interviews?",
-        "a": "It proves that the API was designed professionally with strict schema validation (Pydantic), clear endpoint documentation, and immediate interactive testability, demonstrating production-grade engineering standards."
+        "q": "How do you monitor server logs and memory leaks in production?",
+        "a": "We stream logs through Python's `logging.handlers.RotatingFileHandler` to prevent disk saturation, and use custom bash scripts (`status-logs.ps1`, `view_logs.sh`) and Telegram admin alerts that notify me immediately if unhandled exceptions spike."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 27 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 27 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'NSE2 / BulkBeat TV', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In NSE2 / BulkBeat TV (Python aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Dhan API), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of NSE2 / BulkBeat TV.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 26 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5004 — Numerical Quadrature: Trapezoidal & Simpson's Rules.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Reading Comprehension & Critical Extraction.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Increasing Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for System Design: Scaling, Load Balancing & Hashing.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Numerical Quadrature: Trapezoidal & Simpson's Rules.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Dynamic Programming: Longest Increasing Subsequence.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 27 Q1: What is the primary academic thesis of Numerical Quadrature: Trapezoidal & Simpson's Rules?",
+        "a": "Core theoretical and practical mastery of Numerical Quadrature: Trapezoidal & Simpson's Rules under the CSJM University BCA-5004 syllabus."
+      },
+      {
+        "q": "Day 27 Q2: What is the key speed calculation formula applied in Reading Comprehension & Critical Extraction?",
+        "a": "High-speed corporate placement arithmetic shortcut for Reading Comprehension & Critical Extraction in campus recruitment exams."
+      },
+      {
+        "q": "Day 27 Q3: What is the time complexity of Dynamic Programming: Longest Increasing Subsequence?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 27 Q4: What is the central architectural principle of System Design: Scaling, Load Balancing & Hashing?",
+        "a": "Foundational systems engineering rule governing System Design: Scaling, Load Balancing & Hashing in production environments."
+      },
+      {
+        "q": "Day 27 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 27 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 27 Q7: What is the verified technical foundation of College Student Management System (CSMS)?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 27 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 27 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 27 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5004 — Numerical Quadrature: Trapezoidal & Simpson's Rules.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Reading Comprehension & Critical Extraction.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Increasing Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for System Design: Scaling, Load Balancing & Hashing."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5004 — Numerical Quadrature: Trapezoidal & Simpson's Rules."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Reading Comprehension & Critical Extraction."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Dynamic Programming: Longest Increasing Subsequence."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: College Student Management System (CSMS)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 27,
+    "title": "Day 27 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "What is the global truncation error order of the Runge-Kutta 4th Order method?",
-        "a": "O(h^4)."
+        "q": "What geometric curve does Simpson's 1/3 Rule fit across consecutive sets of three equidistant points to approximate the integral?",
+        "a": "Answer: B\n\nSimpson's 1/3 rule approximates the integrand by a 2nd-degree parabola over pairs of subintervals, requiring an EVEN number of intervals."
       },
       {
-        "q": "Why is RK4 practically superior to Taylor Series expansions for numerical ODEs?",
-        "a": "Because RK4 achieves 4th-order accuracy purely through algebraic function evaluations without calculating complex higher-order analytical derivatives."
+        "q": "What restriction MUST the number of subintervals (n) satisfy when applying Simpson's 1/3 Rule?",
+        "a": "Answer: B\n\nSince each parabolic segment spans two adjacent subintervals, Simpson's 1/3 Rule strictly requires an EVEN number of intervals (n = 2, 4, 6...)."
       },
       {
-        "q": "What is the formula for the 2-year difference between CI and SI?",
-        "a": "D = P * (R / 100)^2."
+        "q": "What is the mathematical formula for the composite Trapezoidal Rule for interval [a, b] with step size h?",
+        "a": "Answer: A\n\nTrapezoidal rule sums linear trapezoids: (h/2) * [First + Last + 2 * (Sum of all intermediate ordinates)]."
       },
       {
-        "q": "In Combination Sum (LeetCode 39), why do we pass the same index i during recursion when including a candidate?",
-        "a": "To permit unlimited reuse of the same candidate integer in building the target sum."
+        "q": "Which numerical integration rule requires the number of subintervals (n) to be a multiple of 3?",
+        "a": "Answer: C\n\nSimpson's 3/8 rule fits cubic polynomials over groups of three subintervals, necessitating n to be a multiple of 3 (n = 3, 6, 9...)."
       },
       {
-        "q": "What are the 4 Coffman conditions required for a Deadlock to occur?",
-        "a": "1. Mutual Exclusion, 2. Hold and Wait, 3. No Preemption, 4. Circular Wait."
+        "q": "What is the global truncation error order of the composite Simpson's 1/3 Rule?",
+        "a": "Answer: C\n\nThe composite Simpson's 1/3 rule has a global truncation error of O(h^4), providing significantly higher precision than the O(h^2) Trapezoidal rule."
       },
       {
-        "q": "What is the difference between `==` and `is` in Python?",
-        "a": "`==` checks value equality; `is` checks memory reference identity."
+        "q": "In a Reading Comprehension passage, what distinguishes a 'Direct Fact' from an 'Inference'?",
+        "a": "Answer: A\n\nDirect facts appear verbatim in the text; inferences are logical conclusions deduced from underlying evidence."
       },
       {
-        "q": "In Euler's method, what is the geometric interpretation of the step formula?",
-        "a": "Approximating the curve of the solution by the tangent line at the starting point of the interval."
+        "q": "Which tone is indicated when an author presents factual statistical data without emotive adjectives?",
+        "a": "Answer: A\n\nObjective and analytical tone presents verified empirical findings neutrally without emotional bias."
       },
       {
-        "q": "Why should high-value GitHub repositories contain a clear architecture diagram?",
-        "a": "To provide technical interviewers with immediate clarity on data flow, component decoupling, and system design maturity."
+        "q": "In placement Reading Comprehension questions, options containing extreme words like 'always', 'never', 'all' are usually:",
+        "a": "Answer: A\n\nAbsolute universal quantifiers ('always', 'never', 'all') rarely reflect qualified academic discourse and are usually distractors."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-27-01",
+        "category": "Academic (Academic Theory)",
+        "question": "What geometric curve does Simpson's 1/3 Rule fit across consecutive sets of three equidistant points to approximate the integral?",
+        "options": [
+          "Straight lines (degree 1 polynomials)",
+          "Parabolic arcs (degree 2 quadratic polynomials)",
+          "Cubic splines (degree 3 polynomials)",
+          "Exponential curves"
+        ],
+        "correct_answer": "B",
+        "explanation": "Simpson's 1/3 rule approximates the integrand by a 2nd-degree parabola over pairs of subintervals, requiring an EVEN number of intervals."
+      },
+      {
+        "id": "TEST-27-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What restriction MUST the number of subintervals (n) satisfy when applying Simpson's 1/3 Rule?",
+        "options": [
+          "n must be an odd number",
+          "n must be an even number (or multiple of 2)",
+          "n must be a multiple of 3",
+          "n must be a prime number"
+        ],
+        "correct_answer": "B",
+        "explanation": "Since each parabolic segment spans two adjacent subintervals, Simpson's 1/3 Rule strictly requires an EVEN number of intervals (n = 2, 4, 6...)."
+      },
+      {
+        "id": "TEST-27-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the mathematical formula for the composite Trapezoidal Rule for interval [a, b] with step size h?",
+        "options": [
+          "(h / 2) * [ (y_0 + y_n) + 2*(y_1 + y_2 + ... + y_{n-1}) ]",
+          "(h / 3) * [ (y_0 + y_n) + 4*(odd) + 2*(even) ]",
+          "h * (y_0 + y_1 + ... + y_n)",
+          "(3h / 8) * (sum of all y)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Trapezoidal rule sums linear trapezoids: (h/2) * [First + Last + 2 * (Sum of all intermediate ordinates)]."
+      },
+      {
+        "id": "TEST-27-04",
+        "category": "Academic (Academic Theory)",
+        "question": "Which numerical integration rule requires the number of subintervals (n) to be a multiple of 3?",
+        "options": [
+          "Trapezoidal Rule",
+          "Simpson's 1/3 Rule",
+          "Simpson's 3/8 Rule",
+          "Euler's Method"
+        ],
+        "correct_answer": "C",
+        "explanation": "Simpson's 3/8 rule fits cubic polynomials over groups of three subintervals, necessitating n to be a multiple of 3 (n = 3, 6, 9...)."
+      },
+      {
+        "id": "TEST-27-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the global truncation error order of the composite Simpson's 1/3 Rule?",
+        "options": [
+          "O(h)",
+          "O(h^2)",
+          "O(h^4)",
+          "O(h^6)"
+        ],
+        "correct_answer": "C",
+        "explanation": "The composite Simpson's 1/3 rule has a global truncation error of O(h^4), providing significantly higher precision than the O(h^2) Trapezoidal rule."
+      },
+      {
+        "id": "TEST-27-06",
+        "category": "Placement Aptitude",
+        "question": "In a Reading Comprehension passage, what distinguishes a 'Direct Fact' from an 'Inference'?",
+        "options": [
+          "A fact is explicitly stated in the text; an inference is logically deduced from stated facts.",
+          "Inferences are opinions made up by the reader.",
+          "Facts cannot be proven from text.",
+          "Inferences are always false in corporate tests."
+        ],
+        "correct_answer": "A",
+        "explanation": "Direct facts appear verbatim in the text; inferences are logical conclusions deduced from underlying evidence."
+      },
+      {
+        "id": "TEST-27-07",
+        "category": "Placement Aptitude",
+        "question": "Which tone is indicated when an author presents factual statistical data without emotive adjectives?",
+        "options": [
+          "Objective / Analytical",
+          "Sarcastic",
+          "Cynical",
+          "Nostalgic"
+        ],
+        "correct_answer": "A",
+        "explanation": "Objective and analytical tone presents verified empirical findings neutrally without emotional bias."
+      },
+      {
+        "id": "TEST-27-08",
+        "category": "Placement Aptitude",
+        "question": "In placement Reading Comprehension questions, options containing extreme words like 'always', 'never', 'all' are usually:",
+        "options": [
+          "Incorrect because authors rarely make absolute universal claims without qualifiers",
+          "Always the correct answer",
+          "Mandated by corporate testing standards",
+          "Indicative of factual statements"
+        ],
+        "correct_answer": "A",
+        "explanation": "Absolute universal quantifiers ('always', 'never', 'all') rarely reflect qualified academic discourse and are usually distractors."
+      },
+      {
+        "id": "TEST-27-09",
+        "category": "Placement Aptitude",
+        "question": "What does determining the 'Main Idea' of a reading passage require?",
+        "options": [
+          "Synthesizing the primary thesis supported across all paragraphs",
+          "Memorizing every numerical statistic",
+          "Counting the total word count",
+          "Focusing exclusively on the first sentence"
+        ],
+        "correct_answer": "A",
+        "explanation": "The main idea encapsulates the overarching thesis and primary communicative objective of the author."
+      },
+      {
+        "id": "TEST-27-10",
+        "category": "Placement Aptitude",
+        "question": "When a passage states 'Electric vehicle adoption doubled, yet charging infrastructure grid bottlenecks persist', the author's primary perspective is:",
+        "options": [
+          "Acknowledging growth while highlighting critical implementation obstacles",
+          "Opposing clean transportation",
+          "Predicting immediate failure of electric cars",
+          "Celebrating complete transportation transition"
+        ],
+        "correct_answer": "A",
+        "explanation": "The conjunction 'yet' balances progress with infrastructural constraints."
+      },
+      {
+        "id": "TEST-27-11",
+        "category": "Core CS (System Design)",
+        "question": "What proportion of keys must be remapped on average when adding a server to a Consistent Hashing ring with N nodes?",
+        "options": [
+          "100%",
+          "50%",
+          "K / N",
+          "0%"
+        ],
+        "correct_answer": "C",
+        "explanation": "Consistent hashing minimizes redistribution: only K/N keys must be remapped when adding/removing nodes."
+      },
+      {
+        "id": "TEST-27-12",
+        "category": "Core CS (System Design)",
+        "question": "What is the primary function of Virtual Nodes in Consistent Hashing?",
+        "options": [
+          "To encrypt network packets",
+          "To ensure uniform key distribution across physical servers and prevent hotspots",
+          "To eliminate the need for hash functions",
+          "To replace load balancers"
+        ],
+        "correct_answer": "B",
+        "explanation": "Virtual nodes distribute partitions uniformly across the ring, preventing hot spots."
+      },
+      {
+        "id": "TEST-27-13",
+        "category": "Core CS (System Design)",
+        "question": "A Layer 7 Load Balancer can route incoming traffic based on which of the following?",
+        "options": [
+          "Source IP only",
+          "TCP port only",
+          "HTTP request URI path and Cookie headers",
+          "MAC address"
+        ],
+        "correct_answer": "C",
+        "explanation": "Layer 7 balancers inspect application-layer HTTP headers, URLs, and cookies."
+      },
+      {
+        "id": "TEST-27-14",
+        "category": "Core CS (System Design)",
+        "question": "Scaling a system by adding more physical server nodes to a cluster is termed:",
+        "options": [
+          "Vertical Scaling",
+          "Horizontal Scaling",
+          "Deep Paging",
+          "B+ Tree splitting"
+        ],
+        "correct_answer": "B",
+        "explanation": "Horizontal scaling (scaling out) adds more servers to a distributed pool."
+      },
+      {
+        "id": "TEST-27-15",
+        "category": "Core CS (System Design)",
+        "question": "Which load balancing algorithm sends each incoming request to the server with the fewest active TCP sessions?",
+        "options": [
+          "Round Robin",
+          "Least Connections",
+          "IP Hash",
+          "Weighted Random"
+        ],
+        "correct_answer": "B",
+        "explanation": "Least Connections selects the server with the lowest concurrent connection load."
+      },
+      {
+        "id": "TEST-27-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: Longest Increasing Subsequence (LIS)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N log N) Time, O(N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: Longest Increasing Subsequence (LIS)' pattern operates with O(N log N) Time, O(N) Auxiliary Space: Maintains tails array where tails[i] stores smallest tail element of all increasing subsequences of length i+1. Binary search replaces or extends in O(log N).."
+      },
+      {
+        "id": "TEST-27-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: Longest Increasing Subsequence (LIS)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Strictly decreasing array (size = 1).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: Longest Increasing Subsequence (LIS) include Strictly decreasing array (size = 1), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-27-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Longest Increasing Subsequence', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N log N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-27-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Production Linux Deployment, Systemd Supervision & Zero-Downtime Daemon Watchdogs'?",
+        "options": [
+          "`systemd` manages long-running Python background processes, restarting workers on failure and logging to `journalctl`.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: `systemd` manages long-running Python background processes, restarting workers on failure and logging to `journalctl`.."
+      },
+      {
+        "id": "TEST-27-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How did you achieve 99.8% uptime for NSE2 on a cloud Linux VPS?'?",
+        "options": [
+          "All services (`api_server.py`, `admin_bot_main.py`, `sync_worker.py`) run as supervised systemd service units with `Restart=always` and `RestartSec=5s`. I imple...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: All services (`api_server.py`, `admin_bot_main.py`, `sync_worker.py`) run as supervised systemd service units with `Restart=always` and `Res."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-27",
+    "title": "Longest Increasing Subsequence (Dynamic Programming: Longest Increasing Subsequence (LIS))",
+    "time_limit_minutes": 45,
+    "difficulty": "Hard",
+    "problem_statement": "Solve the core placement problem: Longest Increasing Subsequence.\n\nGiven an integer array nums, return the length of the longest strictly increasing subsequence.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dynamic Programming: Longest Increasing Subsequence (LIS)\n- Time Complexity Target: O(N log N) Time\n- Space Complexity Target: O(N) Auxiliary Space\n- Handle all edge cases: Strictly decreasing array (size = 1), All equal elements (size = 1 for strictly increasing), Already sorted array.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: Longest Increasing Subsequence (LIS)\n    public int lengthOfLIS(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: Longest Increasing Subsequence (LIS)\n    public int lengthOfLIS(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public int lengthOfLIS(int[] nums) {\n        int[] tails = new int[nums.length];\n        int sz = 0;\n        for (int x : nums) {\n            int l = 0, r = sz;\n            while (l < r) {\n                int m = l + (r - l) / 2;\n                if (tails[m] < x) l = m + 1;\n                else r = m;\n            }\n            tails[l] = x;\n            if (l == sz) sz++;\n        }\n        return sz;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Dynamic Programming: Longest Increasing Subsequence (LIS) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Strictly decreasing array (size = 1)",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N log N) Time)",
+      "Space Complexity": "20 points (Meets O(N) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }

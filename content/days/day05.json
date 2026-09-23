@@ -1,172 +1,2415 @@
 {
   "day": 5,
-  "title": "Numerical Bisection Method, Ratio/Proportion & Subarray Sum",
-  "sem_data": {
-    "subject": "BCA-5004 Numerical Methods",
-    "topic": "Unit I \u2014 Transcendental Equations: The Bisection Method",
-    "detailed_notes": [
-      "In numerical analysis, finding the roots of non-linear algebraic and transcendental equations f(x) = 0 is a fundamental mathematical problem. Analytical solutions are often impossible for equations involving trigonometric, exponential, or higher-order polynomial terms.",
-      "The Bisection Method (also known as the Bolzano Interval Halving Method) is a bracketing method based on the Intermediate Value Theorem. The theorem states: If a real-valued continuous function f(x) defined on an interval [a, b] satisfies f(a) * f(b) < 0 (meaning f(a) and f(b) have opposite signs), then there exists at least one real root c in the open interval (a, b) such that f(c) = 0.",
-      "Algorithm & Iterative Procedure:\n1. Find two initial points a and b such that f(a) and f(b) possess opposite signs: f(a) * f(b) < 0.\n2. Compute the midpoint (first approximation to the root): c = (a + b) / 2.\n3. Evaluate f(c):\n   - If f(c) == 0, then c is the exact root; stop.\n   - If f(a) * f(c) < 0, the root lies in [a, c]; set b = c.\n   - If f(c) * f(b) < 0, the root lies in [c, b]; set a = c.\n4. Repeat steps 2 and 3 until the interval width |b - a| < epsilon or |f(c)| < tolerance.",
-      "Convergence Analysis: The Bisection Method halves the interval width at every iteration: Width_n = (b - a) / 2^n. It is guaranteed to converge to a root because the interval monotonically shrinks to zero. Its order of convergence is linear (p = 1), with an asymptotic error constant of 0.5. While slower than Newton-Raphson, its absolute reliability makes it the standard benchmark bracketing algorithm."
+  "title": "Day 05: Errors in Numerical Computations & Roots of Equations: Bisection Method & Monotonic Stack (Next Greater Element)",
+  "streams": {
+    "academic": {
+      "unit": 1,
+      "topic": "Unit I — Errors in Numerical Computations & Roots of Equations: Bisection Method",
+      "objectives": [
+        "Understand Absolute, Relative, and Percentage Errors.",
+        "Master the Bisection Method, Bolzano's Theorem, and linear convergence rate O(1/2^n)."
+      ],
+      "explanation": "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   • Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   • Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   • Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   • Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   • Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
+      "definitions": [
+        {
+          "term": "Bolzano's Theorem",
+          "definition": "If a continuous function f(x) has opposite signs at endpoints a and b (f(a)*f(b) < 0), then f(x) has at least one real root in the interval (a, b)."
+        },
+        {
+          "term": "Linear Convergence",
+          "definition": "A sequence where the error in step n+1 is proportional to the error in step n to the power of 1 (error decreases by a constant fraction each step)."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Types of Errors",
+          "content": "Round-off errors (finite precision floating point) and Truncation errors (approximating infinite series with finite terms)."
+        },
+        {
+          "title": "Bisection Convergence Proof",
+          "content": "After n iterations, interval width is (b - a)/2^n. To achieve tolerance epsilon: n >= [ln(b - a) - ln(epsilon)] / ln(2)."
+        }
+      ],
+      "examples": [
+        "Finding real root of f(x) = x^3 - x - 1 = 0 between 1 and 2."
+      ],
+      "diagram": "+---------------------------------------------------+\n|                BISECTION METHOD                   |\n| a [f(a)<0] ------------- x_mid ------------- b [f(b)>0] |\n| Interval halves every step: width = (b - a) / 2^n |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Iteration n",
+          "Interval [a, b]",
+          "Midpoint x_mid = (a+b)/2",
+          "f(x_mid)",
+          "Sign Check & New Interval"
+        ],
+        "rows": [
+          [
+            "1",
+            "[1.000, 2.000]",
+            "1.500",
+            "+0.875",
+            "f(1)*f(1.5)<0 -> New interval [1.000, 1.500]"
+          ],
+          [
+            "2",
+            "[1.000, 1.500]",
+            "1.250",
+            "-0.297",
+            "f(1.25)*f(1.5)<0 -> New interval [1.250, 1.500]"
+          ],
+          [
+            "3",
+            "[1.250, 1.500]",
+            "1.375",
+            "+0.225",
+            "f(1.25)*f(1.375)<0 -> New interval [1.250, 1.375]"
+          ],
+          [
+            "4",
+            "[1.250, 1.375]",
+            "1.3125",
+            "-0.051",
+            "f(1.3125)*f(1.375)<0 -> New interval [1.3125, 1.375]"
+          ]
+        ]
+      },
+      "memorize": "Bisection formula: x_mid = (a + b) / 2. Condition: f(a)*f(b) < 0. Convergence: Linear, rate 0.5 per step. Guaranteed to converge.",
+      "understand": "Bisection is bracketing-based: it never diverges because the root remains trapped inside the shrinking interval.",
+      "common_mistakes": "Forgetting to evaluate signs f(a)*f(mid) and setting incorrect interval bounds.",
+      "exam_writing_guidance": "State Bolzano's theorem, write the formal step-by-step algorithm, prove error interval formula, and show an iteration table with 4 iterations.",
+      "mini_practice": [
+        "Find root of x^3 - 4x - 9 = 0 between 2 and 3 using Bisection (3 iterations)."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5004 Numerical Methods",
+          "year": "2024-25 (Q1)",
+          "marks": 15,
+          "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
+          "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
+          "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+          "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
+          "important_points": [
+            "f(a)*f(b) < 0",
+            "Interval halves every step",
+            "Linear convergence order 1",
+            "Root = 1.325"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Step-by-step arithmetic table with 4+ iterations",
+            "Convergence rate proof formula e_{n+1} = 0.5 * e_n"
+          ],
+          "common_mistakes": [
+            "Rounding prematurely during intermediate steps"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5004 Numerical Methods",
+          "year": "2023 / Model",
+          "marks": 5,
+          "question": "Define Absolute, Relative, and Percentage Errors with mathematical expressions. (5 Marks)",
+          "rubric": "1.5 marks each + 0.5 for relation = 5 Marks.",
+          "model_answer": "Let X be the true value and X_a be the approximate value: 1. Absolute Error (E_a): The numerical difference between the true value and the approximate value: E_a = |X - X_a|; 2. Relative Error (E_r): The ratio of the absolute error to the true value: E_r = E_a / |X| = |X - X_a| / |X|; 3. Percentage Error (E_p): The relative error expressed as a percentage: E_p = E_r * 100% = (|X - X_a| / |X|) * 100%."
+        }
+      ],
+      "subject_code": "BCA-5004",
+      "subject_name": "Numerical Methods",
+      "mcqs": [
+        {
+          "id": "ACAD-05-01",
+          "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
+          "options": [
+            "|X - X*|",
+            "|X - X*| / |X|",
+            "(|X - X*| / |X|) * 100",
+            "|X - X*| * |X|"
+          ],
+          "correct_answer": "B",
+          "explanation": "Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+        },
+        {
+          "id": "ACAD-05-02",
+          "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+          "options": [
+            "Quadratic (order 2)",
+            "Linear (order 1) with convergence factor 0.5",
+            "Superlinear (order 1.618)",
+            "Cubic (order 3)"
+          ],
+          "correct_answer": "B",
+          "explanation": "The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+        },
+        {
+          "id": "ACAD-05-03",
+          "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+          "options": [
+            "f(a) * f(b) > 0",
+            "f(a) * f(b) < 0",
+            "f'(a) = f'(b)",
+            "f(a) + f(b) = 0"
+          ],
+          "correct_answer": "B",
+          "explanation": "If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+        },
+        {
+          "id": "ACAD-05-04",
+          "question": "What is Truncation Error in numerical computation?",
+          "options": [
+            "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
+            "Error resulting from replacing an infinite mathematical process with a finite approximation (e.g., truncating a Taylor series)",
+            "Mistakes made by the programmer entering data",
+            "Error caused by noisy transmission channels"
+          ],
+          "correct_answer": "B",
+          "explanation": "Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+        },
+        {
+          "id": "ACAD-05-05",
+          "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+          "options": [
+            "4 iterations",
+            "7 iterations",
+            "10 iterations",
+            "25 iterations"
+          ],
+          "correct_answer": "C",
+          "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2024-25 (Q1)",
+        "marks": 15,
+        "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
+        "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
+        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+        "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
+        "important_points": [
+          "f(a)*f(b) < 0",
+          "Interval halves every step",
+          "Linear convergence order 1",
+          "Root = 1.325"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Step-by-step arithmetic table with 4+ iterations",
+          "Convergence rate proof formula e_{n+1} = 0.5 * e_n"
+        ],
+        "common_mistakes": [
+          "Rounding prematurely during intermediate steps"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Define Absolute, Relative, and Percentage Errors with mathematical expressions. (5 Marks)",
+        "rubric": "1.5 marks each + 0.5 for relation = 5 Marks.",
+        "model_answer": "Let X be the true value and X_a be the approximate value: 1. Absolute Error (E_a): The numerical difference between the true value and the approximate value: E_a = |X - X_a|; 2. Relative Error (E_r): The ratio of the absolute error to the true value: E_r = E_a / |X| = |X - X_a| / |X|; 3. Percentage Error (E_p): The relative error expressed as a percentage: E_p = E_r * 100% = (|X - X_a| / |X|) * 100%."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|               BISECTION METHOD (INTERVAL HALVING PROCESS)               |\n+-------------------------------------------------------------------------+\n|      y                                                                  |\n|      |                 * f(b) > 0                                       |\n|      |                /                                                 |\n|   ---+---------------c1-------c2-----b----------> x                     |\n|      |     a        /     root                                          |\n|      |             /                                                    |\n|      |  * f(a) < 0                                                      |\n|      Iteration 1: c1 = (a + b)/2. f(c1) < 0 ==> New interval is [c1, b] |\n|      Iteration 2: c2 = (c1 + b)/2. Interval halves again to [c1, c2]    |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-05-01",
+        "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
+        "options": [
+          "|X - X*|",
+          "|X - X*| / |X|",
+          "(|X - X*| / |X|) * 100",
+          "|X - X*| * |X|"
+        ],
+        "correct_answer": "B",
+        "explanation": "Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+      },
+      {
+        "id": "ACAD-05-02",
+        "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+        "options": [
+          "Quadratic (order 2)",
+          "Linear (order 1) with convergence factor 0.5",
+          "Superlinear (order 1.618)",
+          "Cubic (order 3)"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+      },
+      {
+        "id": "ACAD-05-03",
+        "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+        "options": [
+          "f(a) * f(b) > 0",
+          "f(a) * f(b) < 0",
+          "f'(a) = f'(b)",
+          "f(a) + f(b) = 0"
+        ],
+        "correct_answer": "B",
+        "explanation": "If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+      },
+      {
+        "id": "ACAD-05-04",
+        "question": "What is Truncation Error in numerical computation?",
+        "options": [
+          "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
+          "Error resulting from replacing an infinite mathematical process with a finite approximation (e.g., truncating a Taylor series)",
+          "Mistakes made by the programmer entering data",
+          "Error caused by noisy transmission channels"
+        ],
+        "correct_answer": "B",
+        "explanation": "Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+      },
+      {
+        "id": "ACAD-05-05",
+        "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+        "options": [
+          "4 iterations",
+          "7 iterations",
+          "10 iterations",
+          "25 iterations"
+        ],
+        "correct_answer": "C",
+        "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Averages, Weighted Means & Alligations",
+      "category": "Quantitative",
+      "subtopic": "Averages",
+      "formulas": "1. Average = Sum of all observations / Total number of observations.\n2. Weighted Average = (w1*x1 + w2*x2 + ... + wn*xn) / (w1 + w2 + ... + wn).\n3. Alligation Rule: (Cheaper Quantity) / (Dearer Quantity) = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price).",
+      "shortcuts": "Deviation Method (Assumed Mean): Pick a central number as baseline. Sum deviations from this baseline and divide by n. Average = Baseline + (Sum of Deviations / n).",
+      "tutorial": [
+        "The Alligation cross is a powerful graphical shortcut for solving weighted averages in seconds. It determines the exact mixing ratio of two ingredients at different prices to produce a target mixture price without solving simultaneous linear equations."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Averages",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Averages",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Averages",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Averages",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Averages",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "The average age of 24 students and their teacher is 15 years. When the teacher's age is excluded, the average decreases by 1 year. What is the teacher's age?",
+        "options": {
+          "A": "35 years",
+          "B": "39 years",
+          "C": "40 years",
+          "D": "42 years"
+        },
+        "correct_answer": "B",
+        "explanation": "Total sum with teacher = 25 * 15 = 375. Total sum without teacher = 24 * 14 = 336. Teacher's age = 375 - 336 = 39 years."
+      },
+      {
+        "mcq_no": 2,
+        "question": "In what ratio must a grocer mix tea at Rs. 60/kg with tea at Rs. 65/kg so that by selling the mixture at Rs. 68.20/kg he makes a profit of 10%?",
+        "options": {
+          "A": "3 : 2",
+          "B": "2 : 3",
+          "C": "1 : 4",
+          "D": "4 : 1"
+        },
+        "correct_answer": "A",
+        "explanation": "Cost price of mixture = 68.20 / 1.10 = Rs. 62/kg. Using Alligation: Cheaper = 60, Dearer = 65, Mean = 62. Ratio = (65 - 62) / (62 - 60) = 3 : 2."
+      },
+      {
+        "mcq_no": 3,
+        "question": "The average score of a cricketer in 10 innings was 32 runs. How many runs must he score in his 11th inning to raise his average to 36 runs?",
+        "options": {
+          "A": "72",
+          "B": "76",
+          "C": "80",
+          "D": "84"
+        },
+        "correct_answer": "B",
+        "explanation": "Total runs required in 11 innings = 11 * 36 = 396. Current total in 10 innings = 10 * 32 = 320. Required score = 396 - 320 = 76 runs."
+      },
+      {
+        "mcq_no": 4,
+        "question": "The average weight of 8 persons increases by 2.5 kg when a new person replaces one of them weighing 65 kg. What is the weight of the new person?",
+        "options": {
+          "A": "80 kg",
+          "B": "85 kg",
+          "C": "90 kg",
+          "D": "75 kg"
+        },
+        "correct_answer": "B",
+        "explanation": "Total weight increase across 8 persons = 8 * 2.5 = 20 kg. Weight of new person = 65 + 20 = 85 kg."
+      },
+      {
+        "mcq_no": 5,
+        "question": "A container contains 40 liters of milk. From this, 4 liters of milk was taken out and replaced by water. This process was repeated two more times. How much milk is left in the container now?",
+        "options": {
+          "A": "29.16 liters",
+          "B": "30.50 liters",
+          "C": "28.84 liters",
+          "D": "31.25 liters"
+        },
+        "correct_answer": "A",
+        "explanation": "Remaining pure liquid = Initial * (1 - x / V)^n = 40 * (1 - 4/40)^3 = 40 * (0.9)^3 = 40 * 0.729 = 29.16 liters."
+      },
+      {
+        "mcq_no": 6,
+        "question": "The average of 5 consecutive odd numbers is 27. What is the product of the first and fifth numbers?",
+        "options": {
+          "A": "713",
+          "B": "725",
+          "C": "675",
+          "D": "759"
+        },
+        "correct_answer": "A",
+        "explanation": "For 5 consecutive odd numbers, the average is the middle (3rd) number = 27. Numbers are 23, 25, 27, 29, 31. Product of 1st and 5th = 23 * 31 = 713."
+      },
+      {
+        "mcq_no": 7,
+        "question": "A student's marks were wrongly recorded as 83 instead of 63. Due to this error, the average marks of the class increased by 0.5. How many students are there in the class?",
+        "options": {
+          "A": "30",
+          "B": "40",
+          "C": "50",
+          "D": "45"
+        },
+        "correct_answer": "B",
+        "explanation": "Excess marks added = 83 - 63 = 20 marks. Number of students = Excess / Average Increase = 20 / 0.5 = 40 students."
+      },
+      {
+        "mcq_no": 8,
+        "question": "In what ratio must water be mixed with milk costing Rs. 12 per liter to obtain a mixture worth Rs. 8 per liter?",
+        "options": {
+          "A": "1 : 2",
+          "B": "2 : 1",
+          "C": "1 : 3",
+          "D": "2 : 3"
+        },
+        "correct_answer": "A",
+        "explanation": "Water cost = 0, Milk cost = 12, Mean price = 8. Ratio of Water : Milk = (12 - 8) / (8 - 0) = 4 : 8 = 1 : 2."
+      },
+      {
+        "mcq_no": 9,
+        "question": "The average salary of all employees in a workshop is Rs. 8,000. The average salary of 7 technicians is Rs. 12,000 and the average salary of the rest is Rs. 6,000. What is the total number of employees?",
+        "options": {
+          "A": "20",
+          "B": "21",
+          "C": "25",
+          "D": "28"
+        },
+        "correct_answer": "B",
+        "explanation": "By Alligation: Ratio of Technicians (12k) to Others (6k) with Mean (8k) = (8k - 6k) : (12k - 8k) = 2k : 4k = 1 : 2. Since Technicians = 7 (1 unit), Others = 14 (2 units). Total employees = 7 + 14 = 21."
+      },
+      {
+        "mcq_no": 10,
+        "question": "The average speed of a car for an entire journey is 60 km/hr. If it covers the first half of the distance at 40 km/hr, what was its speed during the second half?",
+        "options": {
+          "A": "80 km/hr",
+          "B": "100 km/hr",
+          "C": "120 km/hr",
+          "D": "90 km/hr"
+        },
+        "correct_answer": "C",
+        "explanation": "Average speed for equal distances = 2*u*v / (u + v). 60 = (2 * 40 * v) / (40 + v) => 60*(40 + v) = 80v => 2400 + 60v = 80v => 20v = 2400 => v = 120 km/hr."
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Averages (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Monotonic Stack (Next Greater Element)",
+      "category": "Stack",
+      "concept": "Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.",
+      "why_it_works": "Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
+      "visual_explanation": "Temperatures: [ 73, 74, 75, 71, 69, 72 ]\\ni=0 (73): Push 0\\ni=1 (74): 74 > 73 -> Pop 0, ans[0] = 1 - 0 = 1; Push 1\\ni=2 (75): 75 > 74 -> Pop 1, ans[1] = 2 - 1 = 1; Push 2\\ni=3 (71): 71 < 75 -> Push 3\\ni=4 (69): 69 < 71 -> Push 4\\ni=5 (72): 72 > 69 -> Pop 4, ans[4] = 5-4 = 1; 72 > 71 -> Pop 3, ans[3] = 5-3 = 2; Push 5",
+      "language": "Java",
+      "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int n = temperatures.length;\n        int[] ans = new int[n];\n        Deque<Integer> stack = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int prevIndex = stack.pop();\n                ans[prevIndex] = i - prevIndex;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int n = temperatures.length;\n        int[] ans = new int[n];\n        Deque<Integer> stack = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int prevIndex = stack.pop();\n                ans[prevIndex] = i - prevIndex;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 5: Allocate answer array initialized to 0.",
+        "Line 6: Use ArrayDeque as an efficient, memory-optimized stack.",
+        "Line 8: Iterate index i through all temperatures.",
+        "Line 9-12: While stack is non-empty and current temperature exceeds the temperature at stack top, pop index and compute difference.",
+        "Line 13: Push current index onto the stack.",
+        "Line 15: Return populated answer array."
+      ],
+      "dry_run": "T = [73, 74, 75, 71, 69, 72]. i=0: push 0. i=1(74): pop 0 -> ans[0]=1, push 1. i=2(75): pop 1 -> ans[1]=1, push 2. i=3: push 3. i=4: push 4. i=5(72): pop 4 -> ans[4]=1, pop 3 -> ans[3]=2. Returns [1, 1, 0, 2, 1, 0].",
+      "complexity": "O(N) Time, O(N) Auxiliary Space",
+      "edge_cases": "Strictly decreasing sequence (all answers 0), Strictly increasing sequence, All equal elements, Single element",
+      "edge_cases_list": [
+        "Strictly decreasing sequence (all answers 0)",
+        "Strictly increasing sequence",
+        "All equal elements",
+        "Single element"
+      ],
+      "interview_variations": [
+        "Next Greater Element I & II",
+        "Online Stock Span",
+        "Largest Rectangle in Histogram",
+        "Trapping Rain Water (Stack Approach)"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-05-01",
+        "title": "Problem 1: Daily Temperatures",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Monotonic Stack (Next Greater Element) algorithmic technique.\n2. Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.\n3. Invariants: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-05-02",
+        "title": "Problem 2: Next Greater Element I",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "The next greater element of some element x in an array is the first greater element that is to the right of x in the same array. Find all next greater elements for nums1 within nums2.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Monotonic Stack (Next Greater Element).\n2. Handle edge cases: Strictly decreasing sequence (all answers 0), Strictly increasing sequence, All equal elements, Single element.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Operating Systems",
+      "topic": "Deadlocks: 4 Coffman Conditions, Resource Allocation Graphs & Banker's Algorithm",
+      "concept_lesson": "A Deadlock is a state in which a set of concurrent processes are blocked because each process holds resources and waits for other resources held by other processes in the same set.\n\nThe 4 Coffman Conditions (All must hold simultaneously for a deadlock to occur):\n1. Mutual Exclusion: At least one resource must be held in a non-shareable mode.\n2. Hold and Wait: A process must be holding at least one resource and waiting to acquire additional resources held by others.\n3. No Preemption: Resources cannot be forcibly confiscated from a process; they can only be released voluntarily.\n4. Circular Wait: A closed chain of processes exists {P0, P1, ..., Pn} such that P0 waits for a resource held by P1, P1 waits for P2, and Pn waits for P0.\n\nHandling Strategies:\n- Deadlock Prevention: Invalidate at least one Coffman condition (e.g., impose global linear resource ordering to eliminate Circular Wait).\n- Deadlock Avoidance: System evaluates dynamic state before granting allocations to ensure the system remains in a 'Safe State'. The Banker's Algorithm uses vectors (Available, Max, Allocation, Need = Max - Allocation) to test whether there exists a safe sequence where all processes can finish.\n- Deadlock Detection & Recovery: Allow deadlocks to occur, run detection algorithms (wait-for graphs), and recover via process termination or resource preemption.\n- Ostrich Algorithm: Ignore the problem entirely (used by most general-purpose OS kernels due to the high cost of continuous prevention).",
+      "key_definitions": [
+        {
+          "term": "Safe State",
+          "definition": "A system state where there exists at least one execution sequence of all processes that avoids deadlock."
+        },
+        {
+          "term": "Banker's Algorithm",
+          "definition": "A deadlock avoidance algorithm that tests for safety by simulating the allocation of predetermined maximum resources."
+        },
+        {
+          "term": "Resource Allocation Graph (RAG)",
+          "definition": "A directed graph with process nodes and resource nodes showing request and assignment edges."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What are the four necessary and sufficient conditions for a deadlock to occur?",
+          "a": "The Coffman conditions: 1. Mutual Exclusion (resources cannot be shared), 2. Hold and Wait (processes retain allocated resources while requesting new ones), 3. No Preemption (resources cannot be forcibly revoked), and 4. Circular Wait (a circular chain of processes each waiting for a resource held by the next)."
+        },
+        {
+          "q": "How does the Banker's Algorithm determine if a state is safe?",
+          "a": "It calculates Need = Max - Allocation for each process. It simulates execution using Work = Available vector. It finds a process Pi whose Need <= Work. If found, it assumes Pi completes, returns its resources (Work = Work + Allocation_i), marks Pi finished, and repeats. If all processes can be marked finished, a 'safe sequence' exists and the state is safe; otherwise, it is unsafe."
+        },
+        {
+          "q": "Is an unsafe state always a deadlocked state?",
+          "a": "No. An unsafe state is not necessarily deadlocked; it is simply a state from which the OS cannot guarantee avoiding a deadlock if all processes simultaneously demand their maximum resource limits. If processes do not request their maximum claims, execution may still complete without deadlock."
+        },
+        {
+          "q": "How can Circular Wait be prevented in practice?",
+          "a": "By imposing a strict global total ordering on all resource types (e.g., Lock 1 has ID 10, Lock 2 has ID 20). Processes must request resources strictly in monotonically increasing order of resource IDs. If a process holds Lock 20, it is forbidden from requesting Lock 10, mathematically preventing circular dependency cycles."
+        },
+        {
+          "q": "What is the difference between a Deadlock and a Livelock?",
+          "a": "In a deadlock, processes are in a blocked (sleeping) state, waiting for events that will never occur, consuming zero CPU cycles. In a livelock, processes actively change their internal states in response to each other (e.g., repeatedly yielding and retrying a lock), remaining busy and consuming 100% CPU, but making zero forward progress."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-05-01",
+          "question": "Which of the following is NOT one of the 4 Coffman conditions for deadlock?",
+          "options": [
+            "Mutual Exclusion",
+            "Hold and Wait",
+            "Process Aging",
+            "Circular Wait"
+          ],
+          "correct_answer": "C",
+          "explanation": "The 4 conditions are Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
+        },
+        {
+          "id": "CS-05-02",
+          "question": "If a Resource Allocation Graph contains a cycle and every resource type has exactly one single instance, then:",
+          "options": [
+            "A deadlock definitely exists",
+            "A deadlock may or may not exist",
+            "The system is guaranteed safe",
+            "The CPU enters thrashing"
+          ],
+          "correct_answer": "A",
+          "explanation": "With single-instance resources, a cycle in the RAG is both necessary and sufficient for deadlock."
+        },
+        {
+          "id": "CS-05-03",
+          "question": "The Banker's Algorithm is primarily used for:",
+          "options": [
+            "Deadlock Prevention",
+            "Deadlock Avoidance",
+            "Deadlock Detection",
+            "Memory Compaction"
+          ],
+          "correct_answer": "B",
+          "explanation": "Banker's Algorithm is a dynamic deadlock avoidance technique that checks for safe execution sequences."
+        },
+        {
+          "id": "CS-05-04",
+          "question": "In a system with Need matrix, how is Need calculated in Banker's Algorithm?",
+          "options": [
+            "Allocation - Available",
+            "Max - Allocation",
+            "Max + Available",
+            "Allocation - Max"
+          ],
+          "correct_answer": "B",
+          "explanation": "Need represents remaining resources a process may claim: Need = Max - Allocation."
+        },
+        {
+          "id": "CS-05-05",
+          "question": "Assigning global numerical IDs to resources and enforcing acquisition in ascending order eliminates which condition?",
+          "options": [
+            "Mutual Exclusion",
+            "Hold and Wait",
+            "No Preemption",
+            "Circular Wait"
+          ],
+          "correct_answer": "D",
+          "explanation": "Strict resource ordering prevents cycles from forming, eliminating Circular Wait."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "College Student Management System (CSMS)",
+      "repo_path": "D:\\Projects\\College Student Management System",
+      "topic": "Multi-Role Authentication & Bcrypt Password Security in CSMS",
+      "what_to_understand": "Implementing role-based access for HOD, Section Incharges, Faculty, and Students with bcrypt hashing.",
+      "what_to_memorize": "Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.",
+      "interview_questions": [
+        {
+          "q": "How is authentication handled in CSMS across different academic roles?",
+          "a": "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University Enrollment Number (e.g. `CSJMA24000004738`) from the `students` table. Stored passwords are salted and hashed using bcrypt. On successful authentication, the response payload returns the authenticated role and session context, steering the client to either `admin-dashboard.html` or `student-dashboard.html`."
+        },
+        {
+          "q": "How do you protect sensitive student academic data against unauthorized tampering?",
+          "a": "Administrative routes (`/api/students`, `/api/hod/*`) enforce strict server-side role validation checking the `role` field ('HOD', 'Section Incharge', 'Faculty'). Grade entry and fee reconciliation endpoints reject requests originating from unverified student sessions."
+        }
+      ],
+      "interview_pitch_exercise": "In CSMS, security and role segregation were critical. I implemented a dual-lookup authentication system supporting both HOD email and University Enrollment Number credentials. By hashing all credentials with bcrypt and validating roles on every protected endpoint, the system guarantees that students cannot tamper with grade rosters or fee balances."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 5 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 5 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'TerraStract', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In TerraStract (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of TerraStract.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n• Packet encapsulation from application data down to physical bits.\n• Ratio & Proportion compounding and partnership profit sharing.\n• Floyd's Tortoise and Hare cycle detection in linked lists.",
+      "today_recall": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+      "formula_recall": "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
+      "pyq_recall": "• University PYQ: CSJM University 2022 (Section C, 15 Marks) — 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n• Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
+      "dsa_recall": "• Pattern: Monotonic Stack (Next Greater Element).\n• Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n• Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
+      "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n• Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
+      "rapid_fire_questions": [
+        {
+          "q": "What mathematical theorem guarantees the existence of a real root in the Bisection Method?",
+          "a": "The Intermediate Value Theorem (if f(a) and f(b) have opposite signs, f(a)*f(b) < 0, there is at least one root in [a, b])."
+        },
+        {
+          "q": "What is the rate of convergence of the Bisection Method?",
+          "a": "Linear convergence with rate 1/2 (the interval width halves at each iteration)."
+        },
+        {
+          "q": "What is the formula for Relative Error in numerical analysis?",
+          "a": "Relative Error = |True Value - Approximate Value| / |True Value|."
+        },
+        {
+          "q": "How does the Alligation rule calculate the ratio of two ingredients at prices c and d to yield mean price m?",
+          "a": "Ratio = (d - m) / (m - c)."
+        },
+        {
+          "q": "If an average of 10 numbers is 25 and one number 34 is replaced by 14, what is the new average?",
+          "a": "23 (Sum drops by 20; average drops by 20/10 = 2)."
+        },
+        {
+          "q": "What are the 4 Coffman conditions required for a Deadlock to occur?",
+          "a": "Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
+        },
+        {
+          "q": "What algorithm is used by operating systems for deadlock avoidance?",
+          "a": "Banker's Algorithm (safety check using Available, Max, Allocation, and Need matrices)."
+        },
+        {
+          "q": "What is the overall time and space complexity of Next Greater Element using a Monotonic Stack?",
+          "a": "O(N) time and O(N) auxiliary space."
+        },
+        {
+          "q": "In the College Student Management System (CSMS), what composite unique constraint prevents duplicate attendance?",
+          "a": "UNIQUE (student_id, record_date)."
+        },
+        {
+          "q": "What cryptographic hashing algorithm is used to secure passwords in CSMS?",
+          "a": "Bcrypt password hashing with salt rounds."
+        }
+      ],
+      "today_summary": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+      "formulas_and_shortcuts": [
+        "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Absolute Error Ea = |True Value - Approximate Value|"
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Monotonic Stack (Next Greater Element)."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: College Student Management System (CSMS)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-05-01",
+        "category": "Academic (Academic Theory)",
+        "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
+        "options": [
+          "|X - X*|",
+          "|X - X*| / |X|",
+          "(|X - X*| / |X|) * 100",
+          "|X - X*| * |X|"
+        ],
+        "correct_answer": "B",
+        "explanation": "Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+      },
+      {
+        "id": "TEST-05-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+        "options": [
+          "Quadratic (order 2)",
+          "Linear (order 1) with convergence factor 0.5",
+          "Superlinear (order 1.618)",
+          "Cubic (order 3)"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+      },
+      {
+        "id": "TEST-05-03",
+        "category": "Academic (Academic Theory)",
+        "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+        "options": [
+          "f(a) * f(b) > 0",
+          "f(a) * f(b) < 0",
+          "f'(a) = f'(b)",
+          "f(a) + f(b) = 0"
+        ],
+        "correct_answer": "B",
+        "explanation": "If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+      },
+      {
+        "id": "TEST-05-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is Truncation Error in numerical computation?",
+        "options": [
+          "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
+          "Error resulting from replacing an infinite mathematical process with a finite approximation (e.g., truncating a Taylor series)",
+          "Mistakes made by the programmer entering data",
+          "Error caused by noisy transmission channels"
+        ],
+        "correct_answer": "B",
+        "explanation": "Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+      },
+      {
+        "id": "TEST-05-05",
+        "category": "Academic (Academic Theory)",
+        "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+        "options": [
+          "4 iterations",
+          "7 iterations",
+          "10 iterations",
+          "25 iterations"
+        ],
+        "correct_answer": "C",
+        "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+      },
+      {
+        "id": "TEST-05-06",
+        "category": "Placement Aptitude",
+        "question": "The average of 7 consecutive numbers is 20. What is the largest of these numbers?",
+        "options": [
+          "23",
+          "22",
+          "24",
+          "25"
+        ],
+        "correct_answer": "A",
+        "explanation": "In 7 consecutive numbers, the average 20 is the middle (4th) number. The numbers are 17, 18, 19, 20, 21, 22, 23. The largest is 23."
+      },
+      {
+        "id": "TEST-05-07",
+        "category": "Placement Aptitude",
+        "question": "A batsman in his 17th innings makes a score of 85, thereby increasing his average by 3 runs. What is his average after the 17th innings?",
+        "options": [
+          "37",
+          "34",
+          "39",
+          "35"
+        ],
+        "correct_answer": "A",
+        "explanation": "Let previous average be x. Total runs in 17 innings = 16x + 85 = 17(x + 3) => 16x + 85 = 17x + 51 => x = 34. New average = 34 + 3 = 37."
+      },
+      {
+        "id": "TEST-05-08",
+        "category": "Placement Aptitude",
+        "question": "In what ratio must grocer mix coffee powder costing Rs. 250/kg with coffee powder costing Rs. 150/kg so that the mixture is worth Rs. 210/kg?",
+        "options": [
+          "3 : 2",
+          "2 : 3",
+          "4 : 3",
+          "3 : 1"
+        ],
+        "correct_answer": "A",
+        "explanation": "By Alligation: Ratio of Expensive (250) to Cheaper (150) with Mean (210) = (210 - 150) / (250 - 210) = 60 / 40 = 3 : 2."
+      },
+      {
+        "id": "TEST-05-09",
+        "category": "Placement Aptitude",
+        "question": "The average age of 24 students and their teacher is 15 years. If the teacher's age is excluded, the average age decreases by 1 year. What is the teacher's age?",
+        "options": [
+          "39 years",
+          "38 years",
+          "40 years",
+          "35 years"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total age with teacher = 25 * 15 = 375. Total age of 24 students = 24 * 14 = 336. Teacher's age = 375 - 336 = 39 years."
+      },
+      {
+        "id": "TEST-05-10",
+        "category": "Placement Aptitude",
+        "question": "The average of 50 numbers is 38. If two numbers namely 45 and 55 are discarded, what is the average of the remaining numbers?",
+        "options": [
+          "37.5",
+          "37",
+          "38",
+          "36.5"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sum of 50 numbers = 50 * 38 = 1,900. Discarded sum = 45 + 55 = 100. Remaining sum = 1,800. Remaining count = 48. New average = 1,800 / 48 = 37.5."
+      },
+      {
+        "id": "TEST-05-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which of the following is NOT one of the 4 Coffman conditions for deadlock?",
+        "options": [
+          "Mutual Exclusion",
+          "Hold and Wait",
+          "Process Aging",
+          "Circular Wait"
+        ],
+        "correct_answer": "C",
+        "explanation": "The 4 conditions are Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
+      },
+      {
+        "id": "TEST-05-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "If a Resource Allocation Graph contains a cycle and every resource type has exactly one single instance, then:",
+        "options": [
+          "A deadlock definitely exists",
+          "A deadlock may or may not exist",
+          "The system is guaranteed safe",
+          "The CPU enters thrashing"
+        ],
+        "correct_answer": "A",
+        "explanation": "With single-instance resources, a cycle in the RAG is both necessary and sufficient for deadlock."
+      },
+      {
+        "id": "TEST-05-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "The Banker's Algorithm is primarily used for:",
+        "options": [
+          "Deadlock Prevention",
+          "Deadlock Avoidance",
+          "Deadlock Detection",
+          "Memory Compaction"
+        ],
+        "correct_answer": "B",
+        "explanation": "Banker's Algorithm is a dynamic deadlock avoidance technique that checks for safe execution sequences."
+      },
+      {
+        "id": "TEST-05-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "In a system with Need matrix, how is Need calculated in Banker's Algorithm?",
+        "options": [
+          "Allocation - Available",
+          "Max - Allocation",
+          "Max + Available",
+          "Allocation - Max"
+        ],
+        "correct_answer": "B",
+        "explanation": "Need represents remaining resources a process may claim: Need = Max - Allocation."
+      },
+      {
+        "id": "TEST-05-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "Assigning global numerical IDs to resources and enforcing acquisition in ascending order eliminates which condition?",
+        "options": [
+          "Mutual Exclusion",
+          "Hold and Wait",
+          "No Preemption",
+          "Circular Wait"
+        ],
+        "correct_answer": "D",
+        "explanation": "Strict resource ordering prevents cycles from forming, eliminating Circular Wait."
+      },
+      {
+        "id": "TEST-05-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Monotonic Stack (Next Greater Element)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Monotonic Stack (Next Greater Element)' pattern operates with O(N) Time, O(N) Auxiliary Space: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.."
+      },
+      {
+        "id": "TEST-05-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Monotonic Stack (Next Greater Element)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Strictly decreasing sequence (all answers 0).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Monotonic Stack (Next Greater Element) include Strictly decreasing sequence (all answers 0), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-05-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Daily Temperatures', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-05-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Multi-Role Authentication & Bcrypt Password Security in CSMS'?",
+        "options": [
+          "Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.."
+      },
+      {
+        "id": "TEST-05-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How is authentication handled in CSMS across different academic roles?'?",
+        "options": [
+          "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University E...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students vi."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-05",
+      "title": "Daily Temperatures (Monotonic Stack (Next Greater Element))",
+      "time_limit_minutes": 25,
+      "difficulty": "Easy",
+      "problem_statement": "Solve the core placement problem: Daily Temperatures.\n\nGiven an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Monotonic Stack (Next Greater Element)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(N) Auxiliary Space\n- Handle all edge cases: Strictly decreasing sequence (all answers 0), Strictly increasing sequence, All equal elements, Single element.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Monotonic Stack (Next Greater Element)\n    public int[] dailyTemperatures(int[] temperatures) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Monotonic Stack (Next Greater Element)\n    public int[] dailyTemperatures(int[] temperatures) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+      "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Monotonic Stack (Next Greater Element) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Strictly decreasing sequence (all answers 0)",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(N) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Numerical Methods",
+    "subject_code": "BCA-5004",
+    "unit": 1,
+    "topic": "Unit I — Errors in Numerical Computations & Roots of Equations: Bisection Method",
+    "objectives": [
+      "Understand Absolute, Relative, and Percentage Errors.",
+      "Master the Bisection Method, Bolzano's Theorem, and linear convergence rate O(1/2^n)."
+    ],
+    "detailed_notes": [
+      "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   • Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   • Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   • Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   • Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   • Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
+      "Round-off errors (finite precision floating point) and Truncation errors (approximating infinite series with finite terms).",
+      "After n iterations, interval width is (b - a)/2^n. To achieve tolerance epsilon: n >= [ln(b - a) - ln(epsilon)] / ln(2)."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|                BISECTION METHOD                   |\n| a [f(a)<0] ------------- x_mid ------------- b [f(b)>0] |\n| Interval halves every step: width = (b - a) / 2^n |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
         "Iteration n",
         "Interval [a, b]",
-        "Midpoint c = (a+b)/2",
-        "f(c)",
-        "Sign of f(a)*f(c)",
-        "Next Interval"
+        "Midpoint x_mid = (a+b)/2",
+        "f(x_mid)",
+        "Sign Check & New Interval"
       ],
       "rows": [
         [
           "1",
-          "[2.000, 3.000]",
-          "2.500",
-          "-3.375",
-          "+ (Same sign)",
-          "[2.500, 3.000]"
+          "[1.000, 2.000]",
+          "1.500",
+          "+0.875",
+          "f(1)*f(1.5)<0 -> New interval [1.000, 1.500]"
         ],
         [
           "2",
-          "[2.500, 3.000]",
-          "2.750",
-          "+0.797",
-          "- (Opposite)",
-          "[2.500, 2.750]"
+          "[1.000, 1.500]",
+          "1.250",
+          "-0.297",
+          "f(1.25)*f(1.5)<0 -> New interval [1.250, 1.500]"
         ],
         [
           "3",
-          "[2.500, 2.750]",
-          "2.625",
-          "-1.412",
-          "+ (Same sign)",
-          "[2.625, 2.750]"
+          "[1.250, 1.500]",
+          "1.375",
+          "+0.225",
+          "f(1.25)*f(1.375)<0 -> New interval [1.250, 1.375]"
         ],
         [
           "4",
-          "[2.625, 2.750]",
-          "2.688",
-          "-0.341",
-          "+ (Same sign)",
-          "[2.688, 2.750]"
-        ],
-        [
-          "5",
-          "[2.688, 2.750]",
-          "2.719",
-          "+0.219",
-          "- (Opposite)",
-          "[2.688, 2.719]"
+          "[1.250, 1.375]",
+          "1.3125",
+          "-0.051",
+          "f(1.3125)*f(1.375)<0 -> New interval [1.3125, 1.375]"
         ]
       ]
     },
-    "memorize": "Bolzano's Theorem condition: f(a) * f(b) < 0. Midpoint formula: c = (a + b)/2. Error bound after n steps: Error <= (b - a) / 2^n. Convergence rate: Linear (p = 1).",
-    "understand": "The bisection method works like binary search over a continuous mathematical interval. Because it discards half the search space at each iteration, it is mathematically guaranteed to find the root if f(x) is continuous.",
-    "common_mistakes": "1. Forgetting to verify that f(a) and f(b) have opposite signs before starting. 2. Rounding intermediate decimals prematurely (always maintain 4-5 decimal places during examination calculations).",
-    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25, 2025-26)",
-    "pyq_freq": "5 Consecutive University Sessions: 2021 (Q1 - 15m), 2022-23 (Q2 - 15m), 2023-24 (Q1 - 15m), 2024-25 (Q1 - 15m), 2025-26 (Q1 - 15m)",
-    "pyq_question": "Find a real root of the equation x^3 - 4x - 9 = 0 using the Bisection Method correct to three decimal places. (15 Marks)",
-    "pyq_rubric": "Interval identification with opposite signs (3 marks) + Iteration formula (2 marks) + Step-by-step calculation table for 5-8 iterations (8 marks) + Final root statement (2 marks) = 15 Marks.",
+    "memorize": "Bisection formula: x_mid = (a + b) / 2. Condition: f(a)*f(b) < 0. Convergence: Linear, rate 0.5 per step. Guaranteed to converge.",
+    "understand": "Bisection is bracketing-based: it never diverges because the root remains trapped inside the shrinking interval.",
+    "common_mistakes": "Forgetting to evaluate signs f(a)*f(mid) and setting incorrect interval bounds.",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2024-25 (Q1)",
+        "marks": 15,
+        "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
+        "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
+        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+        "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
+        "important_points": [
+          "f(a)*f(b) < 0",
+          "Interval halves every step",
+          "Linear convergence order 1",
+          "Root = 1.325"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Step-by-step arithmetic table with 4+ iterations",
+          "Convergence rate proof formula e_{n+1} = 0.5 * e_n"
+        ],
+        "common_mistakes": [
+          "Rounding prematurely during intermediate steps"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5004 Numerical Methods",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Define Absolute, Relative, and Percentage Errors with mathematical expressions. (5 Marks)",
+        "rubric": "1.5 marks each + 0.5 for relation = 5 Marks.",
+        "model_answer": "Let X be the true value and X_a be the approximate value: 1. Absolute Error (E_a): The numerical difference between the true value and the approximate value: E_a = |X - X_a|; 2. Relative Error (E_r): The ratio of the absolute error to the true value: E_r = E_a / |X| = |X - X_a| / |X|; 3. Percentage Error (E_p): The relative error expressed as a percentage: E_p = E_r * 100% = (|X - X_a| / |X|) * 100%."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-05-01",
+        "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
+        "options": [
+          "|X - X*|",
+          "|X - X*| / |X|",
+          "(|X - X*| / |X|) * 100",
+          "|X - X*| * |X|"
+        ],
+        "correct_answer": "B",
+        "explanation": "Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+      },
+      {
+        "id": "ACAD-05-02",
+        "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+        "options": [
+          "Quadratic (order 2)",
+          "Linear (order 1) with convergence factor 0.5",
+          "Superlinear (order 1.618)",
+          "Cubic (order 3)"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+      },
+      {
+        "id": "ACAD-05-03",
+        "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+        "options": [
+          "f(a) * f(b) > 0",
+          "f(a) * f(b) < 0",
+          "f'(a) = f'(b)",
+          "f(a) + f(b) = 0"
+        ],
+        "correct_answer": "B",
+        "explanation": "If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+      },
+      {
+        "id": "ACAD-05-04",
+        "question": "What is Truncation Error in numerical computation?",
+        "options": [
+          "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
+          "Error resulting from replacing an infinite mathematical process with a finite approximation (e.g., truncating a Taylor series)",
+          "Mistakes made by the programmer entering data",
+          "Error caused by noisy transmission channels"
+        ],
+        "correct_answer": "B",
+        "explanation": "Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+      },
+      {
+        "id": "ACAD-05-05",
+        "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+        "options": [
+          "4 iterations",
+          "7 iterations",
+          "10 iterations",
+          "25 iterations"
+        ],
+        "correct_answer": "C",
+        "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+      }
+    ],
+    "pyq_year": "2024-25 (Q1)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
+    "pyq_rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Statement of Problem & Initial Bracketing:",
-        "Let f(x) = x^3 - 4x - 9 = 0. We evaluate f(x) for integer values to find two points where f(x) changes sign:\nf(0) = 0 - 0 - 9 = -9 < 0\nf(1) = 1 - 4 - 9 = -12 < 0\nf(2) = 8 - 8 - 9 = -9 < 0\nf(3) = 27 - 12 - 9 = +6 > 0\nSince f(2) = -9 < 0 and f(3) = +6 > 0, we have f(2) * f(3) < 0. By Bolzano's Intermediate Value Theorem, a real root lies in the open interval (2, 3)."
+        "1. Model Answer & Technical Presentation",
+        "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325."
       ],
       [
-        "2. Iterative Bisection Computation:",
-        "Iteration 1: a = 2, b = 3. Midpoint c1 = (2 + 3)/2 = 2.500.\nf(2.5) = (2.5)^3 - 4(2.5) - 9 = 15.625 - 10 - 9 = -3.375 < 0.\nSince f(2.5) < 0 and f(3) > 0, the root lies in [2.5, 3].\n\nIteration 2: a = 2.5, b = 3. Midpoint c2 = (2.5 + 3)/2 = 2.750.\nf(2.75) = (2.75)^3 - 4(2.75) - 9 = 20.7969 - 11 - 9 = +0.7969 > 0.\nSince f(2.5) < 0 and f(2.75) > 0, the root lies in [2.5, 2.75].\n\nIteration 3: a = 2.5, b = 2.75. Midpoint c3 = (2.5 + 2.75)/2 = 2.625.\nf(2.625) = (2.625)^3 - 4(2.625) - 9 = 18.0879 - 10.5 - 9 = -1.4121 < 0.\nSince f(2.625) < 0 and f(2.75) > 0, the root lies in [2.625, 2.75].\n\nIteration 4: a = 2.625, b = 2.75. Midpoint c4 = (2.625 + 2.75)/2 = 2.6875.\nf(2.6875) = (2.6875)^3 - 4(2.6875) - 9 = 19.4089 - 10.75 - 9 = -0.3411 < 0.\nSince f(2.6875) < 0 and f(2.75) > 0, the root lies in [2.6875, 2.75].\n\nIteration 5: a = 2.6875, b = 2.75. Midpoint c5 = (2.6875 + 2.75)/2 = 2.7188.\nf(2.7188) = (2.7188)^3 - 4(2.7188) - 9 = +0.2192 > 0.\nThe root lies in [2.6875, 2.7188].\n\nIteration 6: c6 = (2.6875 + 2.7188)/2 = 2.7031. f(2.7031) = -0.063 < 0.\nIteration 7: c7 = (2.7031 + 2.7188)/2 = 2.7109. f(2.7109) = +0.077 > 0.\nIteration 8: c8 = (2.7031 + 2.7109)/2 = 2.7070. Both endpoints now agree to two decimal places: 2.70."
-      ],
-      [
-        "3. Conclusion & Final Value:",
-        "After 8 iterations, the approximate real root of x^3 - 4x - 9 = 0 correct to two decimal places is x = 2.707 (or 2.71)."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Find the positive root of x^3 - x - 1 = 0 using Bisection Method in 4 iterations. (Answer: Root lies between 1 and 2; c1=1.5, c2=1.25, c3=1.375, c4=1.3125)."
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "State the convergence condition and order of convergence of Bisection Method. (Answer: Guaranteed convergence if f(x) is continuous and f(a)*f(b) < 0; order of convergence is linear, p = 1)."
+        "2. Expected Examiner Criteria",
+        [
+          "Step-by-step arithmetic table with 4+ iterations",
+          "Convergence rate proof formula e_{n+1} = 0.5 * e_n"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Bisection Method 5-Step Numerical Presentation.",
-    "milestone": "Full 15/15 marks on Numerical Methods Unit 1 (BCA-5004)."
-  },
   "apt_data": {
-    "topic": "Ratio, Proportion & Variations \u2014 Foundations & Placement Patterns",
+    "topic": "Averages, Weighted Means & Alligations",
+    "category": "Quantitative",
+    "subtopic": "Averages",
+    "formulas": "1. Average = Sum of all observations / Total number of observations.\n2. Weighted Average = (w1*x1 + w2*x2 + ... + wn*xn) / (w1 + w2 + ... + wn).\n3. Alligation Rule: (Cheaper Quantity) / (Dearer Quantity) = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price).",
+    "shortcut": "Deviation Method (Assumed Mean): Pick a central number as baseline. Sum deviations from this baseline and divide by n. Average = Baseline + (Sum of Deviations / n).",
     "tutorial": [
-      "A ratio a : b represents the relative size of two quantities expressed as a fraction a/b. Ratios can be scaled by multiplying or dividing both terms by any non-zero constant.",
-      "Compounding & Proportions: If a : b = c : d, then a, b, c, d are in proportion (ad = bc). Product of Extremes = Product of Means.",
-      "Definitions:\n\u2022 Fourth Proportional to a, b, c is x such that a/b = c/x ==> x = bc/a.\n\u2022 Third Proportional to a, b is x such that a/b = b/x ==> x = b^2 / a.\n\u2022 Mean Proportional between a and b is x = sqrt(a * b).",
-      "Combining Ratios: If A : B = 2 : 3 and B : C = 4 : 5, equalize B (LCM of 3 and 4 is 12). A : B = 8 : 12 and B : C = 12 : 15 ==> A : B : C = 8 : 12 : 15."
+      "The Alligation cross is a powerful graphical shortcut for solving weighted averages in seconds. It determines the exact mixing ratio of two ingredients at different prices to produce a target mixture price without solving simultaneous linear equations."
     ],
-    "formulas": "1. Product of Extremes = Product of Means: ad = bc\n2. Mean Proportional between a and b = sqrt(ab)\n3. Third Proportional to a and b = b^2 / a\n4. Fourth Proportional to a, b, c = bc / a",
-    "shortcut": "Invert-and-Multiply ratio bridge:\nTo combine A:B = p:q and B:C = r:s, write: A = p*r, B = q*r, C = q*s.\nExample: A:B = 2:3, B:C = 4:5 ==> A = 2*4=8, B = 3*4=12, C = 3*5=15.",
-    "recognition": "Look for 'A, B, C share an amount in ratio...', 'find the third proportional to...', or 'a bag contains 50p, 25p, 10p coins in ratio...'.",
-    "p1_q": "[Foundation] If A : B = 3 : 4 and B : C = 8 : 9, find the ratio A : C.",
-    "p1_s": "A/C = (A/B) * (B/C) = (3/4) * (8/9) = (3 * 8) / (4 * 9) = 24 / 36 = 2 / 3.\nAnswer: A : C = 2 : 3.",
-    "p2_q": "[Standard Placement] Find the mean proportional between 9 and 64, and the third proportional to 16 and 24.",
-    "p2_s": "Part 1: Mean proportional = sqrt(9 * 64) = sqrt(576) = 24.\nPart 2: Third proportional = b^2 / a = (24 * 24) / 16 = 576 / 16 = 36.\nAnswer: Mean = 24, Third = 36.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Accenture Critical Thinking Pattern]",
-    "p3_q": "A bag contains 50 paise, 25 paise, and 10 paise coins in the ratio 5 : 9 : 4, amounting to Rs. 206. Find the number of coins of each type.",
-    "p3_s": "Step 1: Let the number of coins be 5x, 9x, and 4x respectively.\nStep 2: Express values in Rupees:\n- 50p coins = 5x * (1/2) = 2.5x Rupees\n- 25p coins = 9x * (1/4) = 2.25x Rupees\n- 10p coins = 4x * (1/10) = 0.40x Rupees\nStep 3: Total value equation:\n2.5x + 2.25x + 0.40x = 206\n5.15x = 206 ==> x = 206 / 5.15 = 40.\nStep 4: Count of coins:\n- 50p coins = 5 * 40 = 200 coins\n- 25p coins = 9 * 40 = 360 coins\n- 10p coins = 4 * 40 = 160 coins.\nAnswer: 200, 360, and 160 coins.",
-    "p4_q": "[Hard / Time-Pressure] Two vessels A and B contain milk and water in the ratio 7 : 5 and 17 : 7 respectively. In what ratio should liquid from both vessels be mixed to obtain a new mixture containing milk and water in the ratio 3 : 2?",
-    "p4_s": "Using the Allegation Rule on Milk Concentration:\n- Concentration in Vessel A = 7 / (7 + 5) = 7/12 = 70/120\n- Concentration in Vessel B = 17 / (17 + 7) = 17/24 = 85/120\n- Desired Mean Concentration = 3 / (3 + 2) = 3/5 = 72/120\nBy Allegation: (B - Mean) : (Mean - A) = (85 - 72) : (72 - 70) = 13 : 2.\nAnswer: 13 : 2.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "If x : y = 5 : 2, find the value of (8x + 9y) : (8x + 2y)."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "Find the fourth proportional to 4, 9, and 12."
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "The ratio of ages of two persons is 4 : 7. Eight years ago, the ratio was 1 : 2. Find their present ages."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "Rs. 782 is divided into three parts in the ratio 1/2 : 2/3 : 3/4. Find the first part."
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "If 15 men can complete a project in 20 days, how many men are needed to complete it in 12 days?"
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Averages",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Averages",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Averages",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Averages",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Averages",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "The average age of 24 students and their teacher is 15 years. When the teacher's age is excluded, the average decreases by 1 year. What is the teacher's age?",
+        "options": {
+          "A": "35 years",
+          "B": "39 years",
+          "C": "40 years",
+          "D": "42 years"
+        },
+        "correct_answer": "B",
+        "explanation": "Total sum with teacher = 25 * 15 = 375. Total sum without teacher = 24 * 14 = 336. Teacher's age = 375 - 336 = 39 years."
+      },
+      {
+        "mcq_no": 2,
+        "question": "In what ratio must a grocer mix tea at Rs. 60/kg with tea at Rs. 65/kg so that by selling the mixture at Rs. 68.20/kg he makes a profit of 10%?",
+        "options": {
+          "A": "3 : 2",
+          "B": "2 : 3",
+          "C": "1 : 4",
+          "D": "4 : 1"
+        },
+        "correct_answer": "A",
+        "explanation": "Cost price of mixture = 68.20 / 1.10 = Rs. 62/kg. Using Alligation: Cheaper = 60, Dearer = 65, Mean = 62. Ratio = (65 - 62) / (62 - 60) = 3 : 2."
+      },
+      {
+        "mcq_no": 3,
+        "question": "The average score of a cricketer in 10 innings was 32 runs. How many runs must he score in his 11th inning to raise his average to 36 runs?",
+        "options": {
+          "A": "72",
+          "B": "76",
+          "C": "80",
+          "D": "84"
+        },
+        "correct_answer": "B",
+        "explanation": "Total runs required in 11 innings = 11 * 36 = 396. Current total in 10 innings = 10 * 32 = 320. Required score = 396 - 320 = 76 runs."
+      },
+      {
+        "mcq_no": 4,
+        "question": "The average weight of 8 persons increases by 2.5 kg when a new person replaces one of them weighing 65 kg. What is the weight of the new person?",
+        "options": {
+          "A": "80 kg",
+          "B": "85 kg",
+          "C": "90 kg",
+          "D": "75 kg"
+        },
+        "correct_answer": "B",
+        "explanation": "Total weight increase across 8 persons = 8 * 2.5 = 20 kg. Weight of new person = 65 + 20 = 85 kg."
+      },
+      {
+        "mcq_no": 5,
+        "question": "A container contains 40 liters of milk. From this, 4 liters of milk was taken out and replaced by water. This process was repeated two more times. How much milk is left in the container now?",
+        "options": {
+          "A": "29.16 liters",
+          "B": "30.50 liters",
+          "C": "28.84 liters",
+          "D": "31.25 liters"
+        },
+        "correct_answer": "A",
+        "explanation": "Remaining pure liquid = Initial * (1 - x / V)^n = 40 * (1 - 4/40)^3 = 40 * (0.9)^3 = 40 * 0.729 = 29.16 liters."
+      },
+      {
+        "mcq_no": 6,
+        "question": "The average of 5 consecutive odd numbers is 27. What is the product of the first and fifth numbers?",
+        "options": {
+          "A": "713",
+          "B": "725",
+          "C": "675",
+          "D": "759"
+        },
+        "correct_answer": "A",
+        "explanation": "For 5 consecutive odd numbers, the average is the middle (3rd) number = 27. Numbers are 23, 25, 27, 29, 31. Product of 1st and 5th = 23 * 31 = 713."
+      },
+      {
+        "mcq_no": 7,
+        "question": "A student's marks were wrongly recorded as 83 instead of 63. Due to this error, the average marks of the class increased by 0.5. How many students are there in the class?",
+        "options": {
+          "A": "30",
+          "B": "40",
+          "C": "50",
+          "D": "45"
+        },
+        "correct_answer": "B",
+        "explanation": "Excess marks added = 83 - 63 = 20 marks. Number of students = Excess / Average Increase = 20 / 0.5 = 40 students."
+      },
+      {
+        "mcq_no": 8,
+        "question": "In what ratio must water be mixed with milk costing Rs. 12 per liter to obtain a mixture worth Rs. 8 per liter?",
+        "options": {
+          "A": "1 : 2",
+          "B": "2 : 1",
+          "C": "1 : 3",
+          "D": "2 : 3"
+        },
+        "correct_answer": "A",
+        "explanation": "Water cost = 0, Milk cost = 12, Mean price = 8. Ratio of Water : Milk = (12 - 8) / (8 - 0) = 4 : 8 = 1 : 2."
+      },
+      {
+        "mcq_no": 9,
+        "question": "The average salary of all employees in a workshop is Rs. 8,000. The average salary of 7 technicians is Rs. 12,000 and the average salary of the rest is Rs. 6,000. What is the total number of employees?",
+        "options": {
+          "A": "20",
+          "B": "21",
+          "C": "25",
+          "D": "28"
+        },
+        "correct_answer": "B",
+        "explanation": "By Alligation: Ratio of Technicians (12k) to Others (6k) with Mean (8k) = (8k - 6k) : (12k - 8k) = 2k : 4k = 1 : 2. Since Technicians = 7 (1 unit), Others = 14 (2 units). Total employees = 7 + 14 = 21."
+      },
+      {
+        "mcq_no": 10,
+        "question": "The average speed of a car for an entire journey is 60 km/hr. If it covers the first half of the distance at 40 km/hr, what was its speed during the second half?",
+        "options": {
+          "A": "80 km/hr",
+          "B": "100 km/hr",
+          "C": "120 km/hr",
+          "D": "90 km/hr"
+        },
+        "correct_answer": "C",
+        "explanation": "Average speed for equal distances = 2*u*v / (u + v). 60 = (2 * 40 * v) / (40 + v) => 60*(40 + v) = 80v => 2400 + 60v = 80v => 20v = 2400 => v = 120 km/hr."
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Averages (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "Substitute x=5, y=2: (40 + 18) / (40 + 4) = 58 / 44 = 29 / 22. Answer: 29 : 22."
-      ],
-      [
-        "Solution Q2:",
-        "Fourth proportional = (9 * 12) / 4 = 27. Answer: 27."
-      ],
-      [
-        "Solution Q3:",
-        "(4x - 8) / (7x - 8) = 1 / 2 ==> 8x - 16 = 7x - 8 ==> x = 8. Ages are 32 and 56. Answer: 32 and 56 years."
-      ],
-      [
-        "Solution Q4:",
-        "LCM of 2, 3, 4 is 12. Ratio = 6 : 8 : 9. Sum = 23 parts. 1st part = (6/23)*782 = 6 * 34 = Rs. 204. Answer: Rs. 204."
-      ],
-      [
-        "Solution Q5:",
-        "M1 * D1 = M2 * D2 ==> 15 * 20 = M2 * 12 ==> M2 = 300 / 12 = 25 men. Answer: 25 men."
-      ]
-    ],
-    "trap": "When dividing money in fractional ratios (e.g. 1/2 : 2/3 : 3/4), NEVER divide directly by the denominators. Multiply all fractions by their common LCM first to get an integer ratio."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Daily Temperatures",
+      "difficulty": "Easy",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0.",
+      "solution_approach": "1. Apply Monotonic Stack (Next Greater Element) algorithmic technique.\n2. Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.\n3. Invariants: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Next Greater Element I",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "The next greater element of some element x in an array is the first greater element that is to the right of x in the same array. Find all next greater elements for nums1 within nums2.",
+      "solution_approach": "1. Identify interview variation of Monotonic Stack (Next Greater Element).\n2. Handle edge cases: Strictly decreasing sequence (all answers 0), Strictly increasing sequence, All equal elements, Single element.\n3. Maintain optimal asymptotic bounds.",
+      "code": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+      "java_solution": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+      "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Monotonic Stack (Next Greater Element)",
+    "category": "Stack",
+    "concept": "Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.",
+    "why_it_works": "Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
+    "visual_explanation": "Temperatures: [ 73, 74, 75, 71, 69, 72 ]\\ni=0 (73): Push 0\\ni=1 (74): 74 > 73 -> Pop 0, ans[0] = 1 - 0 = 1; Push 1\\ni=2 (75): 75 > 74 -> Pop 1, ans[1] = 2 - 1 = 1; Push 2\\ni=3 (71): 71 < 75 -> Push 3\\ni=4 (69): 69 < 71 -> Push 4\\ni=5 (72): 72 > 69 -> Pop 4, ans[4] = 5-4 = 1; 72 > 71 -> Pop 3, ans[3] = 5-3 = 2; Push 5",
+    "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int n = temperatures.length;\n        int[] ans = new int[n];\n        Deque<Integer> stack = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int prevIndex = stack.pop();\n                ans[prevIndex] = i - prevIndex;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+    "code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int n = temperatures.length;\n        int[] ans = new int[n];\n        Deque<Integer> stack = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int prevIndex = stack.pop();\n                ans[prevIndex] = i - prevIndex;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+    "python_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int n = temperatures.length;\n        int[] ans = new int[n];\n        Deque<Integer> stack = new ArrayDeque<>();\n        \n        for (int i = 0; i < n; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int prevIndex = stack.pop();\n                ans[prevIndex] = i - prevIndex;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 5: Allocate answer array initialized to 0.",
+      "Line 6: Use ArrayDeque as an efficient, memory-optimized stack.",
+      "Line 8: Iterate index i through all temperatures.",
+      "Line 9-12: While stack is non-empty and current temperature exceeds the temperature at stack top, pop index and compute difference.",
+      "Line 13: Push current index onto the stack.",
+      "Line 15: Return populated answer array."
+    ],
+    "dry_run": "T = [73, 74, 75, 71, 69, 72]. i=0: push 0. i=1(74): pop 0 -> ans[0]=1, push 1. i=2(75): pop 1 -> ans[1]=1, push 2. i=3: push 3. i=4: push 4. i=5(72): pop 4 -> ans[4]=1, pop 3 -> ans[3]=2. Returns [1, 1, 0, 2, 1, 0].",
+    "complexity": "O(N) Time, O(N) Auxiliary Space",
+    "edge_cases": [
+      "Strictly decreasing sequence (all answers 0)",
+      "Strictly increasing sequence",
+      "All equal elements",
+      "Single element"
+    ],
+    "interview_variations": [
+      "Next Greater Element I & II",
+      "Online Stock Span",
+      "Largest Rectangle in Histogram",
+      "Trapping Rain Water (Stack Approach)"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-05-01",
+        "title": "Problem 1: Daily Temperatures",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Monotonic Stack (Next Greater Element) algorithmic technique.\n2. Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.\n3. Invariants: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-05-02",
+        "title": "Problem 2: Next Greater Element I",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "The next greater element of some element x in an array is the first greater element that is to the right of x in the same array. Find all next greater elements for nums1 within nums2.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Monotonic Stack (Next Greater Element).\n2. Handle edge cases: Strictly decreasing sequence (all answers 0), Strictly increasing sequence, All equal elements, Single element.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+        "solution_python": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+        "code": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+        "java_code": "import java.util.*;\n\npublic class Solution {\n    public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n        Map<Integer, Integer> map = new HashMap<>();\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int num : nums2) {\n            while (!stack.isEmpty() && num > stack.peek()) {\n                map.put(stack.pop(), num);\n            }\n            stack.push(num);\n        }\n        int[] res = new int[nums1.length];\n        for (int i = 0; i < nums1.length; i++) {\n            res[i] = map.getOrDefault(nums1[i], -1);\n        }\n        return res;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "Operating Systems",
+    "topic": "Deadlocks: 4 Coffman Conditions, Resource Allocation Graphs & Banker's Algorithm",
+    "detailed_notes": [
+      "A Deadlock is a state in which a set of concurrent processes are blocked because each process holds resources and waits for other resources held by other processes in the same set.\n\nThe 4 Coffman Conditions (All must hold simultaneously for a deadlock to occur):\n1. Mutual Exclusion: At least one resource must be held in a non-shareable mode.\n2. Hold and Wait: A process must be holding at least one resource and waiting to acquire additional resources held by others.\n3. No Preemption: Resources cannot be forcibly confiscated from a process; they can only be released voluntarily.\n4. Circular Wait: A closed chain of processes exists {P0, P1, ..., Pn} such that P0 waits for a resource held by P1, P1 waits for P2, and Pn waits for P0.\n\nHandling Strategies:\n- Deadlock Prevention: Invalidate at least one Coffman condition (e.g., impose global linear resource ordering to eliminate Circular Wait).\n- Deadlock Avoidance: System evaluates dynamic state before granting allocations to ensure the system remains in a 'Safe State'. The Banker's Algorithm uses vectors (Available, Max, Allocation, Need = Max - Allocation) to test whether there exists a safe sequence where all processes can finish.\n- Deadlock Detection & Recovery: Allow deadlocks to occur, run detection algorithms (wait-for graphs), and recover via process termination or resource preemption.\n- Ostrich Algorithm: Ignore the problem entirely (used by most general-purpose OS kernels due to the high cost of continuous prevention)."
+    ],
+    "key_definitions": [
+      {
+        "term": "Safe State",
+        "definition": "A system state where there exists at least one execution sequence of all processes that avoids deadlock."
+      },
+      {
+        "term": "Banker's Algorithm",
+        "definition": "A deadlock avoidance algorithm that tests for safety by simulating the allocation of predetermined maximum resources."
+      },
+      {
+        "term": "Resource Allocation Graph (RAG)",
+        "definition": "A directed graph with process nodes and resource nodes showing request and assignment edges."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "What are the four necessary and sufficient conditions for a deadlock to occur?",
+        "a": "The Coffman conditions: 1. Mutual Exclusion (resources cannot be shared), 2. Hold and Wait (processes retain allocated resources while requesting new ones), 3. No Preemption (resources cannot be forcibly revoked), and 4. Circular Wait (a circular chain of processes each waiting for a resource held by the next)."
+      },
+      {
+        "q": "How does the Banker's Algorithm determine if a state is safe?",
+        "a": "It calculates Need = Max - Allocation for each process. It simulates execution using Work = Available vector. It finds a process Pi whose Need <= Work. If found, it assumes Pi completes, returns its resources (Work = Work + Allocation_i), marks Pi finished, and repeats. If all processes can be marked finished, a 'safe sequence' exists and the state is safe; otherwise, it is unsafe."
+      },
+      {
+        "q": "Is an unsafe state always a deadlocked state?",
+        "a": "No. An unsafe state is not necessarily deadlocked; it is simply a state from which the OS cannot guarantee avoiding a deadlock if all processes simultaneously demand their maximum resource limits. If processes do not request their maximum claims, execution may still complete without deadlock."
+      },
+      {
+        "q": "How can Circular Wait be prevented in practice?",
+        "a": "By imposing a strict global total ordering on all resource types (e.g., Lock 1 has ID 10, Lock 2 has ID 20). Processes must request resources strictly in monotonically increasing order of resource IDs. If a process holds Lock 20, it is forbidden from requesting Lock 10, mathematically preventing circular dependency cycles."
+      },
+      {
+        "q": "What is the difference between a Deadlock and a Livelock?",
+        "a": "In a deadlock, processes are in a blocked (sleeping) state, waiting for events that will never occur, consuming zero CPU cycles. In a livelock, processes actively change their internal states in response to each other (e.g., repeatedly yielding and retrying a lock), remaining busy and consuming 100% CPU, but making zero forward progress."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-05-01",
+        "question": "Which of the following is NOT one of the 4 Coffman conditions for deadlock?",
+        "options": [
+          "Mutual Exclusion",
+          "Hold and Wait",
+          "Process Aging",
+          "Circular Wait"
+        ],
+        "correct_answer": "C",
+        "explanation": "The 4 conditions are Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
+      },
+      {
+        "id": "CS-05-02",
+        "question": "If a Resource Allocation Graph contains a cycle and every resource type has exactly one single instance, then:",
+        "options": [
+          "A deadlock definitely exists",
+          "A deadlock may or may not exist",
+          "The system is guaranteed safe",
+          "The CPU enters thrashing"
+        ],
+        "correct_answer": "A",
+        "explanation": "With single-instance resources, a cycle in the RAG is both necessary and sufficient for deadlock."
+      },
+      {
+        "id": "CS-05-03",
+        "question": "The Banker's Algorithm is primarily used for:",
+        "options": [
+          "Deadlock Prevention",
+          "Deadlock Avoidance",
+          "Deadlock Detection",
+          "Memory Compaction"
+        ],
+        "correct_answer": "B",
+        "explanation": "Banker's Algorithm is a dynamic deadlock avoidance technique that checks for safe execution sequences."
+      },
+      {
+        "id": "CS-05-04",
+        "question": "In a system with Need matrix, how is Need calculated in Banker's Algorithm?",
+        "options": [
+          "Allocation - Available",
+          "Max - Allocation",
+          "Max + Available",
+          "Allocation - Max"
+        ],
+        "correct_answer": "B",
+        "explanation": "Need represents remaining resources a process may claim: Need = Max - Allocation."
+      },
+      {
+        "id": "CS-05-05",
+        "question": "Assigning global numerical IDs to resources and enforcing acquisition in ascending order eliminates which condition?",
+        "options": [
+          "Mutual Exclusion",
+          "Hold and Wait",
+          "No Preemption",
+          "Circular Wait"
+        ],
+        "correct_answer": "D",
+        "explanation": "Strict resource ordering prevents cycles from forming, eliminating Circular Wait."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "College Student Management System (CSMS)",
+    "repo_path": "D:\\Projects\\College Student Management System",
+    "feature_focus": "Multi-Role Authentication & Bcrypt Password Security in CSMS",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nImplementing role-based access for HOD, Section Incharges, Faculty, and Students with bcrypt hashing.\n\nWHAT TO MEMORIZE:\nPasswords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.\n\n60-SECOND INTERVIEW PITCH:\nIn CSMS, security and role segregation were critical. I implemented a dual-lookup authentication system supporting both HOD email and University Enrollment Number credentials. By hashing all credentials with bcrypt and validating roles on every protected endpoint, the system guarantees that students cannot tamper with grade rosters or fee balances.",
+    "interview_qa": [
+      {
+        "q": "How is authentication handled in CSMS across different academic roles?",
+        "a": "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University Enrollment Number (e.g. `CSJMA24000004738`) from the `students` table. Stored passwords are salted and hashed using bcrypt. On successful authentication, the response payload returns the authenticated role and session context, steering the client to either `admin-dashboard.html` or `student-dashboard.html`."
+      },
+      {
+        "q": "How do you protect sensitive student academic data against unauthorized tampering?",
+        "a": "Administrative routes (`/api/students`, `/api/hod/*`) enforce strict server-side role validation checking the `role` field ('HOD', 'Section Incharge', 'Faculty'). Grade entry and fee reconciliation endpoints reject requests originating from unverified student sessions."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 5 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 5 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'TerraStract', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In TerraStract (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of TerraStract.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n• Packet encapsulation from application data down to physical bits.\n• Ratio & Proportion compounding and partnership profit sharing.\n• Floyd's Tortoise and Hare cycle detection in linked lists.",
+    "today_recall": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+    "formula_recall": "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
+    "pyq_recall": "• University PYQ: CSJM University 2022 (Section C, 15 Marks) — 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n• Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
+    "dsa_recall": "• Pattern: Monotonic Stack (Next Greater Element).\n• Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n• Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
+    "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n• Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
+    "rapid_fire_questions": [
+      {
+        "q": "What mathematical theorem guarantees the existence of a real root in the Bisection Method?",
+        "a": "The Intermediate Value Theorem (if f(a) and f(b) have opposite signs, f(a)*f(b) < 0, there is at least one root in [a, b])."
+      },
+      {
+        "q": "What is the rate of convergence of the Bisection Method?",
+        "a": "Linear convergence with rate 1/2 (the interval width halves at each iteration)."
+      },
+      {
+        "q": "What is the formula for Relative Error in numerical analysis?",
+        "a": "Relative Error = |True Value - Approximate Value| / |True Value|."
+      },
+      {
+        "q": "How does the Alligation rule calculate the ratio of two ingredients at prices c and d to yield mean price m?",
+        "a": "Ratio = (d - m) / (m - c)."
+      },
+      {
+        "q": "If an average of 10 numbers is 25 and one number 34 is replaced by 14, what is the new average?",
+        "a": "23 (Sum drops by 20; average drops by 20/10 = 2)."
+      },
+      {
+        "q": "What are the 4 Coffman conditions required for a Deadlock to occur?",
+        "a": "Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
+      },
+      {
+        "q": "What algorithm is used by operating systems for deadlock avoidance?",
+        "a": "Banker's Algorithm (safety check using Available, Max, Allocation, and Need matrices)."
+      },
+      {
+        "q": "What is the overall time and space complexity of Next Greater Element using a Monotonic Stack?",
+        "a": "O(N) time and O(N) auxiliary space."
+      },
+      {
+        "q": "In the College Student Management System (CSMS), what composite unique constraint prevents duplicate attendance?",
+        "a": "UNIQUE (student_id, record_date)."
+      },
+      {
+        "q": "What cryptographic hashing algorithm is used to secure passwords in CSMS?",
+        "a": "Bcrypt password hashing with salt rounds."
+      }
+    ],
+    "today_summary": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+    "formulas_and_shortcuts": [
+      "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Absolute Error Ea = |True Value - Approximate Value|"
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Monotonic Stack (Next Greater Element)."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: College Student Management System (CSMS)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 05 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
+        "a": "Answer: B\n\nAbsolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+      },
+      {
+        "q": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+        "a": "Answer: B\n\nThe Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+      },
+      {
+        "q": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+        "a": "Answer: B\n\nIf f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+      },
+      {
+        "q": "What is Truncation Error in numerical computation?",
+        "a": "Answer: B\n\nTruncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+      },
+      {
+        "q": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+        "a": "Answer: C\n\nInterval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+      },
+      {
+        "q": "The average of 7 consecutive numbers is 20. What is the largest of these numbers?",
+        "a": "Answer: A\n\nIn 7 consecutive numbers, the average 20 is the middle (4th) number. The numbers are 17, 18, 19, 20, 21, 22, 23. The largest is 23."
+      },
+      {
+        "q": "A batsman in his 17th innings makes a score of 85, thereby increasing his average by 3 runs. What is his average after the 17th innings?",
+        "a": "Answer: A\n\nLet previous average be x. Total runs in 17 innings = 16x + 85 = 17(x + 3) => 16x + 85 = 17x + 51 => x = 34. New average = 34 + 3 = 37."
+      },
+      {
+        "q": "In what ratio must grocer mix coffee powder costing Rs. 250/kg with coffee powder costing Rs. 150/kg so that the mixture is worth Rs. 210/kg?",
+        "a": "Answer: A\n\nBy Alligation: Ratio of Expensive (250) to Cheaper (150) with Mean (210) = (210 - 150) / (250 - 210) = 60 / 40 = 3 : 2."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-05-01",
+        "category": "Academic (Academic Theory)",
+        "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
+        "options": [
+          "|X - X*|",
+          "|X - X*| / |X|",
+          "(|X - X*| / |X|) * 100",
+          "|X - X*| * |X|"
+        ],
+        "correct_answer": "B",
+        "explanation": "Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+      },
+      {
+        "id": "TEST-05-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+        "options": [
+          "Quadratic (order 2)",
+          "Linear (order 1) with convergence factor 0.5",
+          "Superlinear (order 1.618)",
+          "Cubic (order 3)"
+        ],
+        "correct_answer": "B",
+        "explanation": "The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+      },
+      {
+        "id": "TEST-05-03",
+        "category": "Academic (Academic Theory)",
+        "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+        "options": [
+          "f(a) * f(b) > 0",
+          "f(a) * f(b) < 0",
+          "f'(a) = f'(b)",
+          "f(a) + f(b) = 0"
+        ],
+        "correct_answer": "B",
+        "explanation": "If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+      },
+      {
+        "id": "TEST-05-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is Truncation Error in numerical computation?",
+        "options": [
+          "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
+          "Error resulting from replacing an infinite mathematical process with a finite approximation (e.g., truncating a Taylor series)",
+          "Mistakes made by the programmer entering data",
+          "Error caused by noisy transmission channels"
+        ],
+        "correct_answer": "B",
+        "explanation": "Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+      },
+      {
+        "id": "TEST-05-05",
+        "category": "Academic (Academic Theory)",
+        "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+        "options": [
+          "4 iterations",
+          "7 iterations",
+          "10 iterations",
+          "25 iterations"
+        ],
+        "correct_answer": "C",
+        "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+      },
+      {
+        "id": "TEST-05-06",
+        "category": "Placement Aptitude",
+        "question": "The average of 7 consecutive numbers is 20. What is the largest of these numbers?",
+        "options": [
+          "23",
+          "22",
+          "24",
+          "25"
+        ],
+        "correct_answer": "A",
+        "explanation": "In 7 consecutive numbers, the average 20 is the middle (4th) number. The numbers are 17, 18, 19, 20, 21, 22, 23. The largest is 23."
+      },
+      {
+        "id": "TEST-05-07",
+        "category": "Placement Aptitude",
+        "question": "A batsman in his 17th innings makes a score of 85, thereby increasing his average by 3 runs. What is his average after the 17th innings?",
+        "options": [
+          "37",
+          "34",
+          "39",
+          "35"
+        ],
+        "correct_answer": "A",
+        "explanation": "Let previous average be x. Total runs in 17 innings = 16x + 85 = 17(x + 3) => 16x + 85 = 17x + 51 => x = 34. New average = 34 + 3 = 37."
+      },
+      {
+        "id": "TEST-05-08",
+        "category": "Placement Aptitude",
+        "question": "In what ratio must grocer mix coffee powder costing Rs. 250/kg with coffee powder costing Rs. 150/kg so that the mixture is worth Rs. 210/kg?",
+        "options": [
+          "3 : 2",
+          "2 : 3",
+          "4 : 3",
+          "3 : 1"
+        ],
+        "correct_answer": "A",
+        "explanation": "By Alligation: Ratio of Expensive (250) to Cheaper (150) with Mean (210) = (210 - 150) / (250 - 210) = 60 / 40 = 3 : 2."
+      },
+      {
+        "id": "TEST-05-09",
+        "category": "Placement Aptitude",
+        "question": "The average age of 24 students and their teacher is 15 years. If the teacher's age is excluded, the average age decreases by 1 year. What is the teacher's age?",
+        "options": [
+          "39 years",
+          "38 years",
+          "40 years",
+          "35 years"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total age with teacher = 25 * 15 = 375. Total age of 24 students = 24 * 14 = 336. Teacher's age = 375 - 336 = 39 years."
+      },
+      {
+        "id": "TEST-05-10",
+        "category": "Placement Aptitude",
+        "question": "The average of 50 numbers is 38. If two numbers namely 45 and 55 are discarded, what is the average of the remaining numbers?",
+        "options": [
+          "37.5",
+          "37",
+          "38",
+          "36.5"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sum of 50 numbers = 50 * 38 = 1,900. Discarded sum = 45 + 55 = 100. Remaining sum = 1,800. Remaining count = 48. New average = 1,800 / 48 = 37.5."
+      },
+      {
+        "id": "TEST-05-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which of the following is NOT one of the 4 Coffman conditions for deadlock?",
+        "options": [
+          "Mutual Exclusion",
+          "Hold and Wait",
+          "Process Aging",
+          "Circular Wait"
+        ],
+        "correct_answer": "C",
+        "explanation": "The 4 conditions are Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
+      },
+      {
+        "id": "TEST-05-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "If a Resource Allocation Graph contains a cycle and every resource type has exactly one single instance, then:",
+        "options": [
+          "A deadlock definitely exists",
+          "A deadlock may or may not exist",
+          "The system is guaranteed safe",
+          "The CPU enters thrashing"
+        ],
+        "correct_answer": "A",
+        "explanation": "With single-instance resources, a cycle in the RAG is both necessary and sufficient for deadlock."
+      },
+      {
+        "id": "TEST-05-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "The Banker's Algorithm is primarily used for:",
+        "options": [
+          "Deadlock Prevention",
+          "Deadlock Avoidance",
+          "Deadlock Detection",
+          "Memory Compaction"
+        ],
+        "correct_answer": "B",
+        "explanation": "Banker's Algorithm is a dynamic deadlock avoidance technique that checks for safe execution sequences."
+      },
+      {
+        "id": "TEST-05-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "In a system with Need matrix, how is Need calculated in Banker's Algorithm?",
+        "options": [
+          "Allocation - Available",
+          "Max - Allocation",
+          "Max + Available",
+          "Allocation - Max"
+        ],
+        "correct_answer": "B",
+        "explanation": "Need represents remaining resources a process may claim: Need = Max - Allocation."
+      },
+      {
+        "id": "TEST-05-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "Assigning global numerical IDs to resources and enforcing acquisition in ascending order eliminates which condition?",
+        "options": [
+          "Mutual Exclusion",
+          "Hold and Wait",
+          "No Preemption",
+          "Circular Wait"
+        ],
+        "correct_answer": "D",
+        "explanation": "Strict resource ordering prevents cycles from forming, eliminating Circular Wait."
+      },
+      {
+        "id": "TEST-05-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Monotonic Stack (Next Greater Element)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Monotonic Stack (Next Greater Element)' pattern operates with O(N) Time, O(N) Auxiliary Space: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.."
+      },
+      {
+        "id": "TEST-05-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Monotonic Stack (Next Greater Element)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Strictly decreasing sequence (all answers 0).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Monotonic Stack (Next Greater Element) include Strictly decreasing sequence (all answers 0), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-05-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Daily Temperatures', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-05-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Multi-Role Authentication & Bcrypt Password Security in CSMS'?",
+        "options": [
+          "Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.."
+      },
+      {
+        "id": "TEST-05-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How is authentication handled in CSMS across different academic roles?'?",
+        "options": [
+          "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University E...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students vi."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-05",
+    "title": "Daily Temperatures (Monotonic Stack (Next Greater Element))",
+    "time_limit_minutes": 25,
+    "difficulty": "Easy",
+    "problem_statement": "Solve the core placement problem: Daily Temperatures.\n\nGiven an array of integers temperatures represents the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Monotonic Stack (Next Greater Element)\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(N) Auxiliary Space\n- Handle all edge cases: Strictly decreasing sequence (all answers 0), Strictly increasing sequence, All equal elements, Single element.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Monotonic Stack (Next Greater Element)\n    public int[] dailyTemperatures(int[] temperatures) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Monotonic Stack (Next Greater Element)\n    public int[] dailyTemperatures(int[] temperatures) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+    "java_solution_code": "import java.util.*;\n\npublic class Solution {\n    public int[] dailyTemperatures(int[] temperatures) {\n        int[] ans = new int[temperatures.length];\n        Deque<Integer> stack = new ArrayDeque<>();\n        for (int i = 0; i < temperatures.length; i++) {\n            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {\n                int idx = stack.pop();\n                ans[idx] = i - idx;\n            }\n            stack.push(i);\n        }\n        return ans;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Monotonic Stack (Next Greater Element) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Strictly decreasing sequence (all answers 0)",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(N) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

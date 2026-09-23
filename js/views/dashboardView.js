@@ -112,12 +112,12 @@ export function renderDashboard(container, daysIndex, semesterData) {
 
         <div style="background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
-            <span style="font-weight: 700; font-size: var(--font-size-sm); color: var(--color-primary);">💻 3. Python DSA</span>
+            <span style="font-weight: 700; font-size: var(--font-size-sm); color: var(--color-primary);">💻 3. Java DSA</span>
             <input type="checkbox" id="chk-code" ${checklist.code ? 'checked' : ''} style="cursor: pointer; width: 16px; height: 16px;">
           </div>
-          <div style="font-size: var(--font-size-sm); font-weight: 600;">${currentDayMeta.dsa.join(', ') || 'Algorithmic Optimization'}</div>
+          <div style="font-size: var(--font-size-sm); font-weight: 600;">${Array.isArray(currentDayMeta.dsa) ? currentDayMeta.dsa.join(', ') : (currentDayMeta.dsa_pattern || currentDayMeta.dsa || 'Algorithmic Optimization')}</div>
           <p style="font-size: var(--font-size-xs); margin-top: 4px;">Line-by-line walks & complexities</p>
-          <a href="#day/${activeDay}#code" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Code in Python →</a>
+          <a href="#day/${activeDay}#code" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Code in Java →</a>
         </div>
 
         <div style="background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border-color);">

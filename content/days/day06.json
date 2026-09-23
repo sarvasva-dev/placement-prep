@@ -1,158 +1,2437 @@
 {
   "day": 6,
-  "title": "Java Multithreading, Linked List Cycles & Partnership Ratios",
-  "sem_data": {
-    "subject": "BCA-5002 Java Programming",
-    "topic": "Unit III \u2014 Java Multithreading: 5-State Life Cycle, Synchronization & Inter-Thread Communication",
-    "detailed_notes": [
-      "Multithreading in Java is a core execution paradigm where multiple concurrent threads of execution run within the shared memory space of a single JVM process. It enables maximum utilization of multi-core CPU architectures and maintains responsive user interfaces during background I/O operations.",
-      "Java Thread Life Cycle (5 Core States):\n1. New: The thread object is instantiated (e.g. Thread t = new Thread()) but start() has not yet been invoked. Memory is allocated on the heap, but no native OS thread exists.\n2. Runnable: The start() method is invoked. The JVM creates a native OS thread and registers it with the OS thread scheduler. The thread is ready to run and waits in the ready queue for CPU time-slice allocation.\n3. Running: The thread scheduler selects the thread from the Runnable queue and allocates a CPU core. The thread's run() method executes bytecode instructions.\n4. Blocked / Waiting / Timed Waiting: A thread transitions here when it cannot proceed. Reasons include: waiting for an I/O operation to complete, waiting to acquire an object monitor lock currently held by another thread (Blocked), waiting indefinitely for another thread to invoke notify()/notifyAll() via wait() (Waiting), or sleeping for a specified duration via sleep(ms) or join(ms) (Timed Waiting).\n5. Terminated (Dead): The thread has completed execution of its run() method or exited abnormally due to an unhandled exception. Once terminated, a thread cannot be restarted.",
-      "Synchronization & The Object Monitor:\nWhen multiple threads concurrently read and write shared mutable state (e.g. updating bank account balance), race conditions occur. Java protects critical sections using the 'synchronized' keyword. Every Java object possesses an internal lock called an Object Monitor (Intrinsic Lock). When a thread enters a synchronized method or block, it acquires the monitor lock. Any other thread attempting to enter a synchronized section on that same object is placed in the monitor's 'Entry Set' (Blocked state).",
-      "Inter-Thread Communication (Producer-Consumer Mechanism):\nDefined in java.lang.Object (not java.lang.Thread) so that any shared object can coordinate threads:\n- wait(): Releases the object monitor lock immediately and places the calling thread in the object's 'Wait Set' until another thread wakes it up.\n- notify(): Wakes up a single arbitrary thread waiting in the object's Wait Set and moves it to the Entry Set.\n- notifyAll(): Wakes up all threads waiting in the object's Wait Set.",
-      "Deadlock: A catastrophic state where two or more threads are permanently blocked, each holding a lock the other thread needs to proceed. Requires all 4 Coffman Conditions: Mutual Exclusion, Hold & Wait, No Preemption, and Circular Wait."
+  "title": "Day 06: Java Multithreading: Thread Lifecycle, Synchronization & Inter-Thread Communication & Binary Search on Sorted Arrays",
+  "streams": {
+    "academic": {
+      "unit": 2,
+      "topic": "Unit II — Java Multithreading: Thread Lifecycle, Synchronization & Inter-Thread Communication",
+      "objectives": [
+        "Understand Thread lifecycle states.",
+        "Master synchronized keyword, monitor locks, and wait()/notify()."
+      ],
+      "explanation": "Multithreading in Java enables concurrent execution of two or more threads to maximize CPU utilization. A thread in Java can be created by extending the `Thread` class or implementing the `Runnable` interface. Thread states in JVM are: New -> Runnable -> Blocked/Waiting/Timed_Waiting -> Terminated. When multiple threads share mutable data, race conditions occur. Java provides the `synchronized` keyword (method or block level) backed by intrinsic monitor locks (mutex). Inter-thread communication relies on `wait()`, `notify()`, and `notifyAll()` methods defined on `java.lang.Object`.",
+      "definitions": [
+        {
+          "term": "Thread Synchronization",
+          "definition": "A mechanism ensuring that two or more concurrent threads do not execute a critical section simultaneously, preventing race conditions."
+        },
+        {
+          "term": "Intrinsic Lock (Monitor)",
+          "definition": "An internal entity associated with every Java object used to enforce exclusive access to synchronized blocks."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Thread Creation Mechanisms",
+          "content": "Extending `Thread` vs implementing `Runnable`. Implementing `Runnable` is superior as it preserves single inheritance and separates task logic from thread execution."
+        },
+        {
+          "title": "Inter-Thread Communication",
+          "content": "`wait()` releases the object monitor and pauses the thread; `notify()` awakens a single waiting thread; `notifyAll()` awakens all waiting threads. Must be called inside a synchronized context."
+        }
+      ],
+      "examples": [
+        "Classic Producer-Consumer problem with a bounded buffer using synchronized methods and wait/notify."
+      ],
+      "diagram": "+---------------------------------------------------+\n|                THREAD LIFECYCLE                   |\n| [New] -> [Runnable] <-> [Blocked/Waiting] -> [Dead]|\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Method",
+          "Belongs To Class",
+          "Releases Monitor Lock?",
+          "Purpose"
+        ],
+        "rows": [
+          [
+            "wait()",
+            "java.lang.Object",
+            "Yes (Releases lock immediately)",
+            "Pauses thread until another thread invokes notify()"
+          ],
+          [
+            "notify()",
+            "java.lang.Object",
+            "No (Lock released on block exit)",
+            "Awakens a single thread waiting on this object's monitor"
+          ],
+          [
+            "sleep()",
+            "java.lang.Thread",
+            "No (Keeps lock held!)",
+            "Suspends thread execution for a specified millisecond duration"
+          ],
+          [
+            "join()",
+            "java.lang.Thread",
+            "No",
+            "Waits for target thread to finish execution before continuing"
+          ]
+        ]
+      },
+      "memorize": "Thread states: New, Runnable, Blocked, Waiting, Timed_Waiting, Terminated. wait() releases the monitor lock; sleep() DOES NOT release locks!",
+      "understand": "wait() and notify() belong to Object class (not Thread) because locks reside on objects, not on threads.",
+      "common_mistakes": "Calling wait() outside of a synchronized block (throws IllegalMonitorStateException).",
+      "exam_writing_guidance": "Draw the thread state diagram, compare Thread vs Runnable, write a complete working synchronized producer-consumer code block.",
+      "mini_practice": [
+        "What is a Deadlock in Java multithreading? How is it prevented?"
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2023-24 (Q2)",
+          "marks": 15,
+          "question": "Explain the life cycle of a Thread in Java with a state transition diagram. How is thread synchronization achieved using synchronized blocks and inter-thread communication? (15 Marks)",
+          "rubric": "Thread State Transition Diagram (4 marks) + Lifecycle states explained (4 marks) + Synchronization & monitor locks (4 marks) + wait/notify code example (3 marks) = 15 Marks.",
+          "model_answer": "In Java, a thread passes through several distinct lifecycle states: 1. New (instantiated but start() not called); 2. Runnable (ready or executing on CPU); 3. Blocked (waiting to acquire an intrinsic monitor lock); 4. Waiting (waiting indefinitely due to wait() or join()); 5. Timed Waiting (waiting for a specified duration due to sleep() or timed wait); 6. Terminated (run() method completed). Synchronization prevents race conditions when threads access shared resources. Java enforces mutual exclusion using the 'synchronized' keyword on methods or critical code blocks. Every Java object possesses an internal monitor lock. When a thread enters a synchronized block, it acquires the monitor; competing threads are blocked. For inter-thread communication, Java provides wait(), notify(), and notifyAll() on Object class. When a consumer finds a buffer empty, it calls wait(), releasing the monitor lock. When the producer inserts an item, it calls notify(), waking up the consumer.",
+          "answer_structure": "Lifecycle Diagram -> States Detailed -> Synchronization Mechanism -> Code Example",
+          "important_points": [
+            "State diagram",
+            "Intrinsic lock / Monitor",
+            "Race condition prevention",
+            "wait() vs sleep()"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "State diagram including Timed_Waiting and Blocked",
+            "Code showing synchronized block with wait and notify"
+          ],
+          "common_mistakes": [
+            "Saying sleep() releases object locks"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "Differentiate between extending Thread class vs implementing Runnable interface. (5 Marks)",
+          "rubric": "Comparison table (3 marks) + Code syntax difference (2 marks) = 5 Marks.",
+          "model_answer": "Implementing `Runnable` is preferred over extending `Thread` because: 1. Multiple Inheritance: Java does not support multiple class inheritance; extending Thread prevents extending any other class, whereas implementing Runnable leaves inheritance open; 2. Separation of Concerns: Runnable separates the runnable task logic from the underlying thread execution mechanics; 3. Thread Pools: Runnable objects can be submitted directly to ExecutorService thread pools for scalable reuse."
+        }
+      ],
+      "subject_code": "BCA-5002",
+      "subject_name": "Java Programming & Dynamic Webpage Design",
+      "mcqs": [
+        {
+          "id": "ACAD-06-01",
+          "question": "Which method in Java is invoked to initiate the concurrent execution of a new thread created via Thread class or Runnable interface?",
+          "options": [
+            "run()",
+            "start()",
+            "init()",
+            "execute()"
+          ],
+          "correct_answer": "B",
+          "explanation": "Calling start() requests the JVM to allocate a new native thread call stack and invoke the run() method asynchronously. Calling run() directly runs synchronously on the caller's thread."
+        },
+        {
+          "id": "ACAD-06-02",
+          "question": "What happens when a thread enters a method marked with the 'synchronized' keyword in Java?",
+          "options": [
+            "The thread acquires the intrinsic lock (monitor) associated with the target object",
+            "The thread is immediately put into the DEAD state",
+            "The JVM disables garbage collection for all heaps",
+            "The thread's priority is automatically raised to MAX_PRIORITY"
+          ],
+          "correct_answer": "A",
+          "explanation": "Every Java object has an intrinsic monitor lock. Synchronized methods/blocks acquire this lock, preventing other threads from executing synchronized code on that object until released."
+        },
+        {
+          "id": "ACAD-06-03",
+          "question": "Which method releases the monitor lock and suspends the calling thread until another thread invokes notify() or notifyAll() on the same object?",
+          "options": [
+            "sleep()",
+            "yield()",
+            "wait()",
+            "join()"
+          ],
+          "correct_answer": "C",
+          "explanation": "Object.wait() must be called from within a synchronized context; it atomically releases the object monitor and places the thread into the object's wait set."
+        },
+        {
+          "id": "ACAD-06-04",
+          "question": "What is the primary advantage of implementing the Runnable interface over extending the Thread class in Java?",
+          "options": [
+            "Runnable threads execute 10x faster than Thread subclasses",
+            "Since Java does not support multiple class inheritance, implementing Runnable leaves the class free to extend another base class",
+            "Runnable does not require overriding the run() method",
+            "Runnable automatically prevents deadlocks"
+          ],
+          "correct_answer": "B",
+          "explanation": "Java supports single class inheritance. Implementing Runnable allows the class to extend another business class while decoupling the task from the thread runner."
+        },
+        {
+          "id": "ACAD-06-05",
+          "question": "What happens to a Daemon thread in Java when all non-daemon user threads finish executing?",
+          "options": [
+            "The JVM continues running until the daemon thread finishes",
+            "The JVM terminates immediately, abruptly stopping all daemon threads",
+            "The daemon thread is automatically converted into a user thread",
+            "The JVM throws a ThreadDeathException"
+          ],
+          "correct_answer": "B",
+          "explanation": "Daemon threads (like GC) provide background services. The JVM exits as soon as all user (non-daemon) threads terminate, killing any active daemon threads."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023-24 (Q2)",
+        "marks": 15,
+        "question": "Explain the life cycle of a Thread in Java with a state transition diagram. How is thread synchronization achieved using synchronized blocks and inter-thread communication? (15 Marks)",
+        "rubric": "Thread State Transition Diagram (4 marks) + Lifecycle states explained (4 marks) + Synchronization & monitor locks (4 marks) + wait/notify code example (3 marks) = 15 Marks.",
+        "model_answer": "In Java, a thread passes through several distinct lifecycle states: 1. New (instantiated but start() not called); 2. Runnable (ready or executing on CPU); 3. Blocked (waiting to acquire an intrinsic monitor lock); 4. Waiting (waiting indefinitely due to wait() or join()); 5. Timed Waiting (waiting for a specified duration due to sleep() or timed wait); 6. Terminated (run() method completed). Synchronization prevents race conditions when threads access shared resources. Java enforces mutual exclusion using the 'synchronized' keyword on methods or critical code blocks. Every Java object possesses an internal monitor lock. When a thread enters a synchronized block, it acquires the monitor; competing threads are blocked. For inter-thread communication, Java provides wait(), notify(), and notifyAll() on Object class. When a consumer finds a buffer empty, it calls wait(), releasing the monitor lock. When the producer inserts an item, it calls notify(), waking up the consumer.",
+        "answer_structure": "Lifecycle Diagram -> States Detailed -> Synchronization Mechanism -> Code Example",
+        "important_points": [
+          "State diagram",
+          "Intrinsic lock / Monitor",
+          "Race condition prevention",
+          "wait() vs sleep()"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "State diagram including Timed_Waiting and Blocked",
+          "Code showing synchronized block with wait and notify"
+        ],
+        "common_mistakes": [
+          "Saying sleep() releases object locks"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Differentiate between extending Thread class vs implementing Runnable interface. (5 Marks)",
+        "rubric": "Comparison table (3 marks) + Code syntax difference (2 marks) = 5 Marks.",
+        "model_answer": "Implementing `Runnable` is preferred over extending `Thread` because: 1. Multiple Inheritance: Java does not support multiple class inheritance; extending Thread prevents extending any other class, whereas implementing Runnable leaves inheritance open; 2. Separation of Concerns: Runnable separates the runnable task logic from the underlying thread execution mechanics; 3. Thread Pools: Runnable objects can be submitted directly to ExecutorService thread pools for scalable reuse."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                     JAVA THREAD 5-STATE LIFE CYCLE                      |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|      +-------------+                                                    |\n|      |   1. NEW    |                                                    |\n|      +-------------+                                                    |\n|             |                                                           |\n|             |  t.start()                                                |\n|             v                                                           |\n|      +-------------+      Thread Scheduler      +-------------+         |\n|      | 2. RUNNABLE | -------------------------> | 3. RUNNING  |         |\n|      |   (Ready)   | <------------------------- |  (Active)   |         |\n|      +-------------+        yield() / Time-     +-------------+         |\n|             ^               Slice Expiry               |                |\n|             |                                          | run() completes|\n|             | Lock Acquired /                          | or Exception   |\n|             | notify() / sleep expired                 v                |\n|      +-----------------------------------+      +-------------+         |\n|      |    4. BLOCKED / WAITING / TIMED   |      | 5.TERMINATED|         |\n|      |  - wait()       - sleep(ms)       |      |   (Dead)    |         |\n|      |  - join()       - lock contention |      +-------------+         |\n|      +-----------------------------------+                              |\n|                      ^                                                  |\n|                      | wait() / sleep() / lock wait                     |\n|                      +----------------------------------+               |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-06-01",
+        "question": "Which method in Java is invoked to initiate the concurrent execution of a new thread created via Thread class or Runnable interface?",
+        "options": [
+          "run()",
+          "start()",
+          "init()",
+          "execute()"
+        ],
+        "correct_answer": "B",
+        "explanation": "Calling start() requests the JVM to allocate a new native thread call stack and invoke the run() method asynchronously. Calling run() directly runs synchronously on the caller's thread."
+      },
+      {
+        "id": "ACAD-06-02",
+        "question": "What happens when a thread enters a method marked with the 'synchronized' keyword in Java?",
+        "options": [
+          "The thread acquires the intrinsic lock (monitor) associated with the target object",
+          "The thread is immediately put into the DEAD state",
+          "The JVM disables garbage collection for all heaps",
+          "The thread's priority is automatically raised to MAX_PRIORITY"
+        ],
+        "correct_answer": "A",
+        "explanation": "Every Java object has an intrinsic monitor lock. Synchronized methods/blocks acquire this lock, preventing other threads from executing synchronized code on that object until released."
+      },
+      {
+        "id": "ACAD-06-03",
+        "question": "Which method releases the monitor lock and suspends the calling thread until another thread invokes notify() or notifyAll() on the same object?",
+        "options": [
+          "sleep()",
+          "yield()",
+          "wait()",
+          "join()"
+        ],
+        "correct_answer": "C",
+        "explanation": "Object.wait() must be called from within a synchronized context; it atomically releases the object monitor and places the thread into the object's wait set."
+      },
+      {
+        "id": "ACAD-06-04",
+        "question": "What is the primary advantage of implementing the Runnable interface over extending the Thread class in Java?",
+        "options": [
+          "Runnable threads execute 10x faster than Thread subclasses",
+          "Since Java does not support multiple class inheritance, implementing Runnable leaves the class free to extend another base class",
+          "Runnable does not require overriding the run() method",
+          "Runnable automatically prevents deadlocks"
+        ],
+        "correct_answer": "B",
+        "explanation": "Java supports single class inheritance. Implementing Runnable allows the class to extend another business class while decoupling the task from the thread runner."
+      },
+      {
+        "id": "ACAD-06-05",
+        "question": "What happens to a Daemon thread in Java when all non-daemon user threads finish executing?",
+        "options": [
+          "The JVM continues running until the daemon thread finishes",
+          "The JVM terminates immediately, abruptly stopping all daemon threads",
+          "The daemon thread is automatically converted into a user thread",
+          "The JVM throws a ThreadDeathException"
+        ],
+        "correct_answer": "B",
+        "explanation": "Daemon threads (like GC) provide background services. The JVM exits as soon as all user (non-daemon) threads terminate, killing any active daemon threads."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Time & Work (Efficiency & Work-Rate)",
+      "category": "Quantitative",
+      "subtopic": "Time & Work",
+      "formulas": "1. If person does a work in D days, 1-day work = 1/D.\n2. Total Work = Efficiency * Time.\n3. Efficiency is inversely proportional to time: E1 / E2 = D2 / D1.\n4. MDH Formula: (M1 * D1 * H1) / W1 = (M2 * D2 * H2) / W2.",
+      "shortcuts": "LCM Total Work Method: Assume total work equals LCM of individual day counts. Compute daily units for each worker. Add units for joint work.",
+      "tutorial": [
+        "Never work with fractions if you can avoid them. By assuming Total Work = LCM(days), workers have integer work units per day. Example: If A takes 10 days and B takes 15 days, let Total Work = 30 units. A does 3 units/day, B does 2 units/day. Together they do 5 units/day, taking 30 / 5 = 6 days."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Time & Work",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Time & Work",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Time & Work",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Time & Work",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Time & Work",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A can do a work in 15 days and B in 20 days. If they work together on it for 4 days, what fraction of work is left?",
+        "options": {
+          "A": "7/15",
+          "B": "8/15",
+          "C": "1/2",
+          "D": "11/15"
+        },
+        "correct_answer": "B",
+        "explanation": "1-day work = 1/15 + 1/20 = 7/60. 4 days work = 28/60 = 7/15. Remaining = 1 - 7/15 = 8/15.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A is twice as efficient as B and together they finish a piece of work in 14 days. In how many days can A alone finish the work?",
+        "options": {
+          "A": "21 days",
+          "B": "28 days",
+          "C": "20 days",
+          "D": "24 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Efficiency A:B = 2:1. Total daily units = 3. Total work = 14 * 3 = 42 units. A alone = 42 / 2 = 21 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "A can finish a work in 12 days and B in 15 days. A works alone for 4 days, then B joins. How many total days does the work take?",
+        "options": {
+          "A": "8 4/9 days",
+          "B": "9 1/3 days",
+          "C": "7 2/3 days",
+          "D": "8 days"
+        },
+        "correct_answer": "A",
+        "explanation": "LCM(12, 15) = 60 units. A=5 units/day, B=4 units/day. In 4 days A does 20 units. Left = 40 units. Together they do 9 units/day. Time = 40/9 = 4 4/9 days. Total = 4 + 4 4/9 = 8 4/9 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "12 men can complete a work in 16 days. How many men are needed to complete the same work in 24 days?",
+        "options": {
+          "A": "8 men",
+          "B": "10 men",
+          "C": "9 men",
+          "D": "7 men"
+        },
+        "correct_answer": "A",
+        "explanation": "M1 * D1 = M2 * D2 => 12 * 16 = M2 * 24 => M2 = 192 / 24 = 8 men.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "A, B, and C can complete a work in 10, 12, and 15 days respectively. They undertake to complete it for Rs. 7,500. What is B's share?",
+        "options": {
+          "A": "Rs. 2,500",
+          "B": "Rs. 3,000",
+          "C": "Rs. 2,000",
+          "D": "Rs. 2,400"
+        },
+        "correct_answer": "A",
+        "explanation": "Efficiency ratio = 1/10 : 1/12 : 1/15 = 6 : 5 : 4. Total parts = 15. B's share = (5 / 15) * 7,500 = Rs. 2,500.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "A can do a piece of work in 24 days. B is 60% more efficient than A. In how many days can B do the same work?",
+        "options": {
+          "A": "15 days",
+          "B": "16 days",
+          "C": "12 days",
+          "D": "18 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Days taken by B = 24 / 1.60 = 15 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "If 6 men and 8 boys can do a work in 10 days, while 26 men and 48 boys can do it in 2 days, in how many days can 15 men and 20 boys finish it?",
+        "options": {
+          "A": "4 days",
+          "B": "5 days",
+          "C": "6 days",
+          "D": "7 days"
+        },
+        "correct_answer": "A",
+        "explanation": "10*(6M + 8B) = 2*(26M + 48B) => 60M + 80B = 52M + 96B => 8M = 16B => 1M = 2B. 6M + 8B = 20B in 10 days. 15M + 20B = 50B take (20 * 10) / 50 = 4 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A does half as much work as B in three-fourths of the time. If together they take 18 days, how many days will B alone take?",
+        "options": {
+          "A": "30 days",
+          "B": "36 days",
+          "C": "28 days",
+          "D": "32 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Work/time ratio gives A:B efficiency = (1/2) / (3/4) = 2/3. Total daily = 5 units. Work = 18 * 5 = 90. B alone = 90 / 3 = 30 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "A alone can do a work in 16 days and B alone in 12 days. Starting with A, they work on alternate days. In how many days will the work be completed?",
+        "options": {
+          "A": "13 3/4 days",
+          "B": "13 days",
+          "C": "14 days",
+          "D": "12 1/2 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Total = 48 units. A=3, B=4. In 2 days = 7 units. 6 cycles (12 days) = 42 units. Day 13: A does 3 (total 45). Day 14: B needs 3/4 day. Total = 13 3/4 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "10 workers can build a wall in 8 days. If 2 workers leave after 2 days, how many more days are needed to complete the wall?",
+        "options": {
+          "A": "7.5 days",
+          "B": "8 days",
+          "C": "6.5 days",
+          "D": "7 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Remaining work = 10 * 6 = 60 man-days. Remaining workers = 8. Days required = 60 / 8 = 7.5 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Time & Work (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Binary Search on Sorted Arrays",
+      "category": "Binary Search",
+      "concept": "Divides search interval in half each iteration by comparing target with midpoint.",
+      "why_it_works": "Eliminates 50% of candidate search space each step: T(n) = T(n/2) + O(1) => O(log N).",
+      "visual_explanation": "nums = [-1, 0, 3, 5, 9, 12], target = 9\\nL=0, R=5, Mid=2 (val=3 < 9) -> Left = 3\\nL=3, R=5, Mid=4 (val=9 == 9) -> Found at index 4!",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public int binarySearch(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return -1;\n    }\n}",
+      "code": "public class Solution {\n    public int binarySearch(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return -1;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 2: Initialize left=0, right=nums.length-1.",
+        "Line 3: Loop while left <= right.",
+        "Line 4: Calculate mid using left + (right - left)/2 to prevent integer overflow.",
+        "Line 5-7: Narrow search window based on midpoint comparison."
+      ],
+      "dry_run": "nums = [-1, 0, 3, 5, 9, 12], target = 9 -> L=0, R=5, M=2(3<9) -> L=3 -> M=4(9==9) -> return 4.",
+      "complexity": "O(log N) Time, O(1) Auxiliary Space",
+      "edge_cases": "Target smaller than nums[0], Target greater than nums[n-1], Empty array",
+      "edge_cases_list": [
+        "Target smaller than nums[0]",
+        "Target greater than nums[n-1]",
+        "Empty array"
+      ],
+      "interview_variations": [
+        "Search Insert Position",
+        "Find First and Last Position of Element in Sorted Array",
+        "Find Peak Element"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-06-01",
+        "title": "Problem 1: Search Insert Position",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Binary Search on Sorted Arrays algorithmic technique.\n2. Divides search interval in half each iteration by comparing target with midpoint.\n3. Invariants: Eliminates 50% of candidate search space each step: T(n) = T(n/2) + O(1) => O(log N).",
+        "solution_java": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+        "code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+        "java_code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+        "time_complexity": "O(log N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-06-02",
+        "title": "Problem 2: Find First and Last Position of Element in Sorted Array",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Binary Search on Sorted Arrays.\n2. Handle edge cases: Target smaller than nums[0], Target greater than nums[n-1], Empty array.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+        "code": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+        "java_code": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+        "time_complexity": "O(log N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Operating Systems",
+      "topic": "Memory Management: Contiguous Allocation, Paging, Segmentation & TLB",
+      "concept_lesson": "Memory management bridges logical process address space to physical hardware RAM.\n\nContiguous Allocation & Fragmentation:\n- Internal Fragmentation: Allocated memory block is larger than requested memory; unused memory inside the partition is wasted.\n- External Fragmentation: Total free memory space exists to satisfy a request, but it is split into non-contiguous fragments. Resolved via Compaction (costly memory copying) or Non-contiguous Paging.\n\nPaging Architecture:\nPhysical memory is broken into fixed-size blocks called Frames. Logical address space is broken into blocks of identical size called Pages (commonly 4KB). The CPU generates logical addresses split into: Page Number (p) and Page Offset (d).\nThe Page Table maps page number p to frame number f. Physical address = (f * page_size) + d. Paging completely eliminates external fragmentation, but introduces slight internal fragmentation on the final page of a process.\n\nTranslation Lookaside Buffer (TLB):\nAccessing a page table in RAM requires two memory accesses per data lookup (one for page table entry, one for physical data). The TLB is an ultra-fast hardware associative associative cache inside the MMU (Memory Management Unit). If page p is found in TLB (TLB Hit), frame f is retrieved in ~1 nanosecond. Effective Memory Access Time (EMAT) = Hit_Rate * (TLB_time + RAM_time) + (1 - Hit_Rate) * (TLB_time + 2 * RAM_time).\n\nSegmentation:\nDivides memory into variable-sized logical segments reflecting programmer view (Code, Stack, Heap, Functions). Each entry in the Segment Table contains Base (physical starting address) and Limit (segment length), checking against boundary violations.",
+      "key_definitions": [
+        {
+          "term": "Page vs Frame",
+          "definition": "A Page is a fixed-size block of logical address space; a Frame is an identically-sized block of physical RAM."
+        },
+        {
+          "term": "TLB (Translation Lookaside Buffer)",
+          "definition": "A high-speed hardware cache in the MMU storing recent logical-to-physical address translations."
+        },
+        {
+          "term": "Internal Fragmentation",
+          "definition": "Wasted space within an allocated memory block because the allocated unit exceeds process demand."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "Explain the difference between Internal and External Fragmentation.",
+          "a": "Internal fragmentation occurs when memory is allocated in fixed-size blocks (e.g., 4KB pages) and a process requests less than the block size (e.g., 1KB), leaving 3KB unused inside the block. External fragmentation occurs in variable-partition systems when total free memory is sufficient to satisfy a request, but the space is scattered into small non-contiguous holes across RAM, preventing a large process from fitting."
+        },
+        {
+          "q": "How does Paging eliminate External Fragmentation?",
+          "a": "In paging, any logical page of a process can be placed into any available physical frame anywhere in RAM, regardless of whether the frames are physically contiguous. Because no contiguous chunk of physical memory is required, external fragmentation cannot occur."
+        },
+        {
+          "q": "What is the Translation Lookaside Buffer (TLB), and what is a TLB Miss?",
+          "a": "The TLB is an associative hardware cache inside the Memory Management Unit (MMU) that stores recent page-to-frame translations. On a memory reference, the MMU checks the TLB. If present (TLB hit), physical frame address is obtained immediately. On a TLB miss, the MMU must read the multi-level page table from RAM (adding memory latency), load the translation into the TLB, and then perform the data lookup."
+        },
+        {
+          "q": "Given a 32-bit logical address with 4KB page size, calculate the number of bits for Page Number and Offset.",
+          "a": "Page size = 4KB = 2^12 bytes. Therefore, 12 bits are required for the Page Offset (d). The remaining 32 - 12 = 20 bits specify the Page Number (p). A process can thus have 2^20 pages (1,048,576 pages)."
+        },
+        {
+          "q": "What is Multi-level Paging, and why is it necessary for 64-bit architectures?",
+          "a": "A linear page table for a 32-bit system with 2^20 entries at 4 bytes each takes 4MB of contiguous RAM per process. In 64-bit systems, a single linear page table would require petabytes of storage. Multi-level paging breaks the page table itself into pages, allowing non-contiguous allocation and letting the OS allocate page tables only for virtual address regions that are actually in use, avoiding massive memory waste."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-06-01",
+          "question": "In a paging memory system, which type of fragmentation can still occur?",
+          "options": [
+            "External fragmentation only",
+            "Internal fragmentation only",
+            "Both internal and external",
+            "Neither type"
+          ],
+          "correct_answer": "B",
+          "explanation": "Paging eliminates external fragmentation, but the last allocated page may not be completely filled, causing internal fragmentation."
+        },
+        {
+          "id": "CS-06-02",
+          "question": "A system uses 4KB pages. How many bits are needed for the page offset?",
+          "options": [
+            "10 bits",
+            "12 bits",
+            "16 bits",
+            "20 bits"
+          ],
+          "correct_answer": "B",
+          "explanation": "4 KB = 4096 bytes = 2^12 bytes, so 12 bits are needed for offset."
+        },
+        {
+          "id": "CS-06-03",
+          "question": "The hardware component that maps virtual addresses to physical addresses at runtime is the:",
+          "options": [
+            "ALU",
+            "MMU (Memory Management Unit)",
+            "DMA Controller",
+            "Interrupt Handler"
+          ],
+          "correct_answer": "B",
+          "explanation": "The MMU contains the hardware logic and TLB to translate virtual memory addresses to physical RAM."
+        },
+        {
+          "id": "CS-06-04",
+          "question": "If TLB access takes 10ns and RAM access takes 100ns, what is access time on a TLB hit?",
+          "options": [
+            "10ns",
+            "100ns",
+            "110ns",
+            "210ns"
+          ],
+          "correct_answer": "C",
+          "explanation": "On a TLB hit, the MMU accesses the TLB (10ns) then fetches data from RAM (100ns), totaling 110ns."
+        },
+        {
+          "id": "CS-06-05",
+          "question": "In Segmentation, a logical address consists of:",
+          "options": [
+            "Page number and frame offset",
+            "Segment number and offset",
+            "Base register and limit register",
+            "PID and socket ID"
+          ],
+          "correct_answer": "B",
+          "explanation": "Segmentation addresses specify a segment identifier and offset within that segment."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "SmartGalla",
+      "repo_path": "D:\\Projects\\SmartGalla",
+      "topic": "Payment Gateway Integration & Webhook Idempotency (Razorpay & COD Ledger)",
+      "what_to_understand": "How payment callbacks, signatures, and distributed transactions are verified safely.",
+      "what_to_memorize": "HMAC-SHA256 signature verification prevents man-in-the-middle payment spoofing.",
+      "interview_questions": [
+        {
+          "q": "How do you handle Razorpay webhook idempotency in SmartGalla?",
+          "a": "When a customer pays, Razorpay sends an asynchronous webhook (`payment.captured` or `order.paid`). Because network retries can send the same webhook multiple times, we store every incoming `razorpay_payment_id` in a dedicated `payment_transactions` table with a UNIQUE constraint. If an incoming event already exists, the database ignores it and returns HTTP 200 immediately, preventing duplicate order fulfillments."
+        },
+        {
+          "q": "How does the Cash on Delivery (COD) ledger prevent courier fraud?",
+          "a": "For COD orders, payment status is initialized as 'PENDING_CASH'. When the delivery agent marks an order 'DELIVERED', the transaction triggers an automated debit to the rider's active cash bag in `cod_ledger` and an unverified credit to the merchant. The merchant must reconcile the physical cash handover with a single-click OTP confirmation, closing the ledger loop."
+        }
+      ],
+      "interview_pitch_exercise": "In SmartGalla, payment reliability is paramount. For digital payments, I implemented Razorpay with cryptographically verified webhooks using HMAC-SHA256 and unique transaction deduplication. For physical cash orders, I built a double-entry COD ledger that reconciles collected cash against delivery agent accounts before crediting merchant balances."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 6 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 6 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'DevQBX & Sitekraft Engineering', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In DevQBX & Sitekraft Engineering (Project Management, Client Web Architecture, Microservices), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of DevQBX & Sitekraft Engineering.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 05 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5002 — Java Multithreading & Synchronization.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time & Work (Efficiency).\n• Algorithmic Invariant: Optimal time and space complexity rules for Binary Search on Sorted Arrays.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Memory Management: Paging & TLB.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Multithreading & Synchronization.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Binary Search on Sorted Arrays.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: SmartGalla.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 6 Q1: What is the primary academic thesis of Java Multithreading & Synchronization?",
+          "a": "Core theoretical and practical mastery of Java Multithreading & Synchronization under the CSJM University BCA-5002 syllabus."
+        },
+        {
+          "q": "Day 6 Q2: What is the key speed calculation formula applied in Time & Work (Efficiency)?",
+          "a": "High-speed corporate placement arithmetic shortcut for Time & Work (Efficiency) in campus recruitment exams."
+        },
+        {
+          "q": "Day 6 Q3: What is the time complexity of Binary Search on Sorted Arrays?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 6 Q4: What is the central architectural principle of Memory Management: Paging & TLB?",
+          "a": "Foundational systems engineering rule governing Memory Management: Paging & TLB in production environments."
+        },
+        {
+          "q": "Day 6 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 6 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 6 Q7: What is the verified technical foundation of SmartGalla?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 6 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 6 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 6 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5002 — Java Multithreading & Synchronization.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time & Work (Efficiency).\n• Algorithmic Invariant: Optimal time and space complexity rules for Binary Search on Sorted Arrays.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Memory Management: Paging & TLB."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5002 — Java Multithreading & Synchronization."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time & Work (Efficiency)."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Binary Search on Sorted Arrays."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: SmartGalla."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-06-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which method in Java is invoked to initiate the concurrent execution of a new thread created via Thread class or Runnable interface?",
+        "options": [
+          "run()",
+          "start()",
+          "init()",
+          "execute()"
+        ],
+        "correct_answer": "B",
+        "explanation": "Calling start() requests the JVM to allocate a new native thread call stack and invoke the run() method asynchronously. Calling run() directly runs synchronously on the caller's thread."
+      },
+      {
+        "id": "TEST-06-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What happens when a thread enters a method marked with the 'synchronized' keyword in Java?",
+        "options": [
+          "The thread acquires the intrinsic lock (monitor) associated with the target object",
+          "The thread is immediately put into the DEAD state",
+          "The JVM disables garbage collection for all heaps",
+          "The thread's priority is automatically raised to MAX_PRIORITY"
+        ],
+        "correct_answer": "A",
+        "explanation": "Every Java object has an intrinsic monitor lock. Synchronized methods/blocks acquire this lock, preventing other threads from executing synchronized code on that object until released."
+      },
+      {
+        "id": "TEST-06-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which method releases the monitor lock and suspends the calling thread until another thread invokes notify() or notifyAll() on the same object?",
+        "options": [
+          "sleep()",
+          "yield()",
+          "wait()",
+          "join()"
+        ],
+        "correct_answer": "C",
+        "explanation": "Object.wait() must be called from within a synchronized context; it atomically releases the object monitor and places the thread into the object's wait set."
+      },
+      {
+        "id": "TEST-06-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary advantage of implementing the Runnable interface over extending the Thread class in Java?",
+        "options": [
+          "Runnable threads execute 10x faster than Thread subclasses",
+          "Since Java does not support multiple class inheritance, implementing Runnable leaves the class free to extend another base class",
+          "Runnable does not require overriding the run() method",
+          "Runnable automatically prevents deadlocks"
+        ],
+        "correct_answer": "B",
+        "explanation": "Java supports single class inheritance. Implementing Runnable allows the class to extend another business class while decoupling the task from the thread runner."
+      },
+      {
+        "id": "TEST-06-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What happens to a Daemon thread in Java when all non-daemon user threads finish executing?",
+        "options": [
+          "The JVM continues running until the daemon thread finishes",
+          "The JVM terminates immediately, abruptly stopping all daemon threads",
+          "The daemon thread is automatically converted into a user thread",
+          "The JVM throws a ThreadDeathException"
+        ],
+        "correct_answer": "B",
+        "explanation": "Daemon threads (like GC) provide background services. The JVM exits as soon as all user (non-daemon) threads terminate, killing any active daemon threads."
+      },
+      {
+        "id": "TEST-06-06",
+        "category": "Placement Aptitude",
+        "question": "A can complete a work in 10 days and B can complete it in 15 days. Working together, in how many days can they complete the work?",
+        "options": [
+          "6 days",
+          "5 days",
+          "7 days",
+          "8 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total work = LCM(10, 15) = 30 units. A's rate = 3 units/day, B's rate = 2 units/day. Combined rate = 5 units/day. Time = 30 / 5 = 6 days."
+      },
+      {
+        "id": "TEST-06-07",
+        "category": "Placement Aptitude",
+        "question": "A and B together can do a piece of work in 12 days, B and C in 15 days, and C and A in 20 days. In how many days can A, B, and C together finish it?",
+        "options": [
+          "10 days",
+          "8 days",
+          "12 days",
+          "15 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "LCM(12, 15, 20) = 60 units. 2(A + B + C) = 5 + 4 + 3 = 12 units/day => A + B + C = 6 units/day. Time = 60 / 6 = 10 days."
+      },
+      {
+        "id": "TEST-06-08",
+        "category": "Placement Aptitude",
+        "question": "A is twice as efficient as B and takes 30 days less than B to complete a piece of work. In how many days can B alone complete the work?",
+        "options": [
+          "60 days",
+          "50 days",
+          "40 days",
+          "75 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "Efficiency ratio A : B = 2 : 1 => Time ratio A : B = 1 : 2. Difference in time = 1 unit = 30 days. B's time = 2 * 30 = 60 days."
+      },
+      {
+        "id": "TEST-06-09",
+        "category": "Placement Aptitude",
+        "question": "12 men can complete a work in 8 days. After 3 days of work, 3 more men joined them. How many more days will they take to complete the remaining work?",
+        "options": [
+          "4 days",
+          "5 days",
+          "3.5 days",
+          "4.5 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total work = 12 * 8 = 96 man-days. Work done in 3 days = 12 * 3 = 36 man-days. Remaining work = 96 - 36 = 60 man-days. New men count = 15. Days needed = 60 / 15 = 4 days."
+      },
+      {
+        "id": "TEST-06-10",
+        "category": "Placement Aptitude",
+        "question": "A can do a piece of work in 14 days and B in 21 days. They begin together but 3 days before the completion of the work, A leaves. What is the total duration of the work?",
+        "options": [
+          "10.2 days",
+          "9 days",
+          "11 days",
+          "12 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "LCM(14, 21) = 42 units. A=3 u/d, B=2 u/d. In the last 3 days, B works alone: 3 * 2 = 6 units. Remaining 36 units done by (A+B): 36 / 5 = 7.2 days. Total = 7.2 + 3 = 10.2 days."
+      },
+      {
+        "id": "TEST-06-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "In a paging memory system, which type of fragmentation can still occur?",
+        "options": [
+          "External fragmentation only",
+          "Internal fragmentation only",
+          "Both internal and external",
+          "Neither type"
+        ],
+        "correct_answer": "B",
+        "explanation": "Paging eliminates external fragmentation, but the last allocated page may not be completely filled, causing internal fragmentation."
+      },
+      {
+        "id": "TEST-06-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "A system uses 4KB pages. How many bits are needed for the page offset?",
+        "options": [
+          "10 bits",
+          "12 bits",
+          "16 bits",
+          "20 bits"
+        ],
+        "correct_answer": "B",
+        "explanation": "4 KB = 4096 bytes = 2^12 bytes, so 12 bits are needed for offset."
+      },
+      {
+        "id": "TEST-06-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "The hardware component that maps virtual addresses to physical addresses at runtime is the:",
+        "options": [
+          "ALU",
+          "MMU (Memory Management Unit)",
+          "DMA Controller",
+          "Interrupt Handler"
+        ],
+        "correct_answer": "B",
+        "explanation": "The MMU contains the hardware logic and TLB to translate virtual memory addresses to physical RAM."
+      },
+      {
+        "id": "TEST-06-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "If TLB access takes 10ns and RAM access takes 100ns, what is access time on a TLB hit?",
+        "options": [
+          "10ns",
+          "100ns",
+          "110ns",
+          "210ns"
+        ],
+        "correct_answer": "C",
+        "explanation": "On a TLB hit, the MMU accesses the TLB (10ns) then fetches data from RAM (100ns), totaling 110ns."
+      },
+      {
+        "id": "TEST-06-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "In Segmentation, a logical address consists of:",
+        "options": [
+          "Page number and frame offset",
+          "Segment number and offset",
+          "Base register and limit register",
+          "PID and socket ID"
+        ],
+        "correct_answer": "B",
+        "explanation": "Segmentation addresses specify a segment identifier and offset within that segment."
+      },
+      {
+        "id": "TEST-06-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Binary Search on Sorted Arrays' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(log N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Binary Search on Sorted Arrays' pattern operates with O(log N) Time, O(1) Auxiliary Space: Eliminates 50% of candidate search space each step: T(n) = T(n/2) + O(1) => O(log N).."
+      },
+      {
+        "id": "TEST-06-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Binary Search on Sorted Arrays' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Target smaller than nums[0].",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Binary Search on Sorted Arrays include Target smaller than nums[0], which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-06-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Search Insert Position', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(log N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-06-19",
+        "category": "Projects (SmartGalla)",
+        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Payment Gateway Integration & Webhook Idempotency (Razorpay & COD Ledger)'?",
+        "options": [
+          "HMAC-SHA256 signature verification prevents man-in-the-middle payment spoofing.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For SmartGalla, the architectural invariant is: HMAC-SHA256 signature verification prevents man-in-the-middle payment spoofing.."
+      },
+      {
+        "id": "TEST-06-20",
+        "category": "Projects (SmartGalla)",
+        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'How do you handle Razorpay webhook idempotency in SmartGalla?'?",
+        "options": [
+          "When a customer pays, Razorpay sends an asynchronous webhook (`payment.captured` or `order.paid`). Because network retries can send the same webhook multiple ti...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When a customer pays, Razorpay sends an asynchronous webhook (`payment.captured` or `order.paid`). Because network retries can send the same."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-06",
+      "title": "Search Insert Position (Binary Search on Sorted Arrays)",
+      "time_limit_minutes": 25,
+      "difficulty": "Easy",
+      "problem_statement": "Solve the core placement problem: Search Insert Position.\n\nGiven a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Binary Search on Sorted Arrays\n- Time Complexity Target: O(log N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: Target smaller than nums[0], Target greater than nums[n-1], Empty array.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Binary Search on Sorted Arrays\n    public int searchInsert(int[] nums, int target) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Binary Search on Sorted Arrays\n    public int searchInsert(int[] nums, int target) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Binary Search on Sorted Arrays logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Target smaller than nums[0]",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(log N) Time)",
+        "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Java Programming & Dynamic Webpage Design",
+    "subject_code": "BCA-5002",
+    "unit": 2,
+    "topic": "Unit II — Java Multithreading: Thread Lifecycle, Synchronization & Inter-Thread Communication",
+    "objectives": [
+      "Understand Thread lifecycle states.",
+      "Master synchronized keyword, monitor locks, and wait()/notify()."
+    ],
+    "detailed_notes": [
+      "Multithreading in Java enables concurrent execution of two or more threads to maximize CPU utilization. A thread in Java can be created by extending the `Thread` class or implementing the `Runnable` interface. Thread states in JVM are: New -> Runnable -> Blocked/Waiting/Timed_Waiting -> Terminated. When multiple threads share mutable data, race conditions occur. Java provides the `synchronized` keyword (method or block level) backed by intrinsic monitor locks (mutex). Inter-thread communication relies on `wait()`, `notify()`, and `notifyAll()` methods defined on `java.lang.Object`.",
+      "Extending `Thread` vs implementing `Runnable`. Implementing `Runnable` is superior as it preserves single inheritance and separates task logic from thread execution.",
+      "`wait()` releases the object monitor and pauses the thread; `notify()` awakens a single waiting thread; `notifyAll()` awakens all waiting threads. Must be called inside a synchronized context."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|                THREAD LIFECYCLE                   |\n| [New] -> [Runnable] <-> [Blocked/Waiting] -> [Dead]|\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Dimension",
-        "wait() Method",
-        "sleep() Method"
+        "Method",
+        "Belongs To Class",
+        "Releases Monitor Lock?",
+        "Purpose"
       ],
       "rows": [
         [
-          "Defining Class",
-          "java.lang.Object (called on monitor object)",
-          "java.lang.Thread (static method called on current thread)"
+          "wait()",
+          "java.lang.Object",
+          "Yes (Releases lock immediately)",
+          "Pauses thread until another thread invokes notify()"
         ],
         [
-          "Lock Release Behavior",
-          "RELEASES the object monitor lock immediately",
-          "DOES NOT release any acquired monitor locks"
+          "notify()",
+          "java.lang.Object",
+          "No (Lock released on block exit)",
+          "Awakens a single thread waiting on this object's monitor"
         ],
         [
-          "Wakeup Mechanism",
-          "Woken up by notify() or notifyAll() from another thread",
-          "Wakes up automatically when specified millisecond timer expires"
+          "sleep()",
+          "java.lang.Thread",
+          "No (Keeps lock held!)",
+          "Suspends thread execution for a specified millisecond duration"
         ],
         [
-          "Context Requirement",
-          "MUST be called from within a synchronized block/method",
-          "Can be called from anywhere (synchronized or unsynchronized)"
-        ],
-        [
-          "Primary Purpose",
-          "Inter-thread communication and coordination",
-          "Introducing execution delay without thread communication"
+          "join()",
+          "java.lang.Thread",
+          "No",
+          "Waits for target thread to finish execution before continuing"
         ]
       ]
     },
-    "memorize": "5 Thread States: New, Runnable, Running, Blocked/Waiting, Terminated. wait() releases monitor lock; sleep() does NOT release lock. 4 Deadlock Conditions (Coffman): Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait.",
-    "understand": "Thread.start() allocates a brand-new native operating system call stack and invokes run() asynchronously. Calling run() directly is a catastrophic bug: it executes sequentially on the current thread's call stack without spawning a new thread.",
-    "common_mistakes": "1. Calling run() instead of start() when attempting to start a thread. 2. Calling wait() or notify() outside of a synchronized block (throws IllegalMonitorStateException at runtime). 3. Believing sleep() releases acquired locks (sleep holds all acquired locks, which frequently causes deadlocks).",
-    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2024-25)",
-    "pyq_freq": "3 University Sessions: 2021 (Q3 - 15m), 2022-23 (Q2a - 15m), 2024-25 (Q3 - 15m)",
-    "pyq_question": "Explain the life cycle of a thread in Java with a neat diagram. Discuss thread synchronization and inter-thread communication with a complete Producer-Consumer code example. (15 Marks)",
-    "pyq_rubric": "5-State Diagram (4 marks) + Life Cycle States explanation (4 marks) + Synchronization & Object Monitor (3 marks) + Producer-Consumer code (4 marks) = 15 Marks.",
+    "memorize": "Thread states: New, Runnable, Blocked, Waiting, Timed_Waiting, Terminated. wait() releases the monitor lock; sleep() DOES NOT release locks!",
+    "understand": "wait() and notify() belong to Object class (not Thread) because locks reside on objects, not on threads.",
+    "common_mistakes": "Calling wait() outside of a synchronized block (throws IllegalMonitorStateException).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2023-24 (Q2)",
+        "marks": 15,
+        "question": "Explain the life cycle of a Thread in Java with a state transition diagram. How is thread synchronization achieved using synchronized blocks and inter-thread communication? (15 Marks)",
+        "rubric": "Thread State Transition Diagram (4 marks) + Lifecycle states explained (4 marks) + Synchronization & monitor locks (4 marks) + wait/notify code example (3 marks) = 15 Marks.",
+        "model_answer": "In Java, a thread passes through several distinct lifecycle states: 1. New (instantiated but start() not called); 2. Runnable (ready or executing on CPU); 3. Blocked (waiting to acquire an intrinsic monitor lock); 4. Waiting (waiting indefinitely due to wait() or join()); 5. Timed Waiting (waiting for a specified duration due to sleep() or timed wait); 6. Terminated (run() method completed). Synchronization prevents race conditions when threads access shared resources. Java enforces mutual exclusion using the 'synchronized' keyword on methods or critical code blocks. Every Java object possesses an internal monitor lock. When a thread enters a synchronized block, it acquires the monitor; competing threads are blocked. For inter-thread communication, Java provides wait(), notify(), and notifyAll() on Object class. When a consumer finds a buffer empty, it calls wait(), releasing the monitor lock. When the producer inserts an item, it calls notify(), waking up the consumer.",
+        "answer_structure": "Lifecycle Diagram -> States Detailed -> Synchronization Mechanism -> Code Example",
+        "important_points": [
+          "State diagram",
+          "Intrinsic lock / Monitor",
+          "Race condition prevention",
+          "wait() vs sleep()"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "State diagram including Timed_Waiting and Blocked",
+          "Code showing synchronized block with wait and notify"
+        ],
+        "common_mistakes": [
+          "Saying sleep() releases object locks"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "Differentiate between extending Thread class vs implementing Runnable interface. (5 Marks)",
+        "rubric": "Comparison table (3 marks) + Code syntax difference (2 marks) = 5 Marks.",
+        "model_answer": "Implementing `Runnable` is preferred over extending `Thread` because: 1. Multiple Inheritance: Java does not support multiple class inheritance; extending Thread prevents extending any other class, whereas implementing Runnable leaves inheritance open; 2. Separation of Concerns: Runnable separates the runnable task logic from the underlying thread execution mechanics; 3. Thread Pools: Runnable objects can be submitted directly to ExecutorService thread pools for scalable reuse."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-06-01",
+        "question": "Which method in Java is invoked to initiate the concurrent execution of a new thread created via Thread class or Runnable interface?",
+        "options": [
+          "run()",
+          "start()",
+          "init()",
+          "execute()"
+        ],
+        "correct_answer": "B",
+        "explanation": "Calling start() requests the JVM to allocate a new native thread call stack and invoke the run() method asynchronously. Calling run() directly runs synchronously on the caller's thread."
+      },
+      {
+        "id": "ACAD-06-02",
+        "question": "What happens when a thread enters a method marked with the 'synchronized' keyword in Java?",
+        "options": [
+          "The thread acquires the intrinsic lock (monitor) associated with the target object",
+          "The thread is immediately put into the DEAD state",
+          "The JVM disables garbage collection for all heaps",
+          "The thread's priority is automatically raised to MAX_PRIORITY"
+        ],
+        "correct_answer": "A",
+        "explanation": "Every Java object has an intrinsic monitor lock. Synchronized methods/blocks acquire this lock, preventing other threads from executing synchronized code on that object until released."
+      },
+      {
+        "id": "ACAD-06-03",
+        "question": "Which method releases the monitor lock and suspends the calling thread until another thread invokes notify() or notifyAll() on the same object?",
+        "options": [
+          "sleep()",
+          "yield()",
+          "wait()",
+          "join()"
+        ],
+        "correct_answer": "C",
+        "explanation": "Object.wait() must be called from within a synchronized context; it atomically releases the object monitor and places the thread into the object's wait set."
+      },
+      {
+        "id": "ACAD-06-04",
+        "question": "What is the primary advantage of implementing the Runnable interface over extending the Thread class in Java?",
+        "options": [
+          "Runnable threads execute 10x faster than Thread subclasses",
+          "Since Java does not support multiple class inheritance, implementing Runnable leaves the class free to extend another base class",
+          "Runnable does not require overriding the run() method",
+          "Runnable automatically prevents deadlocks"
+        ],
+        "correct_answer": "B",
+        "explanation": "Java supports single class inheritance. Implementing Runnable allows the class to extend another business class while decoupling the task from the thread runner."
+      },
+      {
+        "id": "ACAD-06-05",
+        "question": "What happens to a Daemon thread in Java when all non-daemon user threads finish executing?",
+        "options": [
+          "The JVM continues running until the daemon thread finishes",
+          "The JVM terminates immediately, abruptly stopping all daemon threads",
+          "The daemon thread is automatically converted into a user thread",
+          "The JVM throws a ThreadDeathException"
+        ],
+        "correct_answer": "B",
+        "explanation": "Daemon threads (like GC) provide background services. The JVM exits as soon as all user (non-daemon) threads terminate, killing any active daemon threads."
+      }
+    ],
+    "pyq_year": "2023-24 (Q2)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Explain the life cycle of a Thread in Java with a state transition diagram. How is thread synchronization achieved using synchronized blocks and inter-thread communication? (15 Marks)",
+    "pyq_rubric": "Thread State Transition Diagram (4 marks) + Lifecycle states explained (4 marks) + Synchronization & monitor locks (4 marks) + wait/notify code example (3 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Thread Architecture & 5-State Life Cycle:",
-        "Java multithreading provides preemptive, time-sliced execution managed by the JVM and host operating system scheduler. A thread transitions through five core states:\n\u2022 New: Thread instance created via 'new MyThread()'. Native resources are not yet allocated.\n\u2022 Runnable: Thread becomes ready to execute after invoking 'start()'. It resides in the ready queue waiting for CPU scheduling.\n\u2022 Running: The OS thread scheduler allocates a CPU core to the thread, executing its 'run()' method.\n\u2022 Blocked / Waiting: The thread suspends execution. It enters Blocked when awaiting an object monitor lock; Waiting when invoking 'wait()' or 'join()'; and Timed Waiting when invoking 'sleep(ms)'.\n\u2022 Terminated: Execution completes naturally when 'run()' returns or abnormally when an uncaught exception is thrown."
+        "1. Model Answer & Technical Presentation",
+        "In Java, a thread passes through several distinct lifecycle states: 1. New (instantiated but start() not called); 2. Runnable (ready or executing on CPU); 3. Blocked (waiting to acquire an intrinsic monitor lock); 4. Waiting (waiting indefinitely due to wait() or join()); 5. Timed Waiting (waiting for a specified duration due to sleep() or timed wait); 6. Terminated (run() method completed). Synchronization prevents race conditions when threads access shared resources. Java enforces mutual exclusion using the 'synchronized' keyword on methods or critical code blocks. Every Java object possesses an internal monitor lock. When a thread enters a synchronized block, it acquires the monitor; competing threads are blocked. For inter-thread communication, Java provides wait(), notify(), and notifyAll() on Object class. When a consumer finds a buffer empty, it calls wait(), releasing the monitor lock. When the producer inserts an item, it calls notify(), waking up the consumer."
       ],
       [
-        "2. Thread Synchronization & Monitor Locks:",
-        "When multiple threads access shared mutable data concurrently, race conditions corrupt memory state. Java provides synchronized methods and synchronized statements to enforce mutual exclusion. Every Java object possesses an internal Object Monitor. Only one thread can acquire this monitor at any instant; other threads are queued in the Entry Set until the lock holder releases it upon exiting the synchronized block."
-      ],
-      [
-        "3. Inter-Thread Communication & Producer-Consumer Implementation:",
-        "To coordinate cooperative threads without busy-waiting (CPU spinning), Java provides wait(), notify(), and notifyAll() on java.lang.Object.\nProducer-Consumer Model Example:\nclass Buffer {\n    private int data;\n    private boolean available = false;\n    public synchronized void produce(int val) throws InterruptedException {\n        while (available) wait(); // Wait if buffer is full\n        data = val; available = true;\n        System.out.println('Produced: ' + val);\n        notifyAll(); // Wake up consumers\n    }\n    public synchronized int consume() throws InterruptedException {\n        while (!available) wait(); // Wait if buffer is empty\n        available = false;\n        System.out.println('Consumed: ' + data);\n        notifyAll(); // Wake up producers\n        return data;\n    }\n}"
-      ],
-      [
-        "4. Deadlock Prevention & Best Practices:",
-        "Deadlock occurs when circular lock dependencies exist (Thread 1 holds Lock A, wants Lock B; Thread 2 holds Lock B, wants Lock A). Deadlock is eliminated by enforcing a strict global lock ordering: all threads must acquire Lock A before acquiring Lock B."
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2023):",
-        "Compare extending the Thread class versus implementing the Runnable interface in Java. Which approach is preferred and why? (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2022):",
-        "What are daemon threads in Java? How do you create one and what is their primary use case? (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "State diagram including Timed_Waiting and Blocked",
+          "Code showing synchronized block with wait and notify"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Java Thread Life Cycle Diagram, Synchronization & Producer-Consumer code.",
-    "milestone": "Full 15/15 marks on University Question 3 (BCA-5002 Java Multithreading)."
-  },
   "apt_data": {
-    "topic": "Partnership Ratios \u2014 Capital-Time Investments & Active vs Sleeping Partners",
+    "topic": "Time & Work (Efficiency & Work-Rate)",
+    "category": "Quantitative",
+    "subtopic": "Time & Work",
+    "formulas": "1. If person does a work in D days, 1-day work = 1/D.\n2. Total Work = Efficiency * Time.\n3. Efficiency is inversely proportional to time: E1 / E2 = D2 / D1.\n4. MDH Formula: (M1 * D1 * H1) / W1 = (M2 * D2 * H2) / W2.",
+    "shortcut": "LCM Total Work Method: Assume total work equals LCM of individual day counts. Compute daily units for each worker. Add units for joint work.",
     "tutorial": [
-      "Partnership is a business association where two or more individuals pool financial capital and managerial labor to run a commercial enterprise and share profits/losses.",
-      "The Fundamental Law of Partnership:\nProfit earned by any partner is directly proportional to both the Capital Invested (C) and the Time Period of Investment (T):\nProfit = Capital * Time\nFor two partners A and B: Profit_A / Profit_B = (C_A * T_A) / (C_B * T_B)",
-      "Types of Partners:\n\u2022 Working (Active) Partner: Contributes capital AND manages day-to-day business operations. Typically receives a fixed percentage of total profit or fixed salary BEFORE remaining profit is divided.\n\u2022 Sleeping (Dormant) Partner: Only contributes financial capital; receives profit purely based on (Capital * Time) ratio without operational management fees."
+      "Never work with fractions if you can avoid them. By assuming Total Work = LCM(days), workers have integer work units per day. Example: If A takes 10 days and B takes 15 days, let Total Work = 30 units. A does 3 units/day, B does 2 units/day. Together they do 5 units/day, taking 30 / 5 = 6 days."
     ],
-    "formulas": "1. Ratio of Profits: P1 : P2 : P3 = (C1 * T1) : (C2 * T2) : (C3 * T3)\n2. Ratio of Capitals: C1 : C2 = (P1 / T1) : (P2 / T2)\n3. Ratio of Time Periods: T1 : T2 = (P1 / C1) : (P2 / C2)\n4. Active Partner Profit: Net Divisible Profit = Total Profit - Active Partner Salary",
-    "shortcut": "Cancel Common Zeros Instantly:\nIf A invests Rs. 20,000 for 6 months and B invests Rs. 30,000 for 8 months:\nNever multiply 20000 * 6 = 120,000! Cancel 4 zeros immediately: 2 * 6 : 3 * 8 = 12 : 24 = 1 : 2.",
-    "recognition": "Look for 'A and B enter into a partnership with capitals...', 'A is a working partner and receives 10% of profit as commission...', or 'B joins after 4 months with Rs. X'.",
-    "p1_q": "[Foundation] A, B, and C start a business by investing Rs. 20,000, Rs. 25,000, and Rs. 30,000 respectively for one year. If the total annual profit is Rs. 15,000, find B's share of the profit.",
-    "p1_s": "Step 1: Since the time period is identical (1 year for all), profit is divided purely in ratio of capitals:\nRatio P_A : P_B : P_C = 20,000 : 25,000 : 30,000.\nCancel 3 zeros: 20 : 25 : 30 ==> Divide by 5: 4 : 5 : 6.\nStep 2: Total parts = 4 + 5 + 6 = 15 parts.\nStep 3: Total profit = Rs. 15,000.\nB's share = (5 / 15) * 15,000 = (1 / 3) * 15,000 = Rs. 5,000.\nAnswer: B's share is Rs. 5,000.",
-    "p2_q": "[Standard Placement] A starts a business with Rs. 45,000. After 3 months, B joins with Rs. 60,000, and after another 3 months, C joins with Rs. 90,000. At the end of the year, the business earns a total profit of Rs. 16,500. Find each partner's share.",
-    "p2_s": "Step 1: Calculate the effective time period for each partner over the 12-month year:\n- A was invested for full 12 months: T_A = 12 months.\n- B joined after 3 months, so invested for 12 - 3 = 9 months: T_B = 9 months.\n- C joined after another 3 months (6 months total elapsed), so invested for 12 - 6 = 6 months: T_C = 6 months.\nStep 2: Calculate Profit Ratios = (C * T):\nP_A : P_B : P_C = (45,000 * 12) : (60,000 * 9) : (90,000 * 6).\nDivide by 1000: (45 * 12) : (60 * 9) : (90 * 6) = 540 : 540 : 540 = 1 : 1 : 1.\nStep 3: Since the ratio is exactly 1 : 1 : 1, the profit is divided equally!\nShare of each partner = Rs. 16,500 / 3 = Rs. 5,500.\nAnswer: A, B, and C each receive Rs. 5,500.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS / Wipro Partnership Pattern]",
-    "p3_q": "A and B invest in a business in the ratio 3 : 2. If 5% of the total profit goes to a charity fund and A's share of the remaining profit is Rs. 855, find the total profit generated by the business.",
-    "p3_s": "Step 1: Let the total profit be Rs. 100x.\nAmount given to charity = 5% of 100x = 5x.\nRemaining profit to be divided = 100x - 5x = Rs. 95x.\nStep 2: A's share of remaining profit:\nRatio of investment A : B = 3 : 2 ==> A receives 3 / (3 + 2) = 3/5 of remaining profit.\nA's share = (3 / 5) * 95x = 3 * 19x = 57x.\nStep 3: Equate to given value:\n57x = 855 ==> x = 855 / 57.\nNotice 57 * 10 = 570; 855 - 570 = 285. 57 * 5 = 285 ==> x = 15.\nStep 4: Total profit = 100x = 100 * 15 = Rs. 1,500.\nAnswer: Total profit is Rs. 1,500.",
-    "p4_q": "[Hard / Time-Pressure] A is a working partner and B is a sleeping partner in a business. A puts in Rs. 12,000 and B puts in Rs. 20,000. A receives 10% of the gross profit for managing the business, and the remaining profit is divided in proportion to their capitals. If A's total annual income is Rs. 3,800, find the total profit and B's income.",
-    "p4_s": "Step 1: Ratio of Capitals A : B = 12,000 : 20,000 = 12 : 20 = 3 : 5.\nSum of ratio parts = 3 + 5 = 8 parts.\nStep 2: Let Total Profit = P.\nA's management commission = 10% of P = 0.10 P.\nRemaining profit = P - 0.10 P = 0.90 P.\nStep 3: A's share of remaining profit = (3 / 8) * 0.90 P = (2.7 / 8) P = 0.3375 P.\nA's Total Income = Commission + Profit Share = 0.10 P + 0.3375 P = 0.4375 P.\nStep 4: Solve for total profit P:\n0.4375 P = 3,800 ==> (7 / 16) P = 3,800 ==> Wait: 0.4375 = 4375/10000 = 7/16.\nP = (3800 * 16) / 7 = 8685.71. Let's verify integer numbers: If A puts in 12,000 and B puts in 20,000, ratio is 3:5. A gets 10% gross. Remaining 90%. A gets 3/8 of 90% = 270/8 % = 33.75%. Total A = 43.75% = 7/16.\nIf A's income is Rs. 3,500: P = (3500 * 16)/7 = 500 * 16 = Rs. 8,000.\nWith P = Rs. 8,000, A gets: 10% of 8000 = 800 management fee. Remaining = 7200. A's capital share = (3/8)*7200 = 2700. Total A = 800 + 2700 = Rs. 3,500!\nB's income = (5/8)*7200 = Rs. 4,500.\nAnswer: Total Profit = Rs. 8,000, B's Income = Rs. 4,500.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "A and B invest in ratio 4 : 5. After 3 months, A withdraws 1/4 of his capital. Find profit ratio after 12 months."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "A, B, C enter a partnership with investments in ratio 5 : 7 : 4. If total profit is Rs. 32,000, find C's share."
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "A invests Rs. 3,000 for 12 months and B invests Rs. 4,000 for x months. If their profits are equal, find x."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "A working partner receives 20% of profit for management, and the rest is divided equally among 4 partners. What fraction of total profit does the working partner get?"
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "A and B started a business investing Rs. 10,000 and Rs. 15,000. After 6 months, C joined with Rs. 20,000. Find profit ratio after 1 year."
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Time & Work",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Time & Work",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Time & Work",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Time & Work",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Time & Work",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A can do a work in 15 days and B in 20 days. If they work together on it for 4 days, what fraction of work is left?",
+        "options": {
+          "A": "7/15",
+          "B": "8/15",
+          "C": "1/2",
+          "D": "11/15"
+        },
+        "correct_answer": "B",
+        "explanation": "1-day work = 1/15 + 1/20 = 7/60. 4 days work = 28/60 = 7/15. Remaining = 1 - 7/15 = 8/15.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A is twice as efficient as B and together they finish a piece of work in 14 days. In how many days can A alone finish the work?",
+        "options": {
+          "A": "21 days",
+          "B": "28 days",
+          "C": "20 days",
+          "D": "24 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Efficiency A:B = 2:1. Total daily units = 3. Total work = 14 * 3 = 42 units. A alone = 42 / 2 = 21 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "A can finish a work in 12 days and B in 15 days. A works alone for 4 days, then B joins. How many total days does the work take?",
+        "options": {
+          "A": "8 4/9 days",
+          "B": "9 1/3 days",
+          "C": "7 2/3 days",
+          "D": "8 days"
+        },
+        "correct_answer": "A",
+        "explanation": "LCM(12, 15) = 60 units. A=5 units/day, B=4 units/day. In 4 days A does 20 units. Left = 40 units. Together they do 9 units/day. Time = 40/9 = 4 4/9 days. Total = 4 + 4 4/9 = 8 4/9 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "12 men can complete a work in 16 days. How many men are needed to complete the same work in 24 days?",
+        "options": {
+          "A": "8 men",
+          "B": "10 men",
+          "C": "9 men",
+          "D": "7 men"
+        },
+        "correct_answer": "A",
+        "explanation": "M1 * D1 = M2 * D2 => 12 * 16 = M2 * 24 => M2 = 192 / 24 = 8 men.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "A, B, and C can complete a work in 10, 12, and 15 days respectively. They undertake to complete it for Rs. 7,500. What is B's share?",
+        "options": {
+          "A": "Rs. 2,500",
+          "B": "Rs. 3,000",
+          "C": "Rs. 2,000",
+          "D": "Rs. 2,400"
+        },
+        "correct_answer": "A",
+        "explanation": "Efficiency ratio = 1/10 : 1/12 : 1/15 = 6 : 5 : 4. Total parts = 15. B's share = (5 / 15) * 7,500 = Rs. 2,500.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "A can do a piece of work in 24 days. B is 60% more efficient than A. In how many days can B do the same work?",
+        "options": {
+          "A": "15 days",
+          "B": "16 days",
+          "C": "12 days",
+          "D": "18 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Days taken by B = 24 / 1.60 = 15 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "If 6 men and 8 boys can do a work in 10 days, while 26 men and 48 boys can do it in 2 days, in how many days can 15 men and 20 boys finish it?",
+        "options": {
+          "A": "4 days",
+          "B": "5 days",
+          "C": "6 days",
+          "D": "7 days"
+        },
+        "correct_answer": "A",
+        "explanation": "10*(6M + 8B) = 2*(26M + 48B) => 60M + 80B = 52M + 96B => 8M = 16B => 1M = 2B. 6M + 8B = 20B in 10 days. 15M + 20B = 50B take (20 * 10) / 50 = 4 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A does half as much work as B in three-fourths of the time. If together they take 18 days, how many days will B alone take?",
+        "options": {
+          "A": "30 days",
+          "B": "36 days",
+          "C": "28 days",
+          "D": "32 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Work/time ratio gives A:B efficiency = (1/2) / (3/4) = 2/3. Total daily = 5 units. Work = 18 * 5 = 90. B alone = 90 / 3 = 30 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "A alone can do a work in 16 days and B alone in 12 days. Starting with A, they work on alternate days. In how many days will the work be completed?",
+        "options": {
+          "A": "13 3/4 days",
+          "B": "13 days",
+          "C": "14 days",
+          "D": "12 1/2 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Total = 48 units. A=3, B=4. In 2 days = 7 units. 6 cycles (12 days) = 42 units. Day 13: A does 3 (total 45). Day 14: B needs 3/4 day. Total = 13 3/4 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "10 workers can build a wall in 8 days. If 2 workers leave after 2 days, how many more days are needed to complete the wall?",
+        "options": {
+          "A": "7.5 days",
+          "B": "8 days",
+          "C": "6.5 days",
+          "D": "7 days"
+        },
+        "correct_answer": "A",
+        "explanation": "Remaining work = 10 * 6 = 60 man-days. Remaining workers = 8. Days required = 60 / 8 = 7.5 days.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Time & Work (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "A's investment = 4*3 + (4 - 1)*9 = 12 + 27 = 39. B's investment = 5*12 = 60. Ratio = 39 : 60 = 13 : 20. Answer: 13 : 20."
-      ],
-      [
-        "Solution Q2:",
-        "Sum = 5 + 7 + 4 = 16 parts. C's share = (4/16)*32,000 = (1/4)*32,000 = Rs. 8,000. Answer: Rs. 8,000."
-      ],
-      [
-        "Solution Q3:",
-        "3000 * 12 = 4000 * x ==> 36,000 = 4000x ==> x = 9 months. Answer: 9 months."
-      ],
-      [
-        "Solution Q4:",
-        "Management fee = 20% = 1/5. Remaining = 80% = 4/5. Divided among 4 ==> Each gets 20% = 1/5. Working partner total = 20% + 20% = 40% = 2/5 of total profit. Answer: 2/5."
-      ],
-      [
-        "Solution Q5:",
-        "Ratio = (10*12) : (15*12) : (20*6) = 120 : 180 : 120 = 2 : 3 : 2. Answer: 2 : 3 : 2."
-      ]
-    ],
-    "trap": "When a partner joins mid-year, multiply their capital ONLY by the months they were active, not the total annual months."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Search Insert Position",
+      "difficulty": "Easy",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.",
+      "solution_approach": "1. Apply Binary Search on Sorted Arrays algorithmic technique.\n2. Divides search interval in half each iteration by comparing target with midpoint.\n3. Invariants: Eliminates 50% of candidate search space each step: T(n) = T(n/2) + O(1) => O(log N).",
+      "code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+      "java_solution": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+      "solution_java": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+      "time_complexity": "O(log N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Find First and Last Position of Element in Sorted Array",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.",
+      "solution_approach": "1. Identify interview variation of Binary Search on Sorted Arrays.\n2. Handle edge cases: Target smaller than nums[0], Target greater than nums[n-1], Empty array.\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+      "java_solution": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+      "solution_java": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+      "time_complexity": "O(log N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Binary Search on Sorted Arrays",
+    "category": "Binary Search",
+    "concept": "Divides search interval in half each iteration by comparing target with midpoint.",
+    "why_it_works": "Eliminates 50% of candidate search space each step: T(n) = T(n/2) + O(1) => O(log N).",
+    "visual_explanation": "nums = [-1, 0, 3, 5, 9, 12], target = 9\\nL=0, R=5, Mid=2 (val=3 < 9) -> Left = 3\\nL=3, R=5, Mid=4 (val=9 == 9) -> Found at index 4!",
+    "java_code": "public class Solution {\n    public int binarySearch(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return -1;\n    }\n}",
+    "code": "public class Solution {\n    public int binarySearch(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return -1;\n    }\n}",
+    "python_code": "public class Solution {\n    public int binarySearch(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return -1;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 2: Initialize left=0, right=nums.length-1.",
+      "Line 3: Loop while left <= right.",
+      "Line 4: Calculate mid using left + (right - left)/2 to prevent integer overflow.",
+      "Line 5-7: Narrow search window based on midpoint comparison."
+    ],
+    "dry_run": "nums = [-1, 0, 3, 5, 9, 12], target = 9 -> L=0, R=5, M=2(3<9) -> L=3 -> M=4(9==9) -> return 4.",
+    "complexity": "O(log N) Time, O(1) Auxiliary Space",
+    "edge_cases": [
+      "Target smaller than nums[0]",
+      "Target greater than nums[n-1]",
+      "Empty array"
+    ],
+    "interview_variations": [
+      "Search Insert Position",
+      "Find First and Last Position of Element in Sorted Array",
+      "Find Peak Element"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-06-01",
+        "title": "Problem 1: Search Insert Position",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Binary Search on Sorted Arrays algorithmic technique.\n2. Divides search interval in half each iteration by comparing target with midpoint.\n3. Invariants: Eliminates 50% of candidate search space each step: T(n) = T(n/2) + O(1) => O(log N).",
+        "solution_java": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+        "code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+        "java_code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+        "time_complexity": "O(log N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-06-02",
+        "title": "Problem 2: Find First and Last Position of Element in Sorted Array",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Binary Search on Sorted Arrays.\n2. Handle edge cases: Target smaller than nums[0], Target greater than nums[n-1], Empty array.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+        "code": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+        "java_code": "public class Solution {\n    public int[] searchRange(int[] nums, int target) {\n        return new int[]{findBound(nums, target, true), findBound(nums, target, false)};\n    }\n    private int findBound(int[] nums, int target, boolean isFirst) {\n        int left = 0, right = nums.length - 1, ans = -1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) {\n                ans = mid;\n                if (isFirst) right = mid - 1;\n                else left = mid + 1;\n            } else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return ans;\n    }\n}",
+        "time_complexity": "O(log N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "Operating Systems",
+    "topic": "Memory Management: Contiguous Allocation, Paging, Segmentation & TLB",
+    "detailed_notes": [
+      "Memory management bridges logical process address space to physical hardware RAM.\n\nContiguous Allocation & Fragmentation:\n- Internal Fragmentation: Allocated memory block is larger than requested memory; unused memory inside the partition is wasted.\n- External Fragmentation: Total free memory space exists to satisfy a request, but it is split into non-contiguous fragments. Resolved via Compaction (costly memory copying) or Non-contiguous Paging.\n\nPaging Architecture:\nPhysical memory is broken into fixed-size blocks called Frames. Logical address space is broken into blocks of identical size called Pages (commonly 4KB). The CPU generates logical addresses split into: Page Number (p) and Page Offset (d).\nThe Page Table maps page number p to frame number f. Physical address = (f * page_size) + d. Paging completely eliminates external fragmentation, but introduces slight internal fragmentation on the final page of a process.\n\nTranslation Lookaside Buffer (TLB):\nAccessing a page table in RAM requires two memory accesses per data lookup (one for page table entry, one for physical data). The TLB is an ultra-fast hardware associative associative cache inside the MMU (Memory Management Unit). If page p is found in TLB (TLB Hit), frame f is retrieved in ~1 nanosecond. Effective Memory Access Time (EMAT) = Hit_Rate * (TLB_time + RAM_time) + (1 - Hit_Rate) * (TLB_time + 2 * RAM_time).\n\nSegmentation:\nDivides memory into variable-sized logical segments reflecting programmer view (Code, Stack, Heap, Functions). Each entry in the Segment Table contains Base (physical starting address) and Limit (segment length), checking against boundary violations."
+    ],
+    "key_definitions": [
+      {
+        "term": "Page vs Frame",
+        "definition": "A Page is a fixed-size block of logical address space; a Frame is an identically-sized block of physical RAM."
+      },
+      {
+        "term": "TLB (Translation Lookaside Buffer)",
+        "definition": "A high-speed hardware cache in the MMU storing recent logical-to-physical address translations."
+      },
+      {
+        "term": "Internal Fragmentation",
+        "definition": "Wasted space within an allocated memory block because the allocated unit exceeds process demand."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "Explain the difference between Internal and External Fragmentation.",
+        "a": "Internal fragmentation occurs when memory is allocated in fixed-size blocks (e.g., 4KB pages) and a process requests less than the block size (e.g., 1KB), leaving 3KB unused inside the block. External fragmentation occurs in variable-partition systems when total free memory is sufficient to satisfy a request, but the space is scattered into small non-contiguous holes across RAM, preventing a large process from fitting."
+      },
+      {
+        "q": "How does Paging eliminate External Fragmentation?",
+        "a": "In paging, any logical page of a process can be placed into any available physical frame anywhere in RAM, regardless of whether the frames are physically contiguous. Because no contiguous chunk of physical memory is required, external fragmentation cannot occur."
+      },
+      {
+        "q": "What is the Translation Lookaside Buffer (TLB), and what is a TLB Miss?",
+        "a": "The TLB is an associative hardware cache inside the Memory Management Unit (MMU) that stores recent page-to-frame translations. On a memory reference, the MMU checks the TLB. If present (TLB hit), physical frame address is obtained immediately. On a TLB miss, the MMU must read the multi-level page table from RAM (adding memory latency), load the translation into the TLB, and then perform the data lookup."
+      },
+      {
+        "q": "Given a 32-bit logical address with 4KB page size, calculate the number of bits for Page Number and Offset.",
+        "a": "Page size = 4KB = 2^12 bytes. Therefore, 12 bits are required for the Page Offset (d). The remaining 32 - 12 = 20 bits specify the Page Number (p). A process can thus have 2^20 pages (1,048,576 pages)."
+      },
+      {
+        "q": "What is Multi-level Paging, and why is it necessary for 64-bit architectures?",
+        "a": "A linear page table for a 32-bit system with 2^20 entries at 4 bytes each takes 4MB of contiguous RAM per process. In 64-bit systems, a single linear page table would require petabytes of storage. Multi-level paging breaks the page table itself into pages, allowing non-contiguous allocation and letting the OS allocate page tables only for virtual address regions that are actually in use, avoiding massive memory waste."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-06-01",
+        "question": "In a paging memory system, which type of fragmentation can still occur?",
+        "options": [
+          "External fragmentation only",
+          "Internal fragmentation only",
+          "Both internal and external",
+          "Neither type"
+        ],
+        "correct_answer": "B",
+        "explanation": "Paging eliminates external fragmentation, but the last allocated page may not be completely filled, causing internal fragmentation."
+      },
+      {
+        "id": "CS-06-02",
+        "question": "A system uses 4KB pages. How many bits are needed for the page offset?",
+        "options": [
+          "10 bits",
+          "12 bits",
+          "16 bits",
+          "20 bits"
+        ],
+        "correct_answer": "B",
+        "explanation": "4 KB = 4096 bytes = 2^12 bytes, so 12 bits are needed for offset."
+      },
+      {
+        "id": "CS-06-03",
+        "question": "The hardware component that maps virtual addresses to physical addresses at runtime is the:",
+        "options": [
+          "ALU",
+          "MMU (Memory Management Unit)",
+          "DMA Controller",
+          "Interrupt Handler"
+        ],
+        "correct_answer": "B",
+        "explanation": "The MMU contains the hardware logic and TLB to translate virtual memory addresses to physical RAM."
+      },
+      {
+        "id": "CS-06-04",
+        "question": "If TLB access takes 10ns and RAM access takes 100ns, what is access time on a TLB hit?",
+        "options": [
+          "10ns",
+          "100ns",
+          "110ns",
+          "210ns"
+        ],
+        "correct_answer": "C",
+        "explanation": "On a TLB hit, the MMU accesses the TLB (10ns) then fetches data from RAM (100ns), totaling 110ns."
+      },
+      {
+        "id": "CS-06-05",
+        "question": "In Segmentation, a logical address consists of:",
+        "options": [
+          "Page number and frame offset",
+          "Segment number and offset",
+          "Base register and limit register",
+          "PID and socket ID"
+        ],
+        "correct_answer": "B",
+        "explanation": "Segmentation addresses specify a segment identifier and offset within that segment."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "SmartGalla",
+    "repo_path": "D:\\Projects\\SmartGalla",
+    "feature_focus": "Payment Gateway Integration & Webhook Idempotency (Razorpay & COD Ledger)",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nHow payment callbacks, signatures, and distributed transactions are verified safely.\n\nWHAT TO MEMORIZE:\nHMAC-SHA256 signature verification prevents man-in-the-middle payment spoofing.\n\n60-SECOND INTERVIEW PITCH:\nIn SmartGalla, payment reliability is paramount. For digital payments, I implemented Razorpay with cryptographically verified webhooks using HMAC-SHA256 and unique transaction deduplication. For physical cash orders, I built a double-entry COD ledger that reconciles collected cash against delivery agent accounts before crediting merchant balances.",
+    "interview_qa": [
+      {
+        "q": "How do you handle Razorpay webhook idempotency in SmartGalla?",
+        "a": "When a customer pays, Razorpay sends an asynchronous webhook (`payment.captured` or `order.paid`). Because network retries can send the same webhook multiple times, we store every incoming `razorpay_payment_id` in a dedicated `payment_transactions` table with a UNIQUE constraint. If an incoming event already exists, the database ignores it and returns HTTP 200 immediately, preventing duplicate order fulfillments."
+      },
+      {
+        "q": "How does the Cash on Delivery (COD) ledger prevent courier fraud?",
+        "a": "For COD orders, payment status is initialized as 'PENDING_CASH'. When the delivery agent marks an order 'DELIVERED', the transaction triggers an automated debit to the rider's active cash bag in `cod_ledger` and an unverified credit to the merchant. The merchant must reconcile the physical cash handover with a single-click OTP confirmation, closing the ledger loop."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 6 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 6 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'DevQBX & Sitekraft Engineering', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In DevQBX & Sitekraft Engineering (Project Management, Client Web Architecture, Microservices), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of DevQBX & Sitekraft Engineering.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 05 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5002 — Java Multithreading & Synchronization.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time & Work (Efficiency).\n• Algorithmic Invariant: Optimal time and space complexity rules for Binary Search on Sorted Arrays.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Memory Management: Paging & TLB.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Multithreading & Synchronization.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Binary Search on Sorted Arrays.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: SmartGalla.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 6 Q1: What is the primary academic thesis of Java Multithreading & Synchronization?",
+        "a": "Core theoretical and practical mastery of Java Multithreading & Synchronization under the CSJM University BCA-5002 syllabus."
+      },
+      {
+        "q": "Day 6 Q2: What is the key speed calculation formula applied in Time & Work (Efficiency)?",
+        "a": "High-speed corporate placement arithmetic shortcut for Time & Work (Efficiency) in campus recruitment exams."
+      },
+      {
+        "q": "Day 6 Q3: What is the time complexity of Binary Search on Sorted Arrays?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 6 Q4: What is the central architectural principle of Memory Management: Paging & TLB?",
+        "a": "Foundational systems engineering rule governing Memory Management: Paging & TLB in production environments."
+      },
+      {
+        "q": "Day 6 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 6 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 6 Q7: What is the verified technical foundation of SmartGalla?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 6 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 6 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 6 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5002 — Java Multithreading & Synchronization.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time & Work (Efficiency).\n• Algorithmic Invariant: Optimal time and space complexity rules for Binary Search on Sorted Arrays.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Memory Management: Paging & TLB."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5002 — Java Multithreading & Synchronization."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time & Work (Efficiency)."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Binary Search on Sorted Arrays."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: SmartGalla."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 06 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "Which method in Java is invoked to initiate the concurrent execution of a new thread created via Thread class or Runnable interface?",
+        "a": "Answer: B\n\nCalling start() requests the JVM to allocate a new native thread call stack and invoke the run() method asynchronously. Calling run() directly runs synchronously on the caller's thread."
+      },
+      {
+        "q": "What happens when a thread enters a method marked with the 'synchronized' keyword in Java?",
+        "a": "Answer: A\n\nEvery Java object has an intrinsic monitor lock. Synchronized methods/blocks acquire this lock, preventing other threads from executing synchronized code on that object until released."
+      },
+      {
+        "q": "Which method releases the monitor lock and suspends the calling thread until another thread invokes notify() or notifyAll() on the same object?",
+        "a": "Answer: C\n\nObject.wait() must be called from within a synchronized context; it atomically releases the object monitor and places the thread into the object's wait set."
+      },
+      {
+        "q": "What is the primary advantage of implementing the Runnable interface over extending the Thread class in Java?",
+        "a": "Answer: B\n\nJava supports single class inheritance. Implementing Runnable allows the class to extend another business class while decoupling the task from the thread runner."
+      },
+      {
+        "q": "What happens to a Daemon thread in Java when all non-daemon user threads finish executing?",
+        "a": "Answer: B\n\nDaemon threads (like GC) provide background services. The JVM exits as soon as all user (non-daemon) threads terminate, killing any active daemon threads."
+      },
+      {
+        "q": "A can complete a work in 10 days and B can complete it in 15 days. Working together, in how many days can they complete the work?",
+        "a": "Answer: A\n\nTotal work = LCM(10, 15) = 30 units. A's rate = 3 units/day, B's rate = 2 units/day. Combined rate = 5 units/day. Time = 30 / 5 = 6 days."
+      },
+      {
+        "q": "A and B together can do a piece of work in 12 days, B and C in 15 days, and C and A in 20 days. In how many days can A, B, and C together finish it?",
+        "a": "Answer: A\n\nLCM(12, 15, 20) = 60 units. 2(A + B + C) = 5 + 4 + 3 = 12 units/day => A + B + C = 6 units/day. Time = 60 / 6 = 10 days."
+      },
+      {
+        "q": "A is twice as efficient as B and takes 30 days less than B to complete a piece of work. In how many days can B alone complete the work?",
+        "a": "Answer: A\n\nEfficiency ratio A : B = 2 : 1 => Time ratio A : B = 1 : 2. Difference in time = 1 unit = 30 days. B's time = 2 * 30 = 60 days."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-06-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which method in Java is invoked to initiate the concurrent execution of a new thread created via Thread class or Runnable interface?",
+        "options": [
+          "run()",
+          "start()",
+          "init()",
+          "execute()"
+        ],
+        "correct_answer": "B",
+        "explanation": "Calling start() requests the JVM to allocate a new native thread call stack and invoke the run() method asynchronously. Calling run() directly runs synchronously on the caller's thread."
+      },
+      {
+        "id": "TEST-06-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What happens when a thread enters a method marked with the 'synchronized' keyword in Java?",
+        "options": [
+          "The thread acquires the intrinsic lock (monitor) associated with the target object",
+          "The thread is immediately put into the DEAD state",
+          "The JVM disables garbage collection for all heaps",
+          "The thread's priority is automatically raised to MAX_PRIORITY"
+        ],
+        "correct_answer": "A",
+        "explanation": "Every Java object has an intrinsic monitor lock. Synchronized methods/blocks acquire this lock, preventing other threads from executing synchronized code on that object until released."
+      },
+      {
+        "id": "TEST-06-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which method releases the monitor lock and suspends the calling thread until another thread invokes notify() or notifyAll() on the same object?",
+        "options": [
+          "sleep()",
+          "yield()",
+          "wait()",
+          "join()"
+        ],
+        "correct_answer": "C",
+        "explanation": "Object.wait() must be called from within a synchronized context; it atomically releases the object monitor and places the thread into the object's wait set."
+      },
+      {
+        "id": "TEST-06-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary advantage of implementing the Runnable interface over extending the Thread class in Java?",
+        "options": [
+          "Runnable threads execute 10x faster than Thread subclasses",
+          "Since Java does not support multiple class inheritance, implementing Runnable leaves the class free to extend another base class",
+          "Runnable does not require overriding the run() method",
+          "Runnable automatically prevents deadlocks"
+        ],
+        "correct_answer": "B",
+        "explanation": "Java supports single class inheritance. Implementing Runnable allows the class to extend another business class while decoupling the task from the thread runner."
+      },
+      {
+        "id": "TEST-06-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What happens to a Daemon thread in Java when all non-daemon user threads finish executing?",
+        "options": [
+          "The JVM continues running until the daemon thread finishes",
+          "The JVM terminates immediately, abruptly stopping all daemon threads",
+          "The daemon thread is automatically converted into a user thread",
+          "The JVM throws a ThreadDeathException"
+        ],
+        "correct_answer": "B",
+        "explanation": "Daemon threads (like GC) provide background services. The JVM exits as soon as all user (non-daemon) threads terminate, killing any active daemon threads."
+      },
+      {
+        "id": "TEST-06-06",
+        "category": "Placement Aptitude",
+        "question": "A can complete a work in 10 days and B can complete it in 15 days. Working together, in how many days can they complete the work?",
+        "options": [
+          "6 days",
+          "5 days",
+          "7 days",
+          "8 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total work = LCM(10, 15) = 30 units. A's rate = 3 units/day, B's rate = 2 units/day. Combined rate = 5 units/day. Time = 30 / 5 = 6 days."
+      },
+      {
+        "id": "TEST-06-07",
+        "category": "Placement Aptitude",
+        "question": "A and B together can do a piece of work in 12 days, B and C in 15 days, and C and A in 20 days. In how many days can A, B, and C together finish it?",
+        "options": [
+          "10 days",
+          "8 days",
+          "12 days",
+          "15 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "LCM(12, 15, 20) = 60 units. 2(A + B + C) = 5 + 4 + 3 = 12 units/day => A + B + C = 6 units/day. Time = 60 / 6 = 10 days."
+      },
+      {
+        "id": "TEST-06-08",
+        "category": "Placement Aptitude",
+        "question": "A is twice as efficient as B and takes 30 days less than B to complete a piece of work. In how many days can B alone complete the work?",
+        "options": [
+          "60 days",
+          "50 days",
+          "40 days",
+          "75 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "Efficiency ratio A : B = 2 : 1 => Time ratio A : B = 1 : 2. Difference in time = 1 unit = 30 days. B's time = 2 * 30 = 60 days."
+      },
+      {
+        "id": "TEST-06-09",
+        "category": "Placement Aptitude",
+        "question": "12 men can complete a work in 8 days. After 3 days of work, 3 more men joined them. How many more days will they take to complete the remaining work?",
+        "options": [
+          "4 days",
+          "5 days",
+          "3.5 days",
+          "4.5 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total work = 12 * 8 = 96 man-days. Work done in 3 days = 12 * 3 = 36 man-days. Remaining work = 96 - 36 = 60 man-days. New men count = 15. Days needed = 60 / 15 = 4 days."
+      },
+      {
+        "id": "TEST-06-10",
+        "category": "Placement Aptitude",
+        "question": "A can do a piece of work in 14 days and B in 21 days. They begin together but 3 days before the completion of the work, A leaves. What is the total duration of the work?",
+        "options": [
+          "10.2 days",
+          "9 days",
+          "11 days",
+          "12 days"
+        ],
+        "correct_answer": "A",
+        "explanation": "LCM(14, 21) = 42 units. A=3 u/d, B=2 u/d. In the last 3 days, B works alone: 3 * 2 = 6 units. Remaining 36 units done by (A+B): 36 / 5 = 7.2 days. Total = 7.2 + 3 = 10.2 days."
+      },
+      {
+        "id": "TEST-06-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "In a paging memory system, which type of fragmentation can still occur?",
+        "options": [
+          "External fragmentation only",
+          "Internal fragmentation only",
+          "Both internal and external",
+          "Neither type"
+        ],
+        "correct_answer": "B",
+        "explanation": "Paging eliminates external fragmentation, but the last allocated page may not be completely filled, causing internal fragmentation."
+      },
+      {
+        "id": "TEST-06-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "A system uses 4KB pages. How many bits are needed for the page offset?",
+        "options": [
+          "10 bits",
+          "12 bits",
+          "16 bits",
+          "20 bits"
+        ],
+        "correct_answer": "B",
+        "explanation": "4 KB = 4096 bytes = 2^12 bytes, so 12 bits are needed for offset."
+      },
+      {
+        "id": "TEST-06-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "The hardware component that maps virtual addresses to physical addresses at runtime is the:",
+        "options": [
+          "ALU",
+          "MMU (Memory Management Unit)",
+          "DMA Controller",
+          "Interrupt Handler"
+        ],
+        "correct_answer": "B",
+        "explanation": "The MMU contains the hardware logic and TLB to translate virtual memory addresses to physical RAM."
+      },
+      {
+        "id": "TEST-06-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "If TLB access takes 10ns and RAM access takes 100ns, what is access time on a TLB hit?",
+        "options": [
+          "10ns",
+          "100ns",
+          "110ns",
+          "210ns"
+        ],
+        "correct_answer": "C",
+        "explanation": "On a TLB hit, the MMU accesses the TLB (10ns) then fetches data from RAM (100ns), totaling 110ns."
+      },
+      {
+        "id": "TEST-06-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "In Segmentation, a logical address consists of:",
+        "options": [
+          "Page number and frame offset",
+          "Segment number and offset",
+          "Base register and limit register",
+          "PID and socket ID"
+        ],
+        "correct_answer": "B",
+        "explanation": "Segmentation addresses specify a segment identifier and offset within that segment."
+      },
+      {
+        "id": "TEST-06-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Binary Search on Sorted Arrays' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(log N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Binary Search on Sorted Arrays' pattern operates with O(log N) Time, O(1) Auxiliary Space: Eliminates 50% of candidate search space each step: T(n) = T(n/2) + O(1) => O(log N).."
+      },
+      {
+        "id": "TEST-06-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Binary Search on Sorted Arrays' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Target smaller than nums[0].",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Binary Search on Sorted Arrays include Target smaller than nums[0], which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-06-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Search Insert Position', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(log N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-06-19",
+        "category": "Projects (SmartGalla)",
+        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Payment Gateway Integration & Webhook Idempotency (Razorpay & COD Ledger)'?",
+        "options": [
+          "HMAC-SHA256 signature verification prevents man-in-the-middle payment spoofing.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For SmartGalla, the architectural invariant is: HMAC-SHA256 signature verification prevents man-in-the-middle payment spoofing.."
+      },
+      {
+        "id": "TEST-06-20",
+        "category": "Projects (SmartGalla)",
+        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'How do you handle Razorpay webhook idempotency in SmartGalla?'?",
+        "options": [
+          "When a customer pays, Razorpay sends an asynchronous webhook (`payment.captured` or `order.paid`). Because network retries can send the same webhook multiple ti...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When a customer pays, Razorpay sends an asynchronous webhook (`payment.captured` or `order.paid`). Because network retries can send the same."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-06",
+    "title": "Search Insert Position (Binary Search on Sorted Arrays)",
+    "time_limit_minutes": 25,
+    "difficulty": "Easy",
+    "problem_statement": "Solve the core placement problem: Search Insert Position.\n\nGiven a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Binary Search on Sorted Arrays\n- Time Complexity Target: O(log N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: Target smaller than nums[0], Target greater than nums[n-1], Empty array.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Binary Search on Sorted Arrays\n    public int searchInsert(int[] nums, int target) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Binary Search on Sorted Arrays\n    public int searchInsert(int[] nums, int target) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public int searchInsert(int[] nums, int target) {\n        int left = 0, right = nums.length - 1;\n        while (left <= right) {\n            int mid = left + (right - left) / 2;\n            if (nums[mid] == target) return mid;\n            else if (nums[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        return left;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Binary Search on Sorted Arrays logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Target smaller than nums[0]",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(log N) Time)",
+      "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

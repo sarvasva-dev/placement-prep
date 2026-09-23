@@ -1,216 +1,2437 @@
 {
   "day": 22,
-  "title": "TCP Congestion Control (AIMD & Tahoe/Reno), Data Interpretation & LIS Dynamic Programming",
-  "sem_data": {
-    "subject": "BCA-5003 Computer Network",
-    "topic": "Unit IV \u2014 Transport Layer: TCP Congestion Control Mechanisms (Slow Start, AIMD, Fast Retransmit & Reno)",
-    "detailed_notes": [
-      "Network congestion occurs when the aggregate traffic injected into a network exceeds the capacity of intermediate routers and links, causing buffer overflow, queuing delays, and packet drops (Congestion Collapse). TCP incorporates end-to-end congestion control to dynamically modulate transmission rates without explicit router feedback.",
-      "Key State Variables:\n\u2022 Congestion Window (`cwnd`): The maximum number of bytes the sender is permitted to transmit before receiving an ACK, dynamically calculated by the sender.\n\u2022 Advertised Window (`rwnd`): The buffer capacity advertised by the receiver in the TCP header for flow control.\n\u2022 Effective Sending Window = `min(cwnd, rwnd)`.\n\u2022 Slow Start Threshold (`ssthresh`): The window size threshold determining the transition between Slow Start and Congestion Avoidance.",
-      "The 4 Core Phases of TCP Congestion Control:\n1. Slow Start Phase:\n\u2022 Initially `cwnd = 1 MSS` (Maximum Segment Size). `ssthresh` is typically set to 64KB.\n\u2022 For EVERY ACK received, `cwnd` increases by 1 MSS: `cwnd = cwnd + 1 MSS`.\n\u2022 This causes `cwnd` to DOUBLE every Round Trip Time (RTT): 1 -> 2 -> 4 -> 8 -> 16 MSS (Exponential Growth!).\n\u2022 Continues until `cwnd >= ssthresh` or a packet drop occurs.",
-      "2. Congestion Avoidance Phase (Additive Increase):\n\u2022 Once `cwnd >= ssthresh`, exponential growth stops to prevent abrupt network saturation.\n\u2022 For every RTT, `cwnd` increases by strictly 1 MSS (Additive Increase): `cwnd = cwnd + (1 / cwnd)` per ACK.\n\u2022 Graphically represents a linear staircase ascent.",
-      "3. Multiplicative Decrease (Handling Packet Loss):\n\u2022 Case A (Timeout): Severe congestion indicator. `ssthresh = cwnd / 2`, `cwnd` is collapsed to 1 MSS, and Slow Start restarts.\n\u2022 Case B (3 Duplicate ACKs): Mild packet loss. Router dropped 1 segment, but subsequent segments arrived at receiver.\n4. Fast Retransmit & Fast Recovery (TCP Reno):\n\u2022 Fast Retransmit: Sender retransmits the missing segment immediately upon receiving the 3rd duplicate ACK WITHOUT waiting for retransmission timer expiration!\n\u2022 Fast Recovery (TCP Reno): Instead of dropping `cwnd` to 1 MSS (as in TCP Tahoe), Reno sets `ssthresh = cwnd / 2` and `cwnd = ssthresh + 3 MSS`, continuing Congestion Avoidance without restarting Slow Start."
+  "title": "Day 22: Transport Layer: TCP 3-Way Handshake, Connection Teardown & Congestion Control (AIMD) & Disjoint Set Union (Union-Find)",
+  "streams": {
+    "academic": {
+      "unit": 3,
+      "topic": "Unit III — Transport Layer: TCP 3-Way Handshake, Connection Teardown & Congestion Control (AIMD)",
+      "objectives": [
+        "Understand TCP connection lifecycle.",
+        "Master TCP Congestion Control algorithms: Slow Start, Congestion Avoidance, AIMD, Fast Retransmit."
+      ],
+      "explanation": "Transmission Control Protocol (TCP) is a connection-oriented, reliable transport protocol that guarantees ordered byte-stream delivery. Connection establishment uses a 3-Way Handshake: Client sends `SYN (seq=x)` -> Server responds with `SYN-ACK (seq=y, ack=x+1)` -> Client sends `ACK (ack=y+1)`. Teardown uses a 4-Step FIN-ACK handshake: FIN -> ACK -> FIN -> ACK (client waits in TIME_WAIT for 2*MSL to ensure the final ACK was received).\n\nTCP Congestion Control prevents network collapse through four algorithms:\n1. Slow Start: Congestion Window (`cwnd`) starts at 1 MSS and doubles exponentially every RTT (`cwnd = cwnd * 2`) until reaching the Slow Start Threshold (`ssthresh`);\n2. Congestion Avoidance: Once `cwnd >= ssthresh`, window grows linearly by 1 MSS per RTT (Additive Increase);\n3. Congestion Detection: On packet loss detected via timeout, TCP resets `ssthresh = cwnd / 2` and collapses `cwnd = 1 MSS` (Multiplicative Decrease);\n4. Fast Retransmit & Fast Recovery: Receiving 3 duplicate ACKs triggers retransmission without waiting for timer expiration, setting `ssthresh = cwnd / 2` and `cwnd = ssthresh + 3 MSS`.",
+      "definitions": [
+        {
+          "term": "Congestion Window (cwnd)",
+          "definition": "A TCP state variable that limits the maximum amount of unacknowledged data the sender can transmit into the network without causing congestion."
+        },
+        {
+          "term": "Additive Increase Multiplicative Decrease (AIMD)",
+          "definition": "The stability control algorithm where TCP probes for bandwidth by increasing cwnd linearly, but halves cwnd immediately upon packet loss."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "TCP 3-Way Handshake",
+          "content": "SYN -> SYN-ACK -> ACK. Prevents historical duplicated connection requests from creating phantom server sockets."
+        },
+        {
+          "title": "AIMD Dynamics",
+          "content": "Produces characteristic 'Sawtooth' bandwidth curve: linear growth during stability, instant halving during congestion."
+        }
+      ],
+      "examples": [
+        "TCP adjusting throughput smoothly when downloading large files over fluctuating Wi-Fi connections."
+      ],
+      "diagram": "+---------------------------------------------------+\n|           TCP CONGESTION CONTROL (AIMD)           |\n| [Slow Start: Exponential] -> ssthresh hit         |\n| -> [Congestion Avoidance: Linear +1 MSS]          |\n| -> Packet Loss -> [Multiplicative Decrease /2]    |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Congestion Phase",
+          "Trigger Condition",
+          "Window Growth Behavior",
+          "Mathematical Formula"
+        ],
+        "rows": [
+          [
+            "Slow Start",
+            "Connection initialization or after timeout",
+            "Exponential doubling every RTT",
+            "cwnd = cwnd * 2"
+          ],
+          [
+            "Congestion Avoidance",
+            "When cwnd >= ssthresh",
+            "Linear increase by 1 MSS per RTT",
+            "cwnd = cwnd + 1"
+          ],
+          [
+            "Timeout Reaction",
+            "Retransmission timer expires",
+            "Immediate collapse to 1 MSS",
+            "ssthresh = cwnd/2; cwnd = 1"
+          ],
+          [
+            "3 Duplicate ACKs",
+            "Triple duplicate ACK arrival",
+            "Fast Recovery (halves window)",
+            "ssthresh = cwnd/2; cwnd = ssthresh + 3"
+          ]
+        ]
+      },
+      "memorize": "Handshake: SYN -> SYN-ACK -> ACK. AIMD: Additive Increase (linear +1), Multiplicative Decrease (halves on loss). Produces sawtooth curve.",
+      "understand": "Slow Start is actually fast: it starts small (1 MSS) to avoid initial congestion, but doubles exponentially every round trip.",
+      "common_mistakes": "Thinking TCP Slow Start increases window linearly (it increases exponentially; Congestion Avoidance is linear).",
+      "exam_writing_guidance": "Draw the 3-Way Handshake packet diagram with sequence numbers, draw the Congestion Control Sawtooth curve, and explain all 4 algorithms.",
+      "mini_practice": [
+        "Why is TIME_WAIT state set to 2 * Maximum Segment Lifetime (MSL)?"
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2024-25 (Q3)",
+          "marks": 15,
+          "question": "Explain TCP 3-Way Handshake connection establishment and connection release. Describe the TCP Congestion Control mechanism (Slow Start, Congestion Avoidance, AIMD) with a neat graph. (15 Marks)",
+          "rubric": "3-Way Handshake Diagram & Sequence Numbers (4 marks) + Connection Release & TIME_WAIT (3 marks) + Congestion Control Sawtooth Graph (4 marks) + Slow Start & AIMD explanation (4 marks) = 15 Marks.",
+          "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n• Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n• Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n• Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
+          "answer_structure": "3-Way Handshake Diagram -> Teardown & TIME_WAIT -> Congestion Control Sawtooth Graph -> Detailed Algorithms",
+          "important_points": [
+            "SYN, SYN-ACK, ACK sequence numbers",
+            "TIME_WAIT 2*MSL",
+            "Sawtooth graph",
+            "Slow start exponential, Congestion avoidance linear",
+            "AIMD"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Sawtooth curve labeled with Slow Start, ssthresh, Congestion Avoidance, and Timeout",
+            "Clear handshake packets"
+          ],
+          "common_mistakes": [
+            "Drawing handshake with only 2 packets"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2022 / Model",
+          "marks": 5,
+          "question": "What is the difference between TCP and UDP? (5 Marks)",
+          "rubric": "Comparison table across Connection, Reliability, Header Size, and Speed (5 marks).",
+          "model_answer": "1. Connection: TCP is connection-oriented (requires 3-way handshake); UDP is connectionless (transmits datagrams directly without setup); 2. Reliability: TCP guarantees delivery through sequence numbers, acknowledgments, and retransmissions; UDP provides best-effort delivery with zero retransmissions; 3. Header Overhead: TCP has a large 20-60 byte header; UDP has a lightweight fixed 8-byte header; 4. Flow/Congestion Control: TCP has extensive windowing and congestion algorithms; UDP has zero flow or congestion control; 5. Use Cases: TCP is used for Web (HTTP), Email, File Transfer; UDP is used for Real-time Video, DNS, VoIP, and Online Gaming."
+        }
+      ],
+      "subject_code": "BCA-5003",
+      "subject_name": "Computer Networks",
+      "mcqs": [
+        {
+          "id": "ACAD-22-01",
+          "question": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
+          "options": [
+            "service()",
+            "init()",
+            "doGet()",
+            "destroy()"
+          ],
+          "correct_answer": "B",
+          "explanation": "The container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
+        },
+        {
+          "id": "ACAD-22-02",
+          "question": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
+          "options": [
+            "service(ServletRequest, ServletResponse)",
+            "init()",
+            "start()",
+            "run()"
+          ],
+          "correct_answer": "A",
+          "explanation": "The `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
+        },
+        {
+          "id": "ACAD-22-03",
+          "question": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
+          "options": [
+            "Cookies cannot store more than 1 byte of data",
+            "Session data is stored securely on the server-side, with only an opaque session identifier (JSESSIONID) sent to the client browser",
+            "Cookies expire immediately when a tab is refreshed",
+            "Sessions do not consume server RAM"
+          ],
+          "correct_answer": "B",
+          "explanation": "HttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
+        },
+        {
+          "id": "ACAD-22-04",
+          "question": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
+          "options": [
+            "pom.xml",
+            "web.xml (located in WEB-INF)",
+            "server.xml",
+            "context.xml"
+          ],
+          "correct_answer": "B",
+          "explanation": "The `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
+        },
+        {
+          "id": "ACAD-22-05",
+          "question": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
+          "options": [
+            "@WebServlet",
+            "@Controller",
+            "@Service",
+            "@WebEndpoint"
+          ],
+          "correct_answer": "A",
+          "explanation": "Servlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2024-25 (Q3)",
+        "marks": 15,
+        "question": "Explain TCP 3-Way Handshake connection establishment and connection release. Describe the TCP Congestion Control mechanism (Slow Start, Congestion Avoidance, AIMD) with a neat graph. (15 Marks)",
+        "rubric": "3-Way Handshake Diagram & Sequence Numbers (4 marks) + Connection Release & TIME_WAIT (3 marks) + Congestion Control Sawtooth Graph (4 marks) + Slow Start & AIMD explanation (4 marks) = 15 Marks.",
+        "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n• Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n• Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n• Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
+        "answer_structure": "3-Way Handshake Diagram -> Teardown & TIME_WAIT -> Congestion Control Sawtooth Graph -> Detailed Algorithms",
+        "important_points": [
+          "SYN, SYN-ACK, ACK sequence numbers",
+          "TIME_WAIT 2*MSL",
+          "Sawtooth graph",
+          "Slow start exponential, Congestion avoidance linear",
+          "AIMD"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Sawtooth curve labeled with Slow Start, ssthresh, Congestion Avoidance, and Timeout",
+          "Clear handshake packets"
+        ],
+        "common_mistakes": [
+          "Drawing handshake with only 2 packets"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "What is the difference between TCP and UDP? (5 Marks)",
+        "rubric": "Comparison table across Connection, Reliability, Header Size, and Speed (5 marks).",
+        "model_answer": "1. Connection: TCP is connection-oriented (requires 3-way handshake); UDP is connectionless (transmits datagrams directly without setup); 2. Reliability: TCP guarantees delivery through sequence numbers, acknowledgments, and retransmissions; UDP provides best-effort delivery with zero retransmissions; 3. Header Overhead: TCP has a large 20-60 byte header; UDP has a lightweight fixed 8-byte header; 4. Flow/Congestion Control: TCP has extensive windowing and congestion algorithms; UDP has zero flow or congestion control; 5. Use Cases: TCP is used for Web (HTTP), Email, File Transfer; UDP is used for Real-time Video, DNS, VoIP, and Online Gaming."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    TCP CWND EVOLUTION CURVE OVER TIME                   |\n+-------------------------------------------------------------------------+\n|  CWND                                                                   |\n|   ^                                                                     |\n|   |                 (Timeout Loss)                                      |\n| 32|                       *                                             |\n|   |                      / \\                                            |\n| 16|          *          /   \\ (ssthresh = 16)                           |\n|   |         / \\        /                                                |\n|  8|        /   *------* (Congestion Avoidance: Linear +1 MSS/RTT)        |\n|   |       /    (Fast Recovery - Reno)                                   |\n|  4|      *                                                              |\n|  2|     / (Slow Start: Exponential x2/RTT)                              |\n|  1|    *                                                                |\n|   +----------------------------------------------------> Time (RTT)     |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-22-01",
+        "question": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
+        "options": [
+          "service()",
+          "init()",
+          "doGet()",
+          "destroy()"
+        ],
+        "correct_answer": "B",
+        "explanation": "The container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
+      },
+      {
+        "id": "ACAD-22-02",
+        "question": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
+        "options": [
+          "service(ServletRequest, ServletResponse)",
+          "init()",
+          "start()",
+          "run()"
+        ],
+        "correct_answer": "A",
+        "explanation": "The `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
+      },
+      {
+        "id": "ACAD-22-03",
+        "question": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
+        "options": [
+          "Cookies cannot store more than 1 byte of data",
+          "Session data is stored securely on the server-side, with only an opaque session identifier (JSESSIONID) sent to the client browser",
+          "Cookies expire immediately when a tab is refreshed",
+          "Sessions do not consume server RAM"
+        ],
+        "correct_answer": "B",
+        "explanation": "HttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
+      },
+      {
+        "id": "ACAD-22-04",
+        "question": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
+        "options": [
+          "pom.xml",
+          "web.xml (located in WEB-INF)",
+          "server.xml",
+          "context.xml"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
+      },
+      {
+        "id": "ACAD-22-05",
+        "question": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
+        "options": [
+          "@WebServlet",
+          "@Controller",
+          "@Service",
+          "@WebEndpoint"
+        ],
+        "correct_answer": "A",
+        "explanation": "Servlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Cube & Dice Reasoning",
+      "category": "Logical Reasoning",
+      "subtopic": "Cube & Dice",
+      "formulas": "1. Opposite Faces of Standard Dice: Sum of opposite faces is always 7 (1-6, 2-5, 3-4).\n2. Open Dice Folding Rule: Alternate faces in a straight line are opposite to each other with one face in between.\n3. Painted Cube: For a cube cut into n^3 smaller cubes: 3 faces painted = 8 (corners); 2 faces = 12*(n-2) (edges); 1 face = 6*(n-2)^2 (centers); 0 faces = (n-2)^3.",
+      "shortcuts": "Common Face Clockwise Rule: When two views of a die show one common face, write down the numbers clockwise starting from the common face. Positionally matching pairs are opposite faces.",
+      "tutorial": [
+        "Spatial reasoning questions evaluate mental 3D rotation. Practice identifying opposite pairs directly from unfolded net diagrams before attempting complex multi-cut cube volume questions."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Cube & Dice",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Cube & Dice",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Cube & Dice",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Cube & Dice",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Cube & Dice",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A standard dice has opposite faces summing to 7. If face 4 is on the top, which face is on the bottom?",
+        "options": {
+          "A": "3",
+          "B": "2",
+          "C": "5",
+          "D": "1"
+        },
+        "correct_answer": "A",
+        "explanation": "In a standard die, opposite faces sum to 7. Opposite of 4 is 7 - 4 = 3.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A solid cube of side 4 cm is painted red on all sides and cut into smaller cubes of side 1 cm. How many smaller cubes have exactly two painted faces?",
+        "options": {
+          "A": "24",
+          "B": "16",
+          "C": "32",
+          "D": "12"
+        },
+        "correct_answer": "A",
+        "explanation": "Two painted faces occur along the edges: formula = 12 * (n - 2) where n = 4/1 = 4. Count = 12 * (4 - 2) = 12 * 2 = 24 cubes.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "In the above 4 cm painted cube, how many smaller 1 cm cubes have NO painted faces (zero painted)?",
+        "options": {
+          "A": "8",
+          "B": "16",
+          "C": "4",
+          "D": "1"
+        },
+        "correct_answer": "A",
+        "explanation": "Zero painted faces form the internal core: formula = (n - 2)^3 = (4 - 2)^3 = 2^3 = 8 cubes.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "How many smaller cubes in the 4 cm cube have exactly THREE painted faces?",
+        "options": {
+          "A": "8",
+          "B": "12",
+          "C": "6",
+          "D": "4"
+        },
+        "correct_answer": "A",
+        "explanation": "Three painted faces are located exclusively at the 8 vertices of the cube. The answer is always 8.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "How many smaller cubes have exactly ONE painted face?",
+        "options": {
+          "A": "24",
+          "B": "16",
+          "C": "32",
+          "D": "12"
+        },
+        "correct_answer": "A",
+        "explanation": "One painted face occurs on the faces: formula = 6 * (n - 2)^2 = 6 * (4 - 2)^2 = 6 * 4 = 24 cubes.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Two positions of a dice are shown. In position 1: top 1, front 2, right 3. In position 2: top 1, front 5, right 6. Which number is opposite 1?",
+        "options": {
+          "A": "4",
+          "B": "2",
+          "C": "3",
+          "D": "5"
+        },
+        "correct_answer": "A",
+        "explanation": "The numbers adjacent to 1 are 2, 3, 5, 6. The only remaining number that can be opposite 1 is 4.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "A cube painted yellow on all faces is cut into 125 small cubes of equal size. How many cubes have at least one face painted?",
+        "options": {
+          "A": "98",
+          "B": "64",
+          "C": "117",
+          "D": "125"
+        },
+        "correct_answer": "C",
+        "explanation": "n = 125^(1/3) = 5. Unpainted cubes = (5 - 2)^3 = 3^3 = 27. Cubes with at least one painted face = Total - Unpainted = 125 - 27 = 98.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "If a dice is rolled, what is the probability of rolling a composite number?",
+        "options": {
+          "A": "1/3",
+          "B": "1/2",
+          "C": "2/3",
+          "D": "1/6"
+        },
+        "correct_answer": "A",
+        "explanation": "Faces are {1, 2, 3, 4, 5, 6}. Composite numbers are 4 and 6 (2 outcomes). Probability = 2/6 = 1/3.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "When a flat cardboard pattern is folded into a cube, if opposite faces never touch, which face is opposite face A in layout A-B-C-D in a row with E on top of B and F below B?",
+        "options": {
+          "A": "C",
+          "B": "D",
+          "C": "B",
+          "D": "E"
+        },
+        "correct_answer": "A",
+        "explanation": "In linear strip of faces, alternate faces are opposite: A is opposite C, B is opposite D, and flap E is opposite flap F.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "A cube has six faces marked 1 to 6. If 1 is opposite 6, and 2 is opposite 5, which numbers are adjacent to 3?",
+        "options": {
+          "A": "1, 2, 5, 6",
+          "B": "1, 2, 4, 5",
+          "C": "2, 4, 5, 6",
+          "D": "None"
+        },
+        "correct_answer": "A",
+        "explanation": "3 must be opposite 4. Therefore, the four faces adjacent to 3 are 1, 6, 2, and 5.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Cube & Dice (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Disjoint Set Union (Union-Find)",
+      "category": "Graph / DSU",
+      "concept": "Maintains disjoint sets supporting near O(1) find and union operations using Path Compression and Union by Rank.",
+      "why_it_works": "Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).",
+      "visual_explanation": "Nodes: 1, 2, 3\\nUnion(1, 2): parent[2] = 1\\nUnion(2, 3): Find(2)->1, parent[3] = 1\\nCycle Check: Edge (1, 3): Find(1)==1, Find(3)==1 -> Same component ==> CYCLE DETECTED!",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int n = edges.length;\n        int[] parent = new int[n + 1];\n        for (int i = 1; i <= n; i++) parent[i] = i;\n        \n        for (int[] edge : edges) {\n            int rootU = find(parent, edge[0]);\n            int rootV = find(parent, edge[1]);\n            if (rootU == rootV) return edge; // Redundant edge completes cycle\n            parent[rootU] = rootV;\n        }\n        return new int[0];\n    }\n    \n    private int find(int[] parent, int x) {\n        if (parent[x] != x) {\n            parent[x] = find(parent, parent[x]); // Path compression\n        }\n        return parent[x];\n    }\n}",
+      "code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int n = edges.length;\n        int[] parent = new int[n + 1];\n        for (int i = 1; i <= n; i++) parent[i] = i;\n        \n        for (int[] edge : edges) {\n            int rootU = find(parent, edge[0]);\n            int rootV = find(parent, edge[1]);\n            if (rootU == rootV) return edge; // Redundant edge completes cycle\n            parent[rootU] = rootV;\n        }\n        return new int[0];\n    }\n    \n    private int find(int[] parent, int x) {\n        if (parent[x] != x) {\n            parent[x] = find(parent, parent[x]); // Path compression\n        }\n        return parent[x];\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4-5: Initialize parent array where each vertex is its own parent.",
+        "Line 7-12: For each edge, find roots of both vertices. If roots match, edge creates a cycle; return it. Else union sets.",
+        "Line 16-19: Recursive find with path compression pointing nodes directly to root."
+      ],
+      "dry_run": "Edges [[1,2],[1,3],[2,3]]. (1,2) and (1,3) merged into set 1. Edge (2,3) connects two nodes already in set 1 -> Redundant edge returned: [2, 3].",
+      "complexity": "O(N * alpha(N)) Time, O(N) Auxiliary Space",
+      "edge_cases": "Tree with single redundant edge, Disjoint graph with multiple trees, Linear chain graph",
+      "edge_cases_list": [
+        "Tree with single redundant edge",
+        "Disjoint graph with multiple trees",
+        "Linear chain graph"
+      ],
+      "interview_variations": [
+        "Number of Provinces",
+        "Redundant Connection",
+        "Graph Valid Tree"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-22-01",
+        "title": "Problem 1: Number of Provinces",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "There are n cities. A province is a group of directly or indirectly connected cities. Return the total number of provinces.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Disjoint Set Union (Union-Find) algorithmic technique.\n2. Maintains disjoint sets supporting near O(1) find and union operations using Path Compression and Union by Rank.\n3. Invariants: Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).",
+        "solution_java": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "solution_python": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "java_code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "time_complexity": "O(N * alpha(N)) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-22-02",
+        "title": "Problem 2: Redundant Connection",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Return an edge that can be removed so that the resulting graph is a tree of n nodes.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Disjoint Set Union (Union-Find).\n2. Handle edge cases: Tree with single redundant edge, Disjoint graph with multiple trees, Linear chain graph.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "solution_python": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "java_code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "time_complexity": "O(N * alpha(N)) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Python Internals",
+      "topic": "Python Memory Model: Reference Counting, Generational Garbage Collection & Object Model",
+      "concept_lesson": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
+      "key_definitions": [
+        {
+          "term": "PyObject",
+          "definition": "The foundational C structure in CPython containing reference count and type pointer for every Python object."
+        },
+        {
+          "term": "Reference Counting",
+          "definition": "Primary memory management strategy reclaiming memory immediately when reference count reaches zero."
+        },
+        {
+          "term": "Cyclic GC",
+          "definition": "A 3-generational collector detecting and breaking isolated circular reference loops between container objects."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "Explain how CPython's memory management handles circular references.",
+          "a": "Reference counting cannot collect circular references (e.g., two objects pointing to each other) because their reference counts never drop to zero. CPython solves this using a generational cyclic garbage collector (gc module). It tracks container objects (lists, dicts, custom classes), temporarily isolates their internal reference counts, decrements references within the subgraph, and identifies object groups with zero external incoming references. These unreachable subgraphs are then deallocated."
+        },
+        {
+          "q": "What is the Generational Hypothesis in garbage collection?",
+          "a": "The Generational Hypothesis observes that in almost all software systems, the vast majority of allocated objects are short-lived (e.g., local variables in function scopes) and die shortly after creation. CPython divides objects into 3 generations (0, 1, 2). Gen 0 is scanned frequently for quick collection; long-surviving objects are promoted to Gen 1 and Gen 2, which are scanned much less frequently, minimizing CPU overhead."
+        },
+        {
+          "q": "What is PyMalloc and why doesn't Python return all freed memory back to the operating system immediately?",
+          "a": "PyMalloc is CPython's custom memory allocator for objects <= 512 bytes, organizing memory into Arenas (256KB) and Pools (4KB). When Python objects are freed, memory is returned to the pool for reuse by future Python allocations rather than releasing it to the OS kernel via free(). The OS only reclaims memory when an entire 256KB arena becomes completely empty."
+        },
+        {
+          "q": "Why is `is` different from `==` in Python, and how does integer interning work?",
+          "a": "`==` checks for value equality (invoking `__eq__`), comparing whether two objects contain the same data. `is` checks for object identity (comparing memory addresses, `id(a) == id(b)`). CPython pre-allocates and interns small integers in the range [-5, 256] globally at startup. For integers in this range, `a = 10; b = 10; a is b` evaluates to True because both variables point to the exact same pre-allocated singleton PyObject in memory."
+        },
+        {
+          "q": "What are `__slots__` in Python classes and how do they optimize memory?",
+          "a": "By default, every Python instance stores its attributes in a dynamic dictionary (`self.__dict__`), which incurs substantial hash table memory overhead (~150-200 bytes per instance). Specifying `__slots__ = ('name', 'age')` in a class prevents the creation of `__dict__` and allocates a compact, fixed-size C array of attribute pointers, reducing memory consumption by over 60% when instantiating millions of objects."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-22-01",
+          "question": "What is the primary, real-time memory management mechanism in standard CPython?",
+          "options": [
+            "Mark and Sweep GC",
+            "Reference Counting",
+            "Manual free() calls",
+            "Stop-the-World Tracing"
+          ],
+          "correct_answer": "B",
+          "explanation": "CPython uses reference counting as its immediate real-time memory reclamation mechanism."
+        },
+        {
+          "id": "CS-22-02",
+          "question": "Which range of integer values is pre-allocated and interned as global singletons in CPython?",
+          "options": [
+            "0 to 100",
+            "-128 to 127",
+            "-5 to 256",
+            "0 to 65535"
+          ],
+          "correct_answer": "C",
+          "explanation": "CPython interns small integers between -5 and 256 inclusive."
+        },
+        {
+          "id": "CS-22-03",
+          "question": "Defining `__slots__` on a Python class achieves memory optimization by:",
+          "options": [
+            "Bypassing the GIL",
+            "Preventing the creation of the dynamic `__dict__` attribute dictionary",
+            "Compressing strings using gzip",
+            "Converting integers to C floats"
+          ],
+          "correct_answer": "B",
+          "explanation": "`__slots__` eliminates instance `__dict__` overhead, using fixed-size C arrays instead."
+        },
+        {
+          "id": "CS-22-04",
+          "question": "Circular reference cycles that escape reference counting are detected and collected by:",
+          "options": [
+            "PyMalloc",
+            "The generational cyclic garbage collector (`gc` module)",
+            "The OS kernel scheduler",
+            "The Global Interpreter Lock"
+          ],
+          "correct_answer": "B",
+          "explanation": "The cyclic garbage collector specifically identifies and breaks isolated circular reference cycles."
+        },
+        {
+          "id": "CS-22-05",
+          "question": "In Python, which operator evaluates to True only if both variables reference the identical memory address?",
+          "options": [
+            "==",
+            "!=",
+            "is",
+            "in"
+          ],
+          "correct_answer": "C",
+          "explanation": "The `is` keyword checks pointer identity (`id(a) == id(b)`)."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "NSE2 / BulkBeat TV",
+      "repo_path": "D:\\Projects\\nse2",
+      "topic": "Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines",
+      "what_to_understand": "Connecting market data providers, parsing live quotes, and technical momentum filtering.",
+      "what_to_memorize": "Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.",
+      "interview_questions": [
+        {
+          "q": "How did you integrate Dhan API and Chartink screeners into the news alert flow?",
+          "a": "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to capture current market price, volume surge factor, and day's range. It cross-references this with Chartink breakout screeners, allowing the alert card to display whether the stock is breaking its 52-week high at the exact moment of the announcement."
+        },
+        {
+          "q": "How do you filter noise from thousands of daily routine corporate filings?",
+          "a": "We use a multi-stage classification pipeline: 1. Keyword regex filters out standard compliance filings (e.g., loss of share certificates); 2. A sentiment and impact scoring heuristic evaluates financial magnitude; 3. Only announcements scoring above threshold are queued for push delivery."
+        }
+      ],
+      "interview_pitch_exercise": "To provide actionable context on news alerts, I integrated the Dhan REST API to pull live market quotes and volume multipliers the instant a disclosure hits the wire. The system parses Chartink breakout screeners to append technical momentum indicators to corporate announcement cards in real time."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 22 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 22 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of Caloriv.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 21 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n• Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Servlet Lifecycle, Request Dispatching & Sessions.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Disjoint Set Union (Union-Find with Rank).\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Code for the Nation 2026.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 22 Q1: What is the primary academic thesis of Java Servlet Lifecycle, Request Dispatching & Sessions?",
+          "a": "Core theoretical and practical mastery of Java Servlet Lifecycle, Request Dispatching & Sessions under the CSJM University BCA-5002 syllabus."
+        },
+        {
+          "q": "Day 22 Q2: What is the key speed calculation formula applied in Cube & Dice Reasoning?",
+          "a": "High-speed corporate placement arithmetic shortcut for Cube & Dice Reasoning in campus recruitment exams."
+        },
+        {
+          "q": "Day 22 Q3: What is the time complexity of Disjoint Set Union (Union-Find with Rank)?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 22 Q4: What is the central architectural principle of Network Security: AES, RSA & Public Key PKI?",
+          "a": "Foundational systems engineering rule governing Network Security: AES, RSA & Public Key PKI in production environments."
+        },
+        {
+          "q": "Day 22 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 22 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 22 Q7: What is the verified technical foundation of Code for the Nation 2026?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 22 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 22 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 22 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n• Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Disjoint Set Union (Union-Find with Rank)."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: Code for the Nation 2026."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-22-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
+        "options": [
+          "service()",
+          "init()",
+          "doGet()",
+          "destroy()"
+        ],
+        "correct_answer": "B",
+        "explanation": "The container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
+      },
+      {
+        "id": "TEST-22-02",
+        "category": "Academic (Academic Theory)",
+        "question": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
+        "options": [
+          "service(ServletRequest, ServletResponse)",
+          "init()",
+          "start()",
+          "run()"
+        ],
+        "correct_answer": "A",
+        "explanation": "The `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
+      },
+      {
+        "id": "TEST-22-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
+        "options": [
+          "Cookies cannot store more than 1 byte of data",
+          "Session data is stored securely on the server-side, with only an opaque session identifier (JSESSIONID) sent to the client browser",
+          "Cookies expire immediately when a tab is refreshed",
+          "Sessions do not consume server RAM"
+        ],
+        "correct_answer": "B",
+        "explanation": "HttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
+      },
+      {
+        "id": "TEST-22-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
+        "options": [
+          "pom.xml",
+          "web.xml (located in WEB-INF)",
+          "server.xml",
+          "context.xml"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
+      },
+      {
+        "id": "TEST-22-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
+        "options": [
+          "@WebServlet",
+          "@Controller",
+          "@Service",
+          "@WebEndpoint"
+        ],
+        "correct_answer": "A",
+        "explanation": "Servlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
+      },
+      {
+        "id": "TEST-22-06",
+        "category": "Placement Aptitude",
+        "question": "A solid wooden cube of side 4 cm is painted red on all faces and cut into smaller cubes of side 1 cm. How many smaller cubes have exactly two faces painted red?",
+        "options": [
+          "24",
+          "16",
+          "32",
+          "8"
+        ],
+        "correct_answer": "A",
+        "explanation": "For a cube of n = 4/1 = 4: Two-face painted cubes lie on edges = 12 * (n - 2) = 12 * (4 - 2) = 24 cubes."
+      },
+      {
+        "id": "TEST-22-07",
+        "category": "Placement Aptitude",
+        "question": "How many smaller cubes in the 4 cm cube cut into 1 cm cubes have NO faces painted?",
+        "options": [
+          "8",
+          "16",
+          "24",
+          "4"
+        ],
+        "correct_answer": "A",
+        "explanation": "Zero painted faces = (n - 2)^3 = (4 - 2)^3 = 2^3 = 8 cubes."
+      },
+      {
+        "id": "TEST-22-08",
+        "category": "Placement Aptitude",
+        "question": "In a standard die, what is the sum of numbers on any two opposite faces?",
+        "options": [
+          "7",
+          "6",
+          "8",
+          "14"
+        ],
+        "correct_answer": "A",
+        "explanation": "By definition, opposite faces of standard dice always sum to 7 (1-6, 2-5, 3-4)."
+      },
+      {
+        "id": "TEST-22-09",
+        "category": "Placement Aptitude",
+        "question": "Two positions of a dice are shown. When 4 is at the bottom, what number will be on the top face?",
+        "options": [
+          "3",
+          "1",
+          "2",
+          "5"
+        ],
+        "correct_answer": "A",
+        "explanation": "On standard fair dice, the face opposite to 4 is always 7 - 4 = 3."
+      },
+      {
+        "id": "TEST-22-10",
+        "category": "Placement Aptitude",
+        "question": "How many smaller cubes have exactly 3 faces painted when a large cube is cut into 27 identical small cubes?",
+        "options": [
+          "8",
+          "6",
+          "12",
+          "1"
+        ],
+        "correct_answer": "A",
+        "explanation": "Three-face painted cubes always occupy the 8 corners of the cube regardless of n (for n >= 2)."
+      },
+      {
+        "id": "TEST-22-11",
+        "category": "Core CS (Python Internals)",
+        "question": "What is the primary, real-time memory management mechanism in standard CPython?",
+        "options": [
+          "Mark and Sweep GC",
+          "Reference Counting",
+          "Manual free() calls",
+          "Stop-the-World Tracing"
+        ],
+        "correct_answer": "B",
+        "explanation": "CPython uses reference counting as its immediate real-time memory reclamation mechanism."
+      },
+      {
+        "id": "TEST-22-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which range of integer values is pre-allocated and interned as global singletons in CPython?",
+        "options": [
+          "0 to 100",
+          "-128 to 127",
+          "-5 to 256",
+          "0 to 65535"
+        ],
+        "correct_answer": "C",
+        "explanation": "CPython interns small integers between -5 and 256 inclusive."
+      },
+      {
+        "id": "TEST-22-13",
+        "category": "Core CS (Python Internals)",
+        "question": "Defining `__slots__` on a Python class achieves memory optimization by:",
+        "options": [
+          "Bypassing the GIL",
+          "Preventing the creation of the dynamic `__dict__` attribute dictionary",
+          "Compressing strings using gzip",
+          "Converting integers to C floats"
+        ],
+        "correct_answer": "B",
+        "explanation": "`__slots__` eliminates instance `__dict__` overhead, using fixed-size C arrays instead."
+      },
+      {
+        "id": "TEST-22-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Circular reference cycles that escape reference counting are detected and collected by:",
+        "options": [
+          "PyMalloc",
+          "The generational cyclic garbage collector (`gc` module)",
+          "The OS kernel scheduler",
+          "The Global Interpreter Lock"
+        ],
+        "correct_answer": "B",
+        "explanation": "The cyclic garbage collector specifically identifies and breaks isolated circular reference cycles."
+      },
+      {
+        "id": "TEST-22-15",
+        "category": "Core CS (Python Internals)",
+        "question": "In Python, which operator evaluates to True only if both variables reference the identical memory address?",
+        "options": [
+          "==",
+          "!=",
+          "is",
+          "in"
+        ],
+        "correct_answer": "C",
+        "explanation": "The `is` keyword checks pointer identity (`id(a) == id(b)`)."
+      },
+      {
+        "id": "TEST-22-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Disjoint Set Union (Union-Find)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N * alpha(N)) Time, O(N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Disjoint Set Union (Union-Find)' pattern operates with O(N * alpha(N)) Time, O(N) Auxiliary Space: Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).."
+      },
+      {
+        "id": "TEST-22-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Disjoint Set Union (Union-Find)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Tree with single redundant edge.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Disjoint Set Union (Union-Find) include Tree with single redundant edge, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-22-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Number of Provinces', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N * alpha(N)) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-22-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines'?",
+        "options": [
+          "Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.."
+      },
+      {
+        "id": "TEST-22-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How did you integrate Dhan API and Chartink screeners into the news alert flow?'?",
+        "options": [
+          "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to captur...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-22",
+      "title": "Number of Provinces (Disjoint Set Union (Union-Find))",
+      "time_limit_minutes": 45,
+      "difficulty": "Medium",
+      "problem_statement": "Solve the core placement problem: Number of Provinces.\n\nThere are n cities. A province is a group of directly or indirectly connected cities. Return the total number of provinces.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Disjoint Set Union (Union-Find)\n- Time Complexity Target: O(N * alpha(N)) Time\n- Space Complexity Target: O(N) Auxiliary Space\n- Handle all edge cases: Tree with single redundant edge, Disjoint graph with multiple trees, Linear chain graph.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Disjoint Set Union (Union-Find)\n    public int findCircleNum(int[][] isConnected) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Disjoint Set Union (Union-Find)\n    public int findCircleNum(int[][] isConnected) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Disjoint Set Union (Union-Find) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Tree with single redundant edge",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N * alpha(N)) Time)",
+        "Space Complexity": "20 points (Meets O(N) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Computer Networks",
+    "subject_code": "BCA-5003",
+    "unit": 3,
+    "topic": "Unit III — Transport Layer: TCP 3-Way Handshake, Connection Teardown & Congestion Control (AIMD)",
+    "objectives": [
+      "Understand TCP connection lifecycle.",
+      "Master TCP Congestion Control algorithms: Slow Start, Congestion Avoidance, AIMD, Fast Retransmit."
+    ],
+    "detailed_notes": [
+      "Transmission Control Protocol (TCP) is a connection-oriented, reliable transport protocol that guarantees ordered byte-stream delivery. Connection establishment uses a 3-Way Handshake: Client sends `SYN (seq=x)` -> Server responds with `SYN-ACK (seq=y, ack=x+1)` -> Client sends `ACK (ack=y+1)`. Teardown uses a 4-Step FIN-ACK handshake: FIN -> ACK -> FIN -> ACK (client waits in TIME_WAIT for 2*MSL to ensure the final ACK was received).\n\nTCP Congestion Control prevents network collapse through four algorithms:\n1. Slow Start: Congestion Window (`cwnd`) starts at 1 MSS and doubles exponentially every RTT (`cwnd = cwnd * 2`) until reaching the Slow Start Threshold (`ssthresh`);\n2. Congestion Avoidance: Once `cwnd >= ssthresh`, window grows linearly by 1 MSS per RTT (Additive Increase);\n3. Congestion Detection: On packet loss detected via timeout, TCP resets `ssthresh = cwnd / 2` and collapses `cwnd = 1 MSS` (Multiplicative Decrease);\n4. Fast Retransmit & Fast Recovery: Receiving 3 duplicate ACKs triggers retransmission without waiting for timer expiration, setting `ssthresh = cwnd / 2` and `cwnd = ssthresh + 3 MSS`.",
+      "SYN -> SYN-ACK -> ACK. Prevents historical duplicated connection requests from creating phantom server sockets.",
+      "Produces characteristic 'Sawtooth' bandwidth curve: linear growth during stability, instant halving during congestion."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|           TCP CONGESTION CONTROL (AIMD)           |\n| [Slow Start: Exponential] -> ssthresh hit         |\n| -> [Congestion Avoidance: Linear +1 MSS]          |\n| -> Packet Loss -> [Multiplicative Decrease /2]    |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Algorithm Phase",
+        "Congestion Phase",
+        "Trigger Condition",
         "Window Growth Behavior",
-        "Update Rule per RTT",
-        "Trigger for Transition"
+        "Mathematical Formula"
       ],
       "rows": [
         [
           "Slow Start",
-          "Exponential growth",
-          "cwnd = cwnd * 2 per RTT",
-          "Starts at 1 MSS, ends when cwnd >= ssthresh"
+          "Connection initialization or after timeout",
+          "Exponential doubling every RTT",
+          "cwnd = cwnd * 2"
         ],
         [
           "Congestion Avoidance",
-          "Linear additive growth",
-          "cwnd = cwnd + 1 MSS per RTT",
-          "Occurs while cwnd < loss threshold"
+          "When cwnd >= ssthresh",
+          "Linear increase by 1 MSS per RTT",
+          "cwnd = cwnd + 1"
         ],
         [
-          "Fast Retransmit",
-          "Immediate retransmission",
-          "Retransmit lost frame",
-          "Triggered by receipt of 3 Duplicate ACKs"
+          "Timeout Reaction",
+          "Retransmission timer expires",
+          "Immediate collapse to 1 MSS",
+          "ssthresh = cwnd/2; cwnd = 1"
         ],
         [
-          "Fast Recovery (Reno)",
-          "Halves window without restart",
-          "ssthresh = cwnd/2; cwnd = ssthresh",
-          "Maintains high pipeline throughput"
+          "3 Duplicate ACKs",
+          "Triple duplicate ACK arrival",
+          "Fast Recovery (halves window)",
+          "ssthresh = cwnd/2; cwnd = ssthresh + 3"
         ]
       ]
     },
-    "memorize": "AIMD: Additive Increase (+1 MSS/RTT), Multiplicative Decrease (halve ssthresh on loss). Tahoe resets cwnd to 1; Reno halves cwnd to ssthresh on 3 dup ACKs.",
-    "understand": "Why does Slow Start double exponentially? To rapidly discover the available network link capacity without wasting dozens of RTTs crawling upwards linearly from 1 MSS.",
-    "common_mistakes": "1. Assuming Slow Start increases by 1 segment per RTT (it doubles every RTT!). 2. Confusing flow control (protects receiver buffer via rwnd) with congestion control (protects network routers via cwnd).",
-    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "High-Frequency 15-Mark Core Question (Appeared in 2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_question": "Explain TCP Congestion Control in detail. Describe Slow Start, Congestion Avoidance, Fast Retransmit, and Fast Recovery with a neat cwnd graph. Differentiate between TCP Tahoe and TCP Reno. (15 Marks)",
-    "pyq_rubric": "Concept of Congestion & cwnd vs rwnd (3 marks) + 4 Phases explained with formulas (6 marks) + CWND graph (3 marks) + Tahoe vs Reno comparison (3 marks) = 15 Marks.",
+    "memorize": "Handshake: SYN -> SYN-ACK -> ACK. AIMD: Additive Increase (linear +1), Multiplicative Decrease (halves on loss). Produces sawtooth curve.",
+    "understand": "Slow Start is actually fast: it starts small (1 MSS) to avoid initial congestion, but doubles exponentially every round trip.",
+    "common_mistakes": "Thinking TCP Slow Start increases window linearly (it increases exponentially; Congestion Avoidance is linear).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2024-25 (Q3)",
+        "marks": 15,
+        "question": "Explain TCP 3-Way Handshake connection establishment and connection release. Describe the TCP Congestion Control mechanism (Slow Start, Congestion Avoidance, AIMD) with a neat graph. (15 Marks)",
+        "rubric": "3-Way Handshake Diagram & Sequence Numbers (4 marks) + Connection Release & TIME_WAIT (3 marks) + Congestion Control Sawtooth Graph (4 marks) + Slow Start & AIMD explanation (4 marks) = 15 Marks.",
+        "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n• Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n• Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n• Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
+        "answer_structure": "3-Way Handshake Diagram -> Teardown & TIME_WAIT -> Congestion Control Sawtooth Graph -> Detailed Algorithms",
+        "important_points": [
+          "SYN, SYN-ACK, ACK sequence numbers",
+          "TIME_WAIT 2*MSL",
+          "Sawtooth graph",
+          "Slow start exponential, Congestion avoidance linear",
+          "AIMD"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Sawtooth curve labeled with Slow Start, ssthresh, Congestion Avoidance, and Timeout",
+          "Clear handshake packets"
+        ],
+        "common_mistakes": [
+          "Drawing handshake with only 2 packets"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2022 / Model",
+        "marks": 5,
+        "question": "What is the difference between TCP and UDP? (5 Marks)",
+        "rubric": "Comparison table across Connection, Reliability, Header Size, and Speed (5 marks).",
+        "model_answer": "1. Connection: TCP is connection-oriented (requires 3-way handshake); UDP is connectionless (transmits datagrams directly without setup); 2. Reliability: TCP guarantees delivery through sequence numbers, acknowledgments, and retransmissions; UDP provides best-effort delivery with zero retransmissions; 3. Header Overhead: TCP has a large 20-60 byte header; UDP has a lightweight fixed 8-byte header; 4. Flow/Congestion Control: TCP has extensive windowing and congestion algorithms; UDP has zero flow or congestion control; 5. Use Cases: TCP is used for Web (HTTP), Email, File Transfer; UDP is used for Real-time Video, DNS, VoIP, and Online Gaming."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-22-01",
+        "question": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
+        "options": [
+          "service()",
+          "init()",
+          "doGet()",
+          "destroy()"
+        ],
+        "correct_answer": "B",
+        "explanation": "The container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
+      },
+      {
+        "id": "ACAD-22-02",
+        "question": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
+        "options": [
+          "service(ServletRequest, ServletResponse)",
+          "init()",
+          "start()",
+          "run()"
+        ],
+        "correct_answer": "A",
+        "explanation": "The `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
+      },
+      {
+        "id": "ACAD-22-03",
+        "question": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
+        "options": [
+          "Cookies cannot store more than 1 byte of data",
+          "Session data is stored securely on the server-side, with only an opaque session identifier (JSESSIONID) sent to the client browser",
+          "Cookies expire immediately when a tab is refreshed",
+          "Sessions do not consume server RAM"
+        ],
+        "correct_answer": "B",
+        "explanation": "HttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
+      },
+      {
+        "id": "ACAD-22-04",
+        "question": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
+        "options": [
+          "pom.xml",
+          "web.xml (located in WEB-INF)",
+          "server.xml",
+          "context.xml"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
+      },
+      {
+        "id": "ACAD-22-05",
+        "question": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
+        "options": [
+          "@WebServlet",
+          "@Controller",
+          "@Service",
+          "@WebEndpoint"
+        ],
+        "correct_answer": "A",
+        "explanation": "Servlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
+      }
+    ],
+    "pyq_year": "2024-25 (Q3)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Explain TCP 3-Way Handshake connection establishment and connection release. Describe the TCP Congestion Control mechanism (Slow Start, Congestion Avoidance, AIMD) with a neat graph. (15 Marks)",
+    "pyq_rubric": "3-Way Handshake Diagram & Sequence Numbers (4 marks) + Connection Release & TIME_WAIT (3 marks) + Congestion Control Sawtooth Graph (4 marks) + Slow Start & AIMD explanation (4 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Congestion Control vs Flow Control:",
-        "Flow control is an end-to-end mechanism between sender and receiver preventing receiver buffer overflow (regulated via `rwnd`). Congestion control is a global network mechanism preventing intermediate router buffer exhaustion and link saturation (regulated via `cwnd`). Effective transmission window = min(cwnd, rwnd)."
+        "1. Model Answer & Technical Presentation",
+        "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n• Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n• Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n• Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve."
       ],
       [
-        "2. Detailed Breakdown of TCP Congestion Control Mechanisms:",
-        "\u2022 Slow Start: Starts with cwnd = 1 MSS. Each received ACK increments cwnd by 1 MSS, doubling cwnd every RTT (1, 2, 4, 8...). Once cwnd reaches `ssthresh`, mode switches to Congestion Avoidance.\n\u2022 Congestion Avoidance: Employs Additive Increase: cwnd increases by 1 MSS per RTT regardless of the number of ACKs received. Represents linear probe of bandwidth.\n\u2022 Fast Retransmit: When a single segment is lost, receiver sends duplicate ACKs for subsequent out-of-order packets. Upon receiving 3 Duplicate ACKs, sender retransmits the missing segment immediately without waiting for timeout.\n\u2022 Fast Recovery: Avoids dropping to cwnd = 1 MSS. Halves ssthresh and sets cwnd = ssthresh, resuming linear congestion avoidance."
-      ],
-      [
-        "3. TCP Tahoe vs TCP Reno:",
-        "In TCP Tahoe, ANY packet loss (timeout or 3 duplicate ACKs) forces cwnd back down to 1 MSS, re-entering slow start. In TCP Reno, 3 duplicate ACKs trigger Fast Recovery: cwnd is halved to `ssthresh` and continues linear growth, avoiding severe throughput collapse."
+        "2. Expected Examiner Criteria",
+        [
+          "Sawtooth curve labeled with Slow Start, ssthresh, Congestion Avoidance, and Timeout",
+          "Clear handshake packets"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master AIMD, Slow Start, and Tahoe vs Reno Graph",
-    "milestone": "Full 15/15 Marks on Computer Networks Transport Layer Question"
-  },
   "apt_data": {
-    "topic": "Data Interpretation (DI) \u2014 Tables, Bar Charts & Missing Data",
+    "topic": "Cube & Dice Reasoning",
+    "category": "Logical Reasoning",
+    "subtopic": "Cube & Dice",
+    "formulas": "1. Opposite Faces of Standard Dice: Sum of opposite faces is always 7 (1-6, 2-5, 3-4).\n2. Open Dice Folding Rule: Alternate faces in a straight line are opposite to each other with one face in between.\n3. Painted Cube: For a cube cut into n^3 smaller cubes: 3 faces painted = 8 (corners); 2 faces = 12*(n-2) (edges); 1 face = 6*(n-2)^2 (centers); 0 faces = (n-2)^3.",
+    "shortcut": "Common Face Clockwise Rule: When two views of a die show one common face, write down the numbers clockwise starting from the common face. Positionally matching pairs are opposite faces.",
     "tutorial": [
-      "Data Interpretation (DI) tests rapid quantitative extraction and mental percentage calculation from complex datasets.",
-      "Core Mathematical Operations in DI:\n1. Percentage Growth: % Increase/Decrease = [(Final Value - Initial Value) / Initial Value] * 100.\n2. Ratio Comparison: To compare A/B vs C/D, cross-multiply A*D vs B*C.\n3. Average: Sum of items / Total item count.\n4. Approximations: Round numbers to 2 significant digits (e.g., 4,821 / 15,920 \u2248 48 / 160 = 30%)."
+      "Spatial reasoning questions evaluate mental 3D rotation. Practice identifying opposite pairs directly from unfolded net diagrams before attempting complex multi-cut cube volume questions."
     ],
-    "formulas": "Growth % = (Change / Base) * 100. Ratio cross-multiplication: A/B > C/D if A*D > B*C.",
-    "shortcut": "Splitting the Base for Percentages: To find 17% of 420: 10% = 42, 5% = 21, 1% = 4.2. Total = 42 + 21 + (2 * 4.2) = 71.4.",
-    "recognition": "Look for multi-column tables showing year-over-year production, sales, or expenditures in TCS NQT, Wipro, and Cognizant.",
-    "tier1_problem": "A table shows sales (in lakhs) of 3 products (A, B, C) over 2 years: Year 1: A=40, B=60, C=80. Year 2: A=50, B=75, C=100. Find the overall percentage increase in total sales.",
-    "tier1_solution": "Total Sales Year 1 = 40 + 60 + 80 = 180 lakhs.\nTotal Sales Year 2 = 50 + 75 + 100 = 225 lakhs.\nAbsolute Increase = 225 - 180 = 45 lakhs.\nPercentage Increase = (45 / 180) * 100 = (1 / 4) * 100 = 25%. Answer: 25%.",
-    "tier2_problem": "A company has 5 departments with employees: IT: 120, HR: 40, Sales: 80, Finance: 60, Ops: 100. What percentage of the total workforce is in Sales?",
-    "tier2_solution": "Total Workforce = 120 + 40 + 80 + 60 + 100 = 400.\nSales employees = 80.\nPercentage = (80 / 400) * 100 = 20%. Answer: 20%.",
-    "tier3_problem": "[TCS NQT DI Pattern] Table shows Revenue and Expenditure (in Crores) of a firm across 4 years:\n2021: Rev=200, Exp=160\n2022: Rev=250, Exp=190\n2023: Rev=300, Exp=210\n2024: Rev=360, Exp=240\nIn which year was the Profit Percentage [(Rev - Exp) / Exp * 100] the highest?",
-    "tier3_solution": "Calculate Profit % for each year:\n2021: (40 / 160) * 100 = 25.0%\n2022: (60 / 190) * 100 \u2248 31.58%\n2023: (90 / 210) * 100 = (3 / 7) * 100 \u2248 42.86%\n2024: (120 / 240) * 100 = 50.0%\nHighest profit percentage occurred in 2024 (50%). Answer: 2024.",
-    "tier4_problem": "A table has missing data for student marks. Total students = 200. Passed in Math = 140. Passed in Science = 120. If 30 students failed both subjects, how many students passed in BOTH subjects?",
-    "tier4_solution": "Total Students = 200.\nStudents failing both = 30 ==> Students passing at least one subject = 200 - 30 = 170.\nUsing Set Theory: n(M union S) = n(M) + n(S) - n(M intersection S).\n170 = 140 + 120 - n(Both)\n170 = 260 - n(Both)\nn(Both) = 260 - 170 = 90 students. Answer: 90 students.",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "Production increases from 500 to 650 units. Find percentage increase.",
-        "a": "(150 / 500) * 100 = 30%."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "Ratio of males to females is 3:2. If total is 450, find number of females.",
-        "a": "2/5 * 450 = 180 females."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "What is 15% of 680?",
-        "a": "10% = 68, 5% = 34. Total = 102."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "Expenditure is 80% of Income. If Income is Rs 50,000, find savings.",
-        "a": "20% of 50,000 = Rs 10,000."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "Which ratio is greater: 5/8 or 7/11?",
-        "a": "5*11=55 vs 7*8=56 ==> 7/11 is greater."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Cube & Dice",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Cube & Dice",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Cube & Dice",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Cube & Dice",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Cube & Dice",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A standard dice has opposite faces summing to 7. If face 4 is on the top, which face is on the bottom?",
+        "options": {
+          "A": "3",
+          "B": "2",
+          "C": "5",
+          "D": "1"
+        },
+        "correct_answer": "A",
+        "explanation": "In a standard die, opposite faces sum to 7. Opposite of 4 is 7 - 4 = 3.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A solid cube of side 4 cm is painted red on all sides and cut into smaller cubes of side 1 cm. How many smaller cubes have exactly two painted faces?",
+        "options": {
+          "A": "24",
+          "B": "16",
+          "C": "32",
+          "D": "12"
+        },
+        "correct_answer": "A",
+        "explanation": "Two painted faces occur along the edges: formula = 12 * (n - 2) where n = 4/1 = 4. Count = 12 * (4 - 2) = 12 * 2 = 24 cubes.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "In the above 4 cm painted cube, how many smaller 1 cm cubes have NO painted faces (zero painted)?",
+        "options": {
+          "A": "8",
+          "B": "16",
+          "C": "4",
+          "D": "1"
+        },
+        "correct_answer": "A",
+        "explanation": "Zero painted faces form the internal core: formula = (n - 2)^3 = (4 - 2)^3 = 2^3 = 8 cubes.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "How many smaller cubes in the 4 cm cube have exactly THREE painted faces?",
+        "options": {
+          "A": "8",
+          "B": "12",
+          "C": "6",
+          "D": "4"
+        },
+        "correct_answer": "A",
+        "explanation": "Three painted faces are located exclusively at the 8 vertices of the cube. The answer is always 8.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "How many smaller cubes have exactly ONE painted face?",
+        "options": {
+          "A": "24",
+          "B": "16",
+          "C": "32",
+          "D": "12"
+        },
+        "correct_answer": "A",
+        "explanation": "One painted face occurs on the faces: formula = 6 * (n - 2)^2 = 6 * (4 - 2)^2 = 6 * 4 = 24 cubes.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Two positions of a dice are shown. In position 1: top 1, front 2, right 3. In position 2: top 1, front 5, right 6. Which number is opposite 1?",
+        "options": {
+          "A": "4",
+          "B": "2",
+          "C": "3",
+          "D": "5"
+        },
+        "correct_answer": "A",
+        "explanation": "The numbers adjacent to 1 are 2, 3, 5, 6. The only remaining number that can be opposite 1 is 4.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "A cube painted yellow on all faces is cut into 125 small cubes of equal size. How many cubes have at least one face painted?",
+        "options": {
+          "A": "98",
+          "B": "64",
+          "C": "117",
+          "D": "125"
+        },
+        "correct_answer": "C",
+        "explanation": "n = 125^(1/3) = 5. Unpainted cubes = (5 - 2)^3 = 3^3 = 27. Cubes with at least one painted face = Total - Unpainted = 125 - 27 = 98.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "If a dice is rolled, what is the probability of rolling a composite number?",
+        "options": {
+          "A": "1/3",
+          "B": "1/2",
+          "C": "2/3",
+          "D": "1/6"
+        },
+        "correct_answer": "A",
+        "explanation": "Faces are {1, 2, 3, 4, 5, 6}. Composite numbers are 4 and 6 (2 outcomes). Probability = 2/6 = 1/3.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "When a flat cardboard pattern is folded into a cube, if opposite faces never touch, which face is opposite face A in layout A-B-C-D in a row with E on top of B and F below B?",
+        "options": {
+          "A": "C",
+          "B": "D",
+          "C": "B",
+          "D": "E"
+        },
+        "correct_answer": "A",
+        "explanation": "In linear strip of faces, alternate faces are opposite: A is opposite C, B is opposite D, and flap E is opposite flap F.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "A cube has six faces marked 1 to 6. If 1 is opposite 6, and 2 is opposite 5, which numbers are adjacent to 3?",
+        "options": {
+          "A": "1, 2, 5, 6",
+          "B": "1, 2, 4, 5",
+          "C": "2, 4, 5, 6",
+          "D": "None"
+        },
+        "correct_answer": "A",
+        "explanation": "3 must be opposite 4. Therefore, the four faces adjacent to 3 are 1, 6, 2, and 5.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Cube & Dice (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "Longest Increasing Subsequence (LeetCode 300 - Medium)",
+      "title": "Problem 1: Number of Provinces",
       "difficulty": "Medium",
-      "importance": "Top-tier Placement Dynamic Programming Problem (Google, Amazon, TCS Digital)",
-      "problem_statement": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
-      "solution_approach": "Approach 1: Classic DP in O(N^2):\nLet dp[i] represent the length of the LIS ending at index i.\nFor every j < i: if nums[j] < nums[i], dp[i] = max(dp[i], dp[j] + 1).\n\nApproach 2: Patience Sorting with Binary Search in O(N log N):\nMaintain an array `tails` where tails[k] stores the smallest tail of all increasing subsequences of length k+1.\nFor each x in nums, use binary search (`bisect_left`) to find its insertion position in `tails`. If x is greater than all elements, append it; otherwise replace the existing element.",
-      "code": "import bisect\n\ndef lengthOfLIS(nums: list[int]) -> int:\n    if not nums:\n        return 0\n        \n    tails = []\n    for x in nums:\n        idx = bisect.bisect_left(tails, x)\n        if idx == len(tails):\n            tails.append(x)\n        else:\n            tails[idx] = x\n            \n    return len(tails)",
-      "line_by_line": [
-        [
-          "tails = []",
-          "Dynamic array maintaining the smallest active tail for every subsequence length."
-        ],
-        [
-          "idx = bisect.bisect_left(tails, x)",
-          "Binary search in O(log N) to find insertion or replacement index."
-        ],
-        [
-          "if idx == len(tails): tails.append(x)",
-          "Extends the maximum subsequence length found so far."
-        ],
-        [
-          "else: tails[idx] = x",
-          "Greedily lowers the tail value of an existing length, increasing chances for future expansions."
-        ]
-      ],
-      "time_complexity": "O(N log N) using binary search (or O(N^2) using basic DP).",
-      "space_complexity": "O(N) to store tails array.",
-      "edge_cases": "Strictly decreasing array [7, 7, 7] (returns 1); sorted array [1, 2, 3] (returns len)."
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "There are n cities. A province is a group of directly or indirectly connected cities. Return the total number of provinces.",
+      "solution_approach": "1. Apply Disjoint Set Union (Union-Find) algorithmic technique.\n2. Maintains disjoint sets supporting near O(1) find and union operations using Path Compression and Union by Rank.\n3. Invariants: Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).",
+      "code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+      "java_solution": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+      "solution_java": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+      "time_complexity": "O(N * alpha(N)) Time",
+      "space_complexity": "O(N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Redundant Connection",
+      "difficulty": "Hard",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Return an edge that can be removed so that the resulting graph is a tree of n nodes.",
+      "solution_approach": "1. Identify interview variation of Disjoint Set Union (Union-Find).\n2. Handle edge cases: Tree with single redundant edge, Disjoint graph with multiple trees, Linear chain graph.\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+      "java_solution": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+      "solution_java": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+      "time_complexity": "O(N * alpha(N)) Time",
+      "space_complexity": "O(N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Disjoint Set Union (Union-Find)",
+    "category": "Graph / DSU",
+    "concept": "Maintains disjoint sets supporting near O(1) find and union operations using Path Compression and Union by Rank.",
+    "why_it_works": "Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).",
+    "visual_explanation": "Nodes: 1, 2, 3\\nUnion(1, 2): parent[2] = 1\\nUnion(2, 3): Find(2)->1, parent[3] = 1\\nCycle Check: Edge (1, 3): Find(1)==1, Find(3)==1 -> Same component ==> CYCLE DETECTED!",
+    "java_code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int n = edges.length;\n        int[] parent = new int[n + 1];\n        for (int i = 1; i <= n; i++) parent[i] = i;\n        \n        for (int[] edge : edges) {\n            int rootU = find(parent, edge[0]);\n            int rootV = find(parent, edge[1]);\n            if (rootU == rootV) return edge; // Redundant edge completes cycle\n            parent[rootU] = rootV;\n        }\n        return new int[0];\n    }\n    \n    private int find(int[] parent, int x) {\n        if (parent[x] != x) {\n            parent[x] = find(parent, parent[x]); // Path compression\n        }\n        return parent[x];\n    }\n}",
+    "code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int n = edges.length;\n        int[] parent = new int[n + 1];\n        for (int i = 1; i <= n; i++) parent[i] = i;\n        \n        for (int[] edge : edges) {\n            int rootU = find(parent, edge[0]);\n            int rootV = find(parent, edge[1]);\n            if (rootU == rootV) return edge; // Redundant edge completes cycle\n            parent[rootU] = rootV;\n        }\n        return new int[0];\n    }\n    \n    private int find(int[] parent, int x) {\n        if (parent[x] != x) {\n            parent[x] = find(parent, parent[x]); // Path compression\n        }\n        return parent[x];\n    }\n}",
+    "python_code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int n = edges.length;\n        int[] parent = new int[n + 1];\n        for (int i = 1; i <= n; i++) parent[i] = i;\n        \n        for (int[] edge : edges) {\n            int rootU = find(parent, edge[0]);\n            int rootV = find(parent, edge[1]);\n            if (rootU == rootV) return edge; // Redundant edge completes cycle\n            parent[rootU] = rootV;\n        }\n        return new int[0];\n    }\n    \n    private int find(int[] parent, int x) {\n        if (parent[x] != x) {\n            parent[x] = find(parent, parent[x]); // Path compression\n        }\n        return parent[x];\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4-5: Initialize parent array where each vertex is its own parent.",
+      "Line 7-12: For each edge, find roots of both vertices. If roots match, edge creates a cycle; return it. Else union sets.",
+      "Line 16-19: Recursive find with path compression pointing nodes directly to root."
+    ],
+    "dry_run": "Edges [[1,2],[1,3],[2,3]]. (1,2) and (1,3) merged into set 1. Edge (2,3) connects two nodes already in set 1 -> Redundant edge returned: [2, 3].",
+    "complexity": "O(N * alpha(N)) Time, O(N) Auxiliary Space",
+    "edge_cases": [
+      "Tree with single redundant edge",
+      "Disjoint graph with multiple trees",
+      "Linear chain graph"
+    ],
+    "interview_variations": [
+      "Number of Provinces",
+      "Redundant Connection",
+      "Graph Valid Tree"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-22-01",
+        "title": "Problem 1: Number of Provinces",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "There are n cities. A province is a group of directly or indirectly connected cities. Return the total number of provinces.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Disjoint Set Union (Union-Find) algorithmic technique.\n2. Maintains disjoint sets supporting near O(1) find and union operations using Path Compression and Union by Rank.\n3. Invariants: Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).",
+        "solution_java": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "solution_python": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "java_code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "time_complexity": "O(N * alpha(N)) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-22-02",
+        "title": "Problem 2: Redundant Connection",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Return an edge that can be removed so that the resulting graph is a tree of n nodes.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Disjoint Set Union (Union-Find).\n2. Handle edge cases: Tree with single redundant edge, Disjoint graph with multiple trees, Linear chain graph.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "solution_python": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "java_code": "public class Solution {\n    public int[] findRedundantConnection(int[][] edges) {\n        int[] p = new int[edges.length + 1];\n        for (int i = 1; i < p.length; i++) p[i] = i;\n        for (int[] e : edges) {\n            int r1 = find(p, e[0]), r2 = find(p, e[1]);\n            if (r1 == r2) return e;\n            p[r1] = r2;\n        }\n        return new int[0];\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+        "time_complexity": "O(N * alpha(N)) Time",
+        "space_complexity": "O(N) Auxiliary Space"
+      }
+    ]
+  },
   "cs_core": {
-    "subject": "Operating Systems",
-    "topic": "Process Synchronization Primitives: Semaphores, Mutexes & Condition Variables",
+    "subject": "Python Internals",
+    "topic": "Python Memory Model: Reference Counting, Generational Garbage Collection & Object Model",
     "detailed_notes": [
-      "Critical Section Problem:\nA section of code accessing shared resources that must not be concurrently accessed by more than one process. Must satisfy 3 criteria: 1. Mutual Exclusion, 2. Progress, 3. Bounded Waiting.",
-      "Synchronization Primitives Compared:\n\u2022 Mutex (Mutual Exclusion Lock): A locking mechanism with ownership. Only the thread that locked the mutex is permitted to unlock it. Binary state (locked/unlocked).\n\u2022 Semaphore (Dijkstra): A signaling integer counter variable accessed only via atomic operations `wait()` (P) and `signal()` (V).\n  - Counting Semaphore: Counter value N represents available units of a shared resource.\n  - Binary Semaphore: Value restricted to 0 or 1. Unlike a mutex, a semaphore has NO ownership: Thread A can wait() and Thread B can signal() to release it!\n\u2022 Spinlock: Thread busy-waits in a loop checking lock state. Useful on multi-core systems when lock duration is shorter than OS context-switch overhead.",
-      "Priority Inversion Problem:\nOccurs when a low-priority thread holds a shared lock needed by a high-priority thread, and a medium-priority thread preempts the low-priority thread, starving the high-priority thread! Solved by Priority Inheritance Protocol (low-priority thread temporarily inherits high priority while holding lock)."
+      "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation."
+    ],
+    "key_definitions": [
+      {
+        "term": "PyObject",
+        "definition": "The foundational C structure in CPython containing reference count and type pointer for every Python object."
+      },
+      {
+        "term": "Reference Counting",
+        "definition": "Primary memory management strategy reclaiming memory immediately when reference count reaches zero."
+      },
+      {
+        "term": "Cyclic GC",
+        "definition": "A 3-generational collector detecting and breaking isolated circular reference loops between container objects."
+      }
     ],
     "interview_qa": [
       {
-        "q": "What is the technical difference between a Mutex and a Binary Semaphore?",
-        "a": "The fundamental difference is 'ownership' and purpose. A Mutex is a locking mechanism with ownership: the exact same thread that acquired the mutex MUST release it. A Binary Semaphore is a signaling mechanism without ownership: one thread can wait for an event, and a completely different thread or interrupt service routine can signal the semaphore to unblock it."
+        "q": "Explain how CPython's memory management handles circular references.",
+        "a": "Reference counting cannot collect circular references (e.g., two objects pointing to each other) because their reference counts never drop to zero. CPython solves this using a generational cyclic garbage collector (gc module). It tracks container objects (lists, dicts, custom classes), temporarily isolates their internal reference counts, decrements references within the subgraph, and identifies object groups with zero external incoming references. These unreachable subgraphs are then deallocated."
       },
       {
-        "q": "What is Priority Inversion and how does Priority Inheritance solve it?",
-        "a": "Priority inversion happens when a low-priority process holds a lock required by a high-priority process, but is preempted by an unrelated medium-priority process, indefinitely delaying the high-priority process. Priority Inheritance solves this by temporarily elevating the priority of the low-priority lock-holder to match the waiting high-priority process until the lock is released."
+        "q": "What is the Generational Hypothesis in garbage collection?",
+        "a": "The Generational Hypothesis observes that in almost all software systems, the vast majority of allocated objects are short-lived (e.g., local variables in function scopes) and die shortly after creation. CPython divides objects into 3 generations (0, 1, 2). Gen 0 is scanned frequently for quick collection; long-surviving objects are promoted to Gen 1 and Gen 2, which are scanned much less frequently, minimizing CPU overhead."
+      },
+      {
+        "q": "What is PyMalloc and why doesn't Python return all freed memory back to the operating system immediately?",
+        "a": "PyMalloc is CPython's custom memory allocator for objects <= 512 bytes, organizing memory into Arenas (256KB) and Pools (4KB). When Python objects are freed, memory is returned to the pool for reuse by future Python allocations rather than releasing it to the OS kernel via free(). The OS only reclaims memory when an entire 256KB arena becomes completely empty."
+      },
+      {
+        "q": "Why is `is` different from `==` in Python, and how does integer interning work?",
+        "a": "`==` checks for value equality (invoking `__eq__`), comparing whether two objects contain the same data. `is` checks for object identity (comparing memory addresses, `id(a) == id(b)`). CPython pre-allocates and interns small integers in the range [-5, 256] globally at startup. For integers in this range, `a = 10; b = 10; a is b` evaluates to True because both variables point to the exact same pre-allocated singleton PyObject in memory."
+      },
+      {
+        "q": "What are `__slots__` in Python classes and how do they optimize memory?",
+        "a": "By default, every Python instance stores its attributes in a dynamic dictionary (`self.__dict__`), which incurs substantial hash table memory overhead (~150-200 bytes per instance). Specifying `__slots__ = ('name', 'age')` in a class prevents the creation of `__dict__` and allocates a compact, fixed-size C array of attribute pointers, reducing memory consumption by over 60% when instantiating millions of objects."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-22-01",
+        "question": "What is the primary, real-time memory management mechanism in standard CPython?",
+        "options": [
+          "Mark and Sweep GC",
+          "Reference Counting",
+          "Manual free() calls",
+          "Stop-the-World Tracing"
+        ],
+        "correct_answer": "B",
+        "explanation": "CPython uses reference counting as its immediate real-time memory reclamation mechanism."
+      },
+      {
+        "id": "CS-22-02",
+        "question": "Which range of integer values is pre-allocated and interned as global singletons in CPython?",
+        "options": [
+          "0 to 100",
+          "-128 to 127",
+          "-5 to 256",
+          "0 to 65535"
+        ],
+        "correct_answer": "C",
+        "explanation": "CPython interns small integers between -5 and 256 inclusive."
+      },
+      {
+        "id": "CS-22-03",
+        "question": "Defining `__slots__` on a Python class achieves memory optimization by:",
+        "options": [
+          "Bypassing the GIL",
+          "Preventing the creation of the dynamic `__dict__` attribute dictionary",
+          "Compressing strings using gzip",
+          "Converting integers to C floats"
+        ],
+        "correct_answer": "B",
+        "explanation": "`__slots__` eliminates instance `__dict__` overhead, using fixed-size C arrays instead."
+      },
+      {
+        "id": "CS-22-04",
+        "question": "Circular reference cycles that escape reference counting are detected and collected by:",
+        "options": [
+          "PyMalloc",
+          "The generational cyclic garbage collector (`gc` module)",
+          "The OS kernel scheduler",
+          "The Global Interpreter Lock"
+        ],
+        "correct_answer": "B",
+        "explanation": "The cyclic garbage collector specifically identifies and breaks isolated circular reference cycles."
+      },
+      {
+        "id": "CS-22-05",
+        "question": "In Python, which operator evaluates to True only if both variables reference the identical memory address?",
+        "options": [
+          "==",
+          "!=",
+          "is",
+          "in"
+        ],
+        "correct_answer": "C",
+        "explanation": "The `is` keyword checks pointer identity (`id(a) == id(b)`)."
       }
     ]
   },
   "project_defense": {
-    "project_name": "Portfolio Systems Architecture",
-    "feature_focus": "System Design: Scaling BulkBeat TV to 50k Concurrent Users",
-    "architecture_deep_dive": "Scaling BulkBeat TV from a single VPS to 50,000 concurrent streaming users:\n\n1. Decoupled Architecture:\nSeparate media stream ingestion from user notification distribution. The ingestion pipeline runs as an isolated worker service, writing stream events to an Apache Kafka / RabbitMQ message broker.\n\n2. Distributed Caching & Database Tier:\n\u2022 Migrate embedded SQLite to a PostgreSQL cluster with 1 Primary (Writes) and 3 Read Replicas.\n\u2022 Place a Redis cluster in front of PostgreSQL to cache active subscription tokens and channel metadata with a 60-second TTL, reducing database load by 95%.\n\n3. Horizontal API Gateway Scaling:\nDeploy FastAPI stateless containers behind Nginx / AWS ALB using round-robin load balancing. WebSocket connections are terminated at the load balancer with Redis Pub/Sub syncing broadcast messages across server instances.",
+    "project_name": "NSE2 / BulkBeat TV",
+    "repo_path": "D:\\Projects\\nse2",
+    "feature_focus": "Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nConnecting market data providers, parsing live quotes, and technical momentum filtering.\n\nWHAT TO MEMORIZE:\nDhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.\n\n60-SECOND INTERVIEW PITCH:\nTo provide actionable context on news alerts, I integrated the Dhan REST API to pull live market quotes and volume multipliers the instant a disclosure hits the wire. The system parses Chartink breakout screeners to append technical momentum indicators to corporate announcement cards in real time.",
     "interview_qa": [
       {
-        "q": "How would you handle sudden traffic spikes during breaking news events on BulkBeat TV?",
-        "a": "I would implement aggressive edge caching via a CDN (Cloudflare) for static assets and public stream playlists. For dynamic user notifications, I would decouple alert publishing from delivery using an asynchronous Redis Pub/Sub message broker, buffering outgoing traffic and protecting backend workers from connection spikes."
+        "q": "How did you integrate Dhan API and Chartink screeners into the news alert flow?",
+        "a": "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to capture current market price, volume surge factor, and day's range. It cross-references this with Chartink breakout screeners, allowing the alert card to display whether the stock is breaking its 52-week high at the exact moment of the announcement."
       },
       {
-        "q": "Why is Redis Pub/Sub suitable for multi-instance WebSocket synchronization?",
-        "a": "When multiple FastAPI server instances run behind a load balancer, client WebSockets are scattered across different physical machines. Redis Pub/Sub acts as a lightweight central event bus: when an alert occurs, the producer publishes to a Redis channel, and all server instances receive the event simultaneously and push it down their local active WebSocket connections."
+        "q": "How do you filter noise from thousands of daily routine corporate filings?",
+        "a": "We use a multi-stage classification pipeline: 1. Keyword regex filters out standard compliance filings (e.g., loss of share certificates); 2. A sentiment and impact scoring heuristic evaluates financial magnitude; 3. Only announcements scoring above threshold are queued for push delivery."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 22 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 22 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of Caloriv.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 21 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n• Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Servlet Lifecycle, Request Dispatching & Sessions.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Disjoint Set Union (Union-Find with Rank).\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Code for the Nation 2026.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 22 Q1: What is the primary academic thesis of Java Servlet Lifecycle, Request Dispatching & Sessions?",
+        "a": "Core theoretical and practical mastery of Java Servlet Lifecycle, Request Dispatching & Sessions under the CSJM University BCA-5002 syllabus."
+      },
+      {
+        "q": "Day 22 Q2: What is the key speed calculation formula applied in Cube & Dice Reasoning?",
+        "a": "High-speed corporate placement arithmetic shortcut for Cube & Dice Reasoning in campus recruitment exams."
+      },
+      {
+        "q": "Day 22 Q3: What is the time complexity of Disjoint Set Union (Union-Find with Rank)?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 22 Q4: What is the central architectural principle of Network Security: AES, RSA & Public Key PKI?",
+        "a": "Foundational systems engineering rule governing Network Security: AES, RSA & Public Key PKI in production environments."
+      },
+      {
+        "q": "Day 22 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 22 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 22 Q7: What is the verified technical foundation of Code for the Nation 2026?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 22 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 22 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 22 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n• Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Disjoint Set Union (Union-Find with Rank)."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: Code for the Nation 2026."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 22,
+    "title": "Day 22 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "What is the update rule for TCP Slow Start for each received ACK?",
-        "a": "cwnd = cwnd + 1 MSS. The congestion window doubles every round trip time."
+        "q": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
+        "a": "Answer: B\n\nThe container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
       },
       {
-        "q": "How does TCP Reno handle packet loss signaled by 3 Duplicate ACKs?",
-        "a": "It triggers Fast Retransmit and Fast Recovery: ssthresh is set to cwnd / 2, and cwnd is set to ssthresh, continuing linear congestion avoidance without restarting slow start."
+        "q": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
+        "a": "Answer: A\n\nThe `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
       },
       {
-        "q": "If revenue increases from 200 Cr to 260 Cr, what is the percentage increase?",
-        "a": "(60 / 200) * 100 = 30% increase."
+        "q": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
+        "a": "Answer: B\n\nHttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
       },
       {
-        "q": "What is the time complexity of the optimized Patience Sorting solution for LIS?",
-        "a": "O(N log N) using binary search (bisect_left) on the tails array."
+        "q": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
+        "a": "Answer: B\n\nThe `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
       },
       {
-        "q": "What are the 3 criteria that any valid solution to the Critical Section problem must satisfy?",
-        "a": "1. Mutual Exclusion, 2. Progress, 3. Bounded Waiting."
+        "q": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
+        "a": "Answer: A\n\nServlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
       },
       {
-        "q": "Can a Binary Semaphore be unlocked by a thread other than the one that locked it?",
-        "a": "Yes. Semaphores are signaling mechanisms and have no ownership, unlike Mutexes."
+        "q": "A solid wooden cube of side 4 cm is painted red on all faces and cut into smaller cubes of side 1 cm. How many smaller cubes have exactly two faces painted red?",
+        "a": "Answer: A\n\nFor a cube of n = 4/1 = 4: Two-face painted cubes lie on edges = 12 * (n - 2) = 12 * (4 - 2) = 24 cubes."
       },
       {
-        "q": "What is the difference between TCP Tahoe and TCP Reno on 3 Duplicate ACKs?",
-        "a": "Tahoe drops cwnd back to 1 MSS and restarts Slow Start. Reno halves cwnd to ssthresh and enters Fast Recovery."
+        "q": "How many smaller cubes in the 4 cm cube cut into 1 cm cubes have NO faces painted?",
+        "a": "Answer: A\n\nZero painted faces = (n - 2)^3 = (4 - 2)^3 = 2^3 = 8 cubes."
       },
       {
-        "q": "How does Priority Inheritance resolve Priority Inversion in OS synchronization?",
-        "a": "The low-priority thread holding the lock temporarily inherits the higher priority of the waiting thread until it releases the shared lock."
+        "q": "In a standard die, what is the sum of numbers on any two opposite faces?",
+        "a": "Answer: A\n\nBy definition, opposite faces of standard dice always sum to 7 (1-6, 2-5, 3-4)."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-22-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
+        "options": [
+          "service()",
+          "init()",
+          "doGet()",
+          "destroy()"
+        ],
+        "correct_answer": "B",
+        "explanation": "The container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
+      },
+      {
+        "id": "TEST-22-02",
+        "category": "Academic (Academic Theory)",
+        "question": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
+        "options": [
+          "service(ServletRequest, ServletResponse)",
+          "init()",
+          "start()",
+          "run()"
+        ],
+        "correct_answer": "A",
+        "explanation": "The `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
+      },
+      {
+        "id": "TEST-22-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
+        "options": [
+          "Cookies cannot store more than 1 byte of data",
+          "Session data is stored securely on the server-side, with only an opaque session identifier (JSESSIONID) sent to the client browser",
+          "Cookies expire immediately when a tab is refreshed",
+          "Sessions do not consume server RAM"
+        ],
+        "correct_answer": "B",
+        "explanation": "HttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
+      },
+      {
+        "id": "TEST-22-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
+        "options": [
+          "pom.xml",
+          "web.xml (located in WEB-INF)",
+          "server.xml",
+          "context.xml"
+        ],
+        "correct_answer": "B",
+        "explanation": "The `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
+      },
+      {
+        "id": "TEST-22-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
+        "options": [
+          "@WebServlet",
+          "@Controller",
+          "@Service",
+          "@WebEndpoint"
+        ],
+        "correct_answer": "A",
+        "explanation": "Servlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
+      },
+      {
+        "id": "TEST-22-06",
+        "category": "Placement Aptitude",
+        "question": "A solid wooden cube of side 4 cm is painted red on all faces and cut into smaller cubes of side 1 cm. How many smaller cubes have exactly two faces painted red?",
+        "options": [
+          "24",
+          "16",
+          "32",
+          "8"
+        ],
+        "correct_answer": "A",
+        "explanation": "For a cube of n = 4/1 = 4: Two-face painted cubes lie on edges = 12 * (n - 2) = 12 * (4 - 2) = 24 cubes."
+      },
+      {
+        "id": "TEST-22-07",
+        "category": "Placement Aptitude",
+        "question": "How many smaller cubes in the 4 cm cube cut into 1 cm cubes have NO faces painted?",
+        "options": [
+          "8",
+          "16",
+          "24",
+          "4"
+        ],
+        "correct_answer": "A",
+        "explanation": "Zero painted faces = (n - 2)^3 = (4 - 2)^3 = 2^3 = 8 cubes."
+      },
+      {
+        "id": "TEST-22-08",
+        "category": "Placement Aptitude",
+        "question": "In a standard die, what is the sum of numbers on any two opposite faces?",
+        "options": [
+          "7",
+          "6",
+          "8",
+          "14"
+        ],
+        "correct_answer": "A",
+        "explanation": "By definition, opposite faces of standard dice always sum to 7 (1-6, 2-5, 3-4)."
+      },
+      {
+        "id": "TEST-22-09",
+        "category": "Placement Aptitude",
+        "question": "Two positions of a dice are shown. When 4 is at the bottom, what number will be on the top face?",
+        "options": [
+          "3",
+          "1",
+          "2",
+          "5"
+        ],
+        "correct_answer": "A",
+        "explanation": "On standard fair dice, the face opposite to 4 is always 7 - 4 = 3."
+      },
+      {
+        "id": "TEST-22-10",
+        "category": "Placement Aptitude",
+        "question": "How many smaller cubes have exactly 3 faces painted when a large cube is cut into 27 identical small cubes?",
+        "options": [
+          "8",
+          "6",
+          "12",
+          "1"
+        ],
+        "correct_answer": "A",
+        "explanation": "Three-face painted cubes always occupy the 8 corners of the cube regardless of n (for n >= 2)."
+      },
+      {
+        "id": "TEST-22-11",
+        "category": "Core CS (Python Internals)",
+        "question": "What is the primary, real-time memory management mechanism in standard CPython?",
+        "options": [
+          "Mark and Sweep GC",
+          "Reference Counting",
+          "Manual free() calls",
+          "Stop-the-World Tracing"
+        ],
+        "correct_answer": "B",
+        "explanation": "CPython uses reference counting as its immediate real-time memory reclamation mechanism."
+      },
+      {
+        "id": "TEST-22-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which range of integer values is pre-allocated and interned as global singletons in CPython?",
+        "options": [
+          "0 to 100",
+          "-128 to 127",
+          "-5 to 256",
+          "0 to 65535"
+        ],
+        "correct_answer": "C",
+        "explanation": "CPython interns small integers between -5 and 256 inclusive."
+      },
+      {
+        "id": "TEST-22-13",
+        "category": "Core CS (Python Internals)",
+        "question": "Defining `__slots__` on a Python class achieves memory optimization by:",
+        "options": [
+          "Bypassing the GIL",
+          "Preventing the creation of the dynamic `__dict__` attribute dictionary",
+          "Compressing strings using gzip",
+          "Converting integers to C floats"
+        ],
+        "correct_answer": "B",
+        "explanation": "`__slots__` eliminates instance `__dict__` overhead, using fixed-size C arrays instead."
+      },
+      {
+        "id": "TEST-22-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Circular reference cycles that escape reference counting are detected and collected by:",
+        "options": [
+          "PyMalloc",
+          "The generational cyclic garbage collector (`gc` module)",
+          "The OS kernel scheduler",
+          "The Global Interpreter Lock"
+        ],
+        "correct_answer": "B",
+        "explanation": "The cyclic garbage collector specifically identifies and breaks isolated circular reference cycles."
+      },
+      {
+        "id": "TEST-22-15",
+        "category": "Core CS (Python Internals)",
+        "question": "In Python, which operator evaluates to True only if both variables reference the identical memory address?",
+        "options": [
+          "==",
+          "!=",
+          "is",
+          "in"
+        ],
+        "correct_answer": "C",
+        "explanation": "The `is` keyword checks pointer identity (`id(a) == id(b)`)."
+      },
+      {
+        "id": "TEST-22-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Disjoint Set Union (Union-Find)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N * alpha(N)) Time, O(N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Disjoint Set Union (Union-Find)' pattern operates with O(N * alpha(N)) Time, O(N) Auxiliary Space: Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).."
+      },
+      {
+        "id": "TEST-22-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Disjoint Set Union (Union-Find)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Tree with single redundant edge.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Disjoint Set Union (Union-Find) include Tree with single redundant edge, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-22-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Number of Provinces', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N * alpha(N)) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-22-19",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines'?",
+        "options": [
+          "Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.."
+      },
+      {
+        "id": "TEST-22-20",
+        "category": "Projects (NSE2 / BulkBeat TV)",
+        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How did you integrate Dhan API and Chartink screeners into the news alert flow?'?",
+        "options": [
+          "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to captur...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-22",
+    "title": "Number of Provinces (Disjoint Set Union (Union-Find))",
+    "time_limit_minutes": 45,
+    "difficulty": "Medium",
+    "problem_statement": "Solve the core placement problem: Number of Provinces.\n\nThere are n cities. A province is a group of directly or indirectly connected cities. Return the total number of provinces.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Disjoint Set Union (Union-Find)\n- Time Complexity Target: O(N * alpha(N)) Time\n- Space Complexity Target: O(N) Auxiliary Space\n- Handle all edge cases: Tree with single redundant edge, Disjoint graph with multiple trees, Linear chain graph.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Disjoint Set Union (Union-Find)\n    public int findCircleNum(int[][] isConnected) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Disjoint Set Union (Union-Find)\n    public int findCircleNum(int[][] isConnected) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public int findCircleNum(int[][] isConnected) {\n        int n = isConnected.length;\n        int[] parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        int count = n;\n        for (int i = 0; i < n; i++) {\n            for (int j = i + 1; j < n; j++) {\n                if (isConnected[i][j] == 1) {\n                    int r1 = find(parent, i), r2 = find(parent, j);\n                    if (r1 != r2) {\n                        parent[r1] = r2;\n                        count--;\n                    }\n                }\n            }\n        }\n        return count;\n    }\n    private int find(int[] p, int x) {\n        if (p[x] != x) p[x] = find(p, p[x]);\n        return p[x];\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Disjoint Set Union (Union-Find) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Tree with single redundant edge",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N * alpha(N)) Time)",
+      "Space Complexity": "20 points (Meets O(N) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }

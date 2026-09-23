@@ -1,208 +1,2450 @@
 {
   "day": 24,
-  "title": "KM Discovery in Databases (KDD), Speed Math & Longest Common Subsequence DP",
-  "sem_data": {
-    "subject": "BCA-5001 Knowledge Management",
-    "topic": "Unit V \u2014 Knowledge Discovery in Databases (KDD 5 Stages) & Association Rule Mining (Apriori)",
-    "detailed_notes": [
-      "Knowledge Discovery in Databases (KDD) is the non-trivial, iterative process of identifying valid, novel, potentially useful, and ultimately understandable patterns from massive volumes of data stored in data warehouses.",
-      "The 5 Sequential Stages of the KDD Process:\n1. Data Selection: Identifying the target dataset and focusing on a specific subset of variables or data samples relevant to the discovery goal.\n2. Data Preprocessing (Cleaning): Handling missing values (imputation), removing noise, filtering outliers, and resolving duplicate records.\n3. Data Transformation: Converting raw data into formats suitable for data mining algorithms through normalization, aggregation, feature selection, and dimensionality reduction.\n4. Data Mining: The core algorithmic engine. Applying machine learning, statistical modeling, or pattern recognition algorithms to extract underlying models.\n5. Interpretation and Evaluation: Validating discovered patterns against domain expertise, visualizing results, eliminating redundant findings, and translating patterns into actionable organizational knowledge.",
-      "Association Rule Mining & The Apriori Algorithm:\n\u2022 Uncovers interesting relationships among items in large transaction databases (e.g. Market Basket Analysis: 'If a customer buys diapers, they also buy beer 70% of the time').\n\u2022 Key Metrics:\n  - Support(A -> B) = P(A union B) = (Transactions containing both A and B) / (Total Transactions).\n  - Confidence(A -> B) = P(B | A) = Support(A union B) / Support(A).\n  - Lift(A -> B) = Confidence(A -> B) / Support(B). If Lift > 1, item B is positively correlated with item A.\n\u2022 Apriori Principle (Anti-monotone Property): All non-empty subsets of a frequent itemset must also be frequent! If an itemset {A, B} is infrequent, no superset {A, B, C} can ever be frequent."
+  "title": "Day 24: Knowledge Discovery in Databases (KDD 5-Phase Process) & Data Mining Techniques & Dynamic Programming: 1D Array",
+  "streams": {
+    "academic": {
+      "unit": 4,
+      "topic": "Unit IV — Knowledge Discovery in Databases (KDD 5-Phase Process) & Data Mining Techniques",
+      "objectives": [
+        "Master the 5-phase KDD pipeline (Selection, Preprocessing, Transformation, Data Mining, Interpretation).",
+        "Understand Association Rules, Clustering, and Classification in KM."
+      ],
+      "explanation": "Knowledge Discovery in Databases (KDD) is the non-trivial process of identifying valid, novel, potentially useful, and ultimately understandable patterns in data (Fayyad et al., 1996). Data Mining is the central algorithmic step within the broader KDD process. The 5 stages of KDD are:\n1. Selection: Creating a target data set by selecting relevant variables and data subsets from disparate enterprise warehouses.\n2. Preprocessing: Cleaning data by eliminating noise, handling missing attribute values, removing duplicates, and resolving format inconsistencies.\n3. Transformation: Projecting data into suitable spaces for mining via dimensionality reduction, normalization, discretization, and feature engineering.\n4. Data Mining: Applying intelligent algorithmic models (Classification, Clustering, Association Rule Mining / Apriori, Regression) to discover hidden mathematical patterns.\n5. Interpretation / Evaluation: Translating discovered patterns into human-understandable visual knowledge, validating against domain truths, and integrating into executive decision workflows.",
+      "definitions": [
+        {
+          "term": "Knowledge Discovery in Databases (KDD)",
+          "definition": "An end-to-end multi-step process that cleans, transforms, and mines vast datasets to extract non-trivial, actionable knowledge."
+        },
+        {
+          "term": "Association Rule Mining",
+          "definition": "A data mining technique that discovers interesting correlation relationships among items in transaction databases (e.g., Support and Confidence in Market Basket Analysis)."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "The 5 Phases of KDD",
+          "content": "1. Selection; 2. Preprocessing; 3. Transformation; 4. Data Mining; 5. Interpretation/Evaluation."
+        },
+        {
+          "title": "Data Mining vs KDD",
+          "content": "Data Mining is merely one algorithmic phase within the broader end-to-end KDD pipeline, which encompasses upstream data cleansing and downstream business evaluation."
+        }
+      ],
+      "examples": [
+        "Market basket analysis revealing that customers buying baby diapers on Friday evenings frequently purchase beer."
+      ],
+      "diagram": "+---------------------------------------------------+\n|                THE 5 PHASES OF KDD                |\n| Raw Data -> Selection -> Preprocessing ->         |\n| Transformation -> Data Mining -> Interpretation    |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "KDD Phase",
+          "Input Artifact",
+          "Core Operation",
+          "Output Artifact"
+        ],
+        "rows": [
+          [
+            "1. Selection",
+            "Raw Enterprise Databases",
+            "Sampling, segmenting, schema targeting",
+            "Target Dataset"
+          ],
+          [
+            "2. Preprocessing",
+            "Target Dataset",
+            "Imputing missing values, noise filtering",
+            "Cleaned Dataset"
+          ],
+          [
+            "3. Transformation",
+            "Cleaned Dataset",
+            "Normalization, PCA dimensionality reduction",
+            "Transformed Dataset"
+          ],
+          [
+            "4. Data Mining",
+            "Transformed Dataset",
+            "Executing Apriori, K-Means, Decision Trees",
+            "Discovered Patterns"
+          ],
+          [
+            "5. Interpretation",
+            "Discovered Patterns",
+            "Visualization, expert validation, scoring",
+            "Actionable Knowledge"
+          ]
+        ]
+      },
+      "memorize": "KDD 5 Steps: Selection -> Preprocessing -> Transformation -> Data Mining -> Interpretation/Evaluation. Data Mining is the algorithmic engine inside KDD.",
+      "understand": "Data cleaning and preprocessing consume 70% of total KDD effort; clean data is mandatory for meaningful mining results.",
+      "common_mistakes": "Saying Data Mining and KDD are synonyms. Data Mining is strictly step 4 of the 5-step KDD pipeline.",
+      "exam_writing_guidance": "Draw the linear-iterative KDD pipeline diagram, explain all 5 phases in detail, and distinguish Data Mining from KDD.",
+      "mini_practice": [
+        "Define Support and Confidence in Association Rule Mining."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2024-25 (Q4)",
+          "marks": 15,
+          "question": "What is Knowledge Discovery in Databases (KDD)? Explain the steps involved in the KDD process with a neat diagram. Differentiate between Data Mining and KDD. (15 Marks)",
+          "rubric": "Definition (2 marks) + Pipeline Diagram (4 marks) + 5 Steps explained (6 marks) + Data Mining vs KDD distinction (3 marks) = 15 Marks.",
+          "model_answer": "Knowledge Discovery in Databases (KDD) is the non-trivial process of extracting valid, novel, potentially useful, and ultimately understandable patterns from large datasets (Usama Fayyad, 1996). The KDD pipeline consists of 5 iterative steps: 1. Selection (identifying target data subsets); 2. Preprocessing (data cleansing, handling missing values, noise removal); 3. Transformation (feature reduction, discretization, normalization); 4. Data Mining (applying algorithms like decision trees, neural networks, or Apriori to extract patterns); 5. Interpretation/Evaluation (translating patterns into visual knowledge for executive action). The critical distinction is that Data Mining is strictly one algorithmic step (step 4) within the comprehensive, end-to-end KDD lifecycle.",
+          "answer_structure": "Definition -> Pipeline Diagram -> 5 Steps Detailed -> KDD vs Data Mining Table -> Conclusion",
+          "important_points": [
+            "Fayyad 1996 definition",
+            "Valid, novel, useful, understandable",
+            "5 Pipeline steps",
+            "Data mining is step 4"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Full pipeline drawn with intermediate datasets",
+            "Clear explanation that data mining is a subset of KDD"
+          ],
+          "common_mistakes": [
+            "Treating KDD and Data Mining as identical terms"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2023 / Model",
+          "marks": 5,
+          "question": "Explain Classification vs Clustering in Data Mining. (5 Marks)",
+          "rubric": "Classification definition & example (2.5 marks) + Clustering definition & example (2.5 marks) = 5 Marks.",
+          "model_answer": "Classification is a supervised learning technique where models are trained on historical labelled data to predict the discrete class label of new unseen instances (e.g., predicting whether a loan applicant is 'High Risk' or 'Low Risk' using Decision Trees). Clustering is an unsupervised learning technique where data instances are partitioned into natural groups based on mathematical similarity without any pre-existing class labels (e.g., customer segmentation using K-Means)."
+        }
+      ],
+      "subject_code": "BCA-5001",
+      "subject_name": "Knowledge Management",
+      "mcqs": [
+        {
+          "id": "ACAD-24-01",
+          "question": "Which interpolation formula is designed specifically for calculating values when the given independent variable arguments x_i are spaced at UNEQUAL intervals?",
+          "options": [
+            "Newton's Forward Interpolation Formula",
+            "Lagrange's Interpolation Formula",
+            "Newton's Backward Interpolation Formula",
+            "Trapezoidal Rule"
+          ],
+          "correct_answer": "B",
+          "explanation": "Lagrange's and Newton's Divided Difference formulas do not require equal step spacing h, handling arbitrary data points."
+        },
+        {
+          "id": "ACAD-24-02",
+          "question": "What is the degree of the Lagrange interpolating polynomial passing through (n + 1) distinct points?",
+          "options": [
+            "At most n",
+            "Exactly n + 1",
+            "Always 1",
+            "n^2"
+          ],
+          "correct_answer": "A",
+          "explanation": "A unique polynomial of degree at most n can be passed through (n + 1) distinct points (x_0, y_0) ... (x_n, y_n)."
+        },
+        {
+          "id": "ACAD-24-03",
+          "question": "What is the mathematical property of the Lagrange basis polynomial L_i(x) evaluated at data point x_j?",
+          "options": [
+            "L_i(x_j) = 1 if i = j, and L_i(x_j) = 0 if i != j (Kronecker delta)",
+            "L_i(x_j) = 0 always",
+            "L_i(x_j) = infinity",
+            "L_i(x_j) = x_i - x_j"
+          ],
+          "correct_answer": "A",
+          "explanation": "Lagrange basis polynomials satisfy the Kronecker delta property: L_i(x_j) = delta_{ij}, ensuring the sum equals y_j at x = x_j."
+        },
+        {
+          "id": "ACAD-24-04",
+          "question": "What is the primary computational disadvantage of Lagrange's interpolation formula when a new data point is added to the table?",
+          "options": [
+            "It cannot handle negative numbers",
+            "All basis polynomial coefficients must be recomputed from scratch",
+            "It causes division by zero",
+            "It requires matrix inversion"
+          ],
+          "correct_answer": "B",
+          "explanation": "Lagrange formulas lack recurrence: adding one point requires recalculating all terms. Divided differences avoid this via incremental terms."
+        },
+        {
+          "id": "ACAD-24-05",
+          "question": "The first divided difference f[x_0, x_1] of a function f(x) is defined as:",
+          "options": [
+            "[f(x_1) - f(x_0)] / (x_1 - x_0)",
+            "[f(x_1) + f(x_0)] / 2",
+            "f(x_1) * (x_1 - x_0)",
+            "f'(x_0)"
+          ],
+          "correct_answer": "A",
+          "explanation": "The first divided difference represents the secant slope between the two points: f[x_0, x_1] = (f(x_1) - f(x_0)) / (x_1 - x_0)."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2024-25 (Q4)",
+        "marks": 15,
+        "question": "What is Knowledge Discovery in Databases (KDD)? Explain the steps involved in the KDD process with a neat diagram. Differentiate between Data Mining and KDD. (15 Marks)",
+        "rubric": "Definition (2 marks) + Pipeline Diagram (4 marks) + 5 Steps explained (6 marks) + Data Mining vs KDD distinction (3 marks) = 15 Marks.",
+        "model_answer": "Knowledge Discovery in Databases (KDD) is the non-trivial process of extracting valid, novel, potentially useful, and ultimately understandable patterns from large datasets (Usama Fayyad, 1996). The KDD pipeline consists of 5 iterative steps: 1. Selection (identifying target data subsets); 2. Preprocessing (data cleansing, handling missing values, noise removal); 3. Transformation (feature reduction, discretization, normalization); 4. Data Mining (applying algorithms like decision trees, neural networks, or Apriori to extract patterns); 5. Interpretation/Evaluation (translating patterns into visual knowledge for executive action). The critical distinction is that Data Mining is strictly one algorithmic step (step 4) within the comprehensive, end-to-end KDD lifecycle.",
+        "answer_structure": "Definition -> Pipeline Diagram -> 5 Steps Detailed -> KDD vs Data Mining Table -> Conclusion",
+        "important_points": [
+          "Fayyad 1996 definition",
+          "Valid, novel, useful, understandable",
+          "5 Pipeline steps",
+          "Data mining is step 4"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Full pipeline drawn with intermediate datasets",
+          "Clear explanation that data mining is a subset of KDD"
+        ],
+        "common_mistakes": [
+          "Treating KDD and Data Mining as identical terms"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Explain Classification vs Clustering in Data Mining. (5 Marks)",
+        "rubric": "Classification definition & example (2.5 marks) + Clustering definition & example (2.5 marks) = 5 Marks.",
+        "model_answer": "Classification is a supervised learning technique where models are trained on historical labelled data to predict the discrete class label of new unseen instances (e.g., predicting whether a loan applicant is 'High Risk' or 'Low Risk' using Decision Trees). Clustering is an unsupervised learning technique where data instances are partitioned into natural groups based on mathematical similarity without any pre-existing class labels (e.g., customer segmentation using K-Means)."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                      THE 5 STAGES OF THE KDD PROCESS                    |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|  [ RAW DATA ]                                                           |\n|       |                                                                 |\n|       v  (Stage 1: Selection)                                           |\n|  [ TARGET DATA ]                                                        |\n|       |                                                                 |\n|       v  (Stage 2: Preprocessing / Cleaning)                            |\n|  [ PREPROCESSED DATA ]                                                  |\n|       |                                                                 |\n|       v  (Stage 3: Transformation / Reduction)                          |\n|  [ TRANSFORMED DATA ]                                                   |\n|       |                                                                 |\n|       v  (Stage 4: Data Mining / Pattern Extraction)                    |\n|  [ PATTERNS & MODELS ]                                                  |\n|       |                                                                 |\n|       v  (Stage 5: Interpretation & Evaluation)                         |\n|  [ ACTIONABLE KNOWLEDGE ]                                               |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-24-01",
+        "question": "Which interpolation formula is designed specifically for calculating values when the given independent variable arguments x_i are spaced at UNEQUAL intervals?",
+        "options": [
+          "Newton's Forward Interpolation Formula",
+          "Lagrange's Interpolation Formula",
+          "Newton's Backward Interpolation Formula",
+          "Trapezoidal Rule"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lagrange's and Newton's Divided Difference formulas do not require equal step spacing h, handling arbitrary data points."
+      },
+      {
+        "id": "ACAD-24-02",
+        "question": "What is the degree of the Lagrange interpolating polynomial passing through (n + 1) distinct points?",
+        "options": [
+          "At most n",
+          "Exactly n + 1",
+          "Always 1",
+          "n^2"
+        ],
+        "correct_answer": "A",
+        "explanation": "A unique polynomial of degree at most n can be passed through (n + 1) distinct points (x_0, y_0) ... (x_n, y_n)."
+      },
+      {
+        "id": "ACAD-24-03",
+        "question": "What is the mathematical property of the Lagrange basis polynomial L_i(x) evaluated at data point x_j?",
+        "options": [
+          "L_i(x_j) = 1 if i = j, and L_i(x_j) = 0 if i != j (Kronecker delta)",
+          "L_i(x_j) = 0 always",
+          "L_i(x_j) = infinity",
+          "L_i(x_j) = x_i - x_j"
+        ],
+        "correct_answer": "A",
+        "explanation": "Lagrange basis polynomials satisfy the Kronecker delta property: L_i(x_j) = delta_{ij}, ensuring the sum equals y_j at x = x_j."
+      },
+      {
+        "id": "ACAD-24-04",
+        "question": "What is the primary computational disadvantage of Lagrange's interpolation formula when a new data point is added to the table?",
+        "options": [
+          "It cannot handle negative numbers",
+          "All basis polynomial coefficients must be recomputed from scratch",
+          "It causes division by zero",
+          "It requires matrix inversion"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lagrange formulas lack recurrence: adding one point requires recalculating all terms. Divided differences avoid this via incremental terms."
+      },
+      {
+        "id": "ACAD-24-05",
+        "question": "The first divided difference f[x_0, x_1] of a function f(x) is defined as:",
+        "options": [
+          "[f(x_1) - f(x_0)] / (x_1 - x_0)",
+          "[f(x_1) + f(x_0)] / 2",
+          "f(x_1) * (x_1 - x_0)",
+          "f'(x_0)"
+        ],
+        "correct_answer": "A",
+        "explanation": "The first divided difference represents the secant slope between the two points: f[x_0, x_1] = (f(x_1) - f(x_0)) / (x_1 - x_0)."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Prepositions, Conjunctions & Idiomatic Usage",
+      "category": "Verbal Ability",
+      "subtopic": "Prepositions",
+      "formulas": "1. Fixed Prepositions: Abstain from, Accustomed to, Congratulate on, Capable of, Insist on, Prevent from, Superior to.\n2. Correlative Conjunctions: Hardly... when; Scarcely... when; No sooner... than; Not only... but also.\n3. 'Between' is used for two items; 'Among' for three or more.",
+      "shortcuts": "Pair Matching: The instant you spot 'No sooner' in a sentence, immediately scan for 'than'. If it uses 'when' or 'then', it is an automatic error.",
+      "tutorial": [
+        "Prepositional idioms are tested directly in fill-in-the-blank and error spotting questions. Remember that words expressing preference or comparative hierarchy like 'senior', 'junior', 'prior', 'superior', 'prefer' take 'to', NEVER 'than'."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Prepositions",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Prepositions",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Prepositions",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Prepositions",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Prepositions",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Fill in the blank: 'The senior software architect congratulated the developer _____ solving the production memory leak.'",
+        "options": {
+          "A": "on",
+          "B": "for",
+          "C": "about",
+          "D": "with"
+        },
+        "correct_answer": "A",
+        "explanation": "The verb 'congratulate' takes the fixed preposition 'on' (congratulate someone on something).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Fill in the blank: 'The distributed database cluster is compliant _____ global SOC2 security standards.'",
+        "options": {
+          "A": "with",
+          "B": "to",
+          "C": "for",
+          "D": "by"
+        },
+        "correct_answer": "A",
+        "explanation": "The adjective 'compliant' takes the preposition 'with' (compliant with standards).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Choose the correct preposition: 'She has been working on this machine learning research _____ 2023.'",
+        "options": {
+          "A": "since",
+          "B": "for",
+          "C": "from",
+          "D": "in"
+        },
+        "correct_answer": "A",
+        "explanation": "'Since' is used with a specific starting point in time in perfect continuous tenses.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "What does the idiom 'Bite the bullet' mean?",
+        "options": {
+          "A": "To face an inevitable grim situation with courage",
+          "B": "To eat food quickly",
+          "C": "To engage in physical combat",
+          "D": "To give up on a project"
+        },
+        "correct_answer": "A",
+        "explanation": "'Bite the bullet' means to endure a painful or difficult situation that cannot be avoided.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Choose the correct preposition: 'The candidate was absorbed _____ deep contemplation during the technical interview.'",
+        "options": {
+          "A": "in",
+          "B": "with",
+          "C": "at",
+          "D": "into"
+        },
+        "correct_answer": "A",
+        "explanation": "The idiom 'absorbed in' means intensely engaged in thought or activity.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Fill in the blank: 'He was acquitted _____ all charges due to lack of electronic evidence.'",
+        "options": {
+          "A": "of",
+          "B": "from",
+          "C": "with",
+          "D": "for"
+        },
+        "correct_answer": "A",
+        "explanation": "The verb 'acquit' is followed by the preposition 'of' (acquit of a crime).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "What is the meaning of the idiomatic phrase 'Burn the midnight oil'?",
+        "options": {
+          "A": "Work late into the night",
+          "B": "Waste electricity",
+          "C": "Cause an accidental fire",
+          "D": "Study chemistry"
+        },
+        "correct_answer": "A",
+        "explanation": "'Burn the midnight oil' signifies working or studying late into the night.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Fill in the blank: 'The project manager is confident _____ achieving sub-second API latency.'",
+        "options": {
+          "A": "of",
+          "B": "in",
+          "C": "with",
+          "D": "for"
+        },
+        "correct_answer": "A",
+        "explanation": "'Confident' takes 'of' (confident of winning/achieving) or 'in' (confident in his abilities). In the context of outcome, 'of' is standard.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "What does the idiom 'Cut corners' mean in engineering projects?",
+        "options": {
+          "A": "Do something poorly or cheaply to save time or money",
+          "B": "Design sharp edges on products",
+          "C": "Measure angles with a protractor",
+          "D": "Take a circular shortcut"
+        },
+        "correct_answer": "A",
+        "explanation": "'Cut corners' refers to taking shortcuts that compromise quality or safety.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Fill in the blank: 'You must adhere _____ the architectural coding standards defined in the repository.'",
+        "options": {
+          "A": "to",
+          "B": "with",
+          "C": "by",
+          "D": "in"
+        },
+        "correct_answer": "A",
+        "explanation": "'Adhere' takes the fixed preposition 'to' (adhere to rules/standards).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Prepositions (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Dynamic Programming: 1D Array",
+      "category": "Dynamic Programming",
+      "concept": "Solves optimization problems with overlapping subproblems and optimal substructure by caching solutions in a 1D state array or two running variables.",
+      "why_it_works": "Deciding optimal outcome at state i depends strictly on preceding states (e.g. dp[i] = max(dp[i-1], dp[i-2] + nums[i])).",
+      "visual_explanation": "Houses: [ 2, 7, 9, 3, 1 ]\\ni=0: Rob 2 -> 2\\ni=1: Max(2, 7) -> 7\\ni=2: Max(7, 2 + 9) -> 11\\ni=3: Max(11, 7 + 3) -> 11\\ni=4: Max(11, 11 + 1) -> 12 ==> Max Loot = 12",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public int rob(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        if (nums.length == 1) return nums[0];\n        \n        int prev2 = 0;\n        int prev1 = 0;\n        for (int num : nums) {\n            int current = Math.max(prev1, prev2 + num);\n            prev2 = prev1;\n            prev1 = current;\n        }\n        return prev1;\n    }\n}",
+      "code": "public class Solution {\n    public int rob(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        if (nums.length == 1) return nums[0];\n        \n        int prev2 = 0;\n        int prev1 = 0;\n        for (int num : nums) {\n            int current = Math.max(prev1, prev2 + num);\n            prev2 = prev1;\n            prev1 = current;\n        }\n        return prev1;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4-5: Handle base cases for empty or single-house array.",
+        "Line 7-8: Track optimal values of two previous houses (prev2 and prev1).",
+        "Line 9-13: Transition: current max is either skipping current house (prev1) or robbing current house (prev2 + num).",
+        "Line 14: Return optimal loot in O(1) space."
+      ],
+      "dry_run": "nums = [2, 7, 9, 3, 1]. Step 1: 2. Step 2: 7. Step 3: 11. Step 4: 11. Step 5: 12. Returns 12.",
+      "complexity": "O(N) Time, O(1) Auxiliary Space",
+      "edge_cases": "Single house, All houses zero value, Circular houses constraint (House Robber II)",
+      "edge_cases_list": [
+        "Single house",
+        "All houses zero value",
+        "Circular houses constraint (House Robber II)"
+      ],
+      "interview_variations": [
+        "Climbing Stairs",
+        "House Robber II (Circular)",
+        "Decode Ways",
+        "Min Cost Climbing Stairs"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-24-01",
+        "title": "Problem 1: House Robber",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are planning to rob houses along a street. Each house has a certain amount of money stashed. Determine the maximum amount of money you can rob tonight without alerting the police.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dynamic Programming: 1D Array algorithmic technique.\n2. Solves optimization problems with overlapping subproblems and optimal substructure by caching solutions in a 1D state array or two running variables.\n3. Invariants: Deciding optimal outcome at state i depends strictly on preceding states (e.g. dp[i] = max(dp[i-1], dp[i-2] + nums[i])).",
+        "solution_java": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+        "code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+        "java_code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-24-02",
+        "title": "Problem 2: Climbing Stairs",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dynamic Programming: 1D Array.\n2. Handle edge cases: Single house, All houses zero value, Circular houses constraint (House Robber II).\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+        "code": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+        "java_code": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Python Internals",
+      "topic": "Python Advanced Patterns: Decorators, Generators, Iterators & Context Managers",
+      "concept_lesson": "Python's expressive syntax is built upon first-class functions and standard protocols.\n\n1. Decorators:\nA decorator is a higher-order function that takes a function as input, extends its behavior without modifying source code, and returns a callable: `@my_decorator def func(): ...` translates directly to `func = my_decorator(func)`. Always apply `@functools.wraps(func)` to preserve original docstrings, names, and argument signatures.\n\n2. Iterators & Iterable Protocol:\n- An Iterable implements `__iter__()` returning an Iterator.\n- An Iterator implements `__next__()` returning successive items, raising `StopIteration` when exhausted. Every iterator is also an iterable returning itself in `__iter__()`.\n\n3. Generators (`yield`):\nA generator is a function containing the `yield` keyword. Calling it returns a generator object without running the body. Execution resumes only when `next()` is called, pausing at `yield` and preserving local stack frames in heap memory. Provides Lazy Evaluation: streams infinite or multi-gigabyte datasets with O(1) memory footprint.\n\n4. Context Managers (`with` statement):\nGuarantees deterministic resource acquisition and release (e.g., closing file handles or database connections even if exceptions occur). Implements the Context Management Protocol:\n- `__enter__(self)`: Acquires resource and returns target to `as` variable.\n- `__exit__(self, exc_type, exc_val, exc_tb)`: Executes cleanup. Returning True suppresses raised exceptions.",
+      "key_definitions": [
+        {
+          "term": "Decorator",
+          "definition": "A higher-order function wrapping another callable to extend its behavior dynamically."
+        },
+        {
+          "term": "Generator",
+          "definition": "A memory-efficient function using yield to produce values lazily on demand."
+        },
+        {
+          "term": "Context Manager",
+          "definition": "An object implementing __enter__ and __exit__ to ensure guaranteed resource allocation and cleanup."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "How do Decorators work in Python, and why is `functools.wraps` essential?",
+          "a": "A decorator takes a function as an argument, wraps it inside an inner wrapper function that adds pre/post execution logic, and returns the wrapper. Without `@functools.wraps(original_func)`, the decorated function's metadata (`__name__`, `__doc__`, module, annotations) is overwritten by the wrapper's metadata, breaking reflection, debugging, and documentation tools like Swagger/FastAPI."
+        },
+        {
+          "q": "What is the difference between a Generator and a standard List in Python?",
+          "a": "A list calculates and allocates all elements in memory simultaneously at creation time (O(N) space). A generator uses lazy evaluation: it computes the next value only when requested via `next()` or a for loop, yielding one item at a time and maintaining internal execution state in O(1) space. A generator reading a 10GB log file consumes negligible RAM."
+        },
+        {
+          "q": "Explain the difference between `__iter__` and `__next__`.",
+          "a": "`__iter__` must return an iterator object (an object that implements `__next__`). `__next__` retrieves the next value in the iteration sequence and raises `StopIteration` when elements are exhausted. An iterable only needs `__iter__`; an iterator must implement both `__iter__` (returning `self`) and `__next__`."
+        },
+        {
+          "q": "How does the Context Manager protocol work, and what do the arguments to `__exit__` represent?",
+          "a": "When entering a `with` block, Python calls `__enter__()`. Upon leaving the block (normally or via exception), Python calls `__exit__(exc_type, exc_val, exc_tb)`. If no exception occurred, all three arguments are None. If an exception occurred, they contain the exception class, exception instance, and traceback. If `__exit__` returns True, the exception is swallowed; otherwise, it propagates normally."
+        },
+        {
+          "q": "How does `contextlib.contextmanager` simplify creating context managers?",
+          "a": "It allows creating a context manager using a single generator function with `yield` instead of writing a full class with `__enter__` and `__exit__`. Code before `yield` runs during `__enter__`, the yielded value is bound to the `as` variable, and code inside `finally:` after `yield` runs automatically during `__exit__`."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-24-01",
+          "question": "What syntactic transformation occurs when writing `@decorator def foo(): pass`?",
+          "options": [
+            "foo = foo(decorator)",
+            "foo = decorator(foo)",
+            "decorator = foo()",
+            "def foo(): decorator()"
+          ],
+          "correct_answer": "B",
+          "explanation": "Decorators wrap functions: `foo = decorator(foo)`."
+        },
+        {
+          "id": "CS-24-02",
+          "question": "Which exception is raised by an iterator's `__next__()` method when no further elements exist?",
+          "options": [
+            "IndexError",
+            "KeyError",
+            "StopIteration",
+            "GeneratorExit"
+          ],
+          "correct_answer": "C",
+          "explanation": "The iterator protocol raises StopIteration when iteration completes."
+        },
+        {
+          "id": "CS-24-03",
+          "question": "Functions containing the `yield` keyword return which type of object when invoked?",
+          "options": [
+            "List",
+            "Tuple",
+            "Generator object",
+            "Coroutine"
+          ],
+          "correct_answer": "C",
+          "explanation": "Calling a function containing yield returns a generator object."
+        },
+        {
+          "id": "CS-24-04",
+          "question": "Why is `@functools.wraps` applied to decorator wrappers?",
+          "options": [
+            "To bypass the GIL",
+            "To preserve the original function's name, docstring, and metadata",
+            "To convert code to C",
+            "To catch syntax errors"
+          ],
+          "correct_answer": "B",
+          "explanation": "functools.wraps copies function metadata like __name__ and __doc__ onto the wrapper."
+        },
+        {
+          "id": "CS-24-05",
+          "question": "If `__exit__` in a context manager returns `True` after an exception occurs, what happens?",
+          "options": [
+            "The program crashes",
+            "The exception is suppressed/swallowed",
+            "The exception is re-raised",
+            "A deadlock occurs"
+          ],
+          "correct_answer": "B",
+          "explanation": "Returning True from __exit__ indicates the exception was handled, suppressing it."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "TerraStract",
+      "repo_path": "D:\\Projects\\terra_extract",
+      "topic": "Security, Data Privacy & Temporary File Sanitization in Document Processing",
+      "what_to_understand": "Protecting sensitive citizen land records and PII during document extraction.",
+      "what_to_memorize": "Never store unencrypted user documents permanently on application servers.",
+      "interview_questions": [
+        {
+          "q": "How do you ensure data privacy when processing confidential legal deeds in TerraStract?",
+          "a": "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags and masks Aadhaar numbers and bank details before persisting structured outputs. All temporary files are wiped using secure unlinking immediately after extraction completes."
+        },
+        {
+          "q": "How do you protect the extraction endpoint from malicious file upload attacks (ZIP bombs / executable masquerading)?",
+          "a": "We inspect magic file signatures (MIME bytes) rather than relying on file extensions: PDFs must start with `%PDF-`. We enforce a strict 25MB file upload limit, reject password-protected or encrypted archives, and execute document parsers in isolated, unprivileged container processes."
+        }
+      ],
+      "interview_pitch_exercise": "Handling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 24 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 24 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'DevQBX & Sitekraft Engineering', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In DevQBX & Sitekraft Engineering (Project Management, Client Web Architecture, Microservices), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of DevQBX & Sitekraft Engineering.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 23 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5004 — Central Difference & Lagrange's Unequal Interpolation.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Prepositions, Conjunctions & Idioms.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: 1D Array Memoization.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python OOP: Dunder Methods, MRO & Inheritance.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Central Difference & Lagrange's Unequal Interpolation.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Dynamic Programming: 1D Array Memoization.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Biometric Electronic Voting System (BEVM).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 24 Q1: What is the primary academic thesis of Central Difference & Lagrange's Unequal Interpolation?",
+          "a": "Core theoretical and practical mastery of Central Difference & Lagrange's Unequal Interpolation under the CSJM University BCA-5004 syllabus."
+        },
+        {
+          "q": "Day 24 Q2: What is the key speed calculation formula applied in Prepositions, Conjunctions & Idioms?",
+          "a": "High-speed corporate placement arithmetic shortcut for Prepositions, Conjunctions & Idioms in campus recruitment exams."
+        },
+        {
+          "q": "Day 24 Q3: What is the time complexity of Dynamic Programming: 1D Array Memoization?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 24 Q4: What is the central architectural principle of Python OOP: Dunder Methods, MRO & Inheritance?",
+          "a": "Foundational systems engineering rule governing Python OOP: Dunder Methods, MRO & Inheritance in production environments."
+        },
+        {
+          "q": "Day 24 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 24 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 24 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 24 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 24 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 24 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5004 — Central Difference & Lagrange's Unequal Interpolation.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Prepositions, Conjunctions & Idioms.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: 1D Array Memoization.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python OOP: Dunder Methods, MRO & Inheritance."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5004 — Central Difference & Lagrange's Unequal Interpolation."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Prepositions, Conjunctions & Idioms."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Dynamic Programming: 1D Array Memoization."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: Biometric Electronic Voting System (BEVM)."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-24-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which interpolation formula is designed specifically for calculating values when the given independent variable arguments x_i are spaced at UNEQUAL intervals?",
+        "options": [
+          "Newton's Forward Interpolation Formula",
+          "Lagrange's Interpolation Formula",
+          "Newton's Backward Interpolation Formula",
+          "Trapezoidal Rule"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lagrange's and Newton's Divided Difference formulas do not require equal step spacing h, handling arbitrary data points."
+      },
+      {
+        "id": "TEST-24-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the degree of the Lagrange interpolating polynomial passing through (n + 1) distinct points?",
+        "options": [
+          "At most n",
+          "Exactly n + 1",
+          "Always 1",
+          "n^2"
+        ],
+        "correct_answer": "A",
+        "explanation": "A unique polynomial of degree at most n can be passed through (n + 1) distinct points (x_0, y_0) ... (x_n, y_n)."
+      },
+      {
+        "id": "TEST-24-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the mathematical property of the Lagrange basis polynomial L_i(x) evaluated at data point x_j?",
+        "options": [
+          "L_i(x_j) = 1 if i = j, and L_i(x_j) = 0 if i != j (Kronecker delta)",
+          "L_i(x_j) = 0 always",
+          "L_i(x_j) = infinity",
+          "L_i(x_j) = x_i - x_j"
+        ],
+        "correct_answer": "A",
+        "explanation": "Lagrange basis polynomials satisfy the Kronecker delta property: L_i(x_j) = delta_{ij}, ensuring the sum equals y_j at x = x_j."
+      },
+      {
+        "id": "TEST-24-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary computational disadvantage of Lagrange's interpolation formula when a new data point is added to the table?",
+        "options": [
+          "It cannot handle negative numbers",
+          "All basis polynomial coefficients must be recomputed from scratch",
+          "It causes division by zero",
+          "It requires matrix inversion"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lagrange formulas lack recurrence: adding one point requires recalculating all terms. Divided differences avoid this via incremental terms."
+      },
+      {
+        "id": "TEST-24-05",
+        "category": "Academic (Academic Theory)",
+        "question": "The first divided difference f[x_0, x_1] of a function f(x) is defined as:",
+        "options": [
+          "[f(x_1) - f(x_0)] / (x_1 - x_0)",
+          "[f(x_1) + f(x_0)] / 2",
+          "f(x_1) * (x_1 - x_0)",
+          "f'(x_0)"
+        ],
+        "correct_answer": "A",
+        "explanation": "The first divided difference represents the secant slope between the two points: f[x_0, x_1] = (f(x_1) - f(x_0)) / (x_1 - x_0)."
+      },
+      {
+        "id": "TEST-24-06",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'He is senior _____ me in corporate rank by three years.'",
+        "options": [
+          "to",
+          "than",
+          "from",
+          "over"
+        ],
+        "correct_answer": "A",
+        "explanation": "Adjectives ending in '-ior' (senior, junior, superior, inferior) take the preposition 'to', never 'than'."
+      },
+      {
+        "id": "TEST-24-07",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'The committee congratulated him _____ his successful research publication.'",
+        "options": [
+          "on",
+          "for",
+          "at",
+          "about"
+        ],
+        "correct_answer": "A",
+        "explanation": "The standard idiom is 'congratulate someone ON something'."
+      },
+      {
+        "id": "TEST-24-08",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'You must abstain _____ smoking in public transit areas.'",
+        "options": [
+          "from",
+          "to",
+          "against",
+          "of"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Abstain', 'refrain', and 'prevent' take the preposition 'from' followed by a gerund."
+      },
+      {
+        "id": "TEST-24-09",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'Divide this dividend equally _____ the five founding partners.'",
+        "options": [
+          "among",
+          "between",
+          "amidst",
+          "within"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Between' is used for two entities; 'among' is used for three or more entities."
+      },
+      {
+        "id": "TEST-24-10",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'She has been suffering from viral fever _____ Monday last.'",
+        "options": [
+          "since",
+          "for",
+          "from",
+          "in"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Since' is used with a specific point in time (Monday); 'for' is used with a duration of time."
+      },
+      {
+        "id": "TEST-24-11",
+        "category": "Core CS (Python Internals)",
+        "question": "What syntactic transformation occurs when writing `@decorator def foo(): pass`?",
+        "options": [
+          "foo = foo(decorator)",
+          "foo = decorator(foo)",
+          "decorator = foo()",
+          "def foo(): decorator()"
+        ],
+        "correct_answer": "B",
+        "explanation": "Decorators wrap functions: `foo = decorator(foo)`."
+      },
+      {
+        "id": "TEST-24-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which exception is raised by an iterator's `__next__()` method when no further elements exist?",
+        "options": [
+          "IndexError",
+          "KeyError",
+          "StopIteration",
+          "GeneratorExit"
+        ],
+        "correct_answer": "C",
+        "explanation": "The iterator protocol raises StopIteration when iteration completes."
+      },
+      {
+        "id": "TEST-24-13",
+        "category": "Core CS (Python Internals)",
+        "question": "Functions containing the `yield` keyword return which type of object when invoked?",
+        "options": [
+          "List",
+          "Tuple",
+          "Generator object",
+          "Coroutine"
+        ],
+        "correct_answer": "C",
+        "explanation": "Calling a function containing yield returns a generator object."
+      },
+      {
+        "id": "TEST-24-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Why is `@functools.wraps` applied to decorator wrappers?",
+        "options": [
+          "To bypass the GIL",
+          "To preserve the original function's name, docstring, and metadata",
+          "To convert code to C",
+          "To catch syntax errors"
+        ],
+        "correct_answer": "B",
+        "explanation": "functools.wraps copies function metadata like __name__ and __doc__ onto the wrapper."
+      },
+      {
+        "id": "TEST-24-15",
+        "category": "Core CS (Python Internals)",
+        "question": "If `__exit__` in a context manager returns `True` after an exception occurs, what happens?",
+        "options": [
+          "The program crashes",
+          "The exception is suppressed/swallowed",
+          "The exception is re-raised",
+          "A deadlock occurs"
+        ],
+        "correct_answer": "B",
+        "explanation": "Returning True from __exit__ indicates the exception was handled, suppressing it."
+      },
+      {
+        "id": "TEST-24-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: 1D Array' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: 1D Array' pattern operates with O(N) Time, O(1) Auxiliary Space: Deciding optimal outcome at state i depends strictly on preceding states (e.g. dp[i] = max(dp[i-1], dp[i-2] + nums[i])).."
+      },
+      {
+        "id": "TEST-24-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: 1D Array' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Single house.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: 1D Array include Single house, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-24-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: House Robber', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-24-19",
+        "category": "Projects (TerraStract)",
+        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Security, Data Privacy & Temporary File Sanitization in Document Processing'?",
+        "options": [
+          "Never store unencrypted user documents permanently on application servers.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For TerraStract, the architectural invariant is: Never store unencrypted user documents permanently on application servers.."
+      },
+      {
+        "id": "TEST-24-20",
+        "category": "Projects (TerraStract)",
+        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you ensure data privacy when processing confidential legal deeds in TerraStract?'?",
+        "options": [
+          "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags an...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitizatio."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-24",
+      "title": "House Robber (Dynamic Programming: 1D Array)",
+      "time_limit_minutes": 45,
+      "difficulty": "Hard",
+      "problem_statement": "Solve the core placement problem: House Robber.\n\nYou are planning to rob houses along a street. Each house has a certain amount of money stashed. Determine the maximum amount of money you can rob tonight without alerting the police.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dynamic Programming: 1D Array\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: Single house, All houses zero value, Circular houses constraint (House Robber II).",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: 1D Array\n    public int rob(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: 1D Array\n    public int rob(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Dynamic Programming: 1D Array logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Single house",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Knowledge Management",
+    "subject_code": "BCA-5001",
+    "unit": 4,
+    "topic": "Unit IV — Knowledge Discovery in Databases (KDD 5-Phase Process) & Data Mining Techniques",
+    "objectives": [
+      "Master the 5-phase KDD pipeline (Selection, Preprocessing, Transformation, Data Mining, Interpretation).",
+      "Understand Association Rules, Clustering, and Classification in KM."
+    ],
+    "detailed_notes": [
+      "Knowledge Discovery in Databases (KDD) is the non-trivial process of identifying valid, novel, potentially useful, and ultimately understandable patterns in data (Fayyad et al., 1996). Data Mining is the central algorithmic step within the broader KDD process. The 5 stages of KDD are:\n1. Selection: Creating a target data set by selecting relevant variables and data subsets from disparate enterprise warehouses.\n2. Preprocessing: Cleaning data by eliminating noise, handling missing attribute values, removing duplicates, and resolving format inconsistencies.\n3. Transformation: Projecting data into suitable spaces for mining via dimensionality reduction, normalization, discretization, and feature engineering.\n4. Data Mining: Applying intelligent algorithmic models (Classification, Clustering, Association Rule Mining / Apriori, Regression) to discover hidden mathematical patterns.\n5. Interpretation / Evaluation: Translating discovered patterns into human-understandable visual knowledge, validating against domain truths, and integrating into executive decision workflows.",
+      "1. Selection; 2. Preprocessing; 3. Transformation; 4. Data Mining; 5. Interpretation/Evaluation.",
+      "Data Mining is merely one algorithmic phase within the broader end-to-end KDD pipeline, which encompasses upstream data cleansing and downstream business evaluation."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|                THE 5 PHASES OF KDD                |\n| Raw Data -> Selection -> Preprocessing ->         |\n| Transformation -> Data Mining -> Interpretation    |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Comparison Aspect",
-        "Online Analytical Processing (OLAP)",
-        "Knowledge Discovery / Data Mining (KDD)"
+        "KDD Phase",
+        "Input Artifact",
+        "Core Operation",
+        "Output Artifact"
       ],
       "rows": [
         [
-          "Operation Paradigm",
-          "User-driven verification (Top-down inquiry)",
-          "Algorithm-driven discovery (Bottom-up pattern mining)"
+          "1. Selection",
+          "Raw Enterprise Databases",
+          "Sampling, segmenting, schema targeting",
+          "Target Dataset"
         ],
         [
-          "Primary Question",
-          "'What happened and why did it happen?'",
-          "'What hidden patterns exist that we did not ask for?'"
+          "2. Preprocessing",
+          "Target Dataset",
+          "Imputing missing values, noise filtering",
+          "Cleaned Dataset"
         ],
         [
-          "Data Structure",
-          "Multidimensional cubes (Star/Snowflake)",
-          "Raw, transformed, or relational tables"
+          "3. Transformation",
+          "Cleaned Dataset",
+          "Normalization, PCA dimensionality reduction",
+          "Transformed Dataset"
         ],
         [
-          "Output Type",
-          "Aggregated reports, charts, slice/dice cubes",
-          "Predictive models, association rules, clusters"
+          "4. Data Mining",
+          "Transformed Dataset",
+          "Executing Apriori, K-Means, Decision Trees",
+          "Discovered Patterns"
         ],
         [
-          "User Role",
-          "Analyst formulates hypotheses",
-          "Algorithm uncovers non-obvious hypotheses"
+          "5. Interpretation",
+          "Discovered Patterns",
+          "Visualization, expert validation, scoring",
+          "Actionable Knowledge"
         ]
       ]
     },
-    "memorize": "KDD 5 Stages: Selection -> Preprocessing -> Transformation -> Data Mining -> Evaluation. Apriori rule: All subsets of a frequent itemset must be frequent. Support = P(A union B), Confidence = Support(A union B) / Support(A).",
-    "understand": "Why is Data Mining only 1 step of KDD? Many practitioners confuse Data Mining with KDD. Data Mining is merely the algorithmic extraction step (Stage 4). Without preceding data cleaning (Stage 2) and succeeding human interpretation (Stage 5), data mining produces noisy, meaningless correlations ('Garbage In, Garbage Out').",
-    "common_mistakes": "1. Treating Data Mining and KDD as identical terms. 2. Confusing Support (fraction of all transactions) with Confidence (conditional probability).",
-    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "Appeared in 2021 (Q8 - 15m), 2022-23 (Q7 - 15m), 2023-24 (Q8 - 15m), 2024-25 (Q7 - 15m)",
-    "pyq_question": "Explain the Knowledge Discovery in Databases (KDD) process in detail with its 5 stages. What is Data Mining? Explain Association Rule Mining with Support, Confidence, and the Apriori algorithm. (15 Marks)",
-    "pyq_rubric": "Concept of KDD & Architecture diagram (4 marks) + 5 Stages detailed explanation (5 marks) + Association Rule Mining: Support, Confidence, Lift formulas (3 marks) + Apriori algorithm principle (3 marks) = 15 Marks.",
+    "memorize": "KDD 5 Steps: Selection -> Preprocessing -> Transformation -> Data Mining -> Interpretation/Evaluation. Data Mining is the algorithmic engine inside KDD.",
+    "understand": "Data cleaning and preprocessing consume 70% of total KDD effort; clean data is mandatory for meaningful mining results.",
+    "common_mistakes": "Saying Data Mining and KDD are synonyms. Data Mining is strictly step 4 of the 5-step KDD pipeline.",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2024-25 (Q4)",
+        "marks": 15,
+        "question": "What is Knowledge Discovery in Databases (KDD)? Explain the steps involved in the KDD process with a neat diagram. Differentiate between Data Mining and KDD. (15 Marks)",
+        "rubric": "Definition (2 marks) + Pipeline Diagram (4 marks) + 5 Steps explained (6 marks) + Data Mining vs KDD distinction (3 marks) = 15 Marks.",
+        "model_answer": "Knowledge Discovery in Databases (KDD) is the non-trivial process of extracting valid, novel, potentially useful, and ultimately understandable patterns from large datasets (Usama Fayyad, 1996). The KDD pipeline consists of 5 iterative steps: 1. Selection (identifying target data subsets); 2. Preprocessing (data cleansing, handling missing values, noise removal); 3. Transformation (feature reduction, discretization, normalization); 4. Data Mining (applying algorithms like decision trees, neural networks, or Apriori to extract patterns); 5. Interpretation/Evaluation (translating patterns into visual knowledge for executive action). The critical distinction is that Data Mining is strictly one algorithmic step (step 4) within the comprehensive, end-to-end KDD lifecycle.",
+        "answer_structure": "Definition -> Pipeline Diagram -> 5 Steps Detailed -> KDD vs Data Mining Table -> Conclusion",
+        "important_points": [
+          "Fayyad 1996 definition",
+          "Valid, novel, useful, understandable",
+          "5 Pipeline steps",
+          "Data mining is step 4"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Full pipeline drawn with intermediate datasets",
+          "Clear explanation that data mining is a subset of KDD"
+        ],
+        "common_mistakes": [
+          "Treating KDD and Data Mining as identical terms"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "Explain Classification vs Clustering in Data Mining. (5 Marks)",
+        "rubric": "Classification definition & example (2.5 marks) + Clustering definition & example (2.5 marks) = 5 Marks.",
+        "model_answer": "Classification is a supervised learning technique where models are trained on historical labelled data to predict the discrete class label of new unseen instances (e.g., predicting whether a loan applicant is 'High Risk' or 'Low Risk' using Decision Trees). Clustering is an unsupervised learning technique where data instances are partitioned into natural groups based on mathematical similarity without any pre-existing class labels (e.g., customer segmentation using K-Means)."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-24-01",
+        "question": "Which interpolation formula is designed specifically for calculating values when the given independent variable arguments x_i are spaced at UNEQUAL intervals?",
+        "options": [
+          "Newton's Forward Interpolation Formula",
+          "Lagrange's Interpolation Formula",
+          "Newton's Backward Interpolation Formula",
+          "Trapezoidal Rule"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lagrange's and Newton's Divided Difference formulas do not require equal step spacing h, handling arbitrary data points."
+      },
+      {
+        "id": "ACAD-24-02",
+        "question": "What is the degree of the Lagrange interpolating polynomial passing through (n + 1) distinct points?",
+        "options": [
+          "At most n",
+          "Exactly n + 1",
+          "Always 1",
+          "n^2"
+        ],
+        "correct_answer": "A",
+        "explanation": "A unique polynomial of degree at most n can be passed through (n + 1) distinct points (x_0, y_0) ... (x_n, y_n)."
+      },
+      {
+        "id": "ACAD-24-03",
+        "question": "What is the mathematical property of the Lagrange basis polynomial L_i(x) evaluated at data point x_j?",
+        "options": [
+          "L_i(x_j) = 1 if i = j, and L_i(x_j) = 0 if i != j (Kronecker delta)",
+          "L_i(x_j) = 0 always",
+          "L_i(x_j) = infinity",
+          "L_i(x_j) = x_i - x_j"
+        ],
+        "correct_answer": "A",
+        "explanation": "Lagrange basis polynomials satisfy the Kronecker delta property: L_i(x_j) = delta_{ij}, ensuring the sum equals y_j at x = x_j."
+      },
+      {
+        "id": "ACAD-24-04",
+        "question": "What is the primary computational disadvantage of Lagrange's interpolation formula when a new data point is added to the table?",
+        "options": [
+          "It cannot handle negative numbers",
+          "All basis polynomial coefficients must be recomputed from scratch",
+          "It causes division by zero",
+          "It requires matrix inversion"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lagrange formulas lack recurrence: adding one point requires recalculating all terms. Divided differences avoid this via incremental terms."
+      },
+      {
+        "id": "ACAD-24-05",
+        "question": "The first divided difference f[x_0, x_1] of a function f(x) is defined as:",
+        "options": [
+          "[f(x_1) - f(x_0)] / (x_1 - x_0)",
+          "[f(x_1) + f(x_0)] / 2",
+          "f(x_1) * (x_1 - x_0)",
+          "f'(x_0)"
+        ],
+        "correct_answer": "A",
+        "explanation": "The first divided difference represents the secant slope between the two points: f[x_0, x_1] = (f(x_1) - f(x_0)) / (x_1 - x_0)."
+      }
+    ],
+    "pyq_year": "2024-25 (Q4)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "What is Knowledge Discovery in Databases (KDD)? Explain the steps involved in the KDD process with a neat diagram. Differentiate between Data Mining and KDD. (15 Marks)",
+    "pyq_rubric": "Definition (2 marks) + Pipeline Diagram (4 marks) + 5 Steps explained (6 marks) + Data Mining vs KDD distinction (3 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Definition of KDD and Data Mining:",
-        "Knowledge Discovery in Databases (KDD) is an organized multi-stage engineering process aimed at turning raw data into actionable business insight. Data Mining is the central mathematical phase within KDD that uses specialized algorithms to find recurring associations, clusters, and predictive models."
+        "1. Model Answer & Technical Presentation",
+        "Knowledge Discovery in Databases (KDD) is the non-trivial process of extracting valid, novel, potentially useful, and ultimately understandable patterns from large datasets (Usama Fayyad, 1996). The KDD pipeline consists of 5 iterative steps: 1. Selection (identifying target data subsets); 2. Preprocessing (data cleansing, handling missing values, noise removal); 3. Transformation (feature reduction, discretization, normalization); 4. Data Mining (applying algorithms like decision trees, neural networks, or Apriori to extract patterns); 5. Interpretation/Evaluation (translating patterns into visual knowledge for executive action). The critical distinction is that Data Mining is strictly one algorithmic step (step 4) within the comprehensive, end-to-end KDD lifecycle."
       ],
       [
-        "2. The 5 Sequential Stages of KDD:",
-        "\u2022 1. Data Selection: Isolates relevant subsets of enterprise data from heterogeneous warehouses.\n\u2022 2. Data Preprocessing: Imputes missing values, eliminates noise, and standardizes data formats.\n\u2022 3. Data Transformation: Scales continuous variables, encodes categorical attributes, and aggregates granular records.\n\u2022 4. Data Mining: Executes algorithms such as Apriori, K-Means clustering, or Decision Trees.\n\u2022 5. Interpretation/Evaluation: Subject matter experts inspect patterns to filter out trivial correlations and visualize actionable rules."
-      ],
-      [
-        "3. Association Rule Mining & The Apriori Algorithm:",
-        "Association rules capture co-occurrence relationships (X => Y). Metrics:\n\u2022 Support(X => Y) = Number of transactions containing both X and Y / Total transactions.\n\u2022 Confidence(X => Y) = Number of transactions containing both X and Y / Number of transactions containing X.\n\u2022 Lift(X => Y) = Confidence(X => Y) / Support(Y).\nThe Apriori Algorithm leverages the anti-monotone property: an itemset can only be frequent if all its subsets are frequent. This allows aggressive pruning of candidate itemsets, reducing search space from 2^N to manageable sets."
+        "2. Expected Examiner Criteria",
+        [
+          "Full pipeline drawn with intermediate datasets",
+          "Clear explanation that data mining is a subset of KDD"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master 5 Stages of KDD & Apriori Algorithm Mathematics",
-    "milestone": "Full 15/15 on KM Unit V Exam Question"
-  },
   "apt_data": {
-    "topic": "Quantitative Aptitude \u2014 Speed Math, Vedic Approximations & Mental Division",
+    "topic": "Prepositions, Conjunctions & Idiomatic Usage",
+    "category": "Verbal Ability",
+    "subtopic": "Prepositions",
+    "formulas": "1. Fixed Prepositions: Abstain from, Accustomed to, Congratulate on, Capable of, Insist on, Prevent from, Superior to.\n2. Correlative Conjunctions: Hardly... when; Scarcely... when; No sooner... than; Not only... but also.\n3. 'Between' is used for two items; 'Among' for three or more.",
+    "shortcut": "Pair Matching: The instant you spot 'No sooner' in a sentence, immediately scan for 'than'. If it uses 'when' or 'then', it is an automatic error.",
     "tutorial": [
-      "Placement quantitative rounds require solving questions in under 60 seconds. Speed math eliminates manual scratchwork.",
-      "Key Mental Math Techniques:\n1. Squaring Numbers Ending in 5: (N5)^2 = [N * (N + 1)] followed by 25. Example: 75^2 = [7 * 8] 25 = 5625.\n2. Base Multiplication (Near 100): To multiply (100 + a) * (100 + b) = (100 + a + b) * 100 + (a * b). Example: 104 * 107 = (104 + 7) = 111, followed by (4 * 7 = 28) = 11128.\n3. Digital Sum Method: The sum of digits of a number modulo 9. If LHS digital sum != RHS digital sum, eliminate that option immediately!\n4. Division by 25: Multiply by 4 and shift decimal 2 places left (e.g. 340 / 25 = 340 * 4 / 100 = 13.6)."
+      "Prepositional idioms are tested directly in fill-in-the-blank and error spotting questions. Remember that words expressing preference or comparative hierarchy like 'senior', 'junior', 'prior', 'superior', 'prefer' take 'to', NEVER 'than'."
     ],
-    "formulas": "(N5)^2 = [N*(N+1)] 25. (100+a)*(100+b) = (100+a+b)*100 + a*b. Digital sum reduces numbers to single digits.",
-    "shortcut": "Multiply any number by 11: Write outer digits, insert sum of adjacent digits in between. Example: 35 * 11 = 3 [3+5] 5 = 385.",
-    "recognition": "Use these mental tricks across all numerical, percentage, and time-speed-distance questions in TCS, Infosys, and Cognizant.",
-    "tier1_problem": "Compute mentally: 85^2 + 105 * 108.",
-    "tier1_solution": "1. 85^2 = 8 * 9 followed by 25 = 7225.\n2. 105 * 108 = (105 + 8) followed by (5 * 8 = 40) = 11340.\n3. Sum = 7225 + 11340 = 18565. Answer: 18565.",
-    "tier2_problem": "Calculate: 1475 / 25 mentally in 5 seconds.",
-    "tier2_solution": "Divide by 25 = Multiply by 4 and divide by 100.\n1475 * 2 = 2950.\n2950 * 2 = 5900.\n5900 / 100 = 59. Answer: 59.",
-    "tier3_problem": "[Digital Sum Elimination] Find the value of: 4182 + 5928 - 3841 = ? Options: (A) 6259, (B) 6269, (C) 6179, (D) 6369.",
-    "tier3_solution": "Compute digital sum (casting out 9s):\n4182 ==> 4+1+8+2 = 15 ==> 1+5 = 6.\n5928 ==> 5+9+2+8 = 24 ==> 2+4 = 6.\n3841 ==> 3+8+4+1 = 16 ==> 1+6 = 7.\nExpression digital sum = 6 + 6 - 7 = 5.\nCheck options digital sums:\n(A) 6259 ==> 6+2+5+9 = 22 ==> 4 (Incorrect)\n(B) 6269 ==> 6+2+6+9 = 23 ==> 5 (MATCH!)\n(C) 6179 ==> 6+1+7+9 = 23 ==> 5 (Check last digit: 2 + 8 - 1 = 9)\nUnit digit check: 2 + 8 - 1 = 9. Last two digits: 82 + 28 - 41 = 110 - 41 = 69 ==> (B) 6269. Answer: 6269.",
-    "tier4_problem": "Evaluate the square root of 7056 mentally.",
-    "tier4_solution": "1. Unit digit is 6 ==> Last digit of square root is either 4 or 6 (since 4^2=16, 6^2=36).\n2. Group into pairs: 70 and 56.\n3. Largest square <= 70 is 64 (8^2 = 64) ==> Tens digit is 8.\n4. Possible roots: 84 or 86.\n5. Compare with 85: 85^2 = 8 * 9 followed by 25 = 7225.\n6. Since 7056 < 7225, the square root must be 84. Answer: 84.",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "Compute 65^2.",
-        "a": "6 * 7 = 42 followed by 25 = 4225."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "Compute 103 * 106.",
-        "a": "(103 + 6) = 109 followed by (3 * 6 = 18) = 10918."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "What is 42 * 11?",
-        "a": "4 [4+2] 2 = 462."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "Divide 750 by 25.",
-        "a": "750 * 4 / 100 = 30."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "Compute 95^2.",
-        "a": "9 * 10 = 90 followed by 25 = 9025."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Prepositions",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Prepositions",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Prepositions",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Prepositions",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Prepositions",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Fill in the blank: 'The senior software architect congratulated the developer _____ solving the production memory leak.'",
+        "options": {
+          "A": "on",
+          "B": "for",
+          "C": "about",
+          "D": "with"
+        },
+        "correct_answer": "A",
+        "explanation": "The verb 'congratulate' takes the fixed preposition 'on' (congratulate someone on something).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Fill in the blank: 'The distributed database cluster is compliant _____ global SOC2 security standards.'",
+        "options": {
+          "A": "with",
+          "B": "to",
+          "C": "for",
+          "D": "by"
+        },
+        "correct_answer": "A",
+        "explanation": "The adjective 'compliant' takes the preposition 'with' (compliant with standards).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Choose the correct preposition: 'She has been working on this machine learning research _____ 2023.'",
+        "options": {
+          "A": "since",
+          "B": "for",
+          "C": "from",
+          "D": "in"
+        },
+        "correct_answer": "A",
+        "explanation": "'Since' is used with a specific starting point in time in perfect continuous tenses.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "What does the idiom 'Bite the bullet' mean?",
+        "options": {
+          "A": "To face an inevitable grim situation with courage",
+          "B": "To eat food quickly",
+          "C": "To engage in physical combat",
+          "D": "To give up on a project"
+        },
+        "correct_answer": "A",
+        "explanation": "'Bite the bullet' means to endure a painful or difficult situation that cannot be avoided.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Choose the correct preposition: 'The candidate was absorbed _____ deep contemplation during the technical interview.'",
+        "options": {
+          "A": "in",
+          "B": "with",
+          "C": "at",
+          "D": "into"
+        },
+        "correct_answer": "A",
+        "explanation": "The idiom 'absorbed in' means intensely engaged in thought or activity.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Fill in the blank: 'He was acquitted _____ all charges due to lack of electronic evidence.'",
+        "options": {
+          "A": "of",
+          "B": "from",
+          "C": "with",
+          "D": "for"
+        },
+        "correct_answer": "A",
+        "explanation": "The verb 'acquit' is followed by the preposition 'of' (acquit of a crime).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "What is the meaning of the idiomatic phrase 'Burn the midnight oil'?",
+        "options": {
+          "A": "Work late into the night",
+          "B": "Waste electricity",
+          "C": "Cause an accidental fire",
+          "D": "Study chemistry"
+        },
+        "correct_answer": "A",
+        "explanation": "'Burn the midnight oil' signifies working or studying late into the night.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Fill in the blank: 'The project manager is confident _____ achieving sub-second API latency.'",
+        "options": {
+          "A": "of",
+          "B": "in",
+          "C": "with",
+          "D": "for"
+        },
+        "correct_answer": "A",
+        "explanation": "'Confident' takes 'of' (confident of winning/achieving) or 'in' (confident in his abilities). In the context of outcome, 'of' is standard.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "What does the idiom 'Cut corners' mean in engineering projects?",
+        "options": {
+          "A": "Do something poorly or cheaply to save time or money",
+          "B": "Design sharp edges on products",
+          "C": "Measure angles with a protractor",
+          "D": "Take a circular shortcut"
+        },
+        "correct_answer": "A",
+        "explanation": "'Cut corners' refers to taking shortcuts that compromise quality or safety.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Fill in the blank: 'You must adhere _____ the architectural coding standards defined in the repository.'",
+        "options": {
+          "A": "to",
+          "B": "with",
+          "C": "by",
+          "D": "in"
+        },
+        "correct_answer": "A",
+        "explanation": "'Adhere' takes the fixed preposition 'to' (adhere to rules/standards).",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Prepositions (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "Longest Common Subsequence (LeetCode 1143 - Medium)",
+      "title": "Problem 1: House Robber",
       "difficulty": "Medium",
-      "importance": "The Definitive 2D Dynamic Programming Interview Problem",
-      "problem_statement": "Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.",
-      "solution_approach": "2D Dynamic Programming Matrix:\nLet dp[i][j] represent the length of the LCS of text1[0..i-1] and text2[0..j-1].\nState Transition:\n1. If characters match (`text1[i-1] == text2[j-1]`):\n   dp[i][j] = 1 + dp[i-1][j-1]\n2. If characters do NOT match:\n   dp[i][j] = max(dp[i-1][j], dp[i][j-1])\nBase Case: dp[0][j] = 0 and dp[i][0] = 0.",
-      "code": "def longestCommonSubsequence(text1: str, text2: str) -> int:\n    m, n = len(text1), len(text2)\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n    \n    for i in range(1, m + 1):\n        for j in range(1, n + 1):\n            if text1[i - 1] == text2[j - 1]:\n                dp[i][j] = 1 + dp[i - 1][j - 1]\n            else:\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n                \n    return dp[m][n]",
-      "line_by_line": [
-        [
-          "dp = [[0] * (n + 1) for _ in range(m + 1)]",
-          "Initialize (M+1)x(N+1) DP grid with 0s for base cases."
-        ],
-        [
-          "if text1[i - 1] == text2[j - 1]: dp[i][j] = 1 + dp[i - 1][j - 1]",
-          "Characters match: extend LCS length from diagonal predecessor."
-        ],
-        [
-          "else: dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])",
-          "Characters mismatch: inherit maximum from left or top cell."
-        ]
-      ],
-      "time_complexity": "O(M * N) where M and N are string lengths.",
-      "space_complexity": "O(M * N) auxiliary memory for DP matrix.",
-      "edge_cases": "No common characters ('abc', 'def' returns 0); identical strings (returns len); empty string."
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "You are planning to rob houses along a street. Each house has a certain amount of money stashed. Determine the maximum amount of money you can rob tonight without alerting the police.",
+      "solution_approach": "1. Apply Dynamic Programming: 1D Array algorithmic technique.\n2. Solves optimization problems with overlapping subproblems and optimal substructure by caching solutions in a 1D state array or two running variables.\n3. Invariants: Deciding optimal outcome at state i depends strictly on preceding states (e.g. dp[i] = max(dp[i-1], dp[i-2] + nums[i])).",
+      "code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+      "java_solution": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+      "solution_java": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Climbing Stairs",
+      "difficulty": "Hard",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+      "solution_approach": "1. Identify interview variation of Dynamic Programming: 1D Array.\n2. Handle edge cases: Single house, All houses zero value, Circular houses constraint (House Robber II).\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+      "java_solution": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+      "solution_java": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Dynamic Programming: 1D Array",
+    "category": "Dynamic Programming",
+    "concept": "Solves optimization problems with overlapping subproblems and optimal substructure by caching solutions in a 1D state array or two running variables.",
+    "why_it_works": "Deciding optimal outcome at state i depends strictly on preceding states (e.g. dp[i] = max(dp[i-1], dp[i-2] + nums[i])).",
+    "visual_explanation": "Houses: [ 2, 7, 9, 3, 1 ]\\ni=0: Rob 2 -> 2\\ni=1: Max(2, 7) -> 7\\ni=2: Max(7, 2 + 9) -> 11\\ni=3: Max(11, 7 + 3) -> 11\\ni=4: Max(11, 11 + 1) -> 12 ==> Max Loot = 12",
+    "java_code": "public class Solution {\n    public int rob(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        if (nums.length == 1) return nums[0];\n        \n        int prev2 = 0;\n        int prev1 = 0;\n        for (int num : nums) {\n            int current = Math.max(prev1, prev2 + num);\n            prev2 = prev1;\n            prev1 = current;\n        }\n        return prev1;\n    }\n}",
+    "code": "public class Solution {\n    public int rob(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        if (nums.length == 1) return nums[0];\n        \n        int prev2 = 0;\n        int prev1 = 0;\n        for (int num : nums) {\n            int current = Math.max(prev1, prev2 + num);\n            prev2 = prev1;\n            prev1 = current;\n        }\n        return prev1;\n    }\n}",
+    "python_code": "public class Solution {\n    public int rob(int[] nums) {\n        if (nums == null || nums.length == 0) return 0;\n        if (nums.length == 1) return nums[0];\n        \n        int prev2 = 0;\n        int prev1 = 0;\n        for (int num : nums) {\n            int current = Math.max(prev1, prev2 + num);\n            prev2 = prev1;\n            prev1 = current;\n        }\n        return prev1;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4-5: Handle base cases for empty or single-house array.",
+      "Line 7-8: Track optimal values of two previous houses (prev2 and prev1).",
+      "Line 9-13: Transition: current max is either skipping current house (prev1) or robbing current house (prev2 + num).",
+      "Line 14: Return optimal loot in O(1) space."
+    ],
+    "dry_run": "nums = [2, 7, 9, 3, 1]. Step 1: 2. Step 2: 7. Step 3: 11. Step 4: 11. Step 5: 12. Returns 12.",
+    "complexity": "O(N) Time, O(1) Auxiliary Space",
+    "edge_cases": [
+      "Single house",
+      "All houses zero value",
+      "Circular houses constraint (House Robber II)"
+    ],
+    "interview_variations": [
+      "Climbing Stairs",
+      "House Robber II (Circular)",
+      "Decode Ways",
+      "Min Cost Climbing Stairs"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-24-01",
+        "title": "Problem 1: House Robber",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "You are planning to rob houses along a street. Each house has a certain amount of money stashed. Determine the maximum amount of money you can rob tonight without alerting the police.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dynamic Programming: 1D Array algorithmic technique.\n2. Solves optimization problems with overlapping subproblems and optimal substructure by caching solutions in a 1D state array or two running variables.\n3. Invariants: Deciding optimal outcome at state i depends strictly on preceding states (e.g. dp[i] = max(dp[i-1], dp[i-2] + nums[i])).",
+        "solution_java": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+        "code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+        "java_code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-24-02",
+        "title": "Problem 2: Climbing Stairs",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dynamic Programming: 1D Array.\n2. Handle edge cases: Single house, All houses zero value, Circular houses constraint (House Robber II).\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+        "solution_python": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+        "code": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+        "java_code": "public class Solution {\n    public int climbStairs(int n) {\n        if (n <= 2) return n;\n        int a = 1, b = 2;\n        for (int i = 3; i <= n; i++) {\n            int c = a + b;\n            a = b;\n            b = c;\n        }\n        return b;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ]
+  },
   "cs_core": {
-    "subject": "Database Management Systems (DBMS)",
-    "topic": "SQL vs NoSQL Architectural Trade-offs: PostgreSQL vs MongoDB",
+    "subject": "Python Internals",
+    "topic": "Python Advanced Patterns: Decorators, Generators, Iterators & Context Managers",
     "detailed_notes": [
-      "Database Paradigms Compared:\n1. Relational DBMS (PostgreSQL, MySQL):\n\u2022 Structured tabular schema (Rows & Columns) with predefined column types.\n\u2022 ACID Transactions: Strong consistency, atomic commits, referential integrity via Foreign Keys.\n\u2022 Complex relational queries with SQL JOINS, indexing (B+ Tree), and normalization to eliminate redundancy.\n\u2022 Scaling: Primarily vertical scaling (larger CPU/RAM); horizontal sharding is complex.\n2. NoSQL Document Stores (MongoDB):\n\u2022 Schema-flexible JSON/BSON document model.\n\u2022 Denormalized data embedding: Nested arrays and sub-documents eliminate expensive joins.\n\u2022 BASE Consistency (Basically Available, Soft-state, Eventual consistency).\n\u2022 Scaling: Seamless horizontal scaling across distributed clusters via native automatic sharding."
+      "Python's expressive syntax is built upon first-class functions and standard protocols.\n\n1. Decorators:\nA decorator is a higher-order function that takes a function as input, extends its behavior without modifying source code, and returns a callable: `@my_decorator def func(): ...` translates directly to `func = my_decorator(func)`. Always apply `@functools.wraps(func)` to preserve original docstrings, names, and argument signatures.\n\n2. Iterators & Iterable Protocol:\n- An Iterable implements `__iter__()` returning an Iterator.\n- An Iterator implements `__next__()` returning successive items, raising `StopIteration` when exhausted. Every iterator is also an iterable returning itself in `__iter__()`.\n\n3. Generators (`yield`):\nA generator is a function containing the `yield` keyword. Calling it returns a generator object without running the body. Execution resumes only when `next()` is called, pausing at `yield` and preserving local stack frames in heap memory. Provides Lazy Evaluation: streams infinite or multi-gigabyte datasets with O(1) memory footprint.\n\n4. Context Managers (`with` statement):\nGuarantees deterministic resource acquisition and release (e.g., closing file handles or database connections even if exceptions occur). Implements the Context Management Protocol:\n- `__enter__(self)`: Acquires resource and returns target to `as` variable.\n- `__exit__(self, exc_type, exc_val, exc_tb)`: Executes cleanup. Returning True suppresses raised exceptions."
+    ],
+    "key_definitions": [
+      {
+        "term": "Decorator",
+        "definition": "A higher-order function wrapping another callable to extend its behavior dynamically."
+      },
+      {
+        "term": "Generator",
+        "definition": "A memory-efficient function using yield to produce values lazily on demand."
+      },
+      {
+        "term": "Context Manager",
+        "definition": "An object implementing __enter__ and __exit__ to ensure guaranteed resource allocation and cleanup."
+      }
     ],
     "interview_qa": [
       {
-        "q": "When would you choose PostgreSQL over MongoDB for a software project?",
-        "a": "I would choose PostgreSQL when the data model is highly relational with strict integrity requirements (such as financial transactions or e-commerce orders in CSMS where data corruption cannot be tolerated), when complex analytical aggregations and ACID transactions across multiple entities are essential, and when the schema is relatively stable."
+        "q": "How do Decorators work in Python, and why is `functools.wraps` essential?",
+        "a": "A decorator takes a function as an argument, wraps it inside an inner wrapper function that adds pre/post execution logic, and returns the wrapper. Without `@functools.wraps(original_func)`, the decorated function's metadata (`__name__`, `__doc__`, module, annotations) is overwritten by the wrapper's metadata, breaking reflection, debugging, and documentation tools like Swagger/FastAPI."
       },
       {
-        "q": "What is the CAP Theorem and how does it relate to distributed databases?",
-        "a": "The CAP Theorem states that a distributed data store can guarantee at most TWO of the following three properties simultaneously: Consistency (all nodes see identical data at the same time), Availability (every non-failing node returns a response), and Partition Tolerance (system functions despite network communication partitions). Because network partitions are inevitable in distributed systems, databases must trade off between CP (e.g. MongoDB/HBase prioritizing consistency) and AP (e.g. Cassandra/DynamoDB prioritizing availability)."
+        "q": "What is the difference between a Generator and a standard List in Python?",
+        "a": "A list calculates and allocates all elements in memory simultaneously at creation time (O(N) space). A generator uses lazy evaluation: it computes the next value only when requested via `next()` or a for loop, yielding one item at a time and maintaining internal execution state in O(1) space. A generator reading a 10GB log file consumes negligible RAM."
+      },
+      {
+        "q": "Explain the difference between `__iter__` and `__next__`.",
+        "a": "`__iter__` must return an iterator object (an object that implements `__next__`). `__next__` retrieves the next value in the iteration sequence and raises `StopIteration` when elements are exhausted. An iterable only needs `__iter__`; an iterator must implement both `__iter__` (returning `self`) and `__next__`."
+      },
+      {
+        "q": "How does the Context Manager protocol work, and what do the arguments to `__exit__` represent?",
+        "a": "When entering a `with` block, Python calls `__enter__()`. Upon leaving the block (normally or via exception), Python calls `__exit__(exc_type, exc_val, exc_tb)`. If no exception occurred, all three arguments are None. If an exception occurred, they contain the exception class, exception instance, and traceback. If `__exit__` returns True, the exception is swallowed; otherwise, it propagates normally."
+      },
+      {
+        "q": "How does `contextlib.contextmanager` simplify creating context managers?",
+        "a": "It allows creating a context manager using a single generator function with `yield` instead of writing a full class with `__enter__` and `__exit__`. Code before `yield` runs during `__enter__`, the yielded value is bound to the `as` variable, and code inside `finally:` after `yield` runs automatically during `__exit__`."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-24-01",
+        "question": "What syntactic transformation occurs when writing `@decorator def foo(): pass`?",
+        "options": [
+          "foo = foo(decorator)",
+          "foo = decorator(foo)",
+          "decorator = foo()",
+          "def foo(): decorator()"
+        ],
+        "correct_answer": "B",
+        "explanation": "Decorators wrap functions: `foo = decorator(foo)`."
+      },
+      {
+        "id": "CS-24-02",
+        "question": "Which exception is raised by an iterator's `__next__()` method when no further elements exist?",
+        "options": [
+          "IndexError",
+          "KeyError",
+          "StopIteration",
+          "GeneratorExit"
+        ],
+        "correct_answer": "C",
+        "explanation": "The iterator protocol raises StopIteration when iteration completes."
+      },
+      {
+        "id": "CS-24-03",
+        "question": "Functions containing the `yield` keyword return which type of object when invoked?",
+        "options": [
+          "List",
+          "Tuple",
+          "Generator object",
+          "Coroutine"
+        ],
+        "correct_answer": "C",
+        "explanation": "Calling a function containing yield returns a generator object."
+      },
+      {
+        "id": "CS-24-04",
+        "question": "Why is `@functools.wraps` applied to decorator wrappers?",
+        "options": [
+          "To bypass the GIL",
+          "To preserve the original function's name, docstring, and metadata",
+          "To convert code to C",
+          "To catch syntax errors"
+        ],
+        "correct_answer": "B",
+        "explanation": "functools.wraps copies function metadata like __name__ and __doc__ onto the wrapper."
+      },
+      {
+        "id": "CS-24-05",
+        "question": "If `__exit__` in a context manager returns `True` after an exception occurs, what happens?",
+        "options": [
+          "The program crashes",
+          "The exception is suppressed/swallowed",
+          "The exception is re-raised",
+          "A deadlock occurs"
+        ],
+        "correct_answer": "B",
+        "explanation": "Returning True from __exit__ indicates the exception was handled, suppressing it."
       }
     ]
   },
   "project_defense": {
-    "project_name": "Freelance Contracts & Delivery",
-    "feature_focus": "Freelance Milestone Execution & Client Retainer Agreements",
-    "architecture_deep_dive": "Transitioning One-Off Projects into Recurring Monthly Retainers:\n\n1. Post-Deployment Maintenance Packaging:\nAfter delivering an initial project (e.g., TerraStract OCR pipeline), clients face ongoing operational concerns: server downtime, API updates, dependency vulnerability patches, and backup management.\n\n2. Retainer Deliverables:\n\u2022 Tier 1: System Monitoring, monthly dependency updates, automated offsite database backups, and 4 hours of emergency bug fixes for a fixed monthly fee (e.g., \u20b915,000/month).\n\u2022 Tier 2: Active feature extensions and prompt engineer updates.\n\n3. Value to Student Developer:\nTransforms erratic one-time project payouts into predictable recurring cash flow while building long-term client trust.",
+    "project_name": "TerraStract",
+    "repo_path": "D:\\Projects\\terra_extract",
+    "feature_focus": "Security, Data Privacy & Temporary File Sanitization in Document Processing",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nProtecting sensitive citizen land records and PII during document extraction.\n\nWHAT TO MEMORIZE:\nNever store unencrypted user documents permanently on application servers.\n\n60-SECOND INTERVIEW PITCH:\nHandling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion.",
     "interview_qa": [
       {
-        "q": "How do you structure a monthly maintenance retainer for a client?",
-        "a": "I define a concrete SLA (Service Level Agreement) offering: 99% uptime monitoring, weekly automated offsite backups, dependency security updates, and a dedicated monthly bucket of 4 development hours for minor adjustments. Any feature work exceeding the monthly allocation is billed at a pre-agreed hourly rate."
+        "q": "How do you ensure data privacy when processing confidential legal deeds in TerraStract?",
+        "a": "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags and masks Aadhaar numbers and bank details before persisting structured outputs. All temporary files are wiped using secure unlinking immediately after extraction completes."
       },
       {
-        "q": "How do you ensure smooth handover when concluding a development project?",
-        "a": "I provide a clean Git repository with an exhaustive README, environment variable `.env.example` templates, Docker Compose files for one-command local launching, interactive OpenAPI documentation, and a 15-minute recorded Loom video demonstrating deployment and configuration."
+        "q": "How do you protect the extraction endpoint from malicious file upload attacks (ZIP bombs / executable masquerading)?",
+        "a": "We inspect magic file signatures (MIME bytes) rather than relying on file extensions: PDFs must start with `%PDF-`. We enforce a strict 25MB file upload limit, reject password-protected or encrypted archives, and execute document parsers in isolated, unprivileged container processes."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 24 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 24 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'DevQBX & Sitekraft Engineering', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In DevQBX & Sitekraft Engineering (Project Management, Client Web Architecture, Microservices), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of DevQBX & Sitekraft Engineering.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 23 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5004 — Central Difference & Lagrange's Unequal Interpolation.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Prepositions, Conjunctions & Idioms.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: 1D Array Memoization.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python OOP: Dunder Methods, MRO & Inheritance.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Central Difference & Lagrange's Unequal Interpolation.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Dynamic Programming: 1D Array Memoization.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Biometric Electronic Voting System (BEVM).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 24 Q1: What is the primary academic thesis of Central Difference & Lagrange's Unequal Interpolation?",
+        "a": "Core theoretical and practical mastery of Central Difference & Lagrange's Unequal Interpolation under the CSJM University BCA-5004 syllabus."
+      },
+      {
+        "q": "Day 24 Q2: What is the key speed calculation formula applied in Prepositions, Conjunctions & Idioms?",
+        "a": "High-speed corporate placement arithmetic shortcut for Prepositions, Conjunctions & Idioms in campus recruitment exams."
+      },
+      {
+        "q": "Day 24 Q3: What is the time complexity of Dynamic Programming: 1D Array Memoization?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 24 Q4: What is the central architectural principle of Python OOP: Dunder Methods, MRO & Inheritance?",
+        "a": "Foundational systems engineering rule governing Python OOP: Dunder Methods, MRO & Inheritance in production environments."
+      },
+      {
+        "q": "Day 24 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 24 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 24 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 24 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 24 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 24 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5004 — Central Difference & Lagrange's Unequal Interpolation.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Prepositions, Conjunctions & Idioms.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: 1D Array Memoization.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python OOP: Dunder Methods, MRO & Inheritance."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5004 — Central Difference & Lagrange's Unequal Interpolation."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Prepositions, Conjunctions & Idioms."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Dynamic Programming: 1D Array Memoization."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: Biometric Electronic Voting System (BEVM)."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 24,
+    "title": "Day 24 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "Name the 5 stages of the KDD process in order.",
-        "a": "1. Data Selection, 2. Data Preprocessing, 3. Data Transformation, 4. Data Mining, 5. Interpretation/Evaluation."
+        "q": "Which interpolation formula is designed specifically for calculating values when the given independent variable arguments x_i are spaced at UNEQUAL intervals?",
+        "a": "Answer: B\n\nLagrange's and Newton's Divided Difference formulas do not require equal step spacing h, handling arbitrary data points."
       },
       {
-        "q": "State the Apriori principle.",
-        "a": "All non-empty subsets of a frequent itemset must also be frequent (anti-monotone property)."
+        "q": "What is the degree of the Lagrange interpolating polynomial passing through (n + 1) distinct points?",
+        "a": "Answer: A\n\nA unique polynomial of degree at most n can be passed through (n + 1) distinct points (x_0, y_0) ... (x_n, y_n)."
       },
       {
-        "q": "Compute 75^2 mentally.",
-        "a": "7 * 8 = 56 followed by 25 = 5625."
+        "q": "What is the mathematical property of the Lagrange basis polynomial L_i(x) evaluated at data point x_j?",
+        "a": "Answer: A\n\nLagrange basis polynomials satisfy the Kronecker delta property: L_i(x_j) = delta_{ij}, ensuring the sum equals y_j at x = x_j."
       },
       {
-        "q": "What is the time complexity of 2D DP for Longest Common Subsequence?",
-        "a": "O(M * N) where M and N are the lengths of the two input strings."
+        "q": "What is the primary computational disadvantage of Lagrange's interpolation formula when a new data point is added to the table?",
+        "a": "Answer: B\n\nLagrange formulas lack recurrence: adding one point requires recalculating all terms. Divided differences avoid this via incremental terms."
       },
       {
-        "q": "What does the 'C' stand for in the CAP Theorem?",
-        "a": "Consistency \u2014 every read receives the most recent write or an error."
+        "q": "The first divided difference f[x_0, x_1] of a function f(x) is defined as:",
+        "a": "Answer: A\n\nThe first divided difference represents the secant slope between the two points: f[x_0, x_1] = (f(x_1) - f(x_0)) / (x_1 - x_0)."
       },
       {
-        "q": "How does Support differ from Confidence in Association Rule Mining?",
-        "a": "Support is the fraction of total transactions containing both X and Y. Confidence is the conditional probability that a transaction contains Y given that it contains X."
+        "q": "Fill in the blank: 'He is senior _____ me in corporate rank by three years.'",
+        "a": "Answer: A\n\nAdjectives ending in '-ior' (senior, junior, superior, inferior) take the preposition 'to', never 'than'."
       },
       {
-        "q": "When is MongoDB preferable over a relational database?",
-        "a": "When dealing with rapidly evolving unstructured/hierarchical documents, high-volume ingestion, and requirements for native horizontal sharding."
+        "q": "Fill in the blank: 'The committee congratulated him _____ his successful research publication.'",
+        "a": "Answer: A\n\nThe standard idiom is 'congratulate someone ON something'."
       },
       {
-        "q": "Explain the concept of an SLA in freelance technical services.",
-        "a": "A Service Level Agreement specifying measurable commitments regarding server uptime, bug response times, and monthly maintenance hours."
+        "q": "Fill in the blank: 'You must abstain _____ smoking in public transit areas.'",
+        "a": "Answer: A\n\n'Abstain', 'refrain', and 'prevent' take the preposition 'from' followed by a gerund."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-24-01",
+        "category": "Academic (Academic Theory)",
+        "question": "Which interpolation formula is designed specifically for calculating values when the given independent variable arguments x_i are spaced at UNEQUAL intervals?",
+        "options": [
+          "Newton's Forward Interpolation Formula",
+          "Lagrange's Interpolation Formula",
+          "Newton's Backward Interpolation Formula",
+          "Trapezoidal Rule"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lagrange's and Newton's Divided Difference formulas do not require equal step spacing h, handling arbitrary data points."
+      },
+      {
+        "id": "TEST-24-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the degree of the Lagrange interpolating polynomial passing through (n + 1) distinct points?",
+        "options": [
+          "At most n",
+          "Exactly n + 1",
+          "Always 1",
+          "n^2"
+        ],
+        "correct_answer": "A",
+        "explanation": "A unique polynomial of degree at most n can be passed through (n + 1) distinct points (x_0, y_0) ... (x_n, y_n)."
+      },
+      {
+        "id": "TEST-24-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the mathematical property of the Lagrange basis polynomial L_i(x) evaluated at data point x_j?",
+        "options": [
+          "L_i(x_j) = 1 if i = j, and L_i(x_j) = 0 if i != j (Kronecker delta)",
+          "L_i(x_j) = 0 always",
+          "L_i(x_j) = infinity",
+          "L_i(x_j) = x_i - x_j"
+        ],
+        "correct_answer": "A",
+        "explanation": "Lagrange basis polynomials satisfy the Kronecker delta property: L_i(x_j) = delta_{ij}, ensuring the sum equals y_j at x = x_j."
+      },
+      {
+        "id": "TEST-24-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the primary computational disadvantage of Lagrange's interpolation formula when a new data point is added to the table?",
+        "options": [
+          "It cannot handle negative numbers",
+          "All basis polynomial coefficients must be recomputed from scratch",
+          "It causes division by zero",
+          "It requires matrix inversion"
+        ],
+        "correct_answer": "B",
+        "explanation": "Lagrange formulas lack recurrence: adding one point requires recalculating all terms. Divided differences avoid this via incremental terms."
+      },
+      {
+        "id": "TEST-24-05",
+        "category": "Academic (Academic Theory)",
+        "question": "The first divided difference f[x_0, x_1] of a function f(x) is defined as:",
+        "options": [
+          "[f(x_1) - f(x_0)] / (x_1 - x_0)",
+          "[f(x_1) + f(x_0)] / 2",
+          "f(x_1) * (x_1 - x_0)",
+          "f'(x_0)"
+        ],
+        "correct_answer": "A",
+        "explanation": "The first divided difference represents the secant slope between the two points: f[x_0, x_1] = (f(x_1) - f(x_0)) / (x_1 - x_0)."
+      },
+      {
+        "id": "TEST-24-06",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'He is senior _____ me in corporate rank by three years.'",
+        "options": [
+          "to",
+          "than",
+          "from",
+          "over"
+        ],
+        "correct_answer": "A",
+        "explanation": "Adjectives ending in '-ior' (senior, junior, superior, inferior) take the preposition 'to', never 'than'."
+      },
+      {
+        "id": "TEST-24-07",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'The committee congratulated him _____ his successful research publication.'",
+        "options": [
+          "on",
+          "for",
+          "at",
+          "about"
+        ],
+        "correct_answer": "A",
+        "explanation": "The standard idiom is 'congratulate someone ON something'."
+      },
+      {
+        "id": "TEST-24-08",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'You must abstain _____ smoking in public transit areas.'",
+        "options": [
+          "from",
+          "to",
+          "against",
+          "of"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Abstain', 'refrain', and 'prevent' take the preposition 'from' followed by a gerund."
+      },
+      {
+        "id": "TEST-24-09",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'Divide this dividend equally _____ the five founding partners.'",
+        "options": [
+          "among",
+          "between",
+          "amidst",
+          "within"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Between' is used for two entities; 'among' is used for three or more entities."
+      },
+      {
+        "id": "TEST-24-10",
+        "category": "Placement Aptitude",
+        "question": "Fill in the blank: 'She has been suffering from viral fever _____ Monday last.'",
+        "options": [
+          "since",
+          "for",
+          "from",
+          "in"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Since' is used with a specific point in time (Monday); 'for' is used with a duration of time."
+      },
+      {
+        "id": "TEST-24-11",
+        "category": "Core CS (Python Internals)",
+        "question": "What syntactic transformation occurs when writing `@decorator def foo(): pass`?",
+        "options": [
+          "foo = foo(decorator)",
+          "foo = decorator(foo)",
+          "decorator = foo()",
+          "def foo(): decorator()"
+        ],
+        "correct_answer": "B",
+        "explanation": "Decorators wrap functions: `foo = decorator(foo)`."
+      },
+      {
+        "id": "TEST-24-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which exception is raised by an iterator's `__next__()` method when no further elements exist?",
+        "options": [
+          "IndexError",
+          "KeyError",
+          "StopIteration",
+          "GeneratorExit"
+        ],
+        "correct_answer": "C",
+        "explanation": "The iterator protocol raises StopIteration when iteration completes."
+      },
+      {
+        "id": "TEST-24-13",
+        "category": "Core CS (Python Internals)",
+        "question": "Functions containing the `yield` keyword return which type of object when invoked?",
+        "options": [
+          "List",
+          "Tuple",
+          "Generator object",
+          "Coroutine"
+        ],
+        "correct_answer": "C",
+        "explanation": "Calling a function containing yield returns a generator object."
+      },
+      {
+        "id": "TEST-24-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Why is `@functools.wraps` applied to decorator wrappers?",
+        "options": [
+          "To bypass the GIL",
+          "To preserve the original function's name, docstring, and metadata",
+          "To convert code to C",
+          "To catch syntax errors"
+        ],
+        "correct_answer": "B",
+        "explanation": "functools.wraps copies function metadata like __name__ and __doc__ onto the wrapper."
+      },
+      {
+        "id": "TEST-24-15",
+        "category": "Core CS (Python Internals)",
+        "question": "If `__exit__` in a context manager returns `True` after an exception occurs, what happens?",
+        "options": [
+          "The program crashes",
+          "The exception is suppressed/swallowed",
+          "The exception is re-raised",
+          "A deadlock occurs"
+        ],
+        "correct_answer": "B",
+        "explanation": "Returning True from __exit__ indicates the exception was handled, suppressing it."
+      },
+      {
+        "id": "TEST-24-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: 1D Array' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: 1D Array' pattern operates with O(N) Time, O(1) Auxiliary Space: Deciding optimal outcome at state i depends strictly on preceding states (e.g. dp[i] = max(dp[i-1], dp[i-2] + nums[i])).."
+      },
+      {
+        "id": "TEST-24-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: 1D Array' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Single house.",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: 1D Array include Single house, which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-24-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: House Robber', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-24-19",
+        "category": "Projects (TerraStract)",
+        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Security, Data Privacy & Temporary File Sanitization in Document Processing'?",
+        "options": [
+          "Never store unencrypted user documents permanently on application servers.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For TerraStract, the architectural invariant is: Never store unencrypted user documents permanently on application servers.."
+      },
+      {
+        "id": "TEST-24-20",
+        "category": "Projects (TerraStract)",
+        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you ensure data privacy when processing confidential legal deeds in TerraStract?'?",
+        "options": [
+          "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags an...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitizatio."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-24",
+    "title": "House Robber (Dynamic Programming: 1D Array)",
+    "time_limit_minutes": 45,
+    "difficulty": "Hard",
+    "problem_statement": "Solve the core placement problem: House Robber.\n\nYou are planning to rob houses along a street. Each house has a certain amount of money stashed. Determine the maximum amount of money you can rob tonight without alerting the police.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dynamic Programming: 1D Array\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: Single house, All houses zero value, Circular houses constraint (House Robber II).",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: 1D Array\n    public int rob(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: 1D Array\n    public int rob(int[] nums) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public int rob(int[] nums) {\n        int prev1 = 0, prev2 = 0;\n        for (int x : nums) {\n            int cur = Math.max(prev1, prev2 + x);\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Dynamic Programming: 1D Array logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Single house",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }

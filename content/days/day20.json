@@ -1,15 +1,1226 @@
 {
   "day": 20,
-  "title": "KM Systems Life Cycle (KMSLC), Direction Sense & DP (Climbing Stairs & House Robber)",
-  "sem_data": {
-    "subject": "BCA-5001 Knowledge Management",
-    "topic": "Unit IV \u2014 Knowledge Management System Life Cycle (KMSLC 8 Stages) vs Conventional SDLC",
-    "detailed_notes": [
-      "The Knowledge Management System Life Cycle (KMSLC) is a specialized systems development framework designed specifically to capture, structure, refine, and deploy organizational tacit and explicit knowledge. Unlike conventional software development which focuses on data processing and predefined business logic, KMSLC addresses continuous learning, tacit-to-explicit knowledge conversion, and cultural alignment.",
-      "The 8 Stages of KMSLC:\n1. Evaluate Existing Infrastructure: Audit existing organizational systems, data warehouses, networks, and cultural readiness for knowledge sharing.\n2. Form the KM Team: Assemble cross-functional experts including Knowledge Developers (K-Developers), Domain Experts, Systems Architects, and Top Management champions.\n3. Capture Knowledge: Solicit both explicit and tacit expertise using Delphi techniques, protocol analysis, cognitive maps, and structured expert interviews.\n4. Design the KM Blueprint: Architectural design of knowledge repositories, indexing taxonomies, access control rules, ontology mappings, and user interface workflows.\n5. Develop the KM System: Implement the physical repositories, indexing engines, collaborative groupware tools, and AI/inference components.\n6. Verify & Validate the KM System: Verification tests whether the system meets design specifications ('Did we build the system right?'). Validation ensures the captured knowledge accurately reflects expert wisdom and provides actionable advice ('Did we build the right system?').\n7. Deploy the System: Roll out the KMS into organizational operations, conduct employee onboarding programs, align incentive structures to reward knowledge sharing, and overcome organizational resistance.\n8. Manage Post-Implementation: Continuous maintenance, auditing obsolete knowledge chunks, retiring outdated rules, and refining search models based on ongoing feedback.",
-      "Comparison with Conventional SDLC:\n\u2022 Conventional SDLC follows sequential processes (Requirements -> Analysis -> Design -> Coding -> Testing -> Maintenance) oriented towards structured data processing and algorithmic workflows.\n\u2022 KMSLC is inherently iterative and non-linear, centering on human experts and tacit heuristics that evolve organically."
+  "title": "Day 20: Knowledge Management System Life Cycle (KMSLC 8 Stages) vs Conventional SDLC & Graph Traversal: DFS & Connected Components",
+  "streams": {
+    "academic": {
+      "unit": 4,
+      "topic": "Unit IV — Knowledge Management System Life Cycle (KMSLC 8 Stages) vs Conventional SDLC",
+      "objectives": [
+        "Master the 8 stages of KMSLC.",
+        "Contrast KMSLC with conventional software development life cycle (SDLC)."
+      ],
+      "explanation": "The Knowledge Management System Life Cycle (KMSLC) is a specialized systems development framework designed specifically to capture, structure, refine, and deploy organizational tacit and explicit knowledge. Unlike conventional software development which focuses on data processing and predefined business logic, KMSLC addresses continuous learning, tacit-to-explicit knowledge conversion, and cultural alignment.\n\nThe 8 Stages of KMSLC:\n1. Evaluate Existing Infrastructure: Audit existing organizational systems, data warehouses, networks, and cultural readiness for knowledge sharing.\n2. Form the KM Team: Assemble cross-functional experts including Knowledge Developers (K-Developers), Domain Experts, Systems Architects, and Top Management champions.\n3. Capture Knowledge: Solicit both explicit and tacit expertise using Delphi techniques, protocol analysis, cognitive maps, and structured expert interviews.\n4. Design the KM Blueprint: Architectural design of knowledge repositories, indexing taxonomies, access control rules, ontology mappings, and user interface workflows.\n5. Develop the KM System: Implement the physical repositories, indexing engines, collaborative groupware tools, and AI/inference components.\n6. Verify & Validate the KM System: Verification tests whether the system meets design specifications ('Did we build the system right?'). Validation ensures the captured knowledge accurately reflects expert wisdom and provides actionable advice ('Did we build the right system?').\n7. Deploy the System: Roll out the KMS into organizational operations, conduct employee onboarding programs, align incentive structures to reward knowledge sharing, and overcome organizational resistance.\n8. Manage Post-Implementation: Continuous maintenance, auditing obsolete knowledge chunks, retiring outdated rules, and refining search models based on ongoing feedback.",
+      "definitions": [
+        {
+          "term": "Knowledge Developer (K-Developer)",
+          "definition": "A KM specialist who identifies, acquires, codifies, and structures domain expert knowledge into a computerized knowledge repository."
+        },
+        {
+          "term": "Verification vs Validation in KM",
+          "definition": "Verification ensures the system meets technical architectural specs; Validation ensures the knowledge represents true expert domain reality."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "The 8 Stages of KMSLC",
+          "content": "1. Evaluate Infrastructure; 2. Form KM Team; 3. Capture Knowledge; 4. Design Blueprint; 5. Develop KMS; 6. Verify & Validate; 7. Deploy & Train; 8. Manage & Evolve."
+        },
+        {
+          "title": "Key Differences from SDLC",
+          "content": "SDLC is sequential and user-centric; KMSLC is iterative, evolutionary, and expert-centric. In KMSLC, testing focuses on knowledge validity rather than pure algorithmic correctness."
+        }
+      ],
+      "examples": [
+        "Capturing senior chemical engineers' plant troubleshooting heuristics into an expert diagnostic repository."
+      ],
+      "diagram": "+---------------------------------------------------+\n|                8 STAGES OF KMSLC                  |\n| Audit -> Team -> Capture -> Blueprint -> Develop  |\n| -> Verify/Validate -> Deploy -> Evolve            |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Comparison Dimension",
+          "Conventional SDLC",
+          "KM Systems Life Cycle (KMSLC)"
+        ],
+        "rows": [
+          [
+            "Primary Focus",
+            "Process automation & structured data manipulation",
+            "Tacit and explicit knowledge capture and sharing"
+          ],
+          [
+            "User/Expert Role",
+            "User specifies business functional requirements",
+            "Domain expert provides heuristic rules & intuition"
+          ],
+          [
+            "Development Pattern",
+            "Sequential, rigid phases (Waterfall/V-Model)",
+            "Highly iterative, evolutionary prototyping"
+          ],
+          [
+            "System Lifespan",
+            "Static until formal software patch/rewrite",
+            "Organic, continuously evolving with new lessons learned"
+          ]
+        ]
+      },
+      "memorize": "8 KMSLC Stages: Evaluate, Team, Capture, Blueprint, Develop, Verify/Validate, Deploy, Evolve. KMSLC is expert-centric and iterative.",
+      "understand": "The primary failure point in KMSLC is not technical; it is cultural resistance to sharing proprietary knowledge.",
+      "common_mistakes": "Conflating Verification (building system right) with Validation (building right system).",
+      "exam_writing_guidance": "List all 8 stages in sequential order with explanations, draw the lifecycle diagram, and provide a 4-point comparison table with conventional SDLC.",
+      "mini_practice": [
+        "Why does KMSLC require continuous post-implementation evolution?"
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2022-23 (Q3)",
+          "marks": 15,
+          "question": "Explain the stages of the Knowledge Management System Life Cycle (KMSLC). How does it differ from the conventional SDLC? (15 Marks)",
+          "rubric": "KMSLC Overview (2 marks) + 8 Stages detailed (8 marks) + KMSLC vs SDLC comparison table (5 marks) = 15 Marks.",
+          "model_answer": "The Knowledge Management System Life Cycle (KMSLC) is an evolutionary, iterative framework designed to elicit tacit expertise and codify it into enterprise knowledge assets. Its 8 stages are: 1. Evaluate Existing Infrastructure (gap analysis of organizational readiness); 2. Form the KM Team (uniting K-Developers and Domain Experts); 3. Capture Knowledge (eliciting tacit heuristics via protocol analysis and Delphi methods); 4. Design KM Blueprint (defining taxonomies and security); 5. Develop the KMS (prototyping repositories and inference engines); 6. Verify and Validate (testing architectural correctness and domain accuracy); 7. Deploy the System (cultural onboarding and incentive alignment); 8. Manage Post-Implementation (auditing obsolete knowledge). Unlike conventional SDLC which follows rigid requirements and focuses on data automation, KMSLC is expert-centric, iterative, and continuously evolves as new institutional knowledge is discovered.",
+          "answer_structure": "Introduction -> 8 Stages detailed -> Diagram -> SDLC Comparison Table -> Summary",
+          "important_points": [
+            "K-Developer",
+            "8 Stages",
+            "Verification vs Validation",
+            "Evolutionary prototyping"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "All 8 stages listed correctly",
+            "Clear distinction between data-centric SDLC and knowledge-centric KMSLC"
+          ],
+          "common_mistakes": [
+            "Listing generic SDLC stages instead of KMSLC stages"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5001 Knowledge Management",
+          "year": "2021 / Model",
+          "marks": 5,
+          "question": "What is the role of a Knowledge Developer (K-Developer) in KMSLC? (5 Marks)",
+          "rubric": "Definition (2 marks) + 3 Core Responsibilities (3 marks) = 5 Marks.",
+          "model_answer": "A Knowledge Developer (K-Developer) is the specialized architect of a KMS, functioning analogously to a systems analyst in traditional software development. The K-Developer's primary responsibilities include: 1. Identifying and building rapport with domain experts; 2. Eliciting tacit knowledge using cognitive interviewing and protocol analysis; 3. Translating unstructured human heuristics into codified decision trees, cognitive maps, and semantic taxonomies; and 4. Facilitating cultural change to foster organizational knowledge sharing."
+        }
+      ],
+      "subject_code": "BCA-5001",
+      "subject_name": "Knowledge Management",
+      "mcqs": [
+        {
+          "id": "ACAD-20-01",
+          "question": "How does the Knowledge Management System Life Cycle (KMSLC) differ from the conventional Software Development Life Cycle (SDLC)?",
+          "options": [
+            "KMSLC is purely linear (Waterfall), while SDLC is iterative",
+            "KMSLC is iterative and user-centered because knowledge is dynamic, experiential, and evolves continuously through human interaction",
+            "KMSLC does not require any software testing",
+            "SDLC only applies to mechanical engineering"
+          ],
+          "correct_answer": "B",
+          "explanation": "Unlike deterministic procedural software in SDLC, KM systems deal with ambiguous, evolving cognitive heuristics requiring iterative refinement."
+        },
+        {
+          "id": "ACAD-20-02",
+          "question": "What is the first foundational stage of the 8-stage KMSLC framework?",
+          "options": [
+            "System Deployment",
+            "Evaluating Existing Infrastructure and Knowledge Assets",
+            "Forming the Knowledge Management Team",
+            "Designing the KM Blueprint"
+          ],
+          "correct_answer": "B",
+          "explanation": "KMSLC begins with evaluating existing organizational infrastructure, intellectual capital, and business strategies to identify gaps."
+        },
+        {
+          "id": "ACAD-20-03",
+          "question": "In KM project evaluation, what does the Balanced Scorecard framework assess?",
+          "options": [
+            "Only the quarterly financial net profit",
+            "Performance across four perspectives: Financial, Customer, Internal Business Processes, and Learning & Growth",
+            "The number of hours employees spend reading manuals",
+            "The total storage capacity of the server rack"
+          ],
+          "correct_answer": "B",
+          "explanation": "Kaplan and Norton's Balanced Scorecard balances financial indicators with operational, customer, and continuous learning metrics."
+        },
+        {
+          "id": "ACAD-20-04",
+          "question": "What role does a Chief Knowledge Officer (CKO) play in an enterprise?",
+          "options": [
+            "Writing Java bytecode for database drivers",
+            "Championing KM initiatives, aligning knowledge architecture with corporate strategy, and fostering a collaborative learning culture",
+            "Resetting user email passwords",
+            "Purchasing office computer monitors"
+          ],
+          "correct_answer": "B",
+          "explanation": "The CKO is the executive leader responsible for maximizing intellectual capital, breaking down information silos, and driving KM strategy."
+        },
+        {
+          "id": "ACAD-20-05",
+          "question": "What is a 'Knowledge Audit'?",
+          "options": [
+            "An IRS tax examination of company profits",
+            "A systematic evaluation of an organization's knowledge needs, existing knowledge assets, flows, gaps, and blockages",
+            "A daily antivirus scan of hard drives",
+            "A count of total paper files in a storage cabinet"
+          ],
+          "correct_answer": "B",
+          "explanation": "A knowledge audit identifies what knowledge assets exist, who holds them, where gaps exist, and how information flows across teams."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2022-23 (Q3)",
+        "marks": 15,
+        "question": "Explain the stages of the Knowledge Management System Life Cycle (KMSLC). How does it differ from the conventional SDLC? (15 Marks)",
+        "rubric": "KMSLC Overview (2 marks) + 8 Stages detailed (8 marks) + KMSLC vs SDLC comparison table (5 marks) = 15 Marks.",
+        "model_answer": "The Knowledge Management System Life Cycle (KMSLC) is an evolutionary, iterative framework designed to elicit tacit expertise and codify it into enterprise knowledge assets. Its 8 stages are: 1. Evaluate Existing Infrastructure (gap analysis of organizational readiness); 2. Form the KM Team (uniting K-Developers and Domain Experts); 3. Capture Knowledge (eliciting tacit heuristics via protocol analysis and Delphi methods); 4. Design KM Blueprint (defining taxonomies and security); 5. Develop the KMS (prototyping repositories and inference engines); 6. Verify and Validate (testing architectural correctness and domain accuracy); 7. Deploy the System (cultural onboarding and incentive alignment); 8. Manage Post-Implementation (auditing obsolete knowledge). Unlike conventional SDLC which follows rigid requirements and focuses on data automation, KMSLC is expert-centric, iterative, and continuously evolves as new institutional knowledge is discovered.",
+        "answer_structure": "Introduction -> 8 Stages detailed -> Diagram -> SDLC Comparison Table -> Summary",
+        "important_points": [
+          "K-Developer",
+          "8 Stages",
+          "Verification vs Validation",
+          "Evolutionary prototyping"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "All 8 stages listed correctly",
+          "Clear distinction between data-centric SDLC and knowledge-centric KMSLC"
+        ],
+        "common_mistakes": [
+          "Listing generic SDLC stages instead of KMSLC stages"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2021 / Model",
+        "marks": 5,
+        "question": "What is the role of a Knowledge Developer (K-Developer) in KMSLC? (5 Marks)",
+        "rubric": "Definition (2 marks) + 3 Core Responsibilities (3 marks) = 5 Marks.",
+        "model_answer": "A Knowledge Developer (K-Developer) is the specialized architect of a KMS, functioning analogously to a systems analyst in traditional software development. The K-Developer's primary responsibilities include: 1. Identifying and building rapport with domain experts; 2. Eliciting tacit knowledge using cognitive interviewing and protocol analysis; 3. Translating unstructured human heuristics into codified decision trees, cognitive maps, and semantic taxonomies; and 4. Facilitating cultural change to foster organizational knowledge sharing."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                     THE 8 STAGES OF KMSLC WORKFLOW                      |\n+-------------------------------------------------------------------------+\n|  Stage 1: Evaluate Existing Infrastructure (Readiness Audit)            |\n|         |                                                               |\n|         v                                                               |\n|  Stage 2: Form the KM Team (K-Developers, Experts, Champions)           |\n|         |                                                               |\n|         v                                                               |\n|  Stage 3: Capture Knowledge (Tacit & Explicit Extraction)               |\n|         |                                                               |\n|         v                                                               |\n|  Stage 4: Design KM Blueprint (Taxonomies, Repositories, Security)      |\n|         |                                                               |\n|         v                                                               |\n|  Stage 5: Develop the KMS (Prototyping & Repository Building)           |\n|         |                                                               |\n|         v                                                               |\n|  Stage 6: Verify & Validate (Accuracy & Expert Truth Alignment)         |\n|         |                                                               |\n|         v                                                               |\n|  Stage 7: Deploy & Cultural Training (Incentivize Sharing)              |\n|         |                                                               |\n|         v                                                               |\n|  Stage 8: Post-Implementation Maintenance (Continuous Evolution)        |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-20-01",
+        "question": "How does the Knowledge Management System Life Cycle (KMSLC) differ from the conventional Software Development Life Cycle (SDLC)?",
+        "options": [
+          "KMSLC is purely linear (Waterfall), while SDLC is iterative",
+          "KMSLC is iterative and user-centered because knowledge is dynamic, experiential, and evolves continuously through human interaction",
+          "KMSLC does not require any software testing",
+          "SDLC only applies to mechanical engineering"
+        ],
+        "correct_answer": "B",
+        "explanation": "Unlike deterministic procedural software in SDLC, KM systems deal with ambiguous, evolving cognitive heuristics requiring iterative refinement."
+      },
+      {
+        "id": "ACAD-20-02",
+        "question": "What is the first foundational stage of the 8-stage KMSLC framework?",
+        "options": [
+          "System Deployment",
+          "Evaluating Existing Infrastructure and Knowledge Assets",
+          "Forming the Knowledge Management Team",
+          "Designing the KM Blueprint"
+        ],
+        "correct_answer": "B",
+        "explanation": "KMSLC begins with evaluating existing organizational infrastructure, intellectual capital, and business strategies to identify gaps."
+      },
+      {
+        "id": "ACAD-20-03",
+        "question": "In KM project evaluation, what does the Balanced Scorecard framework assess?",
+        "options": [
+          "Only the quarterly financial net profit",
+          "Performance across four perspectives: Financial, Customer, Internal Business Processes, and Learning & Growth",
+          "The number of hours employees spend reading manuals",
+          "The total storage capacity of the server rack"
+        ],
+        "correct_answer": "B",
+        "explanation": "Kaplan and Norton's Balanced Scorecard balances financial indicators with operational, customer, and continuous learning metrics."
+      },
+      {
+        "id": "ACAD-20-04",
+        "question": "What role does a Chief Knowledge Officer (CKO) play in an enterprise?",
+        "options": [
+          "Writing Java bytecode for database drivers",
+          "Championing KM initiatives, aligning knowledge architecture with corporate strategy, and fostering a collaborative learning culture",
+          "Resetting user email passwords",
+          "Purchasing office computer monitors"
+        ],
+        "correct_answer": "B",
+        "explanation": "The CKO is the executive leader responsible for maximizing intellectual capital, breaking down information silos, and driving KM strategy."
+      },
+      {
+        "id": "ACAD-20-05",
+        "question": "What is a 'Knowledge Audit'?",
+        "options": [
+          "An IRS tax examination of company profits",
+          "A systematic evaluation of an organization's knowledge needs, existing knowledge assets, flows, gaps, and blockages",
+          "A daily antivirus scan of hard drives",
+          "A count of total paper files in a storage cabinet"
+        ],
+        "correct_answer": "B",
+        "explanation": "A knowledge audit identifies what knowledge assets exist, who holds them, where gaps exist, and how information flows across teams."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Statement & Assumptions / Inferred Meanings",
+      "category": "Logical Reasoning",
+      "subtopic": "Critical Reasoning",
+      "formulas": "1. An assumption is something taken for granted or supposed before making a statement.\n2. Valid assumptions must be implicit in the premise and directly support the necessity of the statement.\n3. Avoid extreme assumptions containing words like 'only', 'never', 'all', 'always' unless justified by explicit context.",
+      "shortcuts": "Negation Test: Negate the candidate assumption. If the original statement collapses or becomes irrational, the assumption is 100% NECESSARY and VALID.",
+      "tutorial": [
+        "Critical reasoning forms the core of Accenture and Capgemini aptitude assessments. Never bring external knowledge into the assumption evaluation. Assume the speaker's statement is reasonable and identify what foundation must exist for it to hold true."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Critical Reasoning",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Critical Reasoning",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Critical Reasoning",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Critical Reasoning",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Critical Reasoning",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Statement: 'Please consult a doctor before taking this health supplement.' Assumptions: I. The supplement may cause side effects without proper dosage. II. A doctor knows the appropriate dietary needs of an individual.",
+        "options": {
+          "A": "Both assumptions I and II are implicit",
+          "B": "Only assumption I is implicit",
+          "C": "Only assumption II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Advising medical consultation assumes that the supplement carries dosage risks (I) and that medical professionals can evaluate individual fitness (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Statement: 'The municipality announced a 24-hour water shutdown on Sunday for main pipe repairs.' Assumptions: I. Residents may store adequate water in advance. II. Sunday repairs minimize industrial disruption.",
+        "options": {
+          "A": "Both assumptions I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Public prior notifications assume residents will plan storage (I), and scheduling on weekends assumes minimal commercial disruption (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Statement: 'Join our 3-month coding boot camp to land your dream software job.' Assumptions: I. Students aspire to land software jobs. II. 3 months is sufficient duration to impart required programming skills.",
+        "options": {
+          "A": "Both assumptions I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Advertisers assume target audience desires the promised outcome (I) and that the program timeline is viable (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Statement: 'The government decided to levy a congestion tax on private vehicles entering the downtown area during peak hours.' Assumptions: I. Congestion tax will encourage commuters to switch to public transit. II. Downtown road capacity is overburdened during peak hours.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Policy interventions assume problem exists (capacity limits, II) and that financial disincentives alter commuter behavior (I).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Statement: 'Double your money in 6 months with our high-yield crypto investment scheme.' Assumptions: I. People desire to multiply their wealth rapidly. II. The investment scheme is completely risk-free.",
+        "options": {
+          "A": "Only assumption I is implicit",
+          "B": "Both are implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Promotional claims target human greed (I). Risk-free nature is not logically implicit and often contradicted by high-yield investments.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Statement: 'All citizens must file their annual income tax returns before July 31st to avoid late penalties.' Assumptions: I. Penalties incentivize timely compliance. II. Citizens have access to income reporting records.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Enforcing statutory deadlines with fines assumes fines motivate adherence (I) and that citizens possess required documentation (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Statement: 'Upgrade your smartphone to 5G to experience zero-buffering 4K video streaming.' Assumptions: I. Consumers value high-speed uninterrupted video playback. II. 5G network coverage exists in the user's operational area.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Feature marketing assumes customer utility (I) and functional feasibility of the advertised network tier (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Statement: 'Warning: Trespassers on this railway property will be prosecuted.' Assumptions: I. People frequently attempt to trespass on tracks. II. Legal prosecution warnings deter unauthorized entry.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Posting legal warnings assumes the risk occurs (I) and that prosecution threats serve as effective deterrents (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Statement: 'Install fire alarms in every office floor as mandated by safety regulations.' Assumptions: I. Fire alarms help evacuate occupants before fire spreads. II. Fire safety equipment reduces casualty risk.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Mandatory safety installation assumes equipment provides timely alert warnings (I) and mitigates disaster casualties (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Statement: 'Use our AI resume screener to cut corporate recruitment hiring cycles by 80%.' Assumptions: I. Corporate recruiters currently spend excessive manual time reviewing candidate resumes. II. AI algorithms can accurately screen candidate qualifications.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Pitching automation assumes existing workflow bottleneck (I) and competency of the automated AI solution (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Critical Reasoning (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Graph Traversal: DFS & Connected Components",
+      "category": "Graph / DFS",
+      "concept": "Traverses connected components of an adjacency graph or 2D grid recursively, marking visited nodes in-place to avoid re-traversal.",
+      "why_it_works": "Visits each vertex and edge exactly once, partitioning the graph into distinct connected components.",
+      "visual_explanation": "Grid:\\n1 1 0 0 0\\n1 1 0 0 0\\n0 0 1 0 0\\n0 0 0 1 1\\nComponent 1: (0,0),(0,1),(1,0),(1,1)\\nComponent 2: (2,2)\\nComponent 3: (3,3),(3,4) ==> Total Islands = 3",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        if (grid == null || grid.length == 0) return 0;\n        int count = 0;\n        int rows = grid.length, cols = grid[0].length;\n        \n        for (int r = 0; r < rows; r++) {\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] == '1') {\n                    count++;\n                    dfs(grid, r, c, rows, cols);\n                }\n            }\n        }\n        return count;\n    }\n    \n    private void dfs(char[][] grid, int r, int c, int rows, int cols) {\n        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != '1') return;\n        grid[r][c] = '0'; // Sink island in-place\n        dfs(grid, r + 1, c, rows, cols);\n        dfs(grid, r - 1, c, rows, cols);\n        dfs(grid, r, c + 1, rows, cols);\n        dfs(grid, r, c - 1, rows, cols);\n    }\n}",
+      "code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        if (grid == null || grid.length == 0) return 0;\n        int count = 0;\n        int rows = grid.length, cols = grid[0].length;\n        \n        for (int r = 0; r < rows; r++) {\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] == '1') {\n                    count++;\n                    dfs(grid, r, c, rows, cols);\n                }\n            }\n        }\n        return count;\n    }\n    \n    private void dfs(char[][] grid, int r, int c, int rows, int cols) {\n        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != '1') return;\n        grid[r][c] = '0'; // Sink island in-place\n        dfs(grid, r + 1, c, rows, cols);\n        dfs(grid, r - 1, c, rows, cols);\n        dfs(grid, r, c + 1, rows, cols);\n        dfs(grid, r, c - 1, rows, cols);\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 4: Loop through each grid cell.",
+        "Line 7: When an unvisited land cell '1' is found, increment island count.",
+        "Line 9: Call DFS to sink the entire contiguous island into water '0'.",
+        "Line 17: In-place sinking prevents allocating auxiliary visited arrays."
+      ],
+      "dry_run": "Grid 4x5 with 3 separate clusters of '1'. DFS triggers 3 times. Returns 3.",
+      "complexity": "O(R * C) Time, O(R * C) Auxiliary Space (Call stack)",
+      "edge_cases": "Grid with all '0' (returns 0), Grid with all '1' (returns 1), Diagonal connections (not adjacent, counts as separate)",
+      "edge_cases_list": [
+        "Grid with all '0' (returns 0)",
+        "Grid with all '1' (returns 1)",
+        "Diagonal connections (not adjacent, counts as separate)"
+      ],
+      "interview_variations": [
+        "Max Area of Island",
+        "Surrounded Regions",
+        "Pacific Atlantic Water Flow"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-20-01",
+        "title": "Problem 1: Number of Islands",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Graph Traversal: DFS & Connected Components algorithmic technique.\n2. Traverses connected components of an adjacency graph or 2D grid recursively, marking visited nodes in-place to avoid re-traversal.\n3. Invariants: Visits each vertex and edge exactly once, partitioning the graph into distinct connected components.",
+        "solution_java": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+        "solution_python": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+        "code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+        "java_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+        "time_complexity": "O(R * C) Time",
+        "space_complexity": "O(R * C) Auxiliary Space (Call stack)"
+      },
+      {
+        "problem_id": "CODE-20-02",
+        "title": "Problem 2: Max Area of Island",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given an m x n binary matrix grid, return the maximum area of an island in grid.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Graph Traversal: DFS & Connected Components.\n2. Handle edge cases: Grid with all '0' (returns 0), Grid with all '1' (returns 1), Diagonal connections (not adjacent, counts as separate).\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+        "solution_python": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+        "code": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+        "java_code": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+        "time_complexity": "O(R * C) Time",
+        "space_complexity": "O(R * C) Auxiliary Space (Call stack)"
+      }
+    ],
+    "core_cs": {
+      "subject": "Computer Networks",
+      "topic": "Transport Layer: TCP vs UDP, 3-Way Handshake & 4-Way Connection Teardown",
+      "concept_lesson": "The Transport Layer delivers process-to-process communication using 16-bit Port numbers.\n\nTCP (Transmission Control Protocol) vs UDP (User Datagram Protocol):\n- TCP: Connection-oriented, reliable byte stream. Provides ordered delivery, retransmission of lost segments, flow control, and congestion control. Header size: 20 to 60 bytes. (Used by HTTP, HTTPS, SSH, SMTP, FTP).\n- UDP: Connectionless, unreliable datagrams. Zero handshake overhead, no retransmissions, no flow control, minimal 8-byte header. Provides fast delivery with low latency. (Used by DNS, DHCP, VoIP, video streaming, online gaming, WebRTC).\n\nTCP 3-Way Handshake (Connection Establishment):\n1. Client -> Server: SYN (seq = client_isn).\n2. Server -> Client: SYN-ACK (seq = server_isn, ack = client_isn + 1).\n3. Client -> Server: ACK (seq = client_isn + 1, ack = server_isn + 1). (Data payload may now be transmitted).\n\nTCP 4-Way Teardown (Connection Termination):\nTCP connections are full-duplex and must be closed independently in each direction:\n1. Client -> Server: FIN (seq = u). Client enters FIN_WAIT_1.\n2. Server -> Client: ACK (ack = u + 1). Server enters CLOSE_WAIT; Client enters FIN_WAIT_2.\n3. Server -> Client: FIN (seq = v). Server enters LAST_ACK.\n4. Client -> Server: ACK (ack = v + 1). Client enters TIME_WAIT (waits 2 * MSL, ~120s), ensuring final ACK arrived and flushing old packets. Server closes.",
+      "key_definitions": [
+        {
+          "term": "3-Way Handshake",
+          "definition": "The TCP synchronization process (SYN, SYN-ACK, ACK) negotiating initial sequence numbers before data exchange."
+        },
+        {
+          "term": "TIME_WAIT State",
+          "definition": "A 2 * MSL client wait period following teardown to guarantee final ACK delivery and prevent duplicate segment confusion."
+        },
+        {
+          "term": "Full-Duplex",
+          "definition": "Simultaneous bidirectional transmission capability over a single logical communication connection."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "Walk through the TCP 3-Way Handshake and explain why 2 handshakes are insufficient.",
+          "a": "1. Client sends SYN with random Initial Sequence Number (ISN_c). 2. Server replies with SYN-ACK, acknowledging ISN_c + 1 and presenting its own ISN_s. 3. Client replies with ACK for ISN_s + 1. Two handshakes are insufficient because the client must acknowledge the server's sequence number; without the 3rd step, a delayed duplicate SYN from an old dead connection arriving at the server would cause the server to allocate resources and assume an active connection, resulting in half-open phantom connections."
+        },
+        {
+          "q": "Why is TCP connection termination a 4-way exchange instead of a 3-way exchange?",
+          "a": "TCP is a full-duplex protocol: both directions of data flow are independent. When the client sends FIN, it signals that it has no more data to send, but it can still receive data. The server acknowledges with an ACK, entering CLOSE_WAIT. The server may still have pending outbound buffers to transmit. Once the server finishes sending all remaining data, it sends its own separate FIN, which the client acknowledges."
+        },
+        {
+          "q": "What is the purpose of the TIME_WAIT state in TCP, and how long does it last?",
+          "a": "The endpoint that actively initiates connection close enters TIME_WAIT after sending its final ACK. It lasts for 2 * Maximum Segment Lifetime (2 * MSL, typically 1 to 2 minutes). It serves two critical functions: 1) Guarantees that the final ACK was received by the peer (if lost, the peer retransmits FIN, which can still be ACKed), and 2) Allows all lingering duplicate segments in the network to expire before the same IP:port pair is reused for a new connection."
+        },
+        {
+          "q": "What is a SYN Flood attack and how do SYN Cookies mitigate it?",
+          "a": "An attacker floods a server with thousands of TCP SYN packets with spoofed source IPs, ignoring the SYN-ACK responses. The server allocates TCB state memory in its listen backlog queue for each half-open connection until memory is exhausted, denying legitimate clients. SYN Cookies mitigate this by eliminating server state allocation during handshake: the server encodes connection parameters cryptographically into the SYN-ACK Initial Sequence Number; memory state is allocated only when the client returns a valid ACK."
+        },
+        {
+          "q": "Why does DNS use UDP for queries but TCP for Zone Transfers?",
+          "a": "Standard DNS queries are small, single-packet requests where UDP provides ultra-low latency without handshake delays. If a UDP query packet drops, the client simply re-queries after a timeout. However, DNS Zone Transfers (synchronizing full zone files between primary and secondary nameservers) transmit large, multi-megabyte payloads requiring reliable ordered delivery, making TCP mandatory."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-20-01",
+          "question": "What is the minimum header size of a standard TCP segment (without options)?",
+          "options": [
+            "8 bytes",
+            "20 bytes",
+            "32 bytes",
+            "64 bytes"
+          ],
+          "correct_answer": "B",
+          "explanation": "Standard TCP headers without options are 20 bytes; UDP headers are 8 bytes."
+        },
+        {
+          "id": "CS-20-02",
+          "question": "During TCP connection teardown, why does the active closer remain in the TIME_WAIT state for 2 * MSL?",
+          "options": [
+            "To recalculate window size",
+            "To ensure the final ACK was received and allow duplicate packets to die out",
+            "To download pending files",
+            "To reset the B+ tree"
+          ],
+          "correct_answer": "B",
+          "explanation": "2 * MSL wait allows lingering delayed segments to expire and guarantees final ACK delivery."
+        },
+        {
+          "id": "CS-20-03",
+          "question": "Which protocol is connectionless and does not provide reliability, ordering, or flow control?",
+          "options": [
+            "TCP",
+            "UDP",
+            "SCTP",
+            "BGP"
+          ],
+          "correct_answer": "B",
+          "explanation": "UDP is connectionless and does not guarantee delivery or packet order."
+        },
+        {
+          "id": "CS-20-04",
+          "question": "What security mechanism mitigates SYN Flood Denial-of-Service attacks without consuming server state memory?",
+          "options": [
+            "DHCP Snooping",
+            "SYN Cookies",
+            "Split Horizon",
+            "Exponential Backoff"
+          ],
+          "correct_answer": "B",
+          "explanation": "SYN Cookies encode connection state in the initial sequence number, deferring memory allocation until final ACK."
+        },
+        {
+          "id": "CS-20-05",
+          "question": "What flags are set in the second packet of the TCP 3-Way Handshake?",
+          "options": [
+            "SYN",
+            "ACK",
+            "SYN + ACK",
+            "FIN + ACK"
+          ],
+          "correct_answer": "C",
+          "explanation": "The server responds to SYN with a combined SYN + ACK packet."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "College Student Management System (CSMS)",
+      "repo_path": "D:\\Projects\\College Student Management System",
+      "topic": "HOD Notice Board, Full-Stack Integration & Render Cloud Deployment",
+      "what_to_understand": "Delivering a responsive vanilla frontend connected to FastAPI and deploying via Render Blueprint.",
+      "what_to_memorize": "Render Blueprint (`render.yaml`) provides Infrastructure-as-Code for auto-provisioning FastAPI web services.",
+      "interview_questions": [
+        {
+          "q": "Why did you build the CSMS frontend with Vanilla HTML/CSS/JS instead of React or Vue?",
+          "a": "For an internal college administration portal, zero build overhead and instant browser loading on lab computers with low memory were primary requirements. Vanilla ES6+ JavaScript with native Fetch API consumes less than 20MB of RAM, requires no Webpack/Babel compilation steps, and provides instant cold-start times on any institutional device."
+        },
+        {
+          "q": "How is CSMS configured for cloud deployment on Render and Vercel?",
+          "a": "The repository includes `render.yaml` defining a Python 3.10 web service running Uvicorn with environment injection for `SUPABASE_URL` and `SUPABASE_KEY`. The frontend is served statically with configured CORS middleware on the FastAPI backend, enabling seamless cross-origin communication between the deployed client and API."
+        }
+      ],
+      "interview_pitch_exercise": "To ensure CSMS could run effortlessly across legacy college lab computers, I built a zero-dependency Vanilla ES6+ frontend backed by native Fetch APIs. I packaged the application with Render Blueprint infrastructure-as-code, enabling one-click cloud deployment with live Swagger API docs."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 20 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 20 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of SmartGalla.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 19 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5001 — Knowledge Management Metrics, Evaluation & ROI.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Statement & Assumptions / Critical Logic.\n• Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: DFS & Connected Components.\n• Systems Law: Architectural equations, protocols, and complexity bounds for TCP Congestion Control: AIMD, Slow Start.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Knowledge Management Metrics, Evaluation & ROI.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Graph Traversal: DFS & Connected Components.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: BulkBeat TV.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 20 Q1: What is the primary academic thesis of Knowledge Management Metrics, Evaluation & ROI?",
+          "a": "Core theoretical and practical mastery of Knowledge Management Metrics, Evaluation & ROI under the CSJM University BCA-5001 syllabus."
+        },
+        {
+          "q": "Day 20 Q2: What is the key speed calculation formula applied in Statement & Assumptions / Critical Logic?",
+          "a": "High-speed corporate placement arithmetic shortcut for Statement & Assumptions / Critical Logic in campus recruitment exams."
+        },
+        {
+          "q": "Day 20 Q3: What is the time complexity of Graph Traversal: DFS & Connected Components?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 20 Q4: What is the central architectural principle of TCP Congestion Control: AIMD, Slow Start?",
+          "a": "Foundational systems engineering rule governing TCP Congestion Control: AIMD, Slow Start in production environments."
+        },
+        {
+          "q": "Day 20 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 20 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 20 Q7: What is the verified technical foundation of BulkBeat TV?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 20 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 20 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 20 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5001 — Knowledge Management Metrics, Evaluation & ROI.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Statement & Assumptions / Critical Logic.\n• Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: DFS & Connected Components.\n• Systems Law: Architectural equations, protocols, and complexity bounds for TCP Congestion Control: AIMD, Slow Start."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5001 — Knowledge Management Metrics, Evaluation & ROI."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Statement & Assumptions / Critical Logic."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Graph Traversal: DFS & Connected Components."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: BulkBeat TV."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-20-01",
+        "category": "Academic (Academic Theory)",
+        "question": "How does the Knowledge Management System Life Cycle (KMSLC) differ from the conventional Software Development Life Cycle (SDLC)?",
+        "options": [
+          "KMSLC is purely linear (Waterfall), while SDLC is iterative",
+          "KMSLC is iterative and user-centered because knowledge is dynamic, experiential, and evolves continuously through human interaction",
+          "KMSLC does not require any software testing",
+          "SDLC only applies to mechanical engineering"
+        ],
+        "correct_answer": "B",
+        "explanation": "Unlike deterministic procedural software in SDLC, KM systems deal with ambiguous, evolving cognitive heuristics requiring iterative refinement."
+      },
+      {
+        "id": "TEST-20-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the first foundational stage of the 8-stage KMSLC framework?",
+        "options": [
+          "System Deployment",
+          "Evaluating Existing Infrastructure and Knowledge Assets",
+          "Forming the Knowledge Management Team",
+          "Designing the KM Blueprint"
+        ],
+        "correct_answer": "B",
+        "explanation": "KMSLC begins with evaluating existing organizational infrastructure, intellectual capital, and business strategies to identify gaps."
+      },
+      {
+        "id": "TEST-20-03",
+        "category": "Academic (Academic Theory)",
+        "question": "In KM project evaluation, what does the Balanced Scorecard framework assess?",
+        "options": [
+          "Only the quarterly financial net profit",
+          "Performance across four perspectives: Financial, Customer, Internal Business Processes, and Learning & Growth",
+          "The number of hours employees spend reading manuals",
+          "The total storage capacity of the server rack"
+        ],
+        "correct_answer": "B",
+        "explanation": "Kaplan and Norton's Balanced Scorecard balances financial indicators with operational, customer, and continuous learning metrics."
+      },
+      {
+        "id": "TEST-20-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What role does a Chief Knowledge Officer (CKO) play in an enterprise?",
+        "options": [
+          "Writing Java bytecode for database drivers",
+          "Championing KM initiatives, aligning knowledge architecture with corporate strategy, and fostering a collaborative learning culture",
+          "Resetting user email passwords",
+          "Purchasing office computer monitors"
+        ],
+        "correct_answer": "B",
+        "explanation": "The CKO is the executive leader responsible for maximizing intellectual capital, breaking down information silos, and driving KM strategy."
+      },
+      {
+        "id": "TEST-20-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is a 'Knowledge Audit'?",
+        "options": [
+          "An IRS tax examination of company profits",
+          "A systematic evaluation of an organization's knowledge needs, existing knowledge assets, flows, gaps, and blockages",
+          "A daily antivirus scan of hard drives",
+          "A count of total paper files in a storage cabinet"
+        ],
+        "correct_answer": "B",
+        "explanation": "A knowledge audit identifies what knowledge assets exist, who holds them, where gaps exist, and how information flows across teams."
+      },
+      {
+        "id": "TEST-20-06",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'Please read the terms and conditions carefully before signing the employment contract.' Assumptions: I. People might sign without reading unless advised. II. The document contains binding contractual legal obligations.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "Advising someone to read implies people frequently skim without reading (I) and that the document has legal weight (II)."
+      },
+      {
+        "id": "TEST-20-07",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'The government decided to grant financial subsidies to solar panel installations.' Assumptions: I. Subsidies will encourage more homeowners to adopt solar power. II. High initial equipment cost is currently a barrier to adoption.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "Granting financial relief directly assumes cost is an obstacle (II) and monetary support motivates adoption (I)."
+      },
+      {
+        "id": "TEST-20-08",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'Drink pure mineral water to protect your health during monsoon season.' Assumptions: I. Contaminated water is a major cause of monsoon waterborne illnesses. II. Mineral water undergoes filtration to remove harmful pathogens.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "Recommending mineral water assumes tap water carries health risks in monsoon (I) and bottled water is purified (II)."
+      },
+      {
+        "id": "TEST-20-09",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'Switch your enterprise database to cloud architecture to reduce infrastructure maintenance costs.' Assumptions: I. Cloud databases typically require less on-premise hardware maintenance overhead. II. Enterprises seek to optimize IT operating expenditures.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "The recommendation assumes cost optimization is desirable (II) and cloud architectures reduce maintenance overhead (I)."
+      },
+      {
+        "id": "TEST-20-10",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'Do not lean outside the moving train coach doors.' Assumptions: I. Leaning outside moving train doors is physically hazardous. II. Passengers heed displayed safety warnings.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "Displaying cautionary directives assumes danger exists (I) and passengers are capable of following signage (II)."
+      },
+      {
+        "id": "TEST-20-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is the minimum header size of a standard TCP segment (without options)?",
+        "options": [
+          "8 bytes",
+          "20 bytes",
+          "32 bytes",
+          "64 bytes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard TCP headers without options are 20 bytes; UDP headers are 8 bytes."
+      },
+      {
+        "id": "TEST-20-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "During TCP connection teardown, why does the active closer remain in the TIME_WAIT state for 2 * MSL?",
+        "options": [
+          "To recalculate window size",
+          "To ensure the final ACK was received and allow duplicate packets to die out",
+          "To download pending files",
+          "To reset the B+ tree"
+        ],
+        "correct_answer": "B",
+        "explanation": "2 * MSL wait allows lingering delayed segments to expire and guarantees final ACK delivery."
+      },
+      {
+        "id": "TEST-20-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which protocol is connectionless and does not provide reliability, ordering, or flow control?",
+        "options": [
+          "TCP",
+          "UDP",
+          "SCTP",
+          "BGP"
+        ],
+        "correct_answer": "B",
+        "explanation": "UDP is connectionless and does not guarantee delivery or packet order."
+      },
+      {
+        "id": "TEST-20-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "What security mechanism mitigates SYN Flood Denial-of-Service attacks without consuming server state memory?",
+        "options": [
+          "DHCP Snooping",
+          "SYN Cookies",
+          "Split Horizon",
+          "Exponential Backoff"
+        ],
+        "correct_answer": "B",
+        "explanation": "SYN Cookies encode connection state in the initial sequence number, deferring memory allocation until final ACK."
+      },
+      {
+        "id": "TEST-20-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "What flags are set in the second packet of the TCP 3-Way Handshake?",
+        "options": [
+          "SYN",
+          "ACK",
+          "SYN + ACK",
+          "FIN + ACK"
+        ],
+        "correct_answer": "C",
+        "explanation": "The server responds to SYN with a combined SYN + ACK packet."
+      },
+      {
+        "id": "TEST-20-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Graph Traversal: DFS & Connected Components' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(R * C) Time, O(R * C) Auxiliary Space (Call stack).",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Graph Traversal: DFS & Connected Components' pattern operates with O(R * C) Time, O(R * C) Auxiliary Space (Call stack): Visits each vertex and edge exactly once, partitioning the graph into distinct connected components.."
+      },
+      {
+        "id": "TEST-20-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Graph Traversal: DFS & Connected Components' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Grid with all '0' (returns 0).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Graph Traversal: DFS & Connected Components include Grid with all '0' (returns 0), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-20-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Number of Islands', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(R * C) Auxiliary Space (Call stack).",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(R * C) Time, O(R * C) Auxiliary Space (Call stack) by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-20-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'HOD Notice Board, Full-Stack Integration & Render Cloud Deployment'?",
+        "options": [
+          "Render Blueprint (`render.yaml`) provides Infrastructure-as-Code for auto-provisioning FastAPI web services.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Render Blueprint (`render.yaml`) provides Infrastructure-as-Code for auto-provisioning FastAPI web services.."
+      },
+      {
+        "id": "TEST-20-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'Why did you build the CSMS frontend with Vanilla HTML/CSS/JS instead of React or Vue?'?",
+        "options": [
+          "For an internal college administration portal, zero build overhead and instant browser loading on lab computers with low memory were primary requirements. Vanil...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: For an internal college administration portal, zero build overhead and instant browser loading on lab computers with low memory were primary."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-20",
+      "title": "Number of Islands (Graph Traversal: DFS & Connected Components)",
+      "time_limit_minutes": 35,
+      "difficulty": "Medium",
+      "problem_statement": "Solve the core placement problem: Number of Islands.\n\nGiven an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Graph Traversal: DFS & Connected Components\n- Time Complexity Target: O(R * C) Time\n- Space Complexity Target: O(R * C) Auxiliary Space (Call stack)\n- Handle all edge cases: Grid with all '0' (returns 0), Grid with all '1' (returns 1), Diagonal connections (not adjacent, counts as separate).",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Graph Traversal: DFS & Connected Components\n    public int numIslands(char[][] grid) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Graph Traversal: DFS & Connected Components\n    public int numIslands(char[][] grid) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Graph Traversal: DFS & Connected Components logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Grid with all '0' (returns 0)",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(R * C) Time)",
+        "Space Complexity": "20 points (Meets O(R * C) Auxiliary Space (Call stack))",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Knowledge Management",
+    "subject_code": "BCA-5001",
+    "unit": 4,
+    "topic": "Unit IV — Knowledge Management System Life Cycle (KMSLC 8 Stages) vs Conventional SDLC",
+    "objectives": [
+      "Master the 8 stages of KMSLC.",
+      "Contrast KMSLC with conventional software development life cycle (SDLC)."
+    ],
+    "detailed_notes": [
+      "The Knowledge Management System Life Cycle (KMSLC) is a specialized systems development framework designed specifically to capture, structure, refine, and deploy organizational tacit and explicit knowledge. Unlike conventional software development which focuses on data processing and predefined business logic, KMSLC addresses continuous learning, tacit-to-explicit knowledge conversion, and cultural alignment.\n\nThe 8 Stages of KMSLC:\n1. Evaluate Existing Infrastructure: Audit existing organizational systems, data warehouses, networks, and cultural readiness for knowledge sharing.\n2. Form the KM Team: Assemble cross-functional experts including Knowledge Developers (K-Developers), Domain Experts, Systems Architects, and Top Management champions.\n3. Capture Knowledge: Solicit both explicit and tacit expertise using Delphi techniques, protocol analysis, cognitive maps, and structured expert interviews.\n4. Design the KM Blueprint: Architectural design of knowledge repositories, indexing taxonomies, access control rules, ontology mappings, and user interface workflows.\n5. Develop the KM System: Implement the physical repositories, indexing engines, collaborative groupware tools, and AI/inference components.\n6. Verify & Validate the KM System: Verification tests whether the system meets design specifications ('Did we build the system right?'). Validation ensures the captured knowledge accurately reflects expert wisdom and provides actionable advice ('Did we build the right system?').\n7. Deploy the System: Roll out the KMS into organizational operations, conduct employee onboarding programs, align incentive structures to reward knowledge sharing, and overcome organizational resistance.\n8. Manage Post-Implementation: Continuous maintenance, auditing obsolete knowledge chunks, retiring outdated rules, and refining search models based on ongoing feedback.",
+      "1. Evaluate Infrastructure; 2. Form KM Team; 3. Capture Knowledge; 4. Design Blueprint; 5. Develop KMS; 6. Verify & Validate; 7. Deploy & Train; 8. Manage & Evolve.",
+      "SDLC is sequential and user-centric; KMSLC is iterative, evolutionary, and expert-centric. In KMSLC, testing focuses on knowledge validity rather than pure algorithmic correctness."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|                8 STAGES OF KMSLC                  |\n| Audit -> Team -> Capture -> Blueprint -> Develop  |\n| -> Verify/Validate -> Deploy -> Evolve            |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
         "Comparison Dimension",
@@ -28,220 +1239,1188 @@
           "Domain expert provides heuristic rules & intuition"
         ],
         [
-          "Development Philosophy",
-          "Sequential, milestone-driven (Waterfall/Agile)",
-          "Evolutionary, rapid prototyping, highly iterative"
+          "Development Pattern",
+          "Sequential, rigid phases (Waterfall/V-Model)",
+          "Highly iterative, evolutionary prototyping"
         ],
         [
-          "Nature of Output",
-          "Predictable software outputs from numeric/text inputs",
-          "Context-rich recommendations and decision support"
-        ],
-        [
-          "Success Criteria",
-          "On-time, within budget, zero defects",
-          "User adoption, cultural sharing, retention of knowledge"
-        ],
-        [
-          "Testing Goal",
-          "System verification (bugs, crashes, functional correctness)",
-          "Knowledge validation (expert agreement, decision quality)"
+          "System Lifespan",
+          "Static until formal software patch/rewrite",
+          "Organic, continuously evolving with new lessons learned"
         ]
       ]
     },
-    "memorize": "8 Stages: Evaluate -> Form Team -> Capture -> Blueprint -> Develop -> Verify/Validate -> Deploy -> Post-Implementation. Validation tests expert truth; Verification tests software specs.",
-    "understand": "Why does conventional SDLC fail for Knowledge Management? In SDLC, requirements can be frozen early. But human tacit knowledge cannot be specified in advance\u2014it surfaces incrementally through ongoing interaction between the K-Developer and the domain expert.",
-    "common_mistakes": "1. Confusing Verification ('built right') with Validation ('built right system'). 2. Omitting cultural incentive alignment from Stage 7 (technology alone does not make employees share knowledge).",
-    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "High-Frequency 15-Mark Question: 2021 (Q7 - 15m), 2022-23 (Q6 - 15m), 2023-24 (Q7 - 15m), 2024-25 (Q6 - 15m)",
-    "pyq_question": "Explain the Knowledge Management System Life Cycle (KMSLC) in detail with all its 8 stages. Contrast KMSLC with the conventional Software Development Life Cycle (SDLC) using a comprehensive comparison table. (15 Marks)",
-    "pyq_rubric": "Concept & Importance of KMSLC (3 marks) + 8 Stages detailed breakdown with flow diagram (6 marks) + Verification vs Validation distinction (2 marks) + Comparison table with SDLC (4 marks) = 15 Marks.",
+    "memorize": "8 KMSLC Stages: Evaluate, Team, Capture, Blueprint, Develop, Verify/Validate, Deploy, Evolve. KMSLC is expert-centric and iterative.",
+    "understand": "The primary failure point in KMSLC is not technical; it is cultural resistance to sharing proprietary knowledge.",
+    "common_mistakes": "Conflating Verification (building system right) with Validation (building right system).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2022-23 (Q3)",
+        "marks": 15,
+        "question": "Explain the stages of the Knowledge Management System Life Cycle (KMSLC). How does it differ from the conventional SDLC? (15 Marks)",
+        "rubric": "KMSLC Overview (2 marks) + 8 Stages detailed (8 marks) + KMSLC vs SDLC comparison table (5 marks) = 15 Marks.",
+        "model_answer": "The Knowledge Management System Life Cycle (KMSLC) is an evolutionary, iterative framework designed to elicit tacit expertise and codify it into enterprise knowledge assets. Its 8 stages are: 1. Evaluate Existing Infrastructure (gap analysis of organizational readiness); 2. Form the KM Team (uniting K-Developers and Domain Experts); 3. Capture Knowledge (eliciting tacit heuristics via protocol analysis and Delphi methods); 4. Design KM Blueprint (defining taxonomies and security); 5. Develop the KMS (prototyping repositories and inference engines); 6. Verify and Validate (testing architectural correctness and domain accuracy); 7. Deploy the System (cultural onboarding and incentive alignment); 8. Manage Post-Implementation (auditing obsolete knowledge). Unlike conventional SDLC which follows rigid requirements and focuses on data automation, KMSLC is expert-centric, iterative, and continuously evolves as new institutional knowledge is discovered.",
+        "answer_structure": "Introduction -> 8 Stages detailed -> Diagram -> SDLC Comparison Table -> Summary",
+        "important_points": [
+          "K-Developer",
+          "8 Stages",
+          "Verification vs Validation",
+          "Evolutionary prototyping"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "All 8 stages listed correctly",
+          "Clear distinction between data-centric SDLC and knowledge-centric KMSLC"
+        ],
+        "common_mistakes": [
+          "Listing generic SDLC stages instead of KMSLC stages"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5001 Knowledge Management",
+        "year": "2021 / Model",
+        "marks": 5,
+        "question": "What is the role of a Knowledge Developer (K-Developer) in KMSLC? (5 Marks)",
+        "rubric": "Definition (2 marks) + 3 Core Responsibilities (3 marks) = 5 Marks.",
+        "model_answer": "A Knowledge Developer (K-Developer) is the specialized architect of a KMS, functioning analogously to a systems analyst in traditional software development. The K-Developer's primary responsibilities include: 1. Identifying and building rapport with domain experts; 2. Eliciting tacit knowledge using cognitive interviewing and protocol analysis; 3. Translating unstructured human heuristics into codified decision trees, cognitive maps, and semantic taxonomies; and 4. Facilitating cultural change to foster organizational knowledge sharing."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-20-01",
+        "question": "How does the Knowledge Management System Life Cycle (KMSLC) differ from the conventional Software Development Life Cycle (SDLC)?",
+        "options": [
+          "KMSLC is purely linear (Waterfall), while SDLC is iterative",
+          "KMSLC is iterative and user-centered because knowledge is dynamic, experiential, and evolves continuously through human interaction",
+          "KMSLC does not require any software testing",
+          "SDLC only applies to mechanical engineering"
+        ],
+        "correct_answer": "B",
+        "explanation": "Unlike deterministic procedural software in SDLC, KM systems deal with ambiguous, evolving cognitive heuristics requiring iterative refinement."
+      },
+      {
+        "id": "ACAD-20-02",
+        "question": "What is the first foundational stage of the 8-stage KMSLC framework?",
+        "options": [
+          "System Deployment",
+          "Evaluating Existing Infrastructure and Knowledge Assets",
+          "Forming the Knowledge Management Team",
+          "Designing the KM Blueprint"
+        ],
+        "correct_answer": "B",
+        "explanation": "KMSLC begins with evaluating existing organizational infrastructure, intellectual capital, and business strategies to identify gaps."
+      },
+      {
+        "id": "ACAD-20-03",
+        "question": "In KM project evaluation, what does the Balanced Scorecard framework assess?",
+        "options": [
+          "Only the quarterly financial net profit",
+          "Performance across four perspectives: Financial, Customer, Internal Business Processes, and Learning & Growth",
+          "The number of hours employees spend reading manuals",
+          "The total storage capacity of the server rack"
+        ],
+        "correct_answer": "B",
+        "explanation": "Kaplan and Norton's Balanced Scorecard balances financial indicators with operational, customer, and continuous learning metrics."
+      },
+      {
+        "id": "ACAD-20-04",
+        "question": "What role does a Chief Knowledge Officer (CKO) play in an enterprise?",
+        "options": [
+          "Writing Java bytecode for database drivers",
+          "Championing KM initiatives, aligning knowledge architecture with corporate strategy, and fostering a collaborative learning culture",
+          "Resetting user email passwords",
+          "Purchasing office computer monitors"
+        ],
+        "correct_answer": "B",
+        "explanation": "The CKO is the executive leader responsible for maximizing intellectual capital, breaking down information silos, and driving KM strategy."
+      },
+      {
+        "id": "ACAD-20-05",
+        "question": "What is a 'Knowledge Audit'?",
+        "options": [
+          "An IRS tax examination of company profits",
+          "A systematic evaluation of an organization's knowledge needs, existing knowledge assets, flows, gaps, and blockages",
+          "A daily antivirus scan of hard drives",
+          "A count of total paper files in a storage cabinet"
+        ],
+        "correct_answer": "B",
+        "explanation": "A knowledge audit identifies what knowledge assets exist, who holds them, where gaps exist, and how information flows across teams."
+      }
+    ],
+    "pyq_year": "2022-23 (Q3)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Explain the stages of the Knowledge Management System Life Cycle (KMSLC). How does it differ from the conventional SDLC? (15 Marks)",
+    "pyq_rubric": "KMSLC Overview (2 marks) + 8 Stages detailed (8 marks) + KMSLC vs SDLC comparison table (5 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Concept of Knowledge Management System Life Cycle (KMSLC):",
-        "KMSLC is an iterative systems framework focused on capturing, codifying, refining, and sharing human expertise across an enterprise. While traditional software development automates transactional workflows (e.g. billing, inventory), KMSLC manages organizational intellectual capital and tacit knowledge resident in people's minds."
+        "1. Model Answer & Technical Presentation",
+        "The Knowledge Management System Life Cycle (KMSLC) is an evolutionary, iterative framework designed to elicit tacit expertise and codify it into enterprise knowledge assets. Its 8 stages are: 1. Evaluate Existing Infrastructure (gap analysis of organizational readiness); 2. Form the KM Team (uniting K-Developers and Domain Experts); 3. Capture Knowledge (eliciting tacit heuristics via protocol analysis and Delphi methods); 4. Design KM Blueprint (defining taxonomies and security); 5. Develop the KMS (prototyping repositories and inference engines); 6. Verify and Validate (testing architectural correctness and domain accuracy); 7. Deploy the System (cultural onboarding and incentive alignment); 8. Manage Post-Implementation (auditing obsolete knowledge). Unlike conventional SDLC which follows rigid requirements and focuses on data automation, KMSLC is expert-centric, iterative, and continuously evolves as new institutional knowledge is discovered."
       ],
       [
-        "2. The 8 Stages of KMSLC Detailed Analysis:",
-        "\u2022 Stage 1 (Evaluate Existing Infrastructure): Audits current technological readiness, network bandwidth, repository storage, and corporate culture to identify gaps in knowledge sharing.\n\u2022 Stage 2 (Form the KM Team): Mobilizes multidisciplinary stakeholders: Knowledge Developers (knowledge elicitation specialists), Domain Experts, End-Users, and Executive Champions.\n\u2022 Stage 3 (Capture Knowledge): Employs structured interviews, cognitive mapping, brainstorming sessions, and observation to elicit tacit rules of thumb and compile explicit artifacts.\n\u2022 Stage 4 (Design KM Blueprint): Outlines logical data structures, ontologies, security privileges, and metadata tagging hierarchies to ensure fast retrieval.\n\u2022 Stage 5 (Develop the KMS): Translates blueprints into operational prototypes using enterprise search engines, document repositories, and recommendation systems.\n\u2022 Stage 6 (Verify and Validate): Verification ensures code functions without technical defects; Validation verifies the knowledge stored is factually correct and endorsed by experts.\n\u2022 Stage 7 (Deploy the System): Implements rollout strategies, user onboarding workshops, and reward structures to encourage knowledge contributors.\n\u2022 Stage 8 (Manage Post-Implementation): Establishes ongoing knowledge audits, purging deprecated practices, and updating taxonomies as business conditions shift."
-      ],
-      [
-        "3. Verification vs Validation in KMSLC:",
-        "In conventional systems, testing focuses on algorithmic execution. In KMSLC, 'Verification' answers: 'Did we build the system to technical specifications?' whereas 'Validation' answers: 'Is the captured knowledge accurate, consistent, and trusted by top practitioners?'"
-      ],
-      [
-        "4. Key Differences Between KMSLC and SDLC:",
-        "The primary dichotomy lies in uncertainty management. In SDLC, requirements are fixed before coding. In KMSLC, requirements and rules are continuously uncovered as domain experts interact with functional prototypes."
+        "2. Expected Examiner Criteria",
+        [
+          "All 8 stages listed correctly",
+          "Clear distinction between data-centric SDLC and knowledge-centric KMSLC"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master all 8 KMSLC Stages and Verification vs Validation",
-    "milestone": "Full 15/15 on KM Unit IV Exam Question"
-  },
   "apt_data": {
-    "topic": "Logical Reasoning \u2014 Direction Sense & Coding-Decoding Puzzles",
+    "topic": "Statement & Assumptions / Inferred Meanings",
+    "category": "Logical Reasoning",
+    "subtopic": "Critical Reasoning",
+    "formulas": "1. An assumption is something taken for granted or supposed before making a statement.\n2. Valid assumptions must be implicit in the premise and directly support the necessity of the statement.\n3. Avoid extreme assumptions containing words like 'only', 'never', 'all', 'always' unless justified by explicit context.",
+    "shortcut": "Negation Test: Negate the candidate assumption. If the original statement collapses or becomes irrational, the assumption is 100% NECESSARY and VALID.",
     "tutorial": [
-      "Direction Sense Methodology:\n\u2022 Standard Cardinal Directions: North (Up), South (Down), East (Right), West (Left).\n\u2022 Turns: Right Turn = 90-degree clockwise; Left Turn = 90-degree counter-clockwise.\n\u2022 Pythagoras Theorem for Shortest Distance: Shortest Displacement d = sqrt((Delta X)^2 + (Delta Y)^2).\n\u2022 Shadows at Sunrise (Sun in East): Shadows fall towards West. A person facing North has their shadow on their Left.\n\u2022 Shadows at Sunset (Sun in West): Shadows fall towards East. A person facing North has their shadow on their Right.",
-      "Coding-Decoding Rules:\n\u2022 Letter Positions: A=1, B=2, ..., Z=26 (Recall mnemonic EJOTY: 5, 10, 15, 20, 25).\n\u2022 Reverse Pairs: Sum of positions = 27 (A-Z, B-Y, C-X, D-W, E-V, F-U, G-T, H-S, I-R, J-Q, K-P, L-O, M-N)."
+      "Critical reasoning forms the core of Accenture and Capgemini aptitude assessments. Never bring external knowledge into the assumption evaluation. Assume the speaker's statement is reasonable and identify what foundation must exist for it to hold true."
     ],
-    "formulas": "Displacement: d = sqrt(x^2 + y^2). Opposite letters sum to 27.",
-    "shortcut": "Cancel Opposite Movements: 50m North followed by 50m South cancels out to 0. Net vector addition simplifies complex walking routes.",
-    "recognition": "Look for 'A man walks 10 km towards North, then turns right...', or 'In a certain code, COMPUTER is written as RFUVQNPC...'",
-    "tier1_problem": "A man walks 5 km East, then turns right and walks 12 km. How far is he from his starting point, and in which direction?",
-    "tier1_solution": "Starting at (0, 0). 5 km East ==> (+5, 0). Turning right (facing East, right turn is South) and walking 12 km ==> (+5, -12). Shortest distance d = sqrt(5^2 + 12^2) = sqrt(25 + 144) = sqrt(169) = 13 km. Direction from start: South-East. Answer: 13 km, South-East.",
-    "tier2_problem": "One morning after sunrise, Suresh was standing facing a pole. The shadow of the pole fell exactly to his right. Which direction was Suresh facing?",
-    "tier2_solution": "At sunrise, sun is in East, so shadows fall towards WEST. The shadow fell to Suresh's right, which means Suresh's RIGHT side is WEST. If Right is West, Suresh's Left is East, his Back is North, and his Face is towards SOUTH. Answer: South.",
-    "tier3_problem": "[Infosys Reasoning Round] If 'TEACHER' is coded as 'VGCEJGT', how is 'CHILDREN' coded in that language?",
-    "tier3_solution": "Analyze pattern: T(+2)=V, E(+2)=G, A(+2)=C, C(+2)=E, H(+2)=J, E(+2)=G, R(+2)=T. Each letter is shifted by +2 positions. Applying to 'CHILDREN': C(+2)=E, H(+2)=J, I(+2)=K, L(+2)=N, D(+2)=F, R(+2)=T, E(+2)=G, N(+2)=P. Output: EJKNFTGP. Answer: EJKNFTGP.",
-    "tier4_problem": "[Cognizant GenC Next Pattern] Point A is 8m North of Point B. Point C is 6m West of Point B. Point D is 12m South of Point C. Point E is 15m East of Point D. Find the shortest distance and direction of Point E with respect to Point A.",
-    "tier4_solution": "Set Point B as origin (0, 0).\nPoint A = (0, 8).\nPoint C = (-6, 0).\nPoint D = (-6, -12).\nPoint E = (-6 + 15, -12) = (9, -12).\nDisplacement from A(0, 8) to E(9, -12):\nDelta X = 9 - 0 = 9.\nDelta Y = -12 - 8 = -20.\nShortest distance = sqrt(9^2 + (-20)^2) = sqrt(81 + 400) = sqrt(481) \u2248 21.93 m.\nDirection of E with respect to A: East (+X) and South (-Y) ==> South-East. Answer: sqrt(481) m (approx 21.93 m), South-East.",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "A person walks 20m North, turns left and walks 15m, turns left and walks 20m. How far is he from start?",
-        "a": "15m West. The 20m North and 20m South cancel out."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "At sunset, two friends A and B are talking face to face. If A's shadow is to his left, which way is A facing?",
-        "a": "North. At sunset, shadow is towards East. If East is to A's left, A faces North."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "If CAT = 24, DOG = 26, then BIRD = ?",
-        "a": "B(2)+I(9)+R(18)+D(4) = 33."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "If 'LIGHT' is coded as 'MJHIU', what is 'FLAME'?",
-        "a": "Each letter +1: GMBNF."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "A car moves 10km North, turns 45 degrees right and travels 10km. In which direction is it moving?",
-        "a": "North-East."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Critical Reasoning",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Critical Reasoning",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Critical Reasoning",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Critical Reasoning",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Critical Reasoning",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Statement: 'Please consult a doctor before taking this health supplement.' Assumptions: I. The supplement may cause side effects without proper dosage. II. A doctor knows the appropriate dietary needs of an individual.",
+        "options": {
+          "A": "Both assumptions I and II are implicit",
+          "B": "Only assumption I is implicit",
+          "C": "Only assumption II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Advising medical consultation assumes that the supplement carries dosage risks (I) and that medical professionals can evaluate individual fitness (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Statement: 'The municipality announced a 24-hour water shutdown on Sunday for main pipe repairs.' Assumptions: I. Residents may store adequate water in advance. II. Sunday repairs minimize industrial disruption.",
+        "options": {
+          "A": "Both assumptions I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Public prior notifications assume residents will plan storage (I), and scheduling on weekends assumes minimal commercial disruption (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Statement: 'Join our 3-month coding boot camp to land your dream software job.' Assumptions: I. Students aspire to land software jobs. II. 3 months is sufficient duration to impart required programming skills.",
+        "options": {
+          "A": "Both assumptions I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Advertisers assume target audience desires the promised outcome (I) and that the program timeline is viable (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Statement: 'The government decided to levy a congestion tax on private vehicles entering the downtown area during peak hours.' Assumptions: I. Congestion tax will encourage commuters to switch to public transit. II. Downtown road capacity is overburdened during peak hours.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Policy interventions assume problem exists (capacity limits, II) and that financial disincentives alter commuter behavior (I).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Statement: 'Double your money in 6 months with our high-yield crypto investment scheme.' Assumptions: I. People desire to multiply their wealth rapidly. II. The investment scheme is completely risk-free.",
+        "options": {
+          "A": "Only assumption I is implicit",
+          "B": "Both are implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Promotional claims target human greed (I). Risk-free nature is not logically implicit and often contradicted by high-yield investments.",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Statement: 'All citizens must file their annual income tax returns before July 31st to avoid late penalties.' Assumptions: I. Penalties incentivize timely compliance. II. Citizens have access to income reporting records.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Enforcing statutory deadlines with fines assumes fines motivate adherence (I) and that citizens possess required documentation (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Statement: 'Upgrade your smartphone to 5G to experience zero-buffering 4K video streaming.' Assumptions: I. Consumers value high-speed uninterrupted video playback. II. 5G network coverage exists in the user's operational area.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Feature marketing assumes customer utility (I) and functional feasibility of the advertised network tier (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Statement: 'Warning: Trespassers on this railway property will be prosecuted.' Assumptions: I. People frequently attempt to trespass on tracks. II. Legal prosecution warnings deter unauthorized entry.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Posting legal warnings assumes the risk occurs (I) and that prosecution threats serve as effective deterrents (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Statement: 'Install fire alarms in every office floor as mandated by safety regulations.' Assumptions: I. Fire alarms help evacuate occupants before fire spreads. II. Fire safety equipment reduces casualty risk.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Mandatory safety installation assumes equipment provides timely alert warnings (I) and mitigates disaster casualties (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Statement: 'Use our AI resume screener to cut corporate recruitment hiring cycles by 80%.' Assumptions: I. Corporate recruiters currently spend excessive manual time reviewing candidate resumes. II. AI algorithms can accurately screen candidate qualifications.",
+        "options": {
+          "A": "Both I and II are implicit",
+          "B": "Only I is implicit",
+          "C": "Only II is implicit",
+          "D": "Neither is implicit"
+        },
+        "correct_answer": "A",
+        "explanation": "Pitching automation assumes existing workflow bottleneck (I) and competency of the automated AI solution (II).",
+        "target_time_seconds": 60,
+        "category": "Logical Reasoning"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Critical Reasoning (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "Climbing Stairs (LeetCode 70 - Easy)",
-      "difficulty": "Easy",
-      "importance": "The Fundamental Dynamic Programming Archetype Problem",
-      "problem_statement": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?",
-      "solution_approach": "Dynamic Programming Recurrence:\nTo reach step n, you must arrive from step n-1 (taking 1 step) or step n-2 (taking 2 steps).\nRecurrence Relation: ways(n) = ways(n - 1) + ways(n - 2).\nBase Cases: ways(1) = 1, ways(2) = 2.\nSpace Optimization: Since each state depends only on the previous 2 values, use two variables instead of an O(N) array.",
-      "code": "def climbStairs(n: int) -> int:\n    if n <= 2:\n        return n\n        \n    prev2, prev1 = 1, 2\n    for i in range(3, n + 1):\n        curr = prev1 + prev2\n        prev2 = prev1\n        prev1 = curr\n        \n    return prev1",
-      "line_by_line": [
-        [
-          "if n <= 2: return n",
-          "Direct base case handling for 1 step (1 way) and 2 steps (2 ways)."
-        ],
-        [
-          "prev2, prev1 = 1, 2",
-          "Initialize sliding window representing dp[i-2] and dp[i-1]."
-        ],
-        [
-          "curr = prev1 + prev2",
-          "Apply Fibonacci-style state transition."
-        ],
-        [
-          "prev2 = prev1; prev1 = curr",
-          "Shift window forward for next step."
-        ]
-      ],
-      "time_complexity": "O(N) single loop iteration.",
-      "space_complexity": "O(1) auxiliary memory using two integer variables.",
-      "edge_cases": "n = 1 (returns 1); n = 2 (returns 2); n = 45 (max constraint)."
+      "title": "Problem 1: Number of Islands",
+      "difficulty": "Medium",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.",
+      "solution_approach": "1. Apply Graph Traversal: DFS & Connected Components algorithmic technique.\n2. Traverses connected components of an adjacency graph or 2D grid recursively, marking visited nodes in-place to avoid re-traversal.\n3. Invariants: Visits each vertex and edge exactly once, partitioning the graph into distinct connected components.",
+      "code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+      "java_solution": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+      "solution_java": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+      "time_complexity": "O(R * C) Time",
+      "space_complexity": "O(R * C) Auxiliary Space (Call stack)",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
     },
     {
-      "title": "House Robber (LeetCode 198 - Medium)",
+      "title": "Problem 2: Max Area of Island",
       "difficulty": "Medium",
-      "importance": "Standard Placement Dynamic Programming Problem (Amazon, Infosys, Microsoft)",
-      "problem_statement": "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. Adjacent houses have security systems connected and will automatically contact the police if two adjacent houses were broken into on the same night. Return the maximum amount of money you can rob tonight without alerting the police.",
-      "solution_approach": "DP Recurrence Formulation:\nFor each house i with money nums[i], you have two distinct choices:\n1. Rob house i: Gain nums[i] + max profit up to house i-2.\n2. Skip house i: Max profit is equal to max profit up to house i-1.\nState Transition: dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]).\nOptimized in O(1) space with two variables: `rob1` and `rob2`.",
-      "code": "def rob(nums: list[int]) -> int:\n    rob1, rob2 = 0, 0\n    \n    # [rob1, rob2, n, n+1, ...]\n    for n in nums:\n        temp = max(n + rob1, rob2)\n        rob1 = rob2\n        rob2 = temp\n        \n    return rob2",
-      "line_by_line": [
-        [
-          "rob1, rob2 = 0, 0",
-          "Initialize running maximums for two houses prior and one house prior."
-        ],
-        [
-          "temp = max(n + rob1, rob2)",
-          "Compare robbing current house (n + rob1) vs skipping current house (rob2)."
-        ],
-        [
-          "rob1 = rob2; rob2 = temp",
-          "Slide running window forward to maintain O(1) auxiliary space."
-        ]
-      ],
-      "time_complexity": "O(N) \u2014 Single pass through list.",
-      "space_complexity": "O(1) \u2014 Constant memory variables.",
-      "edge_cases": "Single house [nums[0]]; empty list; houses with 0 money."
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given an m x n binary matrix grid, return the maximum area of an island in grid.",
+      "solution_approach": "1. Identify interview variation of Graph Traversal: DFS & Connected Components.\n2. Handle edge cases: Grid with all '0' (returns 0), Grid with all '1' (returns 1), Diagonal connections (not adjacent, counts as separate).\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+      "java_solution": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+      "solution_java": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+      "time_complexity": "O(R * C) Time",
+      "space_complexity": "O(R * C) Auxiliary Space (Call stack)",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Graph Traversal: DFS & Connected Components",
+    "category": "Graph / DFS",
+    "concept": "Traverses connected components of an adjacency graph or 2D grid recursively, marking visited nodes in-place to avoid re-traversal.",
+    "why_it_works": "Visits each vertex and edge exactly once, partitioning the graph into distinct connected components.",
+    "visual_explanation": "Grid:\\n1 1 0 0 0\\n1 1 0 0 0\\n0 0 1 0 0\\n0 0 0 1 1\\nComponent 1: (0,0),(0,1),(1,0),(1,1)\\nComponent 2: (2,2)\\nComponent 3: (3,3),(3,4) ==> Total Islands = 3",
+    "java_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        if (grid == null || grid.length == 0) return 0;\n        int count = 0;\n        int rows = grid.length, cols = grid[0].length;\n        \n        for (int r = 0; r < rows; r++) {\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] == '1') {\n                    count++;\n                    dfs(grid, r, c, rows, cols);\n                }\n            }\n        }\n        return count;\n    }\n    \n    private void dfs(char[][] grid, int r, int c, int rows, int cols) {\n        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != '1') return;\n        grid[r][c] = '0'; // Sink island in-place\n        dfs(grid, r + 1, c, rows, cols);\n        dfs(grid, r - 1, c, rows, cols);\n        dfs(grid, r, c + 1, rows, cols);\n        dfs(grid, r, c - 1, rows, cols);\n    }\n}",
+    "code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        if (grid == null || grid.length == 0) return 0;\n        int count = 0;\n        int rows = grid.length, cols = grid[0].length;\n        \n        for (int r = 0; r < rows; r++) {\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] == '1') {\n                    count++;\n                    dfs(grid, r, c, rows, cols);\n                }\n            }\n        }\n        return count;\n    }\n    \n    private void dfs(char[][] grid, int r, int c, int rows, int cols) {\n        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != '1') return;\n        grid[r][c] = '0'; // Sink island in-place\n        dfs(grid, r + 1, c, rows, cols);\n        dfs(grid, r - 1, c, rows, cols);\n        dfs(grid, r, c + 1, rows, cols);\n        dfs(grid, r, c - 1, rows, cols);\n    }\n}",
+    "python_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        if (grid == null || grid.length == 0) return 0;\n        int count = 0;\n        int rows = grid.length, cols = grid[0].length;\n        \n        for (int r = 0; r < rows; r++) {\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] == '1') {\n                    count++;\n                    dfs(grid, r, c, rows, cols);\n                }\n            }\n        }\n        return count;\n    }\n    \n    private void dfs(char[][] grid, int r, int c, int rows, int cols) {\n        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] != '1') return;\n        grid[r][c] = '0'; // Sink island in-place\n        dfs(grid, r + 1, c, rows, cols);\n        dfs(grid, r - 1, c, rows, cols);\n        dfs(grid, r, c + 1, rows, cols);\n        dfs(grid, r, c - 1, rows, cols);\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 4: Loop through each grid cell.",
+      "Line 7: When an unvisited land cell '1' is found, increment island count.",
+      "Line 9: Call DFS to sink the entire contiguous island into water '0'.",
+      "Line 17: In-place sinking prevents allocating auxiliary visited arrays."
+    ],
+    "dry_run": "Grid 4x5 with 3 separate clusters of '1'. DFS triggers 3 times. Returns 3.",
+    "complexity": "O(R * C) Time, O(R * C) Auxiliary Space (Call stack)",
+    "edge_cases": [
+      "Grid with all '0' (returns 0)",
+      "Grid with all '1' (returns 1)",
+      "Diagonal connections (not adjacent, counts as separate)"
+    ],
+    "interview_variations": [
+      "Max Area of Island",
+      "Surrounded Regions",
+      "Pacific Atlantic Water Flow"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-20-01",
+        "title": "Problem 1: Number of Islands",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Graph Traversal: DFS & Connected Components algorithmic technique.\n2. Traverses connected components of an adjacency graph or 2D grid recursively, marking visited nodes in-place to avoid re-traversal.\n3. Invariants: Visits each vertex and edge exactly once, partitioning the graph into distinct connected components.",
+        "solution_java": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+        "solution_python": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+        "code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+        "java_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+        "time_complexity": "O(R * C) Time",
+        "space_complexity": "O(R * C) Auxiliary Space (Call stack)"
+      },
+      {
+        "problem_id": "CODE-20-02",
+        "title": "Problem 2: Max Area of Island",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given an m x n binary matrix grid, return the maximum area of an island in grid.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Graph Traversal: DFS & Connected Components.\n2. Handle edge cases: Grid with all '0' (returns 0), Grid with all '1' (returns 1), Diagonal connections (not adjacent, counts as separate).\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+        "solution_python": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+        "code": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+        "java_code": "public class Solution {\n    public int maxAreaOfIsland(int[][] grid) {\n        int max = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == 1) max = Math.max(max, area(grid, i, j));\n            }\n        }\n        return max;\n    }\n    private int area(int[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != 1) return 0;\n        g[i][j] = 0;\n        return 1 + area(g, i+1, j) + area(g, i-1, j) + area(g, i, j+1) + area(g, i, j-1);\n    }\n}",
+        "time_complexity": "O(R * C) Time",
+        "space_complexity": "O(R * C) Auxiliary Space (Call stack)"
+      }
+    ]
+  },
   "cs_core": {
     "subject": "Computer Networks",
-    "topic": "DNS Hierarchy & The HTTPS TLS 1.3 Cryptographic Handshake",
+    "topic": "Transport Layer: TCP vs UDP, 3-Way Handshake & 4-Way Connection Teardown",
     "detailed_notes": [
-      "Domain Name System (DNS) Architecture:\n\u2022 Distributed hierarchical database resolving human hostnames (`api.example.com`) to 32-bit IPv4 / 128-bit IPv6 addresses.\n\u2022 4 Resolution Layers: 1. Local DNS Cache (Browser/OS), 2. Recursive Resolver (ISP / 8.8.8.8), 3. Root Name Servers (13 logical root server authorities), 4. TLD Servers (.com, .org), 5. Authoritative Name Server (holds master DNS zone file).\n\u2022 Recursive Query (Client to Resolver: 'Find this for me') vs Iterative Query (Resolver to Roots/TLD: 'Refer me to next server').",
-      "The HTTPS TLS 1.3 Handshake (1-RTT Optimization):\nIn TLS 1.2, handshakes took 2 Round Trips (2-RTT). TLS 1.3 reduces latency to a single round trip (1-RTT):\n1. ClientHello: Client sends supported cipher suites and public key share using Ephemeral Diffie-Hellman (ECDHE).\n2. ServerHello: Server selects cipher suite, sends its ECDHE public key share, server certificate (X.509), and digital signature. Both compute the symmetric master key independently!\n3. Encrypted Data: Immediate transmission of encrypted application data (HTTP/2 or HTTP/3 frames) using AES-GCM or ChaCha20-Poly1305."
+      "The Transport Layer delivers process-to-process communication using 16-bit Port numbers.\n\nTCP (Transmission Control Protocol) vs UDP (User Datagram Protocol):\n- TCP: Connection-oriented, reliable byte stream. Provides ordered delivery, retransmission of lost segments, flow control, and congestion control. Header size: 20 to 60 bytes. (Used by HTTP, HTTPS, SSH, SMTP, FTP).\n- UDP: Connectionless, unreliable datagrams. Zero handshake overhead, no retransmissions, no flow control, minimal 8-byte header. Provides fast delivery with low latency. (Used by DNS, DHCP, VoIP, video streaming, online gaming, WebRTC).\n\nTCP 3-Way Handshake (Connection Establishment):\n1. Client -> Server: SYN (seq = client_isn).\n2. Server -> Client: SYN-ACK (seq = server_isn, ack = client_isn + 1).\n3. Client -> Server: ACK (seq = client_isn + 1, ack = server_isn + 1). (Data payload may now be transmitted).\n\nTCP 4-Way Teardown (Connection Termination):\nTCP connections are full-duplex and must be closed independently in each direction:\n1. Client -> Server: FIN (seq = u). Client enters FIN_WAIT_1.\n2. Server -> Client: ACK (ack = u + 1). Server enters CLOSE_WAIT; Client enters FIN_WAIT_2.\n3. Server -> Client: FIN (seq = v). Server enters LAST_ACK.\n4. Client -> Server: ACK (ack = v + 1). Client enters TIME_WAIT (waits 2 * MSL, ~120s), ensuring final ACK arrived and flushing old packets. Server closes."
+    ],
+    "key_definitions": [
+      {
+        "term": "3-Way Handshake",
+        "definition": "The TCP synchronization process (SYN, SYN-ACK, ACK) negotiating initial sequence numbers before data exchange."
+      },
+      {
+        "term": "TIME_WAIT State",
+        "definition": "A 2 * MSL client wait period following teardown to guarantee final ACK delivery and prevent duplicate segment confusion."
+      },
+      {
+        "term": "Full-Duplex",
+        "definition": "Simultaneous bidirectional transmission capability over a single logical communication connection."
+      }
     ],
     "interview_qa": [
       {
-        "q": "What happens when you type 'https://www.google.com' into your browser address bar?",
-        "a": "1. DNS Resolution: Browser checks local cache -> OS hosts file -> Recursive resolver queries Root -> TLD (.com) -> Authoritative server to obtain IP address.\n2. TCP 3-Way Handshake: SYN -> SYN-ACK -> ACK establishes reliable transport socket on port 443.\n3. TLS 1.3 Handshake: ClientHello with key share -> ServerHello with certificate and server key share -> Symmetric session keys derived -> Certificate verified against root CAs.\n4. HTTP Request: Browser sends encrypted GET / HTTP/2 frame.\n5. Server processes request and streams HTML response; browser parses DOM, fetches CSS/JS, and paints page."
+        "q": "Walk through the TCP 3-Way Handshake and explain why 2 handshakes are insufficient.",
+        "a": "1. Client sends SYN with random Initial Sequence Number (ISN_c). 2. Server replies with SYN-ACK, acknowledging ISN_c + 1 and presenting its own ISN_s. 3. Client replies with ACK for ISN_s + 1. Two handshakes are insufficient because the client must acknowledge the server's sequence number; without the 3rd step, a delayed duplicate SYN from an old dead connection arriving at the server would cause the server to allocate resources and assume an active connection, resulting in half-open phantom connections."
       },
       {
-        "q": "Why is TLS 1.3 significantly faster and more secure than TLS 1.2?",
-        "a": "Speed: TLS 1.3 eliminated an entire network round trip by piggybacking cryptographic key shares directly into the ClientHello message (1-RTT). Security: Obsolete and vulnerable cryptographic primitives were completely stripped out (MD5, SHA-1, RC4, static RSA key exchange). TLS 1.3 mandates Forward Secrecy via ephemeral Diffie-Hellman (ECDHE), ensuring that even if a server's private key is compromised in the future, past intercepted communications cannot be decrypted."
+        "q": "Why is TCP connection termination a 4-way exchange instead of a 3-way exchange?",
+        "a": "TCP is a full-duplex protocol: both directions of data flow are independent. When the client sends FIN, it signals that it has no more data to send, but it can still receive data. The server acknowledges with an ACK, entering CLOSE_WAIT. The server may still have pending outbound buffers to transmit. Once the server finishes sending all remaining data, it sends its own separate FIN, which the client acknowledges."
+      },
+      {
+        "q": "What is the purpose of the TIME_WAIT state in TCP, and how long does it last?",
+        "a": "The endpoint that actively initiates connection close enters TIME_WAIT after sending its final ACK. It lasts for 2 * Maximum Segment Lifetime (2 * MSL, typically 1 to 2 minutes). It serves two critical functions: 1) Guarantees that the final ACK was received by the peer (if lost, the peer retransmits FIN, which can still be ACKed), and 2) Allows all lingering duplicate segments in the network to expire before the same IP:port pair is reused for a new connection."
+      },
+      {
+        "q": "What is a SYN Flood attack and how do SYN Cookies mitigate it?",
+        "a": "An attacker floods a server with thousands of TCP SYN packets with spoofed source IPs, ignoring the SYN-ACK responses. The server allocates TCB state memory in its listen backlog queue for each half-open connection until memory is exhausted, denying legitimate clients. SYN Cookies mitigate this by eliminating server state allocation during handshake: the server encodes connection parameters cryptographically into the SYN-ACK Initial Sequence Number; memory state is allocated only when the client returns a valid ACK."
+      },
+      {
+        "q": "Why does DNS use UDP for queries but TCP for Zone Transfers?",
+        "a": "Standard DNS queries are small, single-packet requests where UDP provides ultra-low latency without handshake delays. If a UDP query packet drops, the client simply re-queries after a timeout. However, DNS Zone Transfers (synchronizing full zone files between primary and secondary nameservers) transmit large, multi-megabyte payloads requiring reliable ordered delivery, making TCP mandatory."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-20-01",
+        "question": "What is the minimum header size of a standard TCP segment (without options)?",
+        "options": [
+          "8 bytes",
+          "20 bytes",
+          "32 bytes",
+          "64 bytes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard TCP headers without options are 20 bytes; UDP headers are 8 bytes."
+      },
+      {
+        "id": "CS-20-02",
+        "question": "During TCP connection teardown, why does the active closer remain in the TIME_WAIT state for 2 * MSL?",
+        "options": [
+          "To recalculate window size",
+          "To ensure the final ACK was received and allow duplicate packets to die out",
+          "To download pending files",
+          "To reset the B+ tree"
+        ],
+        "correct_answer": "B",
+        "explanation": "2 * MSL wait allows lingering delayed segments to expire and guarantees final ACK delivery."
+      },
+      {
+        "id": "CS-20-03",
+        "question": "Which protocol is connectionless and does not provide reliability, ordering, or flow control?",
+        "options": [
+          "TCP",
+          "UDP",
+          "SCTP",
+          "BGP"
+        ],
+        "correct_answer": "B",
+        "explanation": "UDP is connectionless and does not guarantee delivery or packet order."
+      },
+      {
+        "id": "CS-20-04",
+        "question": "What security mechanism mitigates SYN Flood Denial-of-Service attacks without consuming server state memory?",
+        "options": [
+          "DHCP Snooping",
+          "SYN Cookies",
+          "Split Horizon",
+          "Exponential Backoff"
+        ],
+        "correct_answer": "B",
+        "explanation": "SYN Cookies encode connection state in the initial sequence number, deferring memory allocation until final ACK."
+      },
+      {
+        "id": "CS-20-05",
+        "question": "What flags are set in the second packet of the TCP 3-Way Handshake?",
+        "options": [
+          "SYN",
+          "ACK",
+          "SYN + ACK",
+          "FIN + ACK"
+        ],
+        "correct_answer": "C",
+        "explanation": "The server responds to SYN with a combined SYN + ACK packet."
       }
     ]
   },
   "project_defense": {
-    "project_name": "TerraStract",
-    "feature_focus": "FastAPI REST Architecture & Asynchronous OCR Worker Queue",
-    "architecture_deep_dive": "TerraStract processes large multi-page Hindi and English PDF documents. Performing heavy OCR synchronously inside a standard HTTP request handler would block the server thread for 10-30 seconds, leading to HTTP 504 Gateway Timeouts.\n\n1. Asynchronous Ingestion Workflow:\n\u2022 Client uploads document via `POST /api/v1/extract`.\n\u2022 The endpoint validates file mime-type and magic bytes, saves the binary payload to storage, generates a unique `job_id` (UUIDv4), and enqueues a background task via `BackgroundTasks` (or Celery worker).\n\u2022 Server returns an immediate `HTTP 202 Accepted` response with JSON `{ 'job_id': '...', 'status': 'queued' }`.\n\n2. Polling and Webhook Notifications:\n\u2022 Client checks extraction status via `GET /api/v1/jobs/{job_id}`.\n\u2022 When the worker completes the PyMuPDF/Tesseract pipeline, job status transitions from `processing` to `completed` with structured extraction payloads.",
+    "project_name": "College Student Management System (CSMS)",
+    "repo_path": "D:\\Projects\\College Student Management System",
+    "feature_focus": "HOD Notice Board, Full-Stack Integration & Render Cloud Deployment",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nDelivering a responsive vanilla frontend connected to FastAPI and deploying via Render Blueprint.\n\nWHAT TO MEMORIZE:\nRender Blueprint (`render.yaml`) provides Infrastructure-as-Code for auto-provisioning FastAPI web services.\n\n60-SECOND INTERVIEW PITCH:\nTo ensure CSMS could run effortlessly across legacy college lab computers, I built a zero-dependency Vanilla ES6+ frontend backed by native Fetch APIs. I packaged the application with Render Blueprint infrastructure-as-code, enabling one-click cloud deployment with live Swagger API docs.",
     "interview_qa": [
       {
-        "q": "Why did you use HTTP 202 Accepted instead of HTTP 200 OK for document uploads in TerraStract?",
-        "a": "Because document extraction with OCR is an asynchronous, computationally intensive process that takes up to several seconds per page. Returning HTTP 202 Accepted informs the client that the request has been received and scheduled for processing, without forcing the client HTTP socket to remain open and susceptible to gateway timeouts."
+        "q": "Why did you build the CSMS frontend with Vanilla HTML/CSS/JS instead of React or Vue?",
+        "a": "For an internal college administration portal, zero build overhead and instant browser loading on lab computers with low memory were primary requirements. Vanilla ES6+ JavaScript with native Fetch API consumes less than 20MB of RAM, requires no Webpack/Babel compilation steps, and provides instant cold-start times on any institutional device."
       },
       {
-        "q": "How did you prevent memory exhaustion when multiple users upload 100MB PDF files concurrently?",
-        "a": "I streamed uploaded files directly to disk using `UploadFile.file` chunks rather than reading the entire byte payload into RAM via `file.read()`. Additionally, OCR workers process PDF pages sequentially one page at a time with explicit PyMuPDF garbage collection (`page = None; doc.close()`), keeping RAM usage strictly bounded below 250MB per worker."
+        "q": "How is CSMS configured for cloud deployment on Render and Vercel?",
+        "a": "The repository includes `render.yaml` defining a Python 3.10 web service running Uvicorn with environment injection for `SUPABASE_URL` and `SUPABASE_KEY`. The frontend is served statically with configured CORS middleware on the FastAPI backend, enabling seamless cross-origin communication between the deployed client and API."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 20 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 20 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of SmartGalla.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 19 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5001 — Knowledge Management Metrics, Evaluation & ROI.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Statement & Assumptions / Critical Logic.\n• Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: DFS & Connected Components.\n• Systems Law: Architectural equations, protocols, and complexity bounds for TCP Congestion Control: AIMD, Slow Start.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Knowledge Management Metrics, Evaluation & ROI.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Graph Traversal: DFS & Connected Components.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: BulkBeat TV.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 20 Q1: What is the primary academic thesis of Knowledge Management Metrics, Evaluation & ROI?",
+        "a": "Core theoretical and practical mastery of Knowledge Management Metrics, Evaluation & ROI under the CSJM University BCA-5001 syllabus."
+      },
+      {
+        "q": "Day 20 Q2: What is the key speed calculation formula applied in Statement & Assumptions / Critical Logic?",
+        "a": "High-speed corporate placement arithmetic shortcut for Statement & Assumptions / Critical Logic in campus recruitment exams."
+      },
+      {
+        "q": "Day 20 Q3: What is the time complexity of Graph Traversal: DFS & Connected Components?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 20 Q4: What is the central architectural principle of TCP Congestion Control: AIMD, Slow Start?",
+        "a": "Foundational systems engineering rule governing TCP Congestion Control: AIMD, Slow Start in production environments."
+      },
+      {
+        "q": "Day 20 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 20 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 20 Q7: What is the verified technical foundation of BulkBeat TV?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 20 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 20 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 20 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5001 — Knowledge Management Metrics, Evaluation & ROI.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Statement & Assumptions / Critical Logic.\n• Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: DFS & Connected Components.\n• Systems Law: Architectural equations, protocols, and complexity bounds for TCP Congestion Control: AIMD, Slow Start."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5001 — Knowledge Management Metrics, Evaluation & ROI."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Statement & Assumptions / Critical Logic."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Graph Traversal: DFS & Connected Components."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: BulkBeat TV."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 20,
+    "title": "Day 20 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "Name the 8 stages of the Knowledge Management System Life Cycle (KMSLC).",
-        "a": "1. Evaluate Existing Infrastructure, 2. Form KM Team, 3. Capture Knowledge, 4. Design KM Blueprint, 5. Develop KMS, 6. Verify & Validate, 7. Deploy System, 8. Manage Post-Implementation."
+        "q": "How does the Knowledge Management System Life Cycle (KMSLC) differ from the conventional Software Development Life Cycle (SDLC)?",
+        "a": "Answer: B\n\nUnlike deterministic procedural software in SDLC, KM systems deal with ambiguous, evolving cognitive heuristics requiring iterative refinement."
       },
       {
-        "q": "What is the key difference between Verification and Validation in KMSLC?",
-        "a": "Verification ensures the system conforms to software design specifications ('Built right'). Validation ensures the captured knowledge accurately reflects expert wisdom and provides valid actionable decisions ('Built the right system')."
+        "q": "What is the first foundational stage of the 8-stage KMSLC framework?",
+        "a": "Answer: B\n\nKMSLC begins with evaluating existing organizational infrastructure, intellectual capital, and business strategies to identify gaps."
       },
       {
-        "q": "A person walks 10m East, turns left and walks 10m, then turns right and walks 10m. What is his displacement from start?",
-        "a": "sqrt(20^2 + 10^2) = sqrt(500) = 10*sqrt(5) \u2248 22.36m North-East."
+        "q": "In KM project evaluation, what does the Balanced Scorecard framework assess?",
+        "a": "Answer: B\n\nKaplan and Norton's Balanced Scorecard balances financial indicators with operational, customer, and continuous learning metrics."
       },
       {
-        "q": "What is the recurrence relation for LeetCode 198 (House Robber)?",
-        "a": "dp[i] = max(dp[i-1], dp[i-2] + nums[i]). Rob current house + max profit from 2 houses ago, or skip current house."
+        "q": "What role does a Chief Knowledge Officer (CKO) play in an enterprise?",
+        "a": "Answer: B\n\nThe CKO is the executive leader responsible for maximizing intellectual capital, breaking down information silos, and driving KM strategy."
       },
       {
-        "q": "What is the space complexity of optimized LeetCode 70 (Climbing Stairs)?",
-        "a": "O(1) constant auxiliary space using two integer variables to track the previous two steps."
+        "q": "What is a 'Knowledge Audit'?",
+        "a": "Answer: B\n\nA knowledge audit identifies what knowledge assets exist, who holds them, where gaps exist, and how information flows across teams."
       },
       {
-        "q": "What is the difference between Recursive and Iterative DNS queries?",
-        "a": "A recursive query requires the contacted server to find the final IP answer and return it. In an iterative query, if the server doesn't know the answer, it returns a referral to the next server authority down the hierarchy."
+        "q": "Statement: 'Please read the terms and conditions carefully before signing the employment contract.' Assumptions: I. People might sign without reading unless advised. II. The document contains binding contractual legal obligations.",
+        "a": "Answer: A\n\nAdvising someone to read implies people frequently skim without reading (I) and that the document has legal weight (II)."
       },
       {
-        "q": "How many round trips (RTT) does the TLS 1.3 handshake require before encrypted data transmission?",
-        "a": "Exactly 1-RTT. The client sends key shares directly inside the ClientHello message."
+        "q": "Statement: 'The government decided to grant financial subsidies to solar panel installations.' Assumptions: I. Subsidies will encourage more homeowners to adopt solar power. II. High initial equipment cost is currently a barrier to adoption.",
+        "a": "Answer: A\n\nGranting financial relief directly assumes cost is an obstacle (II) and monetary support motivates adoption (I)."
       },
       {
-        "q": "Why is an HTTP 202 status code appropriate for heavy background OCR jobs?",
-        "a": "HTTP 202 Accepted signifies that the request has been validated and queued for background asynchronous processing, decoupling heavy compute from synchronous client HTTP timeouts."
+        "q": "Statement: 'Drink pure mineral water to protect your health during monsoon season.' Assumptions: I. Contaminated water is a major cause of monsoon waterborne illnesses. II. Mineral water undergoes filtration to remove harmful pathogens.",
+        "a": "Answer: A\n\nRecommending mineral water assumes tap water carries health risks in monsoon (I) and bottled water is purified (II)."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-20-01",
+        "category": "Academic (Academic Theory)",
+        "question": "How does the Knowledge Management System Life Cycle (KMSLC) differ from the conventional Software Development Life Cycle (SDLC)?",
+        "options": [
+          "KMSLC is purely linear (Waterfall), while SDLC is iterative",
+          "KMSLC is iterative and user-centered because knowledge is dynamic, experiential, and evolves continuously through human interaction",
+          "KMSLC does not require any software testing",
+          "SDLC only applies to mechanical engineering"
+        ],
+        "correct_answer": "B",
+        "explanation": "Unlike deterministic procedural software in SDLC, KM systems deal with ambiguous, evolving cognitive heuristics requiring iterative refinement."
+      },
+      {
+        "id": "TEST-20-02",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the first foundational stage of the 8-stage KMSLC framework?",
+        "options": [
+          "System Deployment",
+          "Evaluating Existing Infrastructure and Knowledge Assets",
+          "Forming the Knowledge Management Team",
+          "Designing the KM Blueprint"
+        ],
+        "correct_answer": "B",
+        "explanation": "KMSLC begins with evaluating existing organizational infrastructure, intellectual capital, and business strategies to identify gaps."
+      },
+      {
+        "id": "TEST-20-03",
+        "category": "Academic (Academic Theory)",
+        "question": "In KM project evaluation, what does the Balanced Scorecard framework assess?",
+        "options": [
+          "Only the quarterly financial net profit",
+          "Performance across four perspectives: Financial, Customer, Internal Business Processes, and Learning & Growth",
+          "The number of hours employees spend reading manuals",
+          "The total storage capacity of the server rack"
+        ],
+        "correct_answer": "B",
+        "explanation": "Kaplan and Norton's Balanced Scorecard balances financial indicators with operational, customer, and continuous learning metrics."
+      },
+      {
+        "id": "TEST-20-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What role does a Chief Knowledge Officer (CKO) play in an enterprise?",
+        "options": [
+          "Writing Java bytecode for database drivers",
+          "Championing KM initiatives, aligning knowledge architecture with corporate strategy, and fostering a collaborative learning culture",
+          "Resetting user email passwords",
+          "Purchasing office computer monitors"
+        ],
+        "correct_answer": "B",
+        "explanation": "The CKO is the executive leader responsible for maximizing intellectual capital, breaking down information silos, and driving KM strategy."
+      },
+      {
+        "id": "TEST-20-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is a 'Knowledge Audit'?",
+        "options": [
+          "An IRS tax examination of company profits",
+          "A systematic evaluation of an organization's knowledge needs, existing knowledge assets, flows, gaps, and blockages",
+          "A daily antivirus scan of hard drives",
+          "A count of total paper files in a storage cabinet"
+        ],
+        "correct_answer": "B",
+        "explanation": "A knowledge audit identifies what knowledge assets exist, who holds them, where gaps exist, and how information flows across teams."
+      },
+      {
+        "id": "TEST-20-06",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'Please read the terms and conditions carefully before signing the employment contract.' Assumptions: I. People might sign without reading unless advised. II. The document contains binding contractual legal obligations.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "Advising someone to read implies people frequently skim without reading (I) and that the document has legal weight (II)."
+      },
+      {
+        "id": "TEST-20-07",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'The government decided to grant financial subsidies to solar panel installations.' Assumptions: I. Subsidies will encourage more homeowners to adopt solar power. II. High initial equipment cost is currently a barrier to adoption.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "Granting financial relief directly assumes cost is an obstacle (II) and monetary support motivates adoption (I)."
+      },
+      {
+        "id": "TEST-20-08",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'Drink pure mineral water to protect your health during monsoon season.' Assumptions: I. Contaminated water is a major cause of monsoon waterborne illnesses. II. Mineral water undergoes filtration to remove harmful pathogens.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "Recommending mineral water assumes tap water carries health risks in monsoon (I) and bottled water is purified (II)."
+      },
+      {
+        "id": "TEST-20-09",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'Switch your enterprise database to cloud architecture to reduce infrastructure maintenance costs.' Assumptions: I. Cloud databases typically require less on-premise hardware maintenance overhead. II. Enterprises seek to optimize IT operating expenditures.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "The recommendation assumes cost optimization is desirable (II) and cloud architectures reduce maintenance overhead (I)."
+      },
+      {
+        "id": "TEST-20-10",
+        "category": "Placement Aptitude",
+        "question": "Statement: 'Do not lean outside the moving train coach doors.' Assumptions: I. Leaning outside moving train doors is physically hazardous. II. Passengers heed displayed safety warnings.",
+        "options": [
+          "Both I and II are implicit",
+          "Only I is implicit",
+          "Only II is implicit",
+          "Neither is implicit"
+        ],
+        "correct_answer": "A",
+        "explanation": "Displaying cautionary directives assumes danger exists (I) and passengers are capable of following signage (II)."
+      },
+      {
+        "id": "TEST-20-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is the minimum header size of a standard TCP segment (without options)?",
+        "options": [
+          "8 bytes",
+          "20 bytes",
+          "32 bytes",
+          "64 bytes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard TCP headers without options are 20 bytes; UDP headers are 8 bytes."
+      },
+      {
+        "id": "TEST-20-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "During TCP connection teardown, why does the active closer remain in the TIME_WAIT state for 2 * MSL?",
+        "options": [
+          "To recalculate window size",
+          "To ensure the final ACK was received and allow duplicate packets to die out",
+          "To download pending files",
+          "To reset the B+ tree"
+        ],
+        "correct_answer": "B",
+        "explanation": "2 * MSL wait allows lingering delayed segments to expire and guarantees final ACK delivery."
+      },
+      {
+        "id": "TEST-20-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which protocol is connectionless and does not provide reliability, ordering, or flow control?",
+        "options": [
+          "TCP",
+          "UDP",
+          "SCTP",
+          "BGP"
+        ],
+        "correct_answer": "B",
+        "explanation": "UDP is connectionless and does not guarantee delivery or packet order."
+      },
+      {
+        "id": "TEST-20-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "What security mechanism mitigates SYN Flood Denial-of-Service attacks without consuming server state memory?",
+        "options": [
+          "DHCP Snooping",
+          "SYN Cookies",
+          "Split Horizon",
+          "Exponential Backoff"
+        ],
+        "correct_answer": "B",
+        "explanation": "SYN Cookies encode connection state in the initial sequence number, deferring memory allocation until final ACK."
+      },
+      {
+        "id": "TEST-20-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "What flags are set in the second packet of the TCP 3-Way Handshake?",
+        "options": [
+          "SYN",
+          "ACK",
+          "SYN + ACK",
+          "FIN + ACK"
+        ],
+        "correct_answer": "C",
+        "explanation": "The server responds to SYN with a combined SYN + ACK packet."
+      },
+      {
+        "id": "TEST-20-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Graph Traversal: DFS & Connected Components' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(R * C) Time, O(R * C) Auxiliary Space (Call stack).",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Graph Traversal: DFS & Connected Components' pattern operates with O(R * C) Time, O(R * C) Auxiliary Space (Call stack): Visits each vertex and edge exactly once, partitioning the graph into distinct connected components.."
+      },
+      {
+        "id": "TEST-20-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Graph Traversal: DFS & Connected Components' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Grid with all '0' (returns 0).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Graph Traversal: DFS & Connected Components include Grid with all '0' (returns 0), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-20-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Number of Islands', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(R * C) Auxiliary Space (Call stack).",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(R * C) Time, O(R * C) Auxiliary Space (Call stack) by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-20-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'HOD Notice Board, Full-Stack Integration & Render Cloud Deployment'?",
+        "options": [
+          "Render Blueprint (`render.yaml`) provides Infrastructure-as-Code for auto-provisioning FastAPI web services.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Render Blueprint (`render.yaml`) provides Infrastructure-as-Code for auto-provisioning FastAPI web services.."
+      },
+      {
+        "id": "TEST-20-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'Why did you build the CSMS frontend with Vanilla HTML/CSS/JS instead of React or Vue?'?",
+        "options": [
+          "For an internal college administration portal, zero build overhead and instant browser loading on lab computers with low memory were primary requirements. Vanil...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: For an internal college administration portal, zero build overhead and instant browser loading on lab computers with low memory were primary."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-20",
+    "title": "Number of Islands (Graph Traversal: DFS & Connected Components)",
+    "time_limit_minutes": 35,
+    "difficulty": "Medium",
+    "problem_statement": "Solve the core placement problem: Number of Islands.\n\nGiven an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Graph Traversal: DFS & Connected Components\n- Time Complexity Target: O(R * C) Time\n- Space Complexity Target: O(R * C) Auxiliary Space (Call stack)\n- Handle all edge cases: Grid with all '0' (returns 0), Grid with all '1' (returns 1), Diagonal connections (not adjacent, counts as separate).",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Graph Traversal: DFS & Connected Components\n    public int numIslands(char[][] grid) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Graph Traversal: DFS & Connected Components\n    public int numIslands(char[][] grid) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public int numIslands(char[][] grid) {\n        int count = 0;\n        for (int i = 0; i < grid.length; i++) {\n            for (int j = 0; j < grid[0].length; j++) {\n                if (grid[i][j] == '1') {\n                    count++;\n                    sink(grid, i, j);\n                }\n            }\n        }\n        return count;\n    }\n    private void sink(char[][] g, int i, int j) {\n        if (i < 0 || i >= g.length || j < 0 || j >= g[0].length || g[i][j] != '1') return;\n        g[i][j] = '0';\n        sink(g, i+1, j); sink(g, i-1, j); sink(g, i, j+1); sink(g, i, j-1);\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Graph Traversal: DFS & Connected Components logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Grid with all '0' (returns 0)",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(R * C) Time)",
+      "Space Complexity": "20 points (Meets O(R * C) Auxiliary Space (Call stack))",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }

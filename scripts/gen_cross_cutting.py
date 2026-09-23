@@ -355,8 +355,8 @@ def generate_cross_cutting(content_dir):
             ]
         },
         "csms": {
-            "name": "Car Showroom Management System (CSMS)",
-            "category": "Enterprise ERP & Relational Inventory Backend",
+            "name": "College Student Management System (CSMS)",
+            "category": "Enterprise ERP & Academic Management Backend",
             "repo_path": "D:\\Projects\\College Student Management System",
             "tech_stack": {
                 "used": ["Python 3.10", "FastAPI", "SQLAlchemy ORM", "PostgreSQL", "Alembic", "Pydantic", "JWT Auth (jose)"],
@@ -465,10 +465,10 @@ def generate_cross_cutting(content_dir):
                     ]
                 },
                 {
-                    "name": "Car Showroom Management System (CSMS) — Enterprise REST API",
+                    "name": "College Student Management System (CSMS) — Enterprise Academic Platform",
                     "role": "Full Stack Backend Developer",
                     "bullets": [
-                        "Engineered an enterprise vehicle inventory and order management REST API using FastAPI and PostgreSQL, featuring 28 endpoints and automated OpenAPI documentation.",
+                        "Engineered an enterprise academic management and attendance REST API using FastAPI and PostgreSQL, featuring 28 endpoints and automated OpenAPI documentation.",
                         "Enforced strict Role-Based Access Control (RBAC) and user authentication using JWT tokens and bcrypt password hashing.",
                         "Managed database schema lifecycle using Alembic version-controlled migrations, ensuring zero data loss during relational table alterations."
                     ]

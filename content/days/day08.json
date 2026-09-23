@@ -1,157 +1,2431 @@
 {
   "day": 8,
-  "title": "Java Exception Handling, Reverse Linked List & Interest Formulas",
-  "sem_data": {
-    "subject": "BCA-5002 Java Programming",
-    "topic": "Unit I \u2014 Exception Handling Hierarchy, Keywords & Checked vs Unchecked",
-    "detailed_notes": [
-      "An Exception in Java is an abnormal condition or event that disrupts the normal sequential execution flow of a program. Java's object-oriented exception handling mechanism intercepts runtime errors, encapsulating error state within an Exception Object, thereby preventing abrupt application termination and ensuring reliable resource deallocation.",
-      "Java Exception Class Hierarchy:\nAll exception and error types inherit from the single root class 'java.lang.Throwable'. Throwable immediately splits into two major structural branches:\n1. Error: Represents severe, catastrophic system-level failures arising from the underlying JVM or hardware environment (e.g., OutOfMemoryError, StackOverflowError, VirtualMachineError). Application code should never attempt to catch or recover from an Error.\n2. Exception: Represents exceptional conditions that a reasonable application design can anticipate and recover from. Exception branches into:\n   - Checked Exceptions (Compile-Time): Direct subclasses of Exception (excluding RuntimeException). The Java compiler ('javac') enforces that checked exceptions MUST be either caught via try-catch or declared in the method signature using 'throws'. Examples: IOException, SQLException, ClassNotFoundException.\n   - Unchecked Exceptions (Runtime): Subclasses of 'java.lang.RuntimeException'. Arise predominantly from software defects and logic flaws. The compiler does not enforce handling. Examples: NullPointerException, ArithmeticException, ArrayIndexOutOfBoundsException.",
-      "The 5 Exception Keywords:\n\u2022 try: Encloses code blocks that may trigger exceptional conditions. Must be followed by at least one catch block or a finally block.\n\u2022 catch: Intercepts and handles a specific exception thrown from the preceding try block.\n\u2022 finally: Encloses cleanup logic that is GUARANTEED to execute regardless of whether an exception occurred, was caught, or if return was executed (only System.exit() halts finally).\n\u2022 throw: Explicitly instantiates and propagates an exception object: 'throw new IllegalArgumentException(\"Invalid input\");'.\n\u2022 throws: Appended to method signatures to declare checked exceptions propagated to calling methods."
+  "title": "Day 08: Java Exception Handling: Hierarchy, Checked vs Unchecked & Custom Exceptions & Linked List In-Place Reversal",
+  "streams": {
+    "academic": {
+      "unit": 2,
+      "topic": "Unit II — Java Exception Handling: Hierarchy, Checked vs Unchecked & Custom Exceptions",
+      "objectives": [
+        "Master Throwable class hierarchy.",
+        "Differentiate Checked vs Unchecked exceptions and author custom exception classes."
+      ],
+      "explanation": "An exception in Java is an abnormal condition that arises in a code sequence at runtime, disrupting normal instruction flow. The root of all exceptions is `java.lang.Throwable`, which branches into `Error` (irrecoverable system conditions like OutOfMemoryError) and `Exception`. Exceptions divide into: 1. Checked Exceptions (subclasses of Exception excluding RuntimeException; checked by compiler, e.g., IOException, SQLException); 2. Unchecked Exceptions (subclasses of RuntimeException; unchecked by compiler, e.g., NullPointerException, ArrayIndexOutOfBoundsException). Handling keywords: `try`, `catch`, `finally`, `throw`, and `throws`.",
+      "definitions": [
+        {
+          "term": "Checked Exception",
+          "definition": "An exception that is checked by the Java compiler at compile-time, requiring mandatory handling via try-catch or declaration via throws."
+        },
+        {
+          "term": "Finally Block",
+          "definition": "A block that always executes regardless of whether an exception was thrown or caught, typically used for closing open I/O resources."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "Throwable Hierarchy",
+          "content": "Object -> Throwable -> (Error, Exception -> (RuntimeException))."
+        },
+        {
+          "title": "Custom Exceptions",
+          "content": "Created by extending `Exception` (for custom checked exception) or `RuntimeException` (for unchecked exception)."
+        }
+      ],
+      "examples": [
+        "Custom `InsufficientFundsException extends Exception` thrown during ATM balance withdrawal checks."
+      ],
+      "diagram": "+---------------------------------------------------+\n|           JAVA EXCEPTION HIERARCHY                |\n| Object -> Throwable -> Error (Unchecked/System)   |\n|                     -> Exception -> Checked       |\n|                                  -> RuntimeExc    |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Dimension",
+          "Checked Exceptions",
+          "Unchecked Exceptions (Runtime)"
+        ],
+        "rows": [
+          [
+            "Compiler Check",
+            "Checked at compile-time; code will not compile without handling",
+            "Ignored by compiler at compile-time; occurs at runtime"
+          ],
+          [
+            "Inheritance",
+            "Direct subclasses of Exception (excluding RuntimeException)",
+            "Subclasses of RuntimeException"
+          ],
+          [
+            "Root Cause",
+            "External conditions outside direct program control (network, file)",
+            "Programming bugs, bad logic, invalid arguments"
+          ],
+          [
+            "Examples",
+            "IOException, SQLException, ClassNotFoundException",
+            "NullPointerException, ArithmeticException, IndexOutOfBounds"
+          ]
+        ]
+      },
+      "memorize": "Throwable -> Error & Exception. Checked exceptions require mandatory try-catch or throws. finally block ALWAYS executes (even after return statement).",
+      "understand": "finally block executes even if a return statement is encountered in try or catch block (the only exception is System.exit(0)).",
+      "common_mistakes": "Catching generic Exception before specific child exceptions (causes unreachable catch block compile error).",
+      "exam_writing_guidance": "Draw the complete Throwable inheritance tree, explain try-catch-finally mechanics, and write a complete custom exception code snippet.",
+      "mini_practice": [
+        "Can a finally block exist without a catch block?"
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2024-25 (Q2)",
+          "marks": 15,
+          "question": "Explain Java's Exception Handling mechanism with the Throwable hierarchy diagram. Differentiate between Checked and Unchecked exceptions and demonstrate custom exception creation with code. (15 Marks)",
+          "rubric": "Throwable Hierarchy Diagram (4 marks) + Checked vs Unchecked detailed (4 marks) + Keywords (try, catch, finally, throw, throws) (3 marks) + Custom Exception code (4 marks) = 15 Marks.",
+          "model_answer": "Java's exception handling mechanism provides robust runtime error management without terminating program execution abruptly. The hierarchy stems from java.lang.Throwable, branching into Error (serious system failures like StackOverflowError) and Exception. Exceptions are categorized into: 1. Checked Exceptions: Inherit from Exception; checked at compile-time. The compiler enforces that methods throwing checked exceptions either catch them via try-catch or declare them using 'throws' (e.g., IOException, SQLException); 2. Unchecked Exceptions: Inherit from RuntimeException; occur at runtime due to faulty programming logic (e.g., NullPointerException, ArithmeticException). Custom exceptions are authored by extending Exception:\n\n```java\nclass InvalidAgeException extends Exception {\n    public InvalidAgeException(String msg) { super(msg); }\n}\npublic class Test {\n    static void validate(int age) throws InvalidAgeException {\n        if (age < 18) throw new InvalidAgeException('Not eligible to vote');\n    }\n    public static void main(String[] args) {\n        try { validate(16); }\n        catch (InvalidAgeException e) { System.out.println('Caught: ' + e.getMessage()); }\n        finally { System.out.println('Cleanup complete'); }\n    }\n}\n```",
+          "answer_structure": "Hierarchy Diagram -> Checked vs Unchecked Table -> 5 Keywords -> Custom Exception Code",
+          "important_points": [
+            "Throwable tree",
+            "Compile-time enforcement",
+            "finally execution guarantees",
+            "Custom exception extends Exception"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Diagram showing Error vs Exception vs RuntimeException",
+            "Syntactically valid custom exception code"
+          ],
+          "common_mistakes": [
+            "Extending Throwable directly instead of Exception"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5002 Java & Web Design",
+          "year": "2021 / Model",
+          "marks": 5,
+          "question": "What is the difference between 'throw' and 'throws' keywords in Java? (5 Marks)",
+          "rubric": "Comparison table (3 marks) + Code syntax difference (2 marks) = 5 Marks.",
+          "model_answer": "1. Purpose: `throw` is used to explicitly instantiate and throw an exception instance inside a method body; `throws` is used in a method declaration signature to inform callers that this method may throw specific exceptions; 2. Syntax: `throw new IOException();` vs `void readFile() throws IOException { ... }`; 3. Cardinality: `throw` is followed by a single exception instance; `throws` can be followed by multiple comma-separated exception classes."
+        }
+      ],
+      "subject_code": "BCA-5002",
+      "subject_name": "Java Programming & Dynamic Webpage Design",
+      "mcqs": [
+        {
+          "id": "ACAD-08-01",
+          "question": "In Nonaka and Takeuchi's SECI model of Knowledge Creation, what transformation mode represents converting Tacit Knowledge into Explicit Knowledge?",
+          "options": [
+            "Socialization",
+            "Externalization",
+            "Combination",
+            "Internalization"
+          ],
+          "correct_answer": "B",
+          "explanation": "Externalization articulates unspoken, subjective tacit insights into explicit concepts, metaphors, models, and written diagrams."
+        },
+        {
+          "id": "ACAD-08-02",
+          "question": "Which SECI quadrant describes apprentices learning tacit craft skills from a master artisan through shared observation, imitation, and practice without written manuals?",
+          "options": [
+            "Socialization (Tacit to Tacit)",
+            "Combination (Explicit to Explicit)",
+            "Internalization (Explicit to Tacit)",
+            "Externalization (Tacit to Explicit)"
+          ],
+          "correct_answer": "A",
+          "explanation": "Socialization transfers tacit knowledge directly between individuals through shared physical experience, apprenticeship, and informal dialogue."
+        },
+        {
+          "id": "ACAD-08-03",
+          "question": "What is the defining characteristic of Tacit Knowledge compared to Explicit Knowledge?",
+          "options": [
+            "It is easily indexed, codified, and stored in relational database tables",
+            "It is personal, context-specific, rooted in action, commitment, and heuristics, making it hard to formalize",
+            "It can be transmitted instantly over a network socket as JSON",
+            "It is only possessed by machines and software algorithms"
+          ],
+          "correct_answer": "B",
+          "explanation": "Tacit knowledge is intuitive, deeply ingrained in human experience and mental models ('we know more than we can tell', Michael Polanyi)."
+        },
+        {
+          "id": "ACAD-08-04",
+          "question": "In the DIKW hierarchy, which layer adds actionable rules, context, and experience to raw processed information?",
+          "options": [
+            "Data",
+            "Information",
+            "Knowledge",
+            "Wisdom"
+          ],
+          "correct_answer": "C",
+          "explanation": "DIKW pyramid: Data (raw symbols) -> Information (contextualized data) -> Knowledge (actionable understanding and rules) -> Wisdom (evaluated judgment)."
+        },
+        {
+          "id": "ACAD-08-05",
+          "question": "Which SECI quadrant involves integrating multiple documents, databases, and financial spreadsheets into a unified organizational repository?",
+          "options": [
+            "Internalization",
+            "Externalization",
+            "Socialization",
+            "Combination"
+          ],
+          "correct_answer": "D",
+          "explanation": "Combination synthesizes disparate pieces of explicit knowledge by sorting, aggregating, and re-categorizing them into new explicit documents."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2024-25 (Q2)",
+        "marks": 15,
+        "question": "Explain Java's Exception Handling mechanism with the Throwable hierarchy diagram. Differentiate between Checked and Unchecked exceptions and demonstrate custom exception creation with code. (15 Marks)",
+        "rubric": "Throwable Hierarchy Diagram (4 marks) + Checked vs Unchecked detailed (4 marks) + Keywords (try, catch, finally, throw, throws) (3 marks) + Custom Exception code (4 marks) = 15 Marks.",
+        "model_answer": "Java's exception handling mechanism provides robust runtime error management without terminating program execution abruptly. The hierarchy stems from java.lang.Throwable, branching into Error (serious system failures like StackOverflowError) and Exception. Exceptions are categorized into: 1. Checked Exceptions: Inherit from Exception; checked at compile-time. The compiler enforces that methods throwing checked exceptions either catch them via try-catch or declare them using 'throws' (e.g., IOException, SQLException); 2. Unchecked Exceptions: Inherit from RuntimeException; occur at runtime due to faulty programming logic (e.g., NullPointerException, ArithmeticException). Custom exceptions are authored by extending Exception:\n\n```java\nclass InvalidAgeException extends Exception {\n    public InvalidAgeException(String msg) { super(msg); }\n}\npublic class Test {\n    static void validate(int age) throws InvalidAgeException {\n        if (age < 18) throw new InvalidAgeException('Not eligible to vote');\n    }\n    public static void main(String[] args) {\n        try { validate(16); }\n        catch (InvalidAgeException e) { System.out.println('Caught: ' + e.getMessage()); }\n        finally { System.out.println('Cleanup complete'); }\n    }\n}\n```",
+        "answer_structure": "Hierarchy Diagram -> Checked vs Unchecked Table -> 5 Keywords -> Custom Exception Code",
+        "important_points": [
+          "Throwable tree",
+          "Compile-time enforcement",
+          "finally execution guarantees",
+          "Custom exception extends Exception"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagram showing Error vs Exception vs RuntimeException",
+          "Syntactically valid custom exception code"
+        ],
+        "common_mistakes": [
+          "Extending Throwable directly instead of Exception"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2021 / Model",
+        "marks": 5,
+        "question": "What is the difference between 'throw' and 'throws' keywords in Java? (5 Marks)",
+        "rubric": "Comparison table (3 marks) + Code syntax difference (2 marks) = 5 Marks.",
+        "model_answer": "1. Purpose: `throw` is used to explicitly instantiate and throw an exception instance inside a method body; `throws` is used in a method declaration signature to inform callers that this method may throw specific exceptions; 2. Syntax: `throw new IOException();` vs `void readFile() throws IOException { ... }`; 3. Cardinality: `throw` is followed by a single exception instance; `throws` can be followed by multiple comma-separated exception classes."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                   JAVA THROWABLE CLASS HIERARCHY TREE                   |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|                           java.lang.Object                              |\n|                                  |                                      |\n|                         java.lang.Throwable                             |\n|                               /       \\                                 |\n|                              /         \\                                |\n|                    java.lang.Error   java.lang.Exception                |\n|                       (Fatal)                 |                         |\n|                      /       \\                +-------------------+     |\n|         StackOverflowError   OutOfMemoryError |                   |     |\n|                                               v                   v     |\n|                                    RuntimeException       Checked Excep |\n|                                      (Unchecked)          (Compile-Time)|\n|                                     /     |     \\          /     |    \\ |\n|                          NullPointer  Arith  IndexOut   IOEx  SQL Class |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-08-01",
+        "question": "In Nonaka and Takeuchi's SECI model of Knowledge Creation, what transformation mode represents converting Tacit Knowledge into Explicit Knowledge?",
+        "options": [
+          "Socialization",
+          "Externalization",
+          "Combination",
+          "Internalization"
+        ],
+        "correct_answer": "B",
+        "explanation": "Externalization articulates unspoken, subjective tacit insights into explicit concepts, metaphors, models, and written diagrams."
+      },
+      {
+        "id": "ACAD-08-02",
+        "question": "Which SECI quadrant describes apprentices learning tacit craft skills from a master artisan through shared observation, imitation, and practice without written manuals?",
+        "options": [
+          "Socialization (Tacit to Tacit)",
+          "Combination (Explicit to Explicit)",
+          "Internalization (Explicit to Tacit)",
+          "Externalization (Tacit to Explicit)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Socialization transfers tacit knowledge directly between individuals through shared physical experience, apprenticeship, and informal dialogue."
+      },
+      {
+        "id": "ACAD-08-03",
+        "question": "What is the defining characteristic of Tacit Knowledge compared to Explicit Knowledge?",
+        "options": [
+          "It is easily indexed, codified, and stored in relational database tables",
+          "It is personal, context-specific, rooted in action, commitment, and heuristics, making it hard to formalize",
+          "It can be transmitted instantly over a network socket as JSON",
+          "It is only possessed by machines and software algorithms"
+        ],
+        "correct_answer": "B",
+        "explanation": "Tacit knowledge is intuitive, deeply ingrained in human experience and mental models ('we know more than we can tell', Michael Polanyi)."
+      },
+      {
+        "id": "ACAD-08-04",
+        "question": "In the DIKW hierarchy, which layer adds actionable rules, context, and experience to raw processed information?",
+        "options": [
+          "Data",
+          "Information",
+          "Knowledge",
+          "Wisdom"
+        ],
+        "correct_answer": "C",
+        "explanation": "DIKW pyramid: Data (raw symbols) -> Information (contextualized data) -> Knowledge (actionable understanding and rules) -> Wisdom (evaluated judgment)."
+      },
+      {
+        "id": "ACAD-08-05",
+        "question": "Which SECI quadrant involves integrating multiple documents, databases, and financial spreadsheets into a unified organizational repository?",
+        "options": [
+          "Internalization",
+          "Externalization",
+          "Socialization",
+          "Combination"
+        ],
+        "correct_answer": "D",
+        "explanation": "Combination synthesizes disparate pieces of explicit knowledge by sorting, aggregating, and re-categorizing them into new explicit documents."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Time, Speed & Distance (Trains & Relative Speed)",
+      "category": "Quantitative",
+      "subtopic": "Time Speed Distance",
+      "formulas": "1. Speed = Distance / Time; Distance = Speed * Time.\n2. Conversion: km/hr to m/s multiply by 5/18; m/s to km/hr multiply by 18/5.\n3. Relative Speed: Same direction = |S1 - S2|; Opposite direction = S1 + S2.\n4. Average Speed for equal distances = (2 * S1 * S2) / (S1 + S2).",
+      "shortcuts": "Train Crossing Object: Time to cross a stationary point (pole/person) = Length of Train / Speed. Time to cross a platform/bridge = (Length of Train + Length of Platform) / Speed.",
+      "tutorial": [
+        "Relative speed is the rate at which distance between two moving bodies decreases or increases. When two trains travel toward each other, their speeds add. When they travel in the same direction, their speeds subtract."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Time Speed Distance",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Time Speed Distance",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Time Speed Distance",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Time Speed Distance",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Time Speed Distance",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A train 240 m long passes a telegraph pole in 16 seconds. What is the speed of the train in km/hr?",
+        "options": {
+          "A": "54 km/hr",
+          "B": "60 km/hr",
+          "C": "48 km/hr",
+          "D": "72 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Speed = 240 / 16 = 15 m/s. In km/hr = 15 * (18 / 5) = 54 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A train 300 m long crosses a 200 m long platform in 25 seconds. What is the speed of the train in km/hr?",
+        "options": {
+          "A": "72 km/hr",
+          "B": "64 km/hr",
+          "C": "54 km/hr",
+          "D": "80 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Total distance = 300 + 200 = 500 m. Speed = 500 / 25 = 20 m/s = 20 * (18/5) = 72 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Two trains 140 m and 160 m long run at 60 km/hr and 40 km/hr in opposite directions. In what time do they cross each other?",
+        "options": {
+          "A": "10.8 secs",
+          "B": "12 secs",
+          "C": "9 secs",
+          "D": "15 secs"
+        },
+        "correct_answer": "A",
+        "explanation": "Relative speed = 60 + 40 = 100 km/hr = 100 * (5/18) = 250/9 m/s. Total distance = 300 m. Time = 300 / (250/9) = 10.8 seconds.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "A person travels from A to B at 20 km/hr and returns from B to A at 30 km/hr. What is his average speed for the whole journey?",
+        "options": {
+          "A": "24 km/hr",
+          "B": "25 km/hr",
+          "C": "22.5 km/hr",
+          "D": "26 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Average speed = (2 * u * v) / (u + v) = (2 * 20 * 30) / (20 + 30) = 1200 / 50 = 24 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Walking at 3/4th of his usual speed, a man reaches his office 20 minutes late. What is his usual time to reach the office?",
+        "options": {
+          "A": "60 mins",
+          "B": "45 mins",
+          "C": "75 mins",
+          "D": "80 mins"
+        },
+        "correct_answer": "A",
+        "explanation": "Time is inversely proportional to speed: new time = 4/3 of usual. 4/3 T - T = 20 => T/3 = 20 => Usual time T = 60 minutes.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Two trains leave Delhi for Kanpur at 6:00 AM and 6:30 AM at 60 km/hr and 75 km/hr respectively. How far from Delhi will they meet?",
+        "options": {
+          "A": "150 km",
+          "B": "120 km",
+          "C": "180 km",
+          "D": "200 km"
+        },
+        "correct_answer": "A",
+        "explanation": "In 30 mins, Train 1 covers 30 km. Relative speed = 75 - 60 = 15 km/hr. Time to catch = 30 / 15 = 2 hours after 6:30 AM. Distance = 75 * 2 = 150 km.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "A thief steals a car at 1:30 PM and drives at 40 km/hr. Theft is discovered at 2:00 PM and owner chases at 50 km/hr. Owner overtakes at:",
+        "options": {
+          "A": "4:00 PM",
+          "B": "3:30 PM",
+          "C": "4:30 PM",
+          "D": "5:00 PM"
+        },
+        "correct_answer": "A",
+        "explanation": "Lead at 2 PM = 20 km. Relative speed = 10 km/hr. Time = 20 / 10 = 2 hours. Meeting time = 2:00 PM + 2 hrs = 4:00 PM.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A train crosses two bridges of lengths 800 m and 400 m in 100 seconds and 60 seconds respectively. What is the length of the train?",
+        "options": {
+          "A": "200 m",
+          "B": "150 m",
+          "C": "250 m",
+          "D": "300 m"
+        },
+        "correct_answer": "A",
+        "explanation": "Speed = (800 - 400) / (100 - 60) = 400 / 40 = 10 m/s. Length + 400 = 10 * 60 = 600 => Length = 200 m.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "If a man walks at 14 km/hr instead of 10 km/hr, he would have walked 20 km more in the same time. Actual distance traveled:",
+        "options": {
+          "A": "50 km",
+          "B": "60 km",
+          "C": "40 km",
+          "D": "70 km"
+        },
+        "correct_answer": "A",
+        "explanation": "Time = D / 10 = (D + 20) / 14 => 14D = 10D + 200 => 4D = 200 => D = 50 km.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "A car travels first 1/3 distance at 10 km/hr, next 1/3 at 20 km/hr, and last 1/3 at 60 km/hr. Average speed for journey:",
+        "options": {
+          "A": "18 km/hr",
+          "B": "24 km/hr",
+          "C": "30 km/hr",
+          "D": "15 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Harmonic mean = 3 / (1/10 + 1/20 + 1/60) = 3 / (6 + 3 + 1)/60 = 3 / (10/60) = 3 * 6 = 18 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Time Speed Distance (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Linked List In-Place Reversal",
+      "category": "Linked List",
+      "concept": "Reverses pointers of a linked list in-place using three pointers: prev, curr, and next.",
+      "why_it_works": "Mutates next pointers directly in a single linear pass with O(1) auxiliary space.",
+      "visual_explanation": "1 -> 2 -> 3 -> null\\nStep 1: null <- 1    2 -> 3 -> null\\nStep 2: null <- 1 <- 2    3 -> null\\nStep 3: null <- 1 <- 2 <- 3 (New Head = 3)",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public ListNode reverseList(ListNode head) {\n        ListNode prev = null;\n        ListNode curr = head;\n        while (curr != null) {\n            ListNode nextTemp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = nextTemp;\n        }\n        return prev;\n    }\n}",
+      "code": "public class Solution {\n    public ListNode reverseList(ListNode head) {\n        ListNode prev = null;\n        ListNode curr = head;\n        while (curr != null) {\n            ListNode nextTemp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = nextTemp;\n        }\n        return prev;\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 3-4: Initialize prev as null and curr as head.",
+        "Line 5: Loop while curr is non-null.",
+        "Line 6: Temporarily store curr.next.",
+        "Line 7: Invert pointer: curr.next = prev.",
+        "Line 8-9: Advance prev to curr, and curr to nextTemp.",
+        "Line 11: Return prev as the new head."
+      ],
+      "dry_run": "1->2->3. Step 1: 1->null, prev=1, curr=2. Step 2: 2->1->null, prev=2, curr=3. Step 3: 3->2->1->null, prev=3, curr=null. Return 3.",
+      "complexity": "O(N) Time, O(1) Auxiliary Space",
+      "edge_cases": "Empty list (head == null), Single node list, Two node list",
+      "edge_cases_list": [
+        "Empty list (head == null)",
+        "Single node list",
+        "Two node list"
+      ],
+      "interview_variations": [
+        "Reverse Linked List II (Between Left and Right)",
+        "Reverse Nodes in k-Group",
+        "Palindrome Linked List"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-08-01",
+        "title": "Problem 1: Reverse Linked List II",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given head of a singly linked list and two integers left and right where left <= right, reverse the nodes from position left to right.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Linked List In-Place Reversal algorithmic technique.\n2. Reverses pointers of a linked list in-place using three pointers: prev, curr, and next.\n3. Invariants: Mutates next pointers directly in a single linear pass with O(1) auxiliary space.",
+        "solution_java": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+        "solution_python": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+        "code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+        "java_code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-08-02",
+        "title": "Problem 2: Palindrome Linked List",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given the head of a singly linked list, return true if it is a palindrome or false otherwise.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Linked List In-Place Reversal.\n2. Handle edge cases: Empty list (head == null), Single node list, Two node list.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+        "solution_python": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+        "code": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+        "java_code": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "DBMS",
+      "topic": "DBMS Architecture, 3-Tier Schema, Data Independence & Relational Foundations",
+      "concept_lesson": "A Database Management System (DBMS) is software designed to store, manage, query, and enforce integrity over structured data.\n\nThe ANSI-SPARC 3-Level Architecture:\n1. External Level (View Level): Describes user-facing views tailored to specific applications or roles (e.g., Student view vs HOD view in CSMS). Hides non-relevant data.\n2. Conceptual Level (Logical Level): Describes WHAT data is stored and relationships between entities across the entire database (tables, columns, constraints, foreign keys). Managed by DBA.\n3. Internal Level (Physical Level): Describes HOW data is physically organized on disk storage (B+ trees, byte offsets, block clustering, index files, compression).\n\nData Independence:\n- Logical Data Independence: The ability to modify conceptual schema (e.g., adding an address column or splitting tables) without modifying external views or application code.\n- Physical Data Independence: The ability to alter physical storage structures (e.g., rebuilding B+ trees, migrating to SSDs, changing hash partitions) without altering the conceptual schema.\n\nRelational Model Foundations (Codd's Rules):\nData is structured into Relations (tables), Tuples (rows), and Attributes (columns). Key constraints enforce mathematical validity: Domain Constraint (values must belong to defined data type), Entity Integrity (Primary Key cannot be NULL), and Referential Integrity (Foreign Key must either match an existing primary key in the referenced relation or be NULL).",
+      "key_definitions": [
+        {
+          "term": "Physical Data Independence",
+          "definition": "The capacity to change physical storage structures without altering conceptual schemas or applications."
+        },
+        {
+          "term": "Entity Integrity",
+          "definition": "A relational database rule stating that no primary key component can evaluate to NULL."
+        },
+        {
+          "term": "Referential Integrity",
+          "definition": "A constraint ensuring foreign key values match existing valid primary keys in referenced parent tables."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What is the difference between Logical and Physical Data Independence?",
+          "a": "Logical Data Independence allows changes to the conceptual schema (adding columns, creating views, modifying entities) without breaking existing application code or user views. Physical Data Independence allows changing physical storage layouts (file organizations, disk paths, B-tree indexes) without altering the logical schema or queries. Logical independence is harder to achieve because applications are tightly coupled to data attributes."
+        },
+        {
+          "q": "What are Codd's foundational constraints in the relational model?",
+          "a": "1. Domain Constraint: Every column value must be an atomic value from that domain. 2. Entity Integrity Constraint: Every table must have a Primary Key whose attributes cannot be NULL. 3. Referential Integrity Constraint: A Foreign Key in a child table must reference a valid, existing Primary Key in the parent table or be explicitly NULL."
+        },
+        {
+          "q": "Why is Primary Key required to be NOT NULL in relational databases?",
+          "a": "A primary key uniquely identifies individual tuples within a relation. If a primary key attribute were permitted to be NULL, the database engine could not distinguish between records or enforce unique entity identity, violating the foundational mathematical set definition of a relation."
+        },
+        {
+          "q": "Explain the difference between DDL, DML, DCL, and TCL in SQL.",
+          "a": "DDL (Data Definition Language: CREATE, ALTER, DROP, TRUNCATE) defines database schemas and structure. DML (Data Manipulation Language: SELECT, INSERT, UPDATE, DELETE) queries and alters data rows. DCL (Data Control Language: GRANT, REVOKE) manages security permissions. TCL (Transaction Control Language: COMMIT, ROLLBACK, SAVEPOINT) manages transaction execution."
+        },
+        {
+          "q": "What is the difference between DROP, TRUNCATE, and DELETE?",
+          "a": "DELETE is a DML command that removes rows one-by-one, logs each deletion in transaction logs, activates triggers, and can be rolled back. TRUNCATE is a DDL command that deallocates entire data pages, removing all rows ultra-fast with minimal logging; it cannot be filtered with WHERE and cannot activate delete triggers. DROP is a DDL command that destroys the entire table structure and its data from the database catalog."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-08-01",
+          "question": "Which level of the ANSI-SPARC 3-tier architecture describes the physical storage of data on disk?",
+          "options": [
+            "External level",
+            "Conceptual level",
+            "Internal level",
+            "Logical level"
+          ],
+          "correct_answer": "C",
+          "explanation": "The Internal (Physical) level describes how data is organized as blocks and indexes on disk."
+        },
+        {
+          "id": "CS-08-02",
+          "question": "The rule stating that a Foreign Key value must either match a Primary Key in the referenced relation or be NULL is:",
+          "options": [
+            "Domain Constraint",
+            "Entity Integrity",
+            "Referential Integrity",
+            "Key Constraint"
+          ],
+          "correct_answer": "C",
+          "explanation": "Referential Integrity ensures child foreign keys point to valid existing parent rows."
+        },
+        {
+          "id": "CS-08-03",
+          "question": "Which SQL command is a DDL command that removes all rows from a table by deallocating data pages?",
+          "options": [
+            "DELETE",
+            "TRUNCATE",
+            "DROP TABLE",
+            "REMOVE"
+          ],
+          "correct_answer": "B",
+          "explanation": "TRUNCATE deallocates data pages quickly without individual row logging."
+        },
+        {
+          "id": "CS-08-04",
+          "question": "The ability to modify the conceptual schema without altering existing user views is known as:",
+          "options": [
+            "Physical Data Independence",
+            "Logical Data Independence",
+            "Data Redundancy",
+            "Transaction Isolation"
+          ],
+          "correct_answer": "B",
+          "explanation": "Logical Data Independence shields user views from modifications to logical tables."
+        },
+        {
+          "id": "CS-08-05",
+          "question": "Entity Integrity rule explicitly prohibits which of the following?",
+          "options": [
+            "Duplicate foreign keys",
+            "A Primary Key containing a NULL value",
+            "Secondary indexes",
+            "Composite attributes"
+          ],
+          "correct_answer": "B",
+          "explanation": "Entity Integrity dictates that primary key attributes cannot be NULL."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "Caloriv",
+      "repo_path": "D:\\Projects\\Caloriv",
+      "topic": "Android Build Toolchain, SDK Management & Production Gradle Orchestration",
+      "what_to_understand": "Gradle dependency resolution, Android Studio SDK paths, release keystores, and APK packaging.",
+      "what_to_memorize": "`./gradlew assembleRelease` compiles native Java/Kotlin code, packages Hermes bytecode, and signs the release APK.",
+      "interview_questions": [
+        {
+          "q": "What challenges did you face configuring the Android build toolchain for Caloriv, and how did you resolve them?",
+          "a": "Upgrading to modern React Native versions introduced build failures with Java 17 and Android Gradle Plugin (AGP) incompatibilities. I resolved this by authoring automated PowerShell and batch repair scripts (`fix_gradle.ps1`, `setup-android-env.bat`) that set correct `JAVA_HOME`, patched module-level `build.gradle` files to align `compileSdkVersion 34`, and configured `caloriv-release-key.keystore` for verified production APK signing."
+        },
+        {
+          "q": "What is Hermes and why is it enabled in Caloriv's Android builds?",
+          "a": "Hermes is an open-source JavaScript engine optimized specifically for React Native on Android. By compiling JavaScript into optimized bytecode ahead-of-time (AOT) during the build step, it slashes mobile app startup time (TTI) by over 50% and reduces APK size and memory consumption."
+        }
+      ],
+      "interview_pitch_exercise": "Beyond writing app features, I mastered the native mobile build pipeline. In Caloriv, I configured Android Studio SDK toolchains, authored Gradle patch scripts to resolve native dependency conflicts, optimized Hermes ahead-of-time compilation, and generated production-signed APKs."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 8 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 8 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of SmartGalla.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 07 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5001 — Knowledge Capture Systems & SECI Model.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time, Speed & Distance.\n• Algorithmic Invariant: Optimal time and space complexity rules for Linked List In-Place Reversal.\n• Systems Law: Architectural equations, protocols, and complexity bounds for File Systems: Inodes & Disk Scheduling.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Knowledge Capture Systems & SECI Model.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Linked List In-Place Reversal.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Caloriv.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 8 Q1: What is the primary academic thesis of Knowledge Capture Systems & SECI Model?",
+          "a": "Core theoretical and practical mastery of Knowledge Capture Systems & SECI Model under the CSJM University BCA-5001 syllabus."
+        },
+        {
+          "q": "Day 8 Q2: What is the key speed calculation formula applied in Time, Speed & Distance?",
+          "a": "High-speed corporate placement arithmetic shortcut for Time, Speed & Distance in campus recruitment exams."
+        },
+        {
+          "q": "Day 8 Q3: What is the time complexity of Linked List In-Place Reversal?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 8 Q4: What is the central architectural principle of File Systems: Inodes & Disk Scheduling?",
+          "a": "Foundational systems engineering rule governing File Systems: Inodes & Disk Scheduling in production environments."
+        },
+        {
+          "q": "Day 8 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 8 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 8 Q7: What is the verified technical foundation of Caloriv?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 8 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 8 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 8 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5001 — Knowledge Capture Systems & SECI Model.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time, Speed & Distance.\n• Algorithmic Invariant: Optimal time and space complexity rules for Linked List In-Place Reversal.\n• Systems Law: Architectural equations, protocols, and complexity bounds for File Systems: Inodes & Disk Scheduling."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5001 — Knowledge Capture Systems & SECI Model."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time, Speed & Distance."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Linked List In-Place Reversal."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: Caloriv."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-08-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In Nonaka and Takeuchi's SECI model of Knowledge Creation, what transformation mode represents converting Tacit Knowledge into Explicit Knowledge?",
+        "options": [
+          "Socialization",
+          "Externalization",
+          "Combination",
+          "Internalization"
+        ],
+        "correct_answer": "B",
+        "explanation": "Externalization articulates unspoken, subjective tacit insights into explicit concepts, metaphors, models, and written diagrams."
+      },
+      {
+        "id": "TEST-08-02",
+        "category": "Academic (Academic Theory)",
+        "question": "Which SECI quadrant describes apprentices learning tacit craft skills from a master artisan through shared observation, imitation, and practice without written manuals?",
+        "options": [
+          "Socialization (Tacit to Tacit)",
+          "Combination (Explicit to Explicit)",
+          "Internalization (Explicit to Tacit)",
+          "Externalization (Tacit to Explicit)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Socialization transfers tacit knowledge directly between individuals through shared physical experience, apprenticeship, and informal dialogue."
+      },
+      {
+        "id": "TEST-08-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the defining characteristic of Tacit Knowledge compared to Explicit Knowledge?",
+        "options": [
+          "It is easily indexed, codified, and stored in relational database tables",
+          "It is personal, context-specific, rooted in action, commitment, and heuristics, making it hard to formalize",
+          "It can be transmitted instantly over a network socket as JSON",
+          "It is only possessed by machines and software algorithms"
+        ],
+        "correct_answer": "B",
+        "explanation": "Tacit knowledge is intuitive, deeply ingrained in human experience and mental models ('we know more than we can tell', Michael Polanyi)."
+      },
+      {
+        "id": "TEST-08-04",
+        "category": "Academic (Academic Theory)",
+        "question": "In the DIKW hierarchy, which layer adds actionable rules, context, and experience to raw processed information?",
+        "options": [
+          "Data",
+          "Information",
+          "Knowledge",
+          "Wisdom"
+        ],
+        "correct_answer": "C",
+        "explanation": "DIKW pyramid: Data (raw symbols) -> Information (contextualized data) -> Knowledge (actionable understanding and rules) -> Wisdom (evaluated judgment)."
+      },
+      {
+        "id": "TEST-08-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Which SECI quadrant involves integrating multiple documents, databases, and financial spreadsheets into a unified organizational repository?",
+        "options": [
+          "Internalization",
+          "Externalization",
+          "Socialization",
+          "Combination"
+        ],
+        "correct_answer": "D",
+        "explanation": "Combination synthesizes disparate pieces of explicit knowledge by sorting, aggregating, and re-categorizing them into new explicit documents."
+      },
+      {
+        "id": "TEST-08-06",
+        "category": "Placement Aptitude",
+        "question": "A train 150 meters long passes an electric pole in 10 seconds. What is the speed of the train in km/hr?",
+        "options": [
+          "54 km/hr",
+          "45 km/hr",
+          "60 km/hr",
+          "50 km/hr"
+        ],
+        "correct_answer": "A",
+        "explanation": "Speed = Distance / Time = 150 / 10 = 15 m/s. Convert to km/hr: 15 * (18 / 5) = 54 km/hr."
+      },
+      {
+        "id": "TEST-08-07",
+        "category": "Placement Aptitude",
+        "question": "A train 280 meters long is traveling at 63 km/hr. How much time will it take to pass a railway platform 420 meters long?",
+        "options": [
+          "40 seconds",
+          "35 seconds",
+          "45 seconds",
+          "50 seconds"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total distance = 280 + 420 = 700 meters. Speed = 63 * (5/18) = 17.5 m/s. Time = 700 / 17.5 = 40 seconds."
+      },
+      {
+        "id": "TEST-08-08",
+        "category": "Placement Aptitude",
+        "question": "Two trains 140 m and 160 m long run at speeds of 60 km/hr and 48 km/hr respectively in opposite directions on parallel tracks. In what time will they cross each other?",
+        "options": [
+          "10 seconds",
+          "12 seconds",
+          "8 seconds",
+          "15 seconds"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total distance = 140 + 160 = 300 m. Relative speed = 60 + 48 = 108 km/hr = 108 * (5/18) = 30 m/s. Time = 300 / 30 = 10 seconds."
+      },
+      {
+        "id": "TEST-08-09",
+        "category": "Placement Aptitude",
+        "question": "A man walking at 5 km/hr crosses a bridge in 15 minutes. What is the length of the bridge in meters?",
+        "options": [
+          "1,250 meters",
+          "1,500 meters",
+          "1,000 meters",
+          "1,200 meters"
+        ],
+        "correct_answer": "A",
+        "explanation": "Speed = 5 * (5/18) = 25/18 m/s. Time = 15 * 60 = 900 seconds. Distance = (25/18) * 900 = 1,250 meters."
+      },
+      {
+        "id": "TEST-08-10",
+        "category": "Placement Aptitude",
+        "question": "If a person walks at 14 km/hr instead of 10 km/hr, he would have walked 20 km more in the same time. What was the actual distance traveled by him?",
+        "options": [
+          "50 km",
+          "60 km",
+          "45 km",
+          "70 km"
+        ],
+        "correct_answer": "A",
+        "explanation": "Let time be t hours. 14t - 10t = 20 => 4t = 20 => t = 5 hours. Actual distance = 10 * 5 = 50 km."
+      },
+      {
+        "id": "TEST-08-11",
+        "category": "Core CS (DBMS)",
+        "question": "Which level of the ANSI-SPARC 3-tier architecture describes the physical storage of data on disk?",
+        "options": [
+          "External level",
+          "Conceptual level",
+          "Internal level",
+          "Logical level"
+        ],
+        "correct_answer": "C",
+        "explanation": "The Internal (Physical) level describes how data is organized as blocks and indexes on disk."
+      },
+      {
+        "id": "TEST-08-12",
+        "category": "Core CS (DBMS)",
+        "question": "The rule stating that a Foreign Key value must either match a Primary Key in the referenced relation or be NULL is:",
+        "options": [
+          "Domain Constraint",
+          "Entity Integrity",
+          "Referential Integrity",
+          "Key Constraint"
+        ],
+        "correct_answer": "C",
+        "explanation": "Referential Integrity ensures child foreign keys point to valid existing parent rows."
+      },
+      {
+        "id": "TEST-08-13",
+        "category": "Core CS (DBMS)",
+        "question": "Which SQL command is a DDL command that removes all rows from a table by deallocating data pages?",
+        "options": [
+          "DELETE",
+          "TRUNCATE",
+          "DROP TABLE",
+          "REMOVE"
+        ],
+        "correct_answer": "B",
+        "explanation": "TRUNCATE deallocates data pages quickly without individual row logging."
+      },
+      {
+        "id": "TEST-08-14",
+        "category": "Core CS (DBMS)",
+        "question": "The ability to modify the conceptual schema without altering existing user views is known as:",
+        "options": [
+          "Physical Data Independence",
+          "Logical Data Independence",
+          "Data Redundancy",
+          "Transaction Isolation"
+        ],
+        "correct_answer": "B",
+        "explanation": "Logical Data Independence shields user views from modifications to logical tables."
+      },
+      {
+        "id": "TEST-08-15",
+        "category": "Core CS (DBMS)",
+        "question": "Entity Integrity rule explicitly prohibits which of the following?",
+        "options": [
+          "Duplicate foreign keys",
+          "A Primary Key containing a NULL value",
+          "Secondary indexes",
+          "Composite attributes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Entity Integrity dictates that primary key attributes cannot be NULL."
+      },
+      {
+        "id": "TEST-08-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Linked List In-Place Reversal' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Linked List In-Place Reversal' pattern operates with O(N) Time, O(1) Auxiliary Space: Mutates next pointers directly in a single linear pass with O(1) auxiliary space.."
+      },
+      {
+        "id": "TEST-08-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Linked List In-Place Reversal' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty list (head == null).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Linked List In-Place Reversal include Empty list (head == null), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-08-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Reverse Linked List II', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-08-19",
+        "category": "Projects (Caloriv)",
+        "question": "In Sarthak's project 'Caloriv', what is the core architectural principle regarding 'Android Build Toolchain, SDK Management & Production Gradle Orchestration'?",
+        "options": [
+          "`./gradlew assembleRelease` compiles native Java/Kotlin code, packages Hermes bytecode, and signs the release APK.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For Caloriv, the architectural invariant is: `./gradlew assembleRelease` compiles native Java/Kotlin code, packages Hermes bytecode, and signs the release APK.."
+      },
+      {
+        "id": "TEST-08-20",
+        "category": "Projects (Caloriv)",
+        "question": "Regarding 'Caloriv', how should you defend this design decision in a technical interview: 'What challenges did you face configuring the Android build toolchain for Caloriv, and how did you resolve them?'?",
+        "options": [
+          "Upgrading to modern React Native versions introduced build failures with Java 17 and Android Gradle Plugin (AGP) incompatibilities. I resolved this by authoring...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Upgrading to modern React Native versions introduced build failures with Java 17 and Android Gradle Plugin (AGP) incompatibilities. I resolv."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-08",
+      "title": "Reverse Linked List II (Linked List In-Place Reversal)",
+      "time_limit_minutes": 25,
+      "difficulty": "Easy",
+      "problem_statement": "Solve the core placement problem: Reverse Linked List II.\n\nGiven head of a singly linked list and two integers left and right where left <= right, reverse the nodes from position left to right.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Linked List In-Place Reversal\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: Empty list (head == null), Single node list, Two node list.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Linked List In-Place Reversal\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Linked List In-Place Reversal\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Linked List In-Place Reversal logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Empty list (head == null)",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(N) Time)",
+        "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Java Programming & Dynamic Webpage Design",
+    "subject_code": "BCA-5002",
+    "unit": 2,
+    "topic": "Unit II — Java Exception Handling: Hierarchy, Checked vs Unchecked & Custom Exceptions",
+    "objectives": [
+      "Master Throwable class hierarchy.",
+      "Differentiate Checked vs Unchecked exceptions and author custom exception classes."
+    ],
+    "detailed_notes": [
+      "An exception in Java is an abnormal condition that arises in a code sequence at runtime, disrupting normal instruction flow. The root of all exceptions is `java.lang.Throwable`, which branches into `Error` (irrecoverable system conditions like OutOfMemoryError) and `Exception`. Exceptions divide into: 1. Checked Exceptions (subclasses of Exception excluding RuntimeException; checked by compiler, e.g., IOException, SQLException); 2. Unchecked Exceptions (subclasses of RuntimeException; unchecked by compiler, e.g., NullPointerException, ArrayIndexOutOfBoundsException). Handling keywords: `try`, `catch`, `finally`, `throw`, and `throws`.",
+      "Object -> Throwable -> (Error, Exception -> (RuntimeException)).",
+      "Created by extending `Exception` (for custom checked exception) or `RuntimeException` (for unchecked exception)."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|           JAVA EXCEPTION HIERARCHY                |\n| Object -> Throwable -> Error (Unchecked/System)   |\n|                     -> Exception -> Checked       |\n|                                  -> RuntimeExc    |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
         "Dimension",
-        "Checked Exceptions (Compile-Time)",
+        "Checked Exceptions",
         "Unchecked Exceptions (Runtime)"
       ],
       "rows": [
         [
+          "Compiler Check",
+          "Checked at compile-time; code will not compile without handling",
+          "Ignored by compiler at compile-time; occurs at runtime"
+        ],
+        [
           "Inheritance",
-          "Direct subclasses of java.lang.Exception (not RuntimeException)",
-          "Direct subclasses of java.lang.RuntimeException"
+          "Direct subclasses of Exception (excluding RuntimeException)",
+          "Subclasses of RuntimeException"
         ],
         [
-          "Compiler Enforcement",
-          "Enforced by javac at compile-time; code will not compile without handling",
-          "Ignored by javac at compile-time; occurs dynamically at runtime"
+          "Root Cause",
+          "External conditions outside direct program control (network, file)",
+          "Programming bugs, bad logic, invalid arguments"
         ],
         [
-          "Handling Mechanism",
-          "Must be handled using try-catch OR declared using throws",
-          "Handling is optional; can be prevented by writing defensive logic"
-        ],
-        [
-          "Underlying Cause",
-          "External operational conditions (file missing, network loss, SQL error)",
-          "Internal programming logic bugs (null dereference, divide by zero)"
-        ],
-        [
-          "Key Examples",
-          "IOException, SQLException, ClassNotFoundException, FileNotFoundException",
-          "NullPointerException, ArithmeticException, ArrayIndexOutOfBoundsException"
+          "Examples",
+          "IOException, SQLException, ClassNotFoundException",
+          "NullPointerException, ArithmeticException, IndexOutOfBounds"
         ]
       ]
     },
-    "memorize": "Root: java.lang.Throwable. Branches: Error (Fatal) & Exception (Recoverable). 5 Keywords: try, catch, finally, throw, throws. Checked = Compile-time; Unchecked = RuntimeException.",
-    "understand": "The finally block executes under virtually all conditions, even if a return statement is present inside try or catch. The only scenarios where finally is bypassed are: System.exit(0), fatal JVM crash, or physical power loss.",
-    "common_mistakes": "1. Placing a broader catch block (e.g. catch(Exception e)) before a specific catch block (e.g. catch(IOException e)), which causes a compile-time 'unreachable code' error. 2. Leaving resource streams open inside try; always close streams in finally or use Java 7 Try-With-Resources.",
-    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2024-25, 2025-26)",
-    "pyq_freq": "4 University Sessions: 2021 (Q2 - 15m), 2022-23 (Q3a - 15m), 2024-25 (Q2 - 15m), 2025-26 (Q1 - 15m)",
-    "pyq_question": "Explain the exception handling mechanism in Java with try, catch, finally, throw, and throws. Differentiate between checked and unchecked exceptions with code examples. (15 Marks)",
-    "pyq_rubric": "Throwable hierarchy diagram (4 marks) + 5 Keywords explanation with syntax (5 marks) + Checked vs Unchecked comparison table (4 marks) + Try-Catch-Finally code (2 marks) = 15 Marks.",
+    "memorize": "Throwable -> Error & Exception. Checked exceptions require mandatory try-catch or throws. finally block ALWAYS executes (even after return statement).",
+    "understand": "finally block executes even if a return statement is encountered in try or catch block (the only exception is System.exit(0)).",
+    "common_mistakes": "Catching generic Exception before specific child exceptions (causes unreachable catch block compile error).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2024-25 (Q2)",
+        "marks": 15,
+        "question": "Explain Java's Exception Handling mechanism with the Throwable hierarchy diagram. Differentiate between Checked and Unchecked exceptions and demonstrate custom exception creation with code. (15 Marks)",
+        "rubric": "Throwable Hierarchy Diagram (4 marks) + Checked vs Unchecked detailed (4 marks) + Keywords (try, catch, finally, throw, throws) (3 marks) + Custom Exception code (4 marks) = 15 Marks.",
+        "model_answer": "Java's exception handling mechanism provides robust runtime error management without terminating program execution abruptly. The hierarchy stems from java.lang.Throwable, branching into Error (serious system failures like StackOverflowError) and Exception. Exceptions are categorized into: 1. Checked Exceptions: Inherit from Exception; checked at compile-time. The compiler enforces that methods throwing checked exceptions either catch them via try-catch or declare them using 'throws' (e.g., IOException, SQLException); 2. Unchecked Exceptions: Inherit from RuntimeException; occur at runtime due to faulty programming logic (e.g., NullPointerException, ArithmeticException). Custom exceptions are authored by extending Exception:\n\n```java\nclass InvalidAgeException extends Exception {\n    public InvalidAgeException(String msg) { super(msg); }\n}\npublic class Test {\n    static void validate(int age) throws InvalidAgeException {\n        if (age < 18) throw new InvalidAgeException('Not eligible to vote');\n    }\n    public static void main(String[] args) {\n        try { validate(16); }\n        catch (InvalidAgeException e) { System.out.println('Caught: ' + e.getMessage()); }\n        finally { System.out.println('Cleanup complete'); }\n    }\n}\n```",
+        "answer_structure": "Hierarchy Diagram -> Checked vs Unchecked Table -> 5 Keywords -> Custom Exception Code",
+        "important_points": [
+          "Throwable tree",
+          "Compile-time enforcement",
+          "finally execution guarantees",
+          "Custom exception extends Exception"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Diagram showing Error vs Exception vs RuntimeException",
+          "Syntactically valid custom exception code"
+        ],
+        "common_mistakes": [
+          "Extending Throwable directly instead of Exception"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5002 Java & Web Design",
+        "year": "2021 / Model",
+        "marks": 5,
+        "question": "What is the difference between 'throw' and 'throws' keywords in Java? (5 Marks)",
+        "rubric": "Comparison table (3 marks) + Code syntax difference (2 marks) = 5 Marks.",
+        "model_answer": "1. Purpose: `throw` is used to explicitly instantiate and throw an exception instance inside a method body; `throws` is used in a method declaration signature to inform callers that this method may throw specific exceptions; 2. Syntax: `throw new IOException();` vs `void readFile() throws IOException { ... }`; 3. Cardinality: `throw` is followed by a single exception instance; `throws` can be followed by multiple comma-separated exception classes."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-08-01",
+        "question": "In Nonaka and Takeuchi's SECI model of Knowledge Creation, what transformation mode represents converting Tacit Knowledge into Explicit Knowledge?",
+        "options": [
+          "Socialization",
+          "Externalization",
+          "Combination",
+          "Internalization"
+        ],
+        "correct_answer": "B",
+        "explanation": "Externalization articulates unspoken, subjective tacit insights into explicit concepts, metaphors, models, and written diagrams."
+      },
+      {
+        "id": "ACAD-08-02",
+        "question": "Which SECI quadrant describes apprentices learning tacit craft skills from a master artisan through shared observation, imitation, and practice without written manuals?",
+        "options": [
+          "Socialization (Tacit to Tacit)",
+          "Combination (Explicit to Explicit)",
+          "Internalization (Explicit to Tacit)",
+          "Externalization (Tacit to Explicit)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Socialization transfers tacit knowledge directly between individuals through shared physical experience, apprenticeship, and informal dialogue."
+      },
+      {
+        "id": "ACAD-08-03",
+        "question": "What is the defining characteristic of Tacit Knowledge compared to Explicit Knowledge?",
+        "options": [
+          "It is easily indexed, codified, and stored in relational database tables",
+          "It is personal, context-specific, rooted in action, commitment, and heuristics, making it hard to formalize",
+          "It can be transmitted instantly over a network socket as JSON",
+          "It is only possessed by machines and software algorithms"
+        ],
+        "correct_answer": "B",
+        "explanation": "Tacit knowledge is intuitive, deeply ingrained in human experience and mental models ('we know more than we can tell', Michael Polanyi)."
+      },
+      {
+        "id": "ACAD-08-04",
+        "question": "In the DIKW hierarchy, which layer adds actionable rules, context, and experience to raw processed information?",
+        "options": [
+          "Data",
+          "Information",
+          "Knowledge",
+          "Wisdom"
+        ],
+        "correct_answer": "C",
+        "explanation": "DIKW pyramid: Data (raw symbols) -> Information (contextualized data) -> Knowledge (actionable understanding and rules) -> Wisdom (evaluated judgment)."
+      },
+      {
+        "id": "ACAD-08-05",
+        "question": "Which SECI quadrant involves integrating multiple documents, databases, and financial spreadsheets into a unified organizational repository?",
+        "options": [
+          "Internalization",
+          "Externalization",
+          "Socialization",
+          "Combination"
+        ],
+        "correct_answer": "D",
+        "explanation": "Combination synthesizes disparate pieces of explicit knowledge by sorting, aggregating, and re-categorizing them into new explicit documents."
+      }
+    ],
+    "pyq_year": "2024-25 (Q2)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Explain Java's Exception Handling mechanism with the Throwable hierarchy diagram. Differentiate between Checked and Unchecked exceptions and demonstrate custom exception creation with code. (15 Marks)",
+    "pyq_rubric": "Throwable Hierarchy Diagram (4 marks) + Checked vs Unchecked detailed (4 marks) + Keywords (try, catch, finally, throw, throws) (3 marks) + Custom Exception code (4 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Exception Architecture & Philosophy:",
-        "In Java, exception handling separates error-handling code from regular business logic. When an exceptional condition occurs, an Exception object is constructed on the heap containing the exception type, error message, and execution call stack. This object is thrown to the runtime, which unwinds the call stack searching for a matching catch handler."
+        "1. Model Answer & Technical Presentation",
+        "Java's exception handling mechanism provides robust runtime error management without terminating program execution abruptly. The hierarchy stems from java.lang.Throwable, branching into Error (serious system failures like StackOverflowError) and Exception. Exceptions are categorized into: 1. Checked Exceptions: Inherit from Exception; checked at compile-time. The compiler enforces that methods throwing checked exceptions either catch them via try-catch or declare them using 'throws' (e.g., IOException, SQLException); 2. Unchecked Exceptions: Inherit from RuntimeException; occur at runtime due to faulty programming logic (e.g., NullPointerException, ArithmeticException). Custom exceptions are authored by extending Exception:\n\n```java\nclass InvalidAgeException extends Exception {\n    public InvalidAgeException(String msg) { super(msg); }\n}\npublic class Test {\n    static void validate(int age) throws InvalidAgeException {\n        if (age < 18) throw new InvalidAgeException('Not eligible to vote');\n    }\n    public static void main(String[] args) {\n        try { validate(16); }\n        catch (InvalidAgeException e) { System.out.println('Caught: ' + e.getMessage()); }\n        finally { System.out.println('Cleanup complete'); }\n    }\n}\n```"
       ],
       [
-        "2. Detailed 5 Keywords Functionality:",
-        "\u2022 try: Declares a guarded region. Any exception thrown within this block terminates try execution and jumps to the matching catch.\n\u2022 catch: Matches the thrown exception type. Java supports multi-catch blocks: catch(IOException | SQLException e).\n\u2022 finally: Guarantees resource deallocation (closing file handles, database connections, socket streams).\n\u2022 throw: Programmatically triggers an exception: if (age < 18) throw new InvalidAgeException('Not eligible');\n\u2022 throws: Listed in method signatures: public void readFile() throws IOException, SQLException { ... }"
-      ],
-      [
-        "3. Checked vs Unchecked Exceptions:",
-        "Checked exceptions represent conditions outside the program's immediate control (e.g., a file being read by an application is suddenly deleted from disk by an external process). Java forces the developer to handle this contingency at compile time. Unchecked exceptions represent bugs in the application's internal code logic (e.g., attempting to access index 10 of a 5-element array). These indicate developer oversight and should be corrected through proper boundary checks rather than cluttering code with try-catch blocks."
-      ],
-      [
-        "4. Code Example (Try-Catch-Finally & Custom Exception):",
-        "class InvalidBalanceException extends Exception {\n    public InvalidBalanceException(String msg) { super(msg); }\n}\npublic class BankAccount {\n    private double balance = 1000;\n    public void withdraw(double amount) throws InvalidBalanceException {\n        if (amount > balance) throw new InvalidBalanceException('Insufficient funds');\n        balance -= amount;\n    }\n    public static void main(String[] args) {\n        BankAccount acc = new BankAccount();\n        try {\n            acc.withdraw(1500);\n        } catch (InvalidBalanceException e) {\n            System.err.println('Caught Exception: ' + e.getMessage());\n        } finally {\n            System.out.println('Audit log updated; connection closed.');\n        }\n    }\n}"
-      ]
-    ],
-    "practice_pyqs": [
-      [
-        "Practice Question 1 (CSJMU 2024):",
-        "Explain Java 7 Try-With-Resources and the AutoCloseable interface with a code example. (10 Marks)"
-      ],
-      [
-        "Practice Question 2 (CSJMU 2023):",
-        "What is the difference between throw and throws keywords in Java? (5 Marks)"
+        "2. Expected Examiner Criteria",
+        [
+          "Diagram showing Error vs Exception vs RuntimeException",
+          "Syntactically valid custom exception code"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master Java Exception Hierarchy, 5 Keywords, and Checked vs Unchecked distinction.",
-    "milestone": "Full 15/15 marks on University Question 2 (BCA-5002 Java Exceptions)."
-  },
   "apt_data": {
-    "topic": "Simple & Compound Interest \u2014 Difference Shortcuts & Compounding Periods",
+    "topic": "Time, Speed & Distance (Trains & Relative Speed)",
+    "category": "Quantitative",
+    "subtopic": "Time Speed Distance",
+    "formulas": "1. Speed = Distance / Time; Distance = Speed * Time.\n2. Conversion: km/hr to m/s multiply by 5/18; m/s to km/hr multiply by 18/5.\n3. Relative Speed: Same direction = |S1 - S2|; Opposite direction = S1 + S2.\n4. Average Speed for equal distances = (2 * S1 * S2) / (S1 + S2).",
+    "shortcut": "Train Crossing Object: Time to cross a stationary point (pole/person) = Length of Train / Speed. Time to cross a platform/bridge = (Length of Train + Length of Platform) / Speed.",
     "tutorial": [
-      "Simple Interest (SI): Interest calculated exclusively on the original principal sum for the entire duration:\nSI = (P * R * T) / 100     ==> Amount A = P + SI = P * [1 + (R*T)/100]",
-      "Compound Interest (CI): 'Interest on interest'. The interest accrued during each compounding period is added to the principal to form the new principal for the subsequent period:\nAmount A = P * [1 + (R / 100)]^T    ==> CI = Amount - Principal = P * [(1 + R/100)^T - 1]",
-      "Compounding Frequency Variations:\n\u2022 Compounded Half-Yearly (Semi-Annually): Rate becomes (R / 2)%, Time becomes (2 * T) periods.\n\u2022 Compounded Quarterly: Rate becomes (R / 4)%, Time becomes (4 * T) periods.",
-      "The Placement Difference Formulas (Essential Speed Weapon):\n\u2022 Difference between CI and SI for 2 Years: D_2 = P * (R / 100)^2\n\u2022 Difference between CI and SI for 3 Years: D_3 = P * (R / 100)^2 * [(300 + R) / 100]"
+      "Relative speed is the rate at which distance between two moving bodies decreases or increases. When two trains travel toward each other, their speeds add. When they travel in the same direction, their speeds subtract."
     ],
-    "formulas": "1. Difference for 2 Years: D_2 = P * (R / 100)^2\n2. Difference for 3 Years: D_3 = P * (R / 100)^2 * [(300 + R) / 100]\n3. Sum Doubling Rule of 72 (Approximation): Money doubles in approx (72 / R) years at CI.\n4. Sum Doubling at SI: At SI, sum doubles when SI = P ==> T = 100 / R years.",
-    "shortcut": "Effective Percentage Rate Method (2 Years):\nFor rate R = 10%:\n\u2022 SI for 2 years = 2 * 10% = 20%\n\u2022 CI for 2 years = 10 + 10 + (10*10)/100 = 21%\n\u2022 Difference = 21% - 20% = 1% of Principal P. If D = Rs. 50, then 1% of P = 50 ==> P = Rs. 5,000 instantly!",
-    "recognition": "Look for 'the difference between compound interest and simple interest on a certain sum for 2 years at R% is Rs. D', or 'a sum of money becomes 3 times in 5 years at CI'.",
-    "p1_q": "[Foundation] Find the simple interest on Rs. 8,000 at 7.5% per annum for 3 years.",
-    "p1_s": "Step 1: P = 8000, R = 7.5%, T = 3 years.\nStep 2: SI = (P * R * T) / 100 = (8000 * 7.5 * 3) / 100.\nStep 3: Fast calculation: 80 * 7.5 * 3 = 600 * 3 = Rs. 1,800.\nTotal Amount = 8000 + 1800 = Rs. 9,800.\nAnswer: Simple Interest is Rs. 1,800.",
-    "p2_q": "[Standard Placement] The difference between compound interest and simple interest on a certain sum of money for 2 years at 4% per annum is Rs. 20. Find the principal sum.",
-    "p2_s": "Step 1: Use the 2-Year Difference Shortcut:\nD_2 = P * (R / 100)^2.\nHere D_2 = Rs. 20, R = 4%.\nStep 2: Substitute values:\n20 = P * (4 / 100)^2 = P * (1 / 25)^2 = P / 625.\nStep 3: Solve for P:\nP = 20 * 625 = Rs. 12,500.\nVerification: SI for 2 years at 4% on 12500 = 12500 * 0.08 = Rs. 1000.\nCI = 12500 * (1.04)^2 - 12500 = 12500 * 1.0816 - 12500 = 13520 - 12500 = Rs. 1020.\nDifference = 1020 - 1000 = Rs. 20. Exact match!\nAnswer: Principal sum is Rs. 12,500.",
-    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Wipro Elite NTH / Infosys Test]",
-    "p3_q": "A sum of money invested at compound interest doubles itself in 5 years. In how many years will it become 8 times itself at the same rate of interest?",
-    "p3_s": "Step 1: Placement Exponential Rule for CI:\nIf a sum becomes 'k' times in 'T' years, it will become (k^m) times in (m * T) years.\nStep 2: Given: Sum becomes 2 times (k = 2) in T = 5 years.\nStep 3: Target: We want the sum to become 8 times.\nExpress 8 as a power of 2: 8 = 2^3 ==> Power m = 3.\nStep 4: Required Time = m * T = 3 * 5 = 15 years.\nContrast with SI: At SI, doubling in 5 years means gaining 1P interest in 5 years. To become 8 times, it must gain 7P interest, taking 7 * 5 = 35 years! CI multiplies exponentially.\nAnswer: 15 years.",
-    "p4_q": "[Hard / Time-Pressure] The difference between compound interest and simple interest on a certain sum for 3 years at 10% per annum is Rs. 93. Find the principal sum.",
-    "p4_s": "Step 1: Use the 3-Year Difference Shortcut:\nD_3 = P * (R / 100)^2 * [(300 + R) / 100].\nHere D_3 = 93, R = 10%.\nStep 2: Substitute values:\n93 = P * (10 / 100)^2 * [(300 + 10) / 100]\n93 = P * (1 / 100) * (310 / 100) = P * (31 / 1000).\nStep 3: Solve for P:\nP = (93 * 1000) / 31 = 3 * 1000 = Rs. 3,000.\nVerification: SI for 3 yrs at 10% on 3000 = 3000 * 0.30 = Rs. 900.\nCI = 3000 * (1.1)^3 - 3000 = 3000 * 1.331 - 3000 = 3993 - 3000 = Rs. 993.\nDifference = 993 - 900 = Rs. 93. Perfect match!\nAnswer: Principal sum is Rs. 3,000.",
-    "timed_set": [
-      [
-        "Q1 (Aptitude Quantitative):",
-        "Find the compound interest on Rs. 10,000 for 2 years at 10% per annum compounded annually."
-      ],
-      [
-        "Q2 (Aptitude Quantitative):",
-        "A sum of money at SI doubles itself in 8 years. What is the rate of interest per annum?"
-      ],
-      [
-        "Q3 (Aptitude Quantitative):",
-        "Find the difference between CI and SI on Rs. 5,000 for 2 years at 6% per annum."
-      ],
-      [
-        "Q4 (Aptitude Quantitative):",
-        "At what rate percent per annum will Rs. 1,000 become Rs. 1,331 in 3 years compounded annually?"
-      ],
-      [
-        "Q5 (Aptitude Quantitative):",
-        "A sum of money amounts to Rs. 6,690 after 3 years and to Rs. 10,035 after 6 years on compound interest. Find the sum."
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
+    "speed_drills": [
+      {
+        "q": "",
+        "a": "180 marks (90%)"
+      },
+      {
+        "q": "",
+        "a": "Rs. 864"
+      },
+      {
+        "q": "",
+        "a": "14 1/3 days"
+      },
+      {
+        "q": "",
+        "a": "2:15 PM"
+      },
+      {
+        "q": "",
+        "a": "10/21"
+      }
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Time Speed Distance",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Time Speed Distance",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Time Speed Distance",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Time Speed Distance",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Time Speed Distance",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "A train 240 m long passes a telegraph pole in 16 seconds. What is the speed of the train in km/hr?",
+        "options": {
+          "A": "54 km/hr",
+          "B": "60 km/hr",
+          "C": "48 km/hr",
+          "D": "72 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Speed = 240 / 16 = 15 m/s. In km/hr = 15 * (18 / 5) = 54 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 2,
+        "question": "A train 300 m long crosses a 200 m long platform in 25 seconds. What is the speed of the train in km/hr?",
+        "options": {
+          "A": "72 km/hr",
+          "B": "64 km/hr",
+          "C": "54 km/hr",
+          "D": "80 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Total distance = 300 + 200 = 500 m. Speed = 500 / 25 = 20 m/s = 20 * (18/5) = 72 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Two trains 140 m and 160 m long run at 60 km/hr and 40 km/hr in opposite directions. In what time do they cross each other?",
+        "options": {
+          "A": "10.8 secs",
+          "B": "12 secs",
+          "C": "9 secs",
+          "D": "15 secs"
+        },
+        "correct_answer": "A",
+        "explanation": "Relative speed = 60 + 40 = 100 km/hr = 100 * (5/18) = 250/9 m/s. Total distance = 300 m. Time = 300 / (250/9) = 10.8 seconds.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 4,
+        "question": "A person travels from A to B at 20 km/hr and returns from B to A at 30 km/hr. What is his average speed for the whole journey?",
+        "options": {
+          "A": "24 km/hr",
+          "B": "25 km/hr",
+          "C": "22.5 km/hr",
+          "D": "26 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Average speed = (2 * u * v) / (u + v) = (2 * 20 * 30) / (20 + 30) = 1200 / 50 = 24 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Walking at 3/4th of his usual speed, a man reaches his office 20 minutes late. What is his usual time to reach the office?",
+        "options": {
+          "A": "60 mins",
+          "B": "45 mins",
+          "C": "75 mins",
+          "D": "80 mins"
+        },
+        "correct_answer": "A",
+        "explanation": "Time is inversely proportional to speed: new time = 4/3 of usual. 4/3 T - T = 20 => T/3 = 20 => Usual time T = 60 minutes.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Two trains leave Delhi for Kanpur at 6:00 AM and 6:30 AM at 60 km/hr and 75 km/hr respectively. How far from Delhi will they meet?",
+        "options": {
+          "A": "150 km",
+          "B": "120 km",
+          "C": "180 km",
+          "D": "200 km"
+        },
+        "correct_answer": "A",
+        "explanation": "In 30 mins, Train 1 covers 30 km. Relative speed = 75 - 60 = 15 km/hr. Time to catch = 30 / 15 = 2 hours after 6:30 AM. Distance = 75 * 2 = 150 km.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 7,
+        "question": "A thief steals a car at 1:30 PM and drives at 40 km/hr. Theft is discovered at 2:00 PM and owner chases at 50 km/hr. Owner overtakes at:",
+        "options": {
+          "A": "4:00 PM",
+          "B": "3:30 PM",
+          "C": "4:30 PM",
+          "D": "5:00 PM"
+        },
+        "correct_answer": "A",
+        "explanation": "Lead at 2 PM = 20 km. Relative speed = 10 km/hr. Time = 20 / 10 = 2 hours. Meeting time = 2:00 PM + 2 hrs = 4:00 PM.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 8,
+        "question": "A train crosses two bridges of lengths 800 m and 400 m in 100 seconds and 60 seconds respectively. What is the length of the train?",
+        "options": {
+          "A": "200 m",
+          "B": "150 m",
+          "C": "250 m",
+          "D": "300 m"
+        },
+        "correct_answer": "A",
+        "explanation": "Speed = (800 - 400) / (100 - 60) = 400 / 40 = 10 m/s. Length + 400 = 10 * 60 = 600 => Length = 200 m.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 9,
+        "question": "If a man walks at 14 km/hr instead of 10 km/hr, he would have walked 20 km more in the same time. Actual distance traveled:",
+        "options": {
+          "A": "50 km",
+          "B": "60 km",
+          "C": "40 km",
+          "D": "70 km"
+        },
+        "correct_answer": "A",
+        "explanation": "Time = D / 10 = (D + 20) / 14 => 14D = 10D + 200 => 4D = 200 => D = 50 km.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      },
+      {
+        "mcq_no": 10,
+        "question": "A car travels first 1/3 distance at 10 km/hr, next 1/3 at 20 km/hr, and last 1/3 at 60 km/hr. Average speed for journey:",
+        "options": {
+          "A": "18 km/hr",
+          "B": "24 km/hr",
+          "C": "30 km/hr",
+          "D": "15 km/hr"
+        },
+        "correct_answer": "A",
+        "explanation": "Harmonic mean = 3 / (1/10 + 1/20 + 1/60) = 3 / (6 + 3 + 1)/60 = 3 / (10/60) = 3 * 6 = 18 km/hr.",
+        "target_time_seconds": 60,
+        "category": "Quantitative"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Time Speed Distance (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
       ]
-    ],
-    "timed_solutions": [
-      [
-        "Solution Q1:",
-        "A = 10000 * (1.1)^2 = 12100. CI = 12100 - 10000 = Rs. 2,100. Answer: Rs. 2,100."
-      ],
-      [
-        "Solution Q2:",
-        "Doubles ==> SI = P. R = (100 * P) / (P * 8) = 100 / 8 = 12.5% per annum. Answer: 12.5%."
-      ],
-      [
-        "Solution Q3:",
-        "D = P * (R/100)^2 = 5000 * (6/100)^2 = 5000 * (36 / 10000) = 5 * 3.6 = Rs. 18. Answer: Rs. 18."
-      ],
-      [
-        "Solution Q4:",
-        "1331 / 1000 = (1 + R/100)^3 ==> (11/10)^3 = (1 + R/100)^3 ==> R/100 = 0.1 ==> R = 10%. Answer: 10%."
-      ],
-      [
-        "Solution Q5:",
-        "In 3 years, amount scales by factor F = 10035 / 6690 = 1.5. Therefore, Principal P * 1.5 = 6690 ==> P = 6690 / 1.5 = Rs. 4,460. Answer: Rs. 4,460."
-      ]
-    ],
-    "trap": "Do not confuse doubling at SI vs doubling at CI! At SI, doubling takes T = 100/R years. At CI, doubling depends on the exponential power (k^m taking m*T years)."
+    }
   },
-  "dsa_problems": [],
-  "cs_core": {},
-  "project_defense": {},
-  "daily_test": {}
+  "dsa_problems": [
+    {
+      "title": "Problem 1: Reverse Linked List II",
+      "difficulty": "Easy",
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given head of a singly linked list and two integers left and right where left <= right, reverse the nodes from position left to right.",
+      "solution_approach": "1. Apply Linked List In-Place Reversal algorithmic technique.\n2. Reverses pointers of a linked list in-place using three pointers: prev, curr, and next.\n3. Invariants: Mutates next pointers directly in a single linear pass with O(1) auxiliary space.",
+      "code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+      "java_solution": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+      "solution_java": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
+    },
+    {
+      "title": "Problem 2: Palindrome Linked List",
+      "difficulty": "Medium",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given the head of a singly linked list, return true if it is a palindrome or false otherwise.",
+      "solution_approach": "1. Identify interview variation of Linked List In-Place Reversal.\n2. Handle edge cases: Empty list (head == null), Single node list, Two node list.\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+      "java_solution": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+      "solution_java": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+      "time_complexity": "O(N) Time",
+      "space_complexity": "O(1) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
+    }
+  ],
+  "dsa_pattern": {
+    "pattern_name": "Linked List In-Place Reversal",
+    "category": "Linked List",
+    "concept": "Reverses pointers of a linked list in-place using three pointers: prev, curr, and next.",
+    "why_it_works": "Mutates next pointers directly in a single linear pass with O(1) auxiliary space.",
+    "visual_explanation": "1 -> 2 -> 3 -> null\\nStep 1: null <- 1    2 -> 3 -> null\\nStep 2: null <- 1 <- 2    3 -> null\\nStep 3: null <- 1 <- 2 <- 3 (New Head = 3)",
+    "java_code": "public class Solution {\n    public ListNode reverseList(ListNode head) {\n        ListNode prev = null;\n        ListNode curr = head;\n        while (curr != null) {\n            ListNode nextTemp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = nextTemp;\n        }\n        return prev;\n    }\n}",
+    "code": "public class Solution {\n    public ListNode reverseList(ListNode head) {\n        ListNode prev = null;\n        ListNode curr = head;\n        while (curr != null) {\n            ListNode nextTemp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = nextTemp;\n        }\n        return prev;\n    }\n}",
+    "python_code": "public class Solution {\n    public ListNode reverseList(ListNode head) {\n        ListNode prev = null;\n        ListNode curr = head;\n        while (curr != null) {\n            ListNode nextTemp = curr.next;\n            curr.next = prev;\n            prev = curr;\n            curr = nextTemp;\n        }\n        return prev;\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 3-4: Initialize prev as null and curr as head.",
+      "Line 5: Loop while curr is non-null.",
+      "Line 6: Temporarily store curr.next.",
+      "Line 7: Invert pointer: curr.next = prev.",
+      "Line 8-9: Advance prev to curr, and curr to nextTemp.",
+      "Line 11: Return prev as the new head."
+    ],
+    "dry_run": "1->2->3. Step 1: 1->null, prev=1, curr=2. Step 2: 2->1->null, prev=2, curr=3. Step 3: 3->2->1->null, prev=3, curr=null. Return 3.",
+    "complexity": "O(N) Time, O(1) Auxiliary Space",
+    "edge_cases": [
+      "Empty list (head == null)",
+      "Single node list",
+      "Two node list"
+    ],
+    "interview_variations": [
+      "Reverse Linked List II (Between Left and Right)",
+      "Reverse Nodes in k-Group",
+      "Palindrome Linked List"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-08-01",
+        "title": "Problem 1: Reverse Linked List II",
+        "difficulty": "Easy",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given head of a singly linked list and two integers left and right where left <= right, reverse the nodes from position left to right.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Linked List In-Place Reversal algorithmic technique.\n2. Reverses pointers of a linked list in-place using three pointers: prev, curr, and next.\n3. Invariants: Mutates next pointers directly in a single linear pass with O(1) auxiliary space.",
+        "solution_java": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+        "solution_python": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+        "code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+        "java_code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-08-02",
+        "title": "Problem 2: Palindrome Linked List",
+        "difficulty": "Medium",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given the head of a singly linked list, return true if it is a palindrome or false otherwise.",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Linked List In-Place Reversal.\n2. Handle edge cases: Empty list (head == null), Single node list, Two node list.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+        "solution_python": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+        "code": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+        "java_code": "public class Solution {\n    public boolean isPalindrome(ListNode head) {\n        if (head == null || head.next == null) return true;\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        ListNode prev = null;\n        while (slow != null) {\n            ListNode nextNode = slow.next;\n            slow.next = prev;\n            prev = slow;\n            slow = nextNode;\n        }\n        ListNode p1 = head, p2 = prev;\n        while (p2 != null) {\n            if (p1.val != p2.val) return false;\n            p1 = p1.next;\n            p2 = p2.next;\n        }\n        return true;\n    }\n}",
+        "time_complexity": "O(N) Time",
+        "space_complexity": "O(1) Auxiliary Space"
+      }
+    ]
+  },
+  "cs_core": {
+    "subject": "DBMS",
+    "topic": "DBMS Architecture, 3-Tier Schema, Data Independence & Relational Foundations",
+    "detailed_notes": [
+      "A Database Management System (DBMS) is software designed to store, manage, query, and enforce integrity over structured data.\n\nThe ANSI-SPARC 3-Level Architecture:\n1. External Level (View Level): Describes user-facing views tailored to specific applications or roles (e.g., Student view vs HOD view in CSMS). Hides non-relevant data.\n2. Conceptual Level (Logical Level): Describes WHAT data is stored and relationships between entities across the entire database (tables, columns, constraints, foreign keys). Managed by DBA.\n3. Internal Level (Physical Level): Describes HOW data is physically organized on disk storage (B+ trees, byte offsets, block clustering, index files, compression).\n\nData Independence:\n- Logical Data Independence: The ability to modify conceptual schema (e.g., adding an address column or splitting tables) without modifying external views or application code.\n- Physical Data Independence: The ability to alter physical storage structures (e.g., rebuilding B+ trees, migrating to SSDs, changing hash partitions) without altering the conceptual schema.\n\nRelational Model Foundations (Codd's Rules):\nData is structured into Relations (tables), Tuples (rows), and Attributes (columns). Key constraints enforce mathematical validity: Domain Constraint (values must belong to defined data type), Entity Integrity (Primary Key cannot be NULL), and Referential Integrity (Foreign Key must either match an existing primary key in the referenced relation or be NULL)."
+    ],
+    "key_definitions": [
+      {
+        "term": "Physical Data Independence",
+        "definition": "The capacity to change physical storage structures without altering conceptual schemas or applications."
+      },
+      {
+        "term": "Entity Integrity",
+        "definition": "A relational database rule stating that no primary key component can evaluate to NULL."
+      },
+      {
+        "term": "Referential Integrity",
+        "definition": "A constraint ensuring foreign key values match existing valid primary keys in referenced parent tables."
+      }
+    ],
+    "interview_qa": [
+      {
+        "q": "What is the difference between Logical and Physical Data Independence?",
+        "a": "Logical Data Independence allows changes to the conceptual schema (adding columns, creating views, modifying entities) without breaking existing application code or user views. Physical Data Independence allows changing physical storage layouts (file organizations, disk paths, B-tree indexes) without altering the logical schema or queries. Logical independence is harder to achieve because applications are tightly coupled to data attributes."
+      },
+      {
+        "q": "What are Codd's foundational constraints in the relational model?",
+        "a": "1. Domain Constraint: Every column value must be an atomic value from that domain. 2. Entity Integrity Constraint: Every table must have a Primary Key whose attributes cannot be NULL. 3. Referential Integrity Constraint: A Foreign Key in a child table must reference a valid, existing Primary Key in the parent table or be explicitly NULL."
+      },
+      {
+        "q": "Why is Primary Key required to be NOT NULL in relational databases?",
+        "a": "A primary key uniquely identifies individual tuples within a relation. If a primary key attribute were permitted to be NULL, the database engine could not distinguish between records or enforce unique entity identity, violating the foundational mathematical set definition of a relation."
+      },
+      {
+        "q": "Explain the difference between DDL, DML, DCL, and TCL in SQL.",
+        "a": "DDL (Data Definition Language: CREATE, ALTER, DROP, TRUNCATE) defines database schemas and structure. DML (Data Manipulation Language: SELECT, INSERT, UPDATE, DELETE) queries and alters data rows. DCL (Data Control Language: GRANT, REVOKE) manages security permissions. TCL (Transaction Control Language: COMMIT, ROLLBACK, SAVEPOINT) manages transaction execution."
+      },
+      {
+        "q": "What is the difference between DROP, TRUNCATE, and DELETE?",
+        "a": "DELETE is a DML command that removes rows one-by-one, logs each deletion in transaction logs, activates triggers, and can be rolled back. TRUNCATE is a DDL command that deallocates entire data pages, removing all rows ultra-fast with minimal logging; it cannot be filtered with WHERE and cannot activate delete triggers. DROP is a DDL command that destroys the entire table structure and its data from the database catalog."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-08-01",
+        "question": "Which level of the ANSI-SPARC 3-tier architecture describes the physical storage of data on disk?",
+        "options": [
+          "External level",
+          "Conceptual level",
+          "Internal level",
+          "Logical level"
+        ],
+        "correct_answer": "C",
+        "explanation": "The Internal (Physical) level describes how data is organized as blocks and indexes on disk."
+      },
+      {
+        "id": "CS-08-02",
+        "question": "The rule stating that a Foreign Key value must either match a Primary Key in the referenced relation or be NULL is:",
+        "options": [
+          "Domain Constraint",
+          "Entity Integrity",
+          "Referential Integrity",
+          "Key Constraint"
+        ],
+        "correct_answer": "C",
+        "explanation": "Referential Integrity ensures child foreign keys point to valid existing parent rows."
+      },
+      {
+        "id": "CS-08-03",
+        "question": "Which SQL command is a DDL command that removes all rows from a table by deallocating data pages?",
+        "options": [
+          "DELETE",
+          "TRUNCATE",
+          "DROP TABLE",
+          "REMOVE"
+        ],
+        "correct_answer": "B",
+        "explanation": "TRUNCATE deallocates data pages quickly without individual row logging."
+      },
+      {
+        "id": "CS-08-04",
+        "question": "The ability to modify the conceptual schema without altering existing user views is known as:",
+        "options": [
+          "Physical Data Independence",
+          "Logical Data Independence",
+          "Data Redundancy",
+          "Transaction Isolation"
+        ],
+        "correct_answer": "B",
+        "explanation": "Logical Data Independence shields user views from modifications to logical tables."
+      },
+      {
+        "id": "CS-08-05",
+        "question": "Entity Integrity rule explicitly prohibits which of the following?",
+        "options": [
+          "Duplicate foreign keys",
+          "A Primary Key containing a NULL value",
+          "Secondary indexes",
+          "Composite attributes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Entity Integrity dictates that primary key attributes cannot be NULL."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "Caloriv",
+    "repo_path": "D:\\Projects\\Caloriv",
+    "feature_focus": "Android Build Toolchain, SDK Management & Production Gradle Orchestration",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nGradle dependency resolution, Android Studio SDK paths, release keystores, and APK packaging.\n\nWHAT TO MEMORIZE:\n`./gradlew assembleRelease` compiles native Java/Kotlin code, packages Hermes bytecode, and signs the release APK.\n\n60-SECOND INTERVIEW PITCH:\nBeyond writing app features, I mastered the native mobile build pipeline. In Caloriv, I configured Android Studio SDK toolchains, authored Gradle patch scripts to resolve native dependency conflicts, optimized Hermes ahead-of-time compilation, and generated production-signed APKs.",
+    "interview_qa": [
+      {
+        "q": "What challenges did you face configuring the Android build toolchain for Caloriv, and how did you resolve them?",
+        "a": "Upgrading to modern React Native versions introduced build failures with Java 17 and Android Gradle Plugin (AGP) incompatibilities. I resolved this by authoring automated PowerShell and batch repair scripts (`fix_gradle.ps1`, `setup-android-env.bat`) that set correct `JAVA_HOME`, patched module-level `build.gradle` files to align `compileSdkVersion 34`, and configured `caloriv-release-key.keystore` for verified production APK signing."
+      },
+      {
+        "q": "What is Hermes and why is it enabled in Caloriv's Android builds?",
+        "a": "Hermes is an open-source JavaScript engine optimized specifically for React Native on Android. By compiling JavaScript into optimized bytecode ahead-of-time (AOT) during the build step, it slashes mobile app startup time (TTI) by over 50% and reduces APK size and memory consumption."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 8 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 8 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of SmartGalla.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 07 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5001 — Knowledge Capture Systems & SECI Model.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time, Speed & Distance.\n• Algorithmic Invariant: Optimal time and space complexity rules for Linked List In-Place Reversal.\n• Systems Law: Architectural equations, protocols, and complexity bounds for File Systems: Inodes & Disk Scheduling.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Knowledge Capture Systems & SECI Model.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Linked List In-Place Reversal.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Caloriv.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 8 Q1: What is the primary academic thesis of Knowledge Capture Systems & SECI Model?",
+        "a": "Core theoretical and practical mastery of Knowledge Capture Systems & SECI Model under the CSJM University BCA-5001 syllabus."
+      },
+      {
+        "q": "Day 8 Q2: What is the key speed calculation formula applied in Time, Speed & Distance?",
+        "a": "High-speed corporate placement arithmetic shortcut for Time, Speed & Distance in campus recruitment exams."
+      },
+      {
+        "q": "Day 8 Q3: What is the time complexity of Linked List In-Place Reversal?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 8 Q4: What is the central architectural principle of File Systems: Inodes & Disk Scheduling?",
+        "a": "Foundational systems engineering rule governing File Systems: Inodes & Disk Scheduling in production environments."
+      },
+      {
+        "q": "Day 8 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 8 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 8 Q7: What is the verified technical foundation of Caloriv?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 8 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 8 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 8 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5001 — Knowledge Capture Systems & SECI Model.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time, Speed & Distance.\n• Algorithmic Invariant: Optimal time and space complexity rules for Linked List In-Place Reversal.\n• Systems Law: Architectural equations, protocols, and complexity bounds for File Systems: Inodes & Disk Scheduling."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5001 — Knowledge Capture Systems & SECI Model."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time, Speed & Distance."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Linked List In-Place Reversal."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: Caloriv."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+      }
+    ]
+  },
+  "daily_test": {
+    "title": "Day 08 Mixed Mastery Test (20 MCQs)",
+    "questions": [
+      {
+        "q": "In Nonaka and Takeuchi's SECI model of Knowledge Creation, what transformation mode represents converting Tacit Knowledge into Explicit Knowledge?",
+        "a": "Answer: B\n\nExternalization articulates unspoken, subjective tacit insights into explicit concepts, metaphors, models, and written diagrams."
+      },
+      {
+        "q": "Which SECI quadrant describes apprentices learning tacit craft skills from a master artisan through shared observation, imitation, and practice without written manuals?",
+        "a": "Answer: A\n\nSocialization transfers tacit knowledge directly between individuals through shared physical experience, apprenticeship, and informal dialogue."
+      },
+      {
+        "q": "What is the defining characteristic of Tacit Knowledge compared to Explicit Knowledge?",
+        "a": "Answer: B\n\nTacit knowledge is intuitive, deeply ingrained in human experience and mental models ('we know more than we can tell', Michael Polanyi)."
+      },
+      {
+        "q": "In the DIKW hierarchy, which layer adds actionable rules, context, and experience to raw processed information?",
+        "a": "Answer: C\n\nDIKW pyramid: Data (raw symbols) -> Information (contextualized data) -> Knowledge (actionable understanding and rules) -> Wisdom (evaluated judgment)."
+      },
+      {
+        "q": "Which SECI quadrant involves integrating multiple documents, databases, and financial spreadsheets into a unified organizational repository?",
+        "a": "Answer: D\n\nCombination synthesizes disparate pieces of explicit knowledge by sorting, aggregating, and re-categorizing them into new explicit documents."
+      },
+      {
+        "q": "A train 150 meters long passes an electric pole in 10 seconds. What is the speed of the train in km/hr?",
+        "a": "Answer: A\n\nSpeed = Distance / Time = 150 / 10 = 15 m/s. Convert to km/hr: 15 * (18 / 5) = 54 km/hr."
+      },
+      {
+        "q": "A train 280 meters long is traveling at 63 km/hr. How much time will it take to pass a railway platform 420 meters long?",
+        "a": "Answer: A\n\nTotal distance = 280 + 420 = 700 meters. Speed = 63 * (5/18) = 17.5 m/s. Time = 700 / 17.5 = 40 seconds."
+      },
+      {
+        "q": "Two trains 140 m and 160 m long run at speeds of 60 km/hr and 48 km/hr respectively in opposite directions on parallel tracks. In what time will they cross each other?",
+        "a": "Answer: A\n\nTotal distance = 140 + 160 = 300 m. Relative speed = 60 + 48 = 108 km/hr = 108 * (5/18) = 30 m/s. Time = 300 / 30 = 10 seconds."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-08-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In Nonaka and Takeuchi's SECI model of Knowledge Creation, what transformation mode represents converting Tacit Knowledge into Explicit Knowledge?",
+        "options": [
+          "Socialization",
+          "Externalization",
+          "Combination",
+          "Internalization"
+        ],
+        "correct_answer": "B",
+        "explanation": "Externalization articulates unspoken, subjective tacit insights into explicit concepts, metaphors, models, and written diagrams."
+      },
+      {
+        "id": "TEST-08-02",
+        "category": "Academic (Academic Theory)",
+        "question": "Which SECI quadrant describes apprentices learning tacit craft skills from a master artisan through shared observation, imitation, and practice without written manuals?",
+        "options": [
+          "Socialization (Tacit to Tacit)",
+          "Combination (Explicit to Explicit)",
+          "Internalization (Explicit to Tacit)",
+          "Externalization (Tacit to Explicit)"
+        ],
+        "correct_answer": "A",
+        "explanation": "Socialization transfers tacit knowledge directly between individuals through shared physical experience, apprenticeship, and informal dialogue."
+      },
+      {
+        "id": "TEST-08-03",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the defining characteristic of Tacit Knowledge compared to Explicit Knowledge?",
+        "options": [
+          "It is easily indexed, codified, and stored in relational database tables",
+          "It is personal, context-specific, rooted in action, commitment, and heuristics, making it hard to formalize",
+          "It can be transmitted instantly over a network socket as JSON",
+          "It is only possessed by machines and software algorithms"
+        ],
+        "correct_answer": "B",
+        "explanation": "Tacit knowledge is intuitive, deeply ingrained in human experience and mental models ('we know more than we can tell', Michael Polanyi)."
+      },
+      {
+        "id": "TEST-08-04",
+        "category": "Academic (Academic Theory)",
+        "question": "In the DIKW hierarchy, which layer adds actionable rules, context, and experience to raw processed information?",
+        "options": [
+          "Data",
+          "Information",
+          "Knowledge",
+          "Wisdom"
+        ],
+        "correct_answer": "C",
+        "explanation": "DIKW pyramid: Data (raw symbols) -> Information (contextualized data) -> Knowledge (actionable understanding and rules) -> Wisdom (evaluated judgment)."
+      },
+      {
+        "id": "TEST-08-05",
+        "category": "Academic (Academic Theory)",
+        "question": "Which SECI quadrant involves integrating multiple documents, databases, and financial spreadsheets into a unified organizational repository?",
+        "options": [
+          "Internalization",
+          "Externalization",
+          "Socialization",
+          "Combination"
+        ],
+        "correct_answer": "D",
+        "explanation": "Combination synthesizes disparate pieces of explicit knowledge by sorting, aggregating, and re-categorizing them into new explicit documents."
+      },
+      {
+        "id": "TEST-08-06",
+        "category": "Placement Aptitude",
+        "question": "A train 150 meters long passes an electric pole in 10 seconds. What is the speed of the train in km/hr?",
+        "options": [
+          "54 km/hr",
+          "45 km/hr",
+          "60 km/hr",
+          "50 km/hr"
+        ],
+        "correct_answer": "A",
+        "explanation": "Speed = Distance / Time = 150 / 10 = 15 m/s. Convert to km/hr: 15 * (18 / 5) = 54 km/hr."
+      },
+      {
+        "id": "TEST-08-07",
+        "category": "Placement Aptitude",
+        "question": "A train 280 meters long is traveling at 63 km/hr. How much time will it take to pass a railway platform 420 meters long?",
+        "options": [
+          "40 seconds",
+          "35 seconds",
+          "45 seconds",
+          "50 seconds"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total distance = 280 + 420 = 700 meters. Speed = 63 * (5/18) = 17.5 m/s. Time = 700 / 17.5 = 40 seconds."
+      },
+      {
+        "id": "TEST-08-08",
+        "category": "Placement Aptitude",
+        "question": "Two trains 140 m and 160 m long run at speeds of 60 km/hr and 48 km/hr respectively in opposite directions on parallel tracks. In what time will they cross each other?",
+        "options": [
+          "10 seconds",
+          "12 seconds",
+          "8 seconds",
+          "15 seconds"
+        ],
+        "correct_answer": "A",
+        "explanation": "Total distance = 140 + 160 = 300 m. Relative speed = 60 + 48 = 108 km/hr = 108 * (5/18) = 30 m/s. Time = 300 / 30 = 10 seconds."
+      },
+      {
+        "id": "TEST-08-09",
+        "category": "Placement Aptitude",
+        "question": "A man walking at 5 km/hr crosses a bridge in 15 minutes. What is the length of the bridge in meters?",
+        "options": [
+          "1,250 meters",
+          "1,500 meters",
+          "1,000 meters",
+          "1,200 meters"
+        ],
+        "correct_answer": "A",
+        "explanation": "Speed = 5 * (5/18) = 25/18 m/s. Time = 15 * 60 = 900 seconds. Distance = (25/18) * 900 = 1,250 meters."
+      },
+      {
+        "id": "TEST-08-10",
+        "category": "Placement Aptitude",
+        "question": "If a person walks at 14 km/hr instead of 10 km/hr, he would have walked 20 km more in the same time. What was the actual distance traveled by him?",
+        "options": [
+          "50 km",
+          "60 km",
+          "45 km",
+          "70 km"
+        ],
+        "correct_answer": "A",
+        "explanation": "Let time be t hours. 14t - 10t = 20 => 4t = 20 => t = 5 hours. Actual distance = 10 * 5 = 50 km."
+      },
+      {
+        "id": "TEST-08-11",
+        "category": "Core CS (DBMS)",
+        "question": "Which level of the ANSI-SPARC 3-tier architecture describes the physical storage of data on disk?",
+        "options": [
+          "External level",
+          "Conceptual level",
+          "Internal level",
+          "Logical level"
+        ],
+        "correct_answer": "C",
+        "explanation": "The Internal (Physical) level describes how data is organized as blocks and indexes on disk."
+      },
+      {
+        "id": "TEST-08-12",
+        "category": "Core CS (DBMS)",
+        "question": "The rule stating that a Foreign Key value must either match a Primary Key in the referenced relation or be NULL is:",
+        "options": [
+          "Domain Constraint",
+          "Entity Integrity",
+          "Referential Integrity",
+          "Key Constraint"
+        ],
+        "correct_answer": "C",
+        "explanation": "Referential Integrity ensures child foreign keys point to valid existing parent rows."
+      },
+      {
+        "id": "TEST-08-13",
+        "category": "Core CS (DBMS)",
+        "question": "Which SQL command is a DDL command that removes all rows from a table by deallocating data pages?",
+        "options": [
+          "DELETE",
+          "TRUNCATE",
+          "DROP TABLE",
+          "REMOVE"
+        ],
+        "correct_answer": "B",
+        "explanation": "TRUNCATE deallocates data pages quickly without individual row logging."
+      },
+      {
+        "id": "TEST-08-14",
+        "category": "Core CS (DBMS)",
+        "question": "The ability to modify the conceptual schema without altering existing user views is known as:",
+        "options": [
+          "Physical Data Independence",
+          "Logical Data Independence",
+          "Data Redundancy",
+          "Transaction Isolation"
+        ],
+        "correct_answer": "B",
+        "explanation": "Logical Data Independence shields user views from modifications to logical tables."
+      },
+      {
+        "id": "TEST-08-15",
+        "category": "Core CS (DBMS)",
+        "question": "Entity Integrity rule explicitly prohibits which of the following?",
+        "options": [
+          "Duplicate foreign keys",
+          "A Primary Key containing a NULL value",
+          "Secondary indexes",
+          "Composite attributes"
+        ],
+        "correct_answer": "B",
+        "explanation": "Entity Integrity dictates that primary key attributes cannot be NULL."
+      },
+      {
+        "id": "TEST-08-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Linked List In-Place Reversal' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(N) Time, O(1) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Linked List In-Place Reversal' pattern operates with O(N) Time, O(1) Auxiliary Space: Mutates next pointers directly in a single linear pass with O(1) auxiliary space.."
+      },
+      {
+        "id": "TEST-08-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Linked List In-Place Reversal' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Empty list (head == null).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Linked List In-Place Reversal include Empty list (head == null), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-08-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Reverse Linked List II', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(1) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(1) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-08-19",
+        "category": "Projects (Caloriv)",
+        "question": "In Sarthak's project 'Caloriv', what is the core architectural principle regarding 'Android Build Toolchain, SDK Management & Production Gradle Orchestration'?",
+        "options": [
+          "`./gradlew assembleRelease` compiles native Java/Kotlin code, packages Hermes bytecode, and signs the release APK.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For Caloriv, the architectural invariant is: `./gradlew assembleRelease` compiles native Java/Kotlin code, packages Hermes bytecode, and signs the release APK.."
+      },
+      {
+        "id": "TEST-08-20",
+        "category": "Projects (Caloriv)",
+        "question": "Regarding 'Caloriv', how should you defend this design decision in a technical interview: 'What challenges did you face configuring the Android build toolchain for Caloriv, and how did you resolve them?'?",
+        "options": [
+          "Upgrading to modern React Native versions introduced build failures with Java 17 and Android Gradle Plugin (AGP) incompatibilities. I resolved this by authoring...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Upgrading to modern React Native versions introduced build failures with Java 17 and Android Gradle Plugin (AGP) incompatibilities. I resolv."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-08",
+    "title": "Reverse Linked List II (Linked List In-Place Reversal)",
+    "time_limit_minutes": 25,
+    "difficulty": "Easy",
+    "problem_statement": "Solve the core placement problem: Reverse Linked List II.\n\nGiven head of a singly linked list and two integers left and right where left <= right, reverse the nodes from position left to right.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Linked List In-Place Reversal\n- Time Complexity Target: O(N) Time\n- Space Complexity Target: O(1) Auxiliary Space\n- Handle all edge cases: Empty list (head == null), Single node list, Two node list.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Linked List In-Place Reversal\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Linked List In-Place Reversal\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public ListNode reverseBetween(ListNode head, int left, int right) {\n        if (head == null || left == right) return head;\n        ListNode dummy = new ListNode(0);\n        dummy.next = head;\n        ListNode prev = dummy;\n        for (int i = 1; i < left; i++) prev = prev.next;\n        ListNode curr = prev.next;\n        for (int i = 0; i < right - left; i++) {\n            ListNode temp = curr.next;\n            curr.next = temp.next;\n            temp.next = prev.next;\n            prev.next = temp;\n        }\n        return dummy.next;\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Linked List In-Place Reversal logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Empty list (head == null)",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(N) Time)",
+      "Space Complexity": "20 points (Meets O(1) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
+      }
+    ]
+  }
 }

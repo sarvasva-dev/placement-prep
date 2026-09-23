@@ -1,5 +1,5 @@
 /**
- * 50+ Placement Python DSA Problem Directory & Coding View
+ * 50+ Placement Java DSA Problem Directory & Coding View
  */
 
 import { Storage } from '../storage.js';
@@ -8,7 +8,7 @@ export function renderCodingView(container, daysIndex) {
   container.innerHTML = `
     <div style="text-align: center; padding: var(--space-8) 0;">
       <div class="badge badge-primary" style="margin-bottom: var(--space-2);">LOADING DSA DIRECTORY...</div>
-      <h2>Retrieving 50+ Placement Python Coding Solutions</h2>
+      <h2>Retrieving 50+ Placement Java Coding Solutions</h2>
     </div>
   `;
 
@@ -42,10 +42,10 @@ function buildCodingPage(container, codingList, daysIndex) {
     <div class="coding-header" style="margin-bottom: var(--space-6);">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
         <div>
-          <div class="badge badge-primary" style="margin-bottom: var(--space-2);">PYTHON DSA MASTER DIRECTORY</div>
+          <div class="badge badge-primary" style="margin-bottom: var(--space-2);">JAVA DSA MASTER DIRECTORY</div>
           <h1 style="margin-bottom: var(--space-1);">50+ Placement Coding & Algorithm Vault</h1>
           <p style="font-size: var(--font-size-base); color: var(--text-secondary); max-width: 800px;">
-            Production-grade Python 3 solutions tested for campus placement coding rounds. Clean algorithmic intuition, edge case handling, and asymptotic complexity analysis.
+            Production-grade Java 17+ solutions tested for campus placement coding rounds. Clean algorithmic intuition, edge case handling, and asymptotic complexity analysis.
           </p>
         </div>
       </div>
@@ -170,7 +170,7 @@ function buildCodingPage(container, codingList, daysIndex) {
 
           <!-- Solution Code Box -->
           <div class="code-container" style="margin-bottom: var(--space-2);">
-            <pre><code class="language-python" id="code-content-${idx}">${item.code || item.solution || '# Solution implementation in Day ' + item.day}</code></pre>
+            <pre><code class="language-java" id="code-content-${idx}">${item.java_code || item.code || item.solution || '// Solution implementation in Day ' + item.day}</code></pre>
           </div>
         </div>
       `;

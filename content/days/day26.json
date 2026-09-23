@@ -1,234 +1,2441 @@
 {
   "day": 26,
-  "title": "Network Cryptography (AES & RSA), Kadane's Algorithm & Python Concurrency",
-  "sem_data": {
-    "subject": "BCA-5003 Computer Network",
-    "topic": "Unit V \u2014 Network Security & Cryptography: Symmetric vs Asymmetric, RSA Algorithm & Digital Signatures",
-    "detailed_notes": [
-      "Cryptography secures network communication across untrusted channels, guaranteeing Confidentiality, Integrity, Authentication, and Non-Repudiation (the CIA-N triad).",
-      "1. Symmetric Key Cryptography (Secret Key):\n\u2022 The sender and receiver share the EXACT SAME secret key for both encryption and decryption: Ciphertext C = E(K, P); Plaintext P = D(K, C).\n\u2022 Algorithms: AES (Advanced Encryption Standard: 128, 192, 256 bits), DES (56-bit key, obsolete), 3DES.\n\u2022 Advantages: Highly optimized in hardware, extremely fast throughput (megabytes per second), minimal CPU overhead.\n\u2022 The Key Distribution Problem: How can sender and receiver agree on a shared secret key across an insecure network without an eavesdropper intercepting it? (Requires n*(n-1)/2 keys for n users!).",
-      "2. Asymmetric Key Cryptography (Public Key):\n\u2022 Uses a mathematically linked Key Pair: a Public Key (distributed openly) and a Private Key (kept strictly confidential).\n\u2022 Encryption: Anyone can encrypt using the recipient's Public Key: C = E(PU_receiver, P). Decryption: ONLY the recipient's Private Key can decrypt: P = D(PR_receiver, C).\n\u2022 Key Management: Each user requires only 1 key pair (2n keys total for n users).\n\u2022 Disadvantage: Computationally intensive (1000x slower than symmetric AES).",
-      "3. The RSA Algorithm (Rivest, Shamir, Adleman):\nBased on the mathematical difficulty of factoring the product of two large prime numbers:\n\u2022 Step 1: Select two distinct large prime numbers p and q.\n\u2022 Step 2: Compute n = p * q (the modulus, part of public and private keys).\n\u2022 Step 3: Compute Euler's Totient function phi(n) = (p - 1) * (q - 1).\n\u2022 Step 4: Choose public exponent e such that 1 < e < phi(n) and gcd(e, phi(n)) = 1 (typically e = 65537).\n\u2022 Step 5: Compute private exponent d such that d * e = 1 mod phi(n) (Modular Multiplicative Inverse: d = e^(-1) mod phi(n)).\n\u2022 Public Key = (e, n); Private Key = (d, n).\n\u2022 Encryption: C = (M^e) mod n.\n\u2022 Decryption: M = (C^d) mod n.",
-      "4. Digital Signatures & Message Digests:\n\u2022 Ensures sender authenticity and non-repudiation: Sender hashes the message (using SHA-256) and ENCRYPTS the hash with their own PRIVATE KEY!\n\u2022 Receiver decrypts the signature using the sender's PUBLIC KEY and compares it against a freshly computed SHA-256 hash. If hashes match, the message is authentic and untampered."
+  "title": "Day 26: Network Security & Cryptography: Symmetric (AES/DES) vs Asymmetric (RSA) & Digital Signatures & Dynamic Programming: Longest Common Subsequence (LCS)",
+  "streams": {
+    "academic": {
+      "unit": 4,
+      "topic": "Unit IV — Network Security & Cryptography: Symmetric (AES/DES) vs Asymmetric (RSA) & Digital Signatures",
+      "objectives": [
+        "Understand cryptographic security principles (Confidentiality, Integrity, Authentication, Non-repudiation).",
+        "Master Symmetric vs Asymmetric encryption and RSA mathematical algorithm."
+      ],
+      "explanation": "Network Security ensures CIA: Confidentiality, Integrity, and Availability. Cryptography transforms plaintext into unintelligible ciphertext:\n1. Symmetric Key Cryptography: Both sender and receiver share a single identical secret key for encryption and decryption. Algorithms: AES (Advanced Encryption Standard - 128/192/256-bit keys, Feistel/SPN network), DES, 3DES. High encryption speed, but faces secure key distribution challenges.\n2. Asymmetric (Public Key) Cryptography: Employs a mathematically linked key pair: a Public Key (widely distributed for encryption) and a Private Key (kept strictly confidential for decryption). Solves key distribution. Algorithm: RSA (Rivest-Shamir-Adleman).\n3. RSA Algorithm Steps:\n   • Select two large distinct primes `p` and `q`;\n   • Compute modulus `n = p * q` and Euler's totient `φ(n) = (p - 1) * (q - 1)`;\n   • Choose public exponent `e` such that `1 < e < φ(n)` and `gcd(e, φ(n)) = 1`;\n   • Calculate private key `d` such that `d * e ≡ 1 (mod φ(n))` (modular multiplicative inverse);\n   • Encryption: `Ciphertext C = M^e mod n`;\n   • Decryption: `Plaintext M = C^d mod n`.\n4. Digital Signatures: The sender encrypts a message hash using their private key. The receiver decrypts the signature using the sender's public key, verifying authenticity and non-repudiation.",
+      "definitions": [
+        {
+          "term": "Symmetric vs Asymmetric",
+          "definition": "Symmetric uses one shared secret key for both operations; Asymmetric uses a mathematically linked public-private key pair."
+        },
+        {
+          "term": "Digital Signature",
+          "definition": "An encrypted cryptographic hash created using the sender's private key that guarantees message authenticity, integrity, and non-repudiation."
+        }
+      ],
+      "subtopics": [
+        {
+          "title": "The RSA Algorithm",
+          "content": "Relies on the mathematical difficulty of factoring the product of two massive prime numbers (prime factorization problem)."
+        },
+        {
+          "title": "Hybrid Encryption (HTTPS/TLS)",
+          "content": "Modern HTTPS uses RSA/Diffie-Hellman asymmetric handshake to securely exchange a one-time session key, then switches to fast AES symmetric encryption for data transfer."
+        }
+      ],
+      "examples": [
+        "HTTPS TLS handshake exchanging AES session keys via asymmetric RSA cryptography."
+      ],
+      "diagram": "+---------------------------------------------------+\n|              ASYMMETRIC RSA CRYPTOGRAPHY          |\n| Plaintext M -> [Encrypt with Public Key e] -> C   |\n| Ciphertext C -> [Decrypt with Private Key d] -> M |\n+---------------------------------------------------+",
+      "comparison_table": {
+        "headers": [
+          "Feature",
+          "Symmetric Cryptography (AES)",
+          "Asymmetric Cryptography (RSA)"
+        ],
+        "rows": [
+          [
+            "Keys Used",
+            "1 single shared secret key for both encrypt/decrypt",
+            "2 mathematically linked keys: Public and Private"
+          ],
+          [
+            "Execution Speed",
+            "Extremely fast (millions of bytes per sec)",
+            "Slow (1000x slower due to modular exponentiation)"
+          ],
+          [
+            "Key Distribution",
+            "Severe challenge (how to share key securely?)",
+            "Simple (public key is distributed openly)"
+          ],
+          [
+            "Key Length",
+            "128, 192, 256 bits",
+            "2048, 3072, 4096 bits for equivalent security"
+          ],
+          [
+            "Primary Use",
+            "Bulk data payload encryption",
+            "Key exchange, digital signatures, authentication"
+          ]
+        ]
+      },
+      "memorize": "Symmetric: 1 key (fast, AES). Asymmetric: 2 keys (RSA, public encrypts, private decrypts). RSA formulas: C = M^e mod n, M = C^d mod n.",
+      "understand": "Digital signatures invert encryption: the sender encrypts with their PRIVATE key so anyone can verify it with their PUBLIC key.",
+      "common_mistakes": "Saying public key decrypts private key messages in confidential encryption (public encrypts, private decrypts).",
+      "exam_writing_guidance": "Compare Symmetric and Asymmetric in a table, write out all 5 steps of the RSA algorithm with a numeric walkthrough, and explain Digital Signatures.",
+      "mini_practice": [
+        "In RSA, given p=3, q=11, and e=7, calculate n, φ(n), and private key d."
+      ],
+      "pyqs": [
+        {
+          "type": "ACTUAL PYQ",
+          "university": "CSJM University",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2024-25 (Q4)",
+          "marks": 15,
+          "question": "Differentiate between Symmetric and Asymmetric Key Cryptography. Explain the RSA Algorithm step-by-step with a mathematical example. What is a Digital Signature? (15 Marks)",
+          "rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA Algorithm steps (4 marks) + Numerical RSA Walkthrough (4 marks) + Digital Signature concept (3 marks) = 15 Marks.",
+          "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n• Step 1: Choose two distinct prime numbers p and q;\n• Step 2: Compute n = p * q and φ(n) = (p - 1) * (q - 1);\n• Step 3: Choose integer e such that 1 < e < φ(n) and gcd(e, φ(n)) = 1;\n• Step 4: Compute private key d such that (d * e) ≡ 1 mod φ(n);\n• Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n• Let p = 3, q = 11;\n• n = 3 * 11 = 33; φ(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n• Choose e = 7 (gcd(7, 20) = 1);\n• Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 ≡ 1 mod 20);\n• Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n• Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n• Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
+          "answer_structure": "Symmetric vs Asymmetric Table -> RSA Steps -> Numerical Example -> Digital Signature Architecture",
+          "important_points": [
+            "CIA triad",
+            "Symmetric 1 key vs Asymmetric 2 keys",
+            "Euler totient φ(n)",
+            "C = M^e mod n",
+            "Digital signature uses private key to sign"
+          ],
+          "diagram_required": true,
+          "expected_examiner_points": [
+            "Step-by-step arithmetic verification of RSA",
+            "Clear explanation of Digital Signature verification"
+          ],
+          "common_mistakes": [
+            "Choosing an e that shares common factors with φ(n)"
+          ]
+        },
+        {
+          "type": "MODEL QUESTION",
+          "university": "CSJM University Pattern",
+          "subject": "BCA-5003 Computer Networks",
+          "year": "2023 / Model",
+          "marks": 5,
+          "question": "What is a Denial of Service (DoS) and Distributed Denial of Service (DDoS) attack? (5 Marks)",
+          "rubric": "DoS vs DDoS definition (3 marks) + Mitigation strategies (2 marks) = 5 Marks.",
+          "model_answer": "A Denial of Service (DoS) attack occurs when an attacker floods a target server, network, or service with fraudulent traffic to overwhelm system resources (CPU, bandwidth, memory), rendering it inaccessible to legitimate users. A Distributed Denial of Service (DDoS) attack executes this across thousands of geographically distributed compromised computers (botnets), amplifying traffic volume into terabits per second. Mitigations include rate limiting, scrubbing centers (Cloudflare), Anycast DNS routing, and web application firewalls (WAF)."
+        }
+      ],
+      "subject_code": "BCA-5003",
+      "subject_name": "Computer Networks",
+      "mcqs": [
+        {
+          "id": "ACAD-26-01",
+          "question": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
+          "options": [
+            "A Record",
+            "AAAA Record",
+            "CNAME Record",
+            "MX Record"
+          ],
+          "correct_answer": "A",
+          "explanation": "An 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
+        },
+        {
+          "id": "ACAD-26-02",
+          "question": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
+          "options": [
+            "By removing TCP completely",
+            "By using a binary framing layer over a single persistent TCP connection, interleaving multiple bidirectional streams without Head-of-Line blocking",
+            "By compressing images with lossy algorithms",
+            "By limiting requests to 10 per second"
+          ],
+          "correct_answer": "B",
+          "explanation": "HTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
+        },
+        {
+          "id": "ACAD-26-03",
+          "question": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
+          "options": [
+            "TCP port 80",
+            "UDP port 53",
+            "TCP port 443",
+            "UDP port 67"
+          ],
+          "correct_answer": "B",
+          "explanation": "Standard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
+        },
+        {
+          "id": "ACAD-26-04",
+          "question": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
+          "options": [
+            "Transport Layer Security (TLS / SSL)",
+            "Point-to-Point Protocol (PPP)",
+            "Border Gateway Protocol (BGP)",
+            "Simple Mail Transfer Protocol (SMTP)"
+          ],
+          "correct_answer": "A",
+          "explanation": "HTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
+        },
+        {
+          "id": "ACAD-26-05",
+          "question": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
+          "options": [
+            "POP3 downloads and removes emails from the server locally; IMAP synchronizes folders bidirectionally, keeping emails stored on the server",
+            "IMAP cannot read attachments",
+            "POP3 requires TLS while IMAP is unencrypted",
+            "POP3 is used to send emails while IMAP receives them"
+          ],
+          "correct_answer": "A",
+          "explanation": "POP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
+        }
+      ]
+    },
+    "academic_pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2024-25 (Q4)",
+        "marks": 15,
+        "question": "Differentiate between Symmetric and Asymmetric Key Cryptography. Explain the RSA Algorithm step-by-step with a mathematical example. What is a Digital Signature? (15 Marks)",
+        "rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA Algorithm steps (4 marks) + Numerical RSA Walkthrough (4 marks) + Digital Signature concept (3 marks) = 15 Marks.",
+        "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n• Step 1: Choose two distinct prime numbers p and q;\n• Step 2: Compute n = p * q and φ(n) = (p - 1) * (q - 1);\n• Step 3: Choose integer e such that 1 < e < φ(n) and gcd(e, φ(n)) = 1;\n• Step 4: Compute private key d such that (d * e) ≡ 1 mod φ(n);\n• Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n• Let p = 3, q = 11;\n• n = 3 * 11 = 33; φ(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n• Choose e = 7 (gcd(7, 20) = 1);\n• Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 ≡ 1 mod 20);\n• Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n• Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n• Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
+        "answer_structure": "Symmetric vs Asymmetric Table -> RSA Steps -> Numerical Example -> Digital Signature Architecture",
+        "important_points": [
+          "CIA triad",
+          "Symmetric 1 key vs Asymmetric 2 keys",
+          "Euler totient φ(n)",
+          "C = M^e mod n",
+          "Digital signature uses private key to sign"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Step-by-step arithmetic verification of RSA",
+          "Clear explanation of Digital Signature verification"
+        ],
+        "common_mistakes": [
+          "Choosing an e that shares common factors with φ(n)"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "What is a Denial of Service (DoS) and Distributed Denial of Service (DDoS) attack? (5 Marks)",
+        "rubric": "DoS vs DDoS definition (3 marks) + Mitigation strategies (2 marks) = 5 Marks.",
+        "model_answer": "A Denial of Service (DoS) attack occurs when an attacker floods a target server, network, or service with fraudulent traffic to overwhelm system resources (CPU, bandwidth, memory), rendering it inaccessible to legitimate users. A Distributed Denial of Service (DDoS) attack executes this across thousands of geographically distributed compromised computers (botnets), amplifying traffic volume into terabits per second. Mitigations include rate limiting, scrubbing centers (Cloudflare), Anycast DNS routing, and web application firewalls (WAF)."
+      }
     ],
-    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    RSA PUBLIC KEY ENCRYPTION & SIGNING                  |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|  1. CONFIDENTIALITY (Encryption):                                       |\n|     Plaintext M ---> [ Encrypt with Bob's PUBLIC Key ] ---> Ciphertext C|\n|                                                                   |     |\n|     Plaintext M <--- [ Decrypt with Bob's PRIVATE Key ] <---------+     |\n|                                                                         |\n|  2. AUTHENTICATION & NON-REPUDIATION (Digital Signature):               |\n|     Message M ---> [ SHA-256 ] ---> Hash                                |\n|                                      |                                  |\n|     Signature S <--- [ Encrypt with Alice's PRIVATE Key ] <-------------+     |\n|                                                                         |\n|     Verify: Decrypt Signature S with Alice's PUBLIC Key === Hash?        |\n+-------------------------------------------------------------------------+",
+    "academic_mcqs": [
+      {
+        "id": "ACAD-26-01",
+        "question": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
+        "options": [
+          "A Record",
+          "AAAA Record",
+          "CNAME Record",
+          "MX Record"
+        ],
+        "correct_answer": "A",
+        "explanation": "An 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
+      },
+      {
+        "id": "ACAD-26-02",
+        "question": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
+        "options": [
+          "By removing TCP completely",
+          "By using a binary framing layer over a single persistent TCP connection, interleaving multiple bidirectional streams without Head-of-Line blocking",
+          "By compressing images with lossy algorithms",
+          "By limiting requests to 10 per second"
+        ],
+        "correct_answer": "B",
+        "explanation": "HTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
+      },
+      {
+        "id": "ACAD-26-03",
+        "question": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
+        "options": [
+          "TCP port 80",
+          "UDP port 53",
+          "TCP port 443",
+          "UDP port 67"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
+      },
+      {
+        "id": "ACAD-26-04",
+        "question": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
+        "options": [
+          "Transport Layer Security (TLS / SSL)",
+          "Point-to-Point Protocol (PPP)",
+          "Border Gateway Protocol (BGP)",
+          "Simple Mail Transfer Protocol (SMTP)"
+        ],
+        "correct_answer": "A",
+        "explanation": "HTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
+      },
+      {
+        "id": "ACAD-26-05",
+        "question": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
+        "options": [
+          "POP3 downloads and removes emails from the server locally; IMAP synchronizes folders bidirectionally, keeping emails stored on the server",
+          "IMAP cannot read attachments",
+          "POP3 requires TLS while IMAP is unencrypted",
+          "POP3 is used to send emails while IMAP receives them"
+        ],
+        "correct_answer": "A",
+        "explanation": "POP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
+      }
+    ],
+    "aptitude_lesson": {
+      "topic": "Para Jumbles & Sentence Rearrangement",
+      "category": "Verbal Ability",
+      "subtopic": "Para Jumbles",
+      "formulas": "1. Mandatory Pairs: Find two sentences that must go together (Noun followed by Pronoun, Cause followed by Effect, Chronological sequence).\n2. Opening Sentence: Must be independent, introduces the central noun/topic, cannot begin with conjunctions ('However', 'Therefore') or relative pronouns.\n3. Closing Sentence: Summarizes, states consequence, or projects future outlook.",
+      "shortcuts": "Acronym-Full Form Rule: Full name or complete title is introduced first; acronyms or abbreviations follow in subsequent sentences.",
+      "tutorial": [
+        "Para Jumbles test logical cohesion and discourse flow. Never test all 24 permutations. Find one mandatory pair (e.g. BC), then check which of the 4 options contains BC together."
+      ]
+    },
+    "aptitude_solved": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Para Jumbles",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Para Jumbles",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Para Jumbles",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Para Jumbles",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Para Jumbles",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "aptitude_mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Rearrange sentences to form a coherent paragraph: A. However, with microservices, debugging becomes distributed. B. Traditional monoliths allowed developers to trace execution in a single thread. C. As a result, distributed tracing tools like OpenTelemetry became indispensable. D. This complexity makes identifying bottlenecks significantly harder.",
+        "options": {
+          "A": "B - A - D - C",
+          "B": "A - B - C - D",
+          "C": "B - C - A - D",
+          "D": "D - C - B - A"
+        },
+        "correct_answer": "A",
+        "explanation": "Logical order: B establishes monolith baseline, A introduces microservices contrast, D explains the resulting bottleneck complexity, and C delivers the tooling solution.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Rearrange the sentences: A. It converts high-level Python source code into bytecode. B. The Python Virtual Machine (PVM) is the execution engine of Python. C. Then, the PVM interprets the bytecode instructions into native machine calls. D. This two-phase architecture provides cross-platform portability.",
+        "options": {
+          "A": "B - A - C - D",
+          "B": "A - B - C - D",
+          "C": "B - C - A - D",
+          "D": "D - A - B - C"
+        },
+        "correct_answer": "A",
+        "explanation": "B defines PVM, A explains the bytecode conversion stage, C details interpretation, and D concludes with the architectural benefit.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Rearrange the sentences: A. Over time, technical debt accumulates if refactoring is ignored. B. In agile software development, teams often prioritize rapid feature delivery. C. Eventually, shipping simple updates requires excessive engineering effort. D. Consequently, initial delivery velocity steadily decays.",
+        "options": {
+          "A": "B - A - D - C",
+          "B": "A - B - C - D",
+          "C": "B - C - D - A",
+          "D": "C - D - B - A"
+        },
+        "correct_answer": "A",
+        "explanation": "B introduces agile feature focus, A introduces technical debt accumulation, D explains declining velocity, and C gives the ultimate consequence.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Rearrange the sentences: A. Machine learning models require vast quantities of clean training data. B. Without robust preprocessing, garbage-in leads directly to garbage-out. C. Data engineering pipelines are thus the unsung foundation of modern AI. D. These pipelines automate ingestion, validation, and feature transformation.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "C - D - A - B",
+          "C": "A - C - B - D",
+          "D": "B - A - D - C"
+        },
+        "correct_answer": "A",
+        "explanation": "A states the core data requirement, B highlights the garbage-in risk, C presents data engineering as the solution, and D explains pipeline functions.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Rearrange the sentences: A. Database indexing accelerates search queries significantly. B. However, every additional index introduces write overhead during inserts and updates. C. Therefore, database architects must balance read acceleration against write latency. D. B+ Trees are the most widely utilized indexing structure.",
+        "options": {
+          "A": "A - D - B - C",
+          "B": "D - A - B - C",
+          "C": "A - B - C - D",
+          "D": "B - C - A - D"
+        },
+        "correct_answer": "A",
+        "explanation": "A introduces index speed, D specifies B+ Trees, B highlights the write penalty trade-off, and C summarizes the architectural balance.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Rearrange the sentences: A. Clean code serves as its own documentation. B. When variable names and method boundaries reflect business domains, comments become secondary. C. Excessive comments often disguise poorly factored spaghetti logic. D. Prioritizing expressive readability is therefore a primary engineering virtue.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "B - A - C - D",
+          "C": "C - B - A - D",
+          "D": "D - A - B - C"
+        },
+        "correct_answer": "A",
+        "explanation": "A asserts the clean code thesis, B elaborates on expressive naming, C warns against comment crutches, and D concludes with the engineering takeaway.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Rearrange the sentences: A. Containerization revolutionized software deployment. B. Docker encapsulated code and dependencies into immutable images. C. Developers could finally eliminate the 'works on my machine' syndrome. D. Kubernetes later emerged to orchestrate these containers across clusters.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "B - C - A - D",
+          "C": "A - C - B - D",
+          "D": "D - A - B - C"
+        },
+        "correct_answer": "A",
+        "explanation": "A introduces containerization impact, B details Docker mechanism, C explains the problem solved, and D presents subsequent orchestration evolution.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Rearrange the sentences: A. Cryptographic hashing creates a fixed-size deterministic digest. B. Even a single bit change in the input produces an entirely different hash. C. This property, known as the avalanche effect, makes tampering immediately detectable. D. Blockchains utilize this mechanism to guarantee immutable ledgers.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "B - C - A - D",
+          "C": "A - C - B - D",
+          "D": "C - A - B - D"
+        },
+        "correct_answer": "A",
+        "explanation": "A defines hashing, B explains sensitivity to changes, C names the avalanche effect, and D maps to blockchain ledger immutability.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Rearrange the sentences: A. Asynchronous programming avoids blocking CPU threads on network I/O. B. Traditional synchronous servers dedicate a separate thread per socket connection. C. Under massive traffic, thread context-switching overhead exhausts operating system RAM. D. Event-driven architectures solve this by running thousands of concurrent requests on a single event loop.",
+        "options": {
+          "A": "B - C - A - D",
+          "B": "A - B - C - D",
+          "C": "D - A - B - C",
+          "D": "C - B - A - D"
+        },
+        "correct_answer": "A",
+        "explanation": "B introduces synchronous thread model, C explains the OS exhaustion risk, A introduces async non-blocking I/O, and D concludes with event loop scalability.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Rearrange the sentences: A. Automated unit tests provide a safety net for continuous integration. B. Without tests, developers operate with constant fear of introducing regression bugs. C. This psychological fear slows down feature delivery and discourages refactoring. D. A comprehensive test suite empowers engineers to ship code with fearless velocity.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "B - C - A - D",
+          "C": "C - B - A - D",
+          "D": "D - A - B - C"
+        },
+        "correct_answer": "A",
+        "explanation": "A introduces unit testing safety, B explains fear of regressions without tests, C details impact on delivery, and D highlights resulting deployment velocity.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "aptitude_practice": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "aptitude_timed_drill": {
+      "title": "Timed Speed Drill: Para Jumbles (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    },
+    "dsa_pattern": {
+      "pattern_name": "Dynamic Programming: Longest Common Subsequence (LCS)",
+      "category": "Dynamic Programming",
+      "concept": "Finds the length of the longest subsequence present in both strings in the same relative order using a 2D matrix.",
+      "why_it_works": "If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).",
+      "visual_explanation": "text1 = 'abcde', text2 = 'ace'\\nMatrix matches on 'a', 'c', 'e'.\\ndp[5][3] = 3 (LCS = 'ace')",
+      "language": "Java",
+      "java_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        \n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        \n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "line_by_line_walkthrough": [
+        "Line 3-4: Allocate (m+1) x (n+1) DP matrix with zero baseline.",
+        "Line 6-7: Nested iteration over characters of both strings.",
+        "Line 8-9: Matching characters increment diagonal predecessor.",
+        "Line 10-12: Mismatched characters inherit maximum of top or left cell.",
+        "Line 15: Return dp[m][n]."
+      ],
+      "dry_run": "text1 = 'abc', text2 = 'def' -> No character matches -> matrix filled with 0s. Returns 0.",
+      "complexity": "O(M * N) Time, O(M * N) Auxiliary Space",
+      "edge_cases": "Identical strings (returns length), Completely disjoint strings (returns 0), Single character strings",
+      "edge_cases_list": [
+        "Identical strings (returns length)",
+        "Completely disjoint strings (returns 0)",
+        "Single character strings"
+      ],
+      "interview_variations": [
+        "Edit Distance (Levenshtein Distance)",
+        "Delete Operation for Two Strings",
+        "Shortest Common Supersequence"
+      ]
+    },
+    "coding_problems": [
+      {
+        "problem_id": "CODE-26-01",
+        "title": "Problem 1: Longest Common Subsequence",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dynamic Programming: Longest Common Subsequence (LCS) algorithmic technique.\n2. Finds the length of the longest subsequence present in both strings in the same relative order using a 2D matrix.\n3. Invariants: If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).",
+        "solution_java": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "solution_python": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "java_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "time_complexity": "O(M * N) Time",
+        "space_complexity": "O(M * N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-26-02",
+        "title": "Problem 2: Edit Distance",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2 (insert, delete, replace).",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dynamic Programming: Longest Common Subsequence (LCS).\n2. Handle edge cases: Identical strings (returns length), Completely disjoint strings (returns 0), Single character strings.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "solution_python": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "code": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "java_code": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "time_complexity": "O(M * N) Time",
+        "space_complexity": "O(M * N) Auxiliary Space"
+      }
+    ],
+    "core_cs": {
+      "subject": "Python Internals",
+      "topic": "RESTful API Design, ASGI Architectures & FastAPI Internals",
+      "concept_lesson": "Modern backend architectures rely on REST principles and asynchronous gateway interfaces.\n\nREST Architectural Constraints (Roy Fielding):\n1. Client-Server Architecture: Separation of concerns between UI client and backend data storage.\n2. Statelessness: Each request from client to server must contain all information required to understand and service the request; no session context on server.\n3. Cacheability: Responses must explicitly label themselves as cacheable or non-cacheable (via `Cache-Control` headers).\n4. Uniform Interface: Standard HTTP methods (GET: safe & idempotent, POST: non-idempotent, PUT: idempotent replacement, PATCH: partial update, DELETE: idempotent).\n5. Layered System: Client cannot distinguish whether it connects directly to end server or intermediate proxy/load balancer.\n\nWSGI vs ASGI Architectures:\n- WSGI (Web Server Gateway Interface): Synchronous Python standard (`def app(environ, start_response)`). Each request consumes an OS thread; cannot handle WebSockets or long polling.\n- ASGI (Asynchronous Server Gateway Interface): Asynchronous successor (`async def app(scope, receive, send)`). Event-driven architecture natively supporting HTTP/2, WebSockets, and long-lived streaming connections (Uvicorn, Hypercorn).\n\nFastAPI Framework Mechanics:\nFastAPI is built on Starlette (ASGI toolkit) and Pydantic (data validation via Python type annotations). Route parameters are parsed into Pydantic models with automatic JSON schema generation (`/docs` OpenAPI/Swagger). FastAPI handles concurrency smartly: endpoints defined with `async def` run on the main asyncio event loop; endpoints defined with standard `def` are automatically offloaded to an external thread pool (`anyio` worker threads) to prevent blocking the event loop.",
+      "key_definitions": [
+        {
+          "term": "ASGI",
+          "definition": "Asynchronous Server Gateway Interface: async standard for Python web servers supporting HTTP and WebSockets."
+        },
+        {
+          "term": "Idempotent Method",
+          "definition": "An HTTP method where multiple identical requests produce the exact same server resource state (GET, PUT, DELETE)."
+        },
+        {
+          "term": "Statelessness",
+          "definition": "The REST constraint mandating that every request contain all necessary context without server-side session memory."
+        }
+      ],
+      "interview_questions": [
+        {
+          "q": "What is the difference between an Idempotent and a Safe HTTP method?",
+          "a": "A Safe method (like GET or HEAD) does not alter server resource state (read-only). An Idempotent method (like PUT or DELETE) can alter server state, but making the exact same request multiple times produces the identical server state as making it once (e.g., DELETE /students/5 removes student 5; repeating it still leaves student 5 removed). POST is neither safe nor idempotent because multiple POSTs create multiple separate records."
+        },
+        {
+          "q": "Compare WSGI (e.g., Flask/Django) and ASGI (e.g., FastAPI/Starlette).",
+          "a": "WSGI is synchronous and blocking; each incoming request binds an entire operating system thread. It cannot natively support persistent WebSockets, server-sent events, or asynchronous event loops. ASGI is asynchronous and non-blocking, designed for `asyncio`. It handles thousands of concurrent long-lived connections, HTTP/2, and WebSockets on a single thread using an event loop with minimal memory overhead."
+        },
+        {
+          "q": "How does FastAPI handle `async def` routes vs standard `def` routes differently?",
+          "a": "If you define a route with `async def`, FastAPI executes it directly on the main `asyncio` event loop; any blocking call inside it freezes the entire server. If you define a route with standard `def`, FastAPI automatically runs it inside a background thread pool (AnyIO worker threads) so that blocking synchronous operations (like legacy database queries) do not block the event loop."
+        },
+        {
+          "q": "What is the difference between PUT and PATCH in RESTful APIs?",
+          "a": "PUT performs a complete replacement of the target resource; the request payload must contain the entire updated entity, and omitted fields are typically reset to null or defaults. PATCH performs a partial update; only the specific fields provided in the request payload are modified, leaving all other existing entity attributes unchanged."
+        },
+        {
+          "q": "What is Dependency Injection in FastAPI and how does `Depends()` function?",
+          "a": "Dependency Injection decouples shared logic (database sessions, authentication, permission checks) from route handlers. In FastAPI, `Depends(get_db)` declares a dependency. When a request arrives, FastAPI resolves `get_db`, injects its return value (e.g., active Supabase/SQLAlchemy session) into the route function parameter, and guarantees execution of cleanup/close logic in `finally:` after the response is sent."
+        }
+      ],
+      "mcqs": [
+        {
+          "id": "CS-26-01",
+          "question": "Which of the following HTTP methods is NOT idempotent?",
+          "options": [
+            "GET",
+            "PUT",
+            "DELETE",
+            "POST"
+          ],
+          "correct_answer": "D",
+          "explanation": "POST is non-idempotent because multiple identical calls create duplicate records."
+        },
+        {
+          "id": "CS-26-02",
+          "question": "The asynchronous standard that superseded WSGI for modern Python web servers like Uvicorn is:",
+          "options": [
+            "CGI",
+            "ASGI",
+            "FAST-CGI",
+            "HTTPD"
+          ],
+          "correct_answer": "B",
+          "explanation": "ASGI (Asynchronous Server Gateway Interface) is the modern async Python standard."
+        },
+        {
+          "id": "CS-26-03",
+          "question": "In FastAPI, what happens when a route handler is declared with standard `def` instead of `async def`?",
+          "options": [
+            "It raises a TypeError",
+            "FastAPI automatically executes it in an external thread pool",
+            "It blocks the server permanently",
+            "It runs on the GPU"
+          ],
+          "correct_answer": "B",
+          "explanation": "FastAPI offloads standard def routes to background worker threads to avoid event loop stalls."
+        },
+        {
+          "id": "CS-26-04",
+          "question": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
+          "options": [
+            "200 OK",
+            "201 Created",
+            "204 No Content",
+            "304 Not Modified"
+          ],
+          "correct_answer": "B",
+          "explanation": "HTTP 201 Created is the standard response code for successful resource creation."
+        },
+        {
+          "id": "CS-26-05",
+          "question": "Which RESTful constraint states that every request must contain all necessary data without server-stored session state?",
+          "options": [
+            "Uniform Interface",
+            "Statelessness",
+            "Cacheability",
+            "Layered System"
+          ],
+          "correct_answer": "B",
+          "explanation": "Statelessness requires that no client session context is retained on the server."
+        }
+      ]
+    },
+    "project_preparation": {
+      "project_name": "SmartGalla",
+      "repo_path": "D:\\Projects\\SmartGalla",
+      "topic": "Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)",
+      "what_to_understand": "Programmatic vector PDF composition, GST tax breakdowns, and thermal printer formatting.",
+      "what_to_memorize": "`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.",
+      "interview_questions": [
+        {
+          "q": "Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?",
+          "a": "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeouts. `pdf-lib` is a pure JavaScript low-overhead library that compiles vector PDF streams directly into memory in under 80 milliseconds with only 15MB RAM, supporting custom 80mm thermal receipt formats and A4 GST invoices."
+        },
+        {
+          "q": "How do you handle Indian GST invoice compliance in the generated document?",
+          "a": "The PDF generator splits total sales into CGST and SGST for intra-state sales (50-50 split of the GST rate) or IGST for inter-state transactions. It automatically formats the merchant's GSTIN, customer details, HSN/SAC codes per item, reverse charge indicators, and converts total numeric amounts to words per Indian banking standards."
+        }
+      ],
+      "interview_pitch_exercise": "For SmartGalla's billing pipeline, I replaced slow Puppeteer PDF rendering with high-speed programmatic vector generation using `pdf-lib`. It produces compliant GST invoices and 80mm thermal receipts in under 100ms on serverless endpoints with minimal memory overhead."
+    },
+    "placement_interview": [
+      {
+        "category": "Technical",
+        "question": "Day 26 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+        "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+        "key_talking_points": [
+          "Profile first: never guess bottlenecks.",
+          "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+          "Leverage caching and asynchronous background task queues."
+        ],
+        "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+      },
+      {
+        "category": "Technical",
+        "question": "Day 26 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+        "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+        "key_talking_points": [
+          "O(1) average lookup in Hash Map vs O(log N) in BST.",
+          "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+          "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+        ],
+        "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+      },
+      {
+        "category": "Project Experience",
+        "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "key_talking_points": [
+          "Contextualize the architecture of SmartGalla.",
+          "Highlight concurrency, data integrity, and error recovery.",
+          "Quantify reliability outcomes and graceful failure handling."
+        ],
+        "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+      },
+      {
+        "category": "Behavioral (STAR)",
+        "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+        "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+        "key_talking_points": [
+          "Openness to feedback and constructive attitude.",
+          "Technical verification of the problem (N+1 query pattern).",
+          "Refactoring with measurable performance improvements.",
+          "Personal growth and habit transformation."
+        ],
+        "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+      },
+      {
+        "category": "HR & Cultural Fit",
+        "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "key_talking_points": [
+          "Disciplined reading of official docs and engineering blogs.",
+          "Hands-on prototype building to validate theory.",
+          "Curiosity, self-driven learning, and long-term passion for software craft."
+        ],
+        "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+      }
+    ],
+    "daily_revision": {
+      "yesterday_recall": "• Reviewed Day 25 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Dynamic Programming: Longest Common Subsequence.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: BulkBeat TV.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "rapid_fire_questions": [
+        {
+          "q": "Day 26 Q1: What is the primary academic thesis of Application Layer: DNS Hierarchy, HTTP/2/3 & TLS?",
+          "a": "Core theoretical and practical mastery of Application Layer: DNS Hierarchy, HTTP/2/3 & TLS under the CSJM University BCA-5003 syllabus."
+        },
+        {
+          "q": "Day 26 Q2: What is the key speed calculation formula applied in Para Jumbles & Sentence Rearrangement?",
+          "a": "High-speed corporate placement arithmetic shortcut for Para Jumbles & Sentence Rearrangement in campus recruitment exams."
+        },
+        {
+          "q": "Day 26 Q3: What is the time complexity of Dynamic Programming: Longest Common Subsequence?",
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        },
+        {
+          "q": "Day 26 Q4: What is the central architectural principle of Python Decorators, @wraps & Concurrency?",
+          "a": "Foundational systems engineering rule governing Python Decorators, @wraps & Concurrency in production environments."
+        },
+        {
+          "q": "Day 26 Q5: What database integrity constraint guarantees relational consistency?",
+          "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+        },
+        {
+          "q": "Day 26 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+          "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+        },
+        {
+          "q": "Day 26 Q7: What is the verified technical foundation of BulkBeat TV?",
+          "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+        },
+        {
+          "q": "Day 26 Q8: How does the STAR method structure behavioral interview answers?",
+          "a": "Situation, Task, Action, and Result."
+        },
+        {
+          "q": "Day 26 Q9: Why are parameterized SQL queries immune to SQL injection?",
+          "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+        },
+        {
+          "q": "Day 26 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+          "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+        }
+      ],
+      "today_summary": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formulas_and_shortcuts": [
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency."
+      ],
+      "must_know_definitions": [
+        {
+          "term": "Daily Core Concept 1",
+          "definition": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS."
+        },
+        {
+          "term": "Daily Core Concept 2",
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement."
+        },
+        {
+          "term": "Daily Core Concept 3",
+          "definition": "• Pattern: Dynamic Programming: Longest Common Subsequence."
+        },
+        {
+          "term": "Daily Core Concept 4",
+          "definition": "• Project: BulkBeat TV."
+        },
+        {
+          "term": "Daily Core Concept 5",
+          "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
+        }
+      ]
+    },
+    "mixed_test": [
+      {
+        "id": "TEST-26-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
+        "options": [
+          "A Record",
+          "AAAA Record",
+          "CNAME Record",
+          "MX Record"
+        ],
+        "correct_answer": "A",
+        "explanation": "An 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
+      },
+      {
+        "id": "TEST-26-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
+        "options": [
+          "By removing TCP completely",
+          "By using a binary framing layer over a single persistent TCP connection, interleaving multiple bidirectional streams without Head-of-Line blocking",
+          "By compressing images with lossy algorithms",
+          "By limiting requests to 10 per second"
+        ],
+        "correct_answer": "B",
+        "explanation": "HTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
+      },
+      {
+        "id": "TEST-26-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
+        "options": [
+          "TCP port 80",
+          "UDP port 53",
+          "TCP port 443",
+          "UDP port 67"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
+      },
+      {
+        "id": "TEST-26-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
+        "options": [
+          "Transport Layer Security (TLS / SSL)",
+          "Point-to-Point Protocol (PPP)",
+          "Border Gateway Protocol (BGP)",
+          "Simple Mail Transfer Protocol (SMTP)"
+        ],
+        "correct_answer": "A",
+        "explanation": "HTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
+      },
+      {
+        "id": "TEST-26-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
+        "options": [
+          "POP3 downloads and removes emails from the server locally; IMAP synchronizes folders bidirectionally, keeping emails stored on the server",
+          "IMAP cannot read attachments",
+          "POP3 requires TLS while IMAP is unencrypted",
+          "POP3 is used to send emails while IMAP receives them"
+        ],
+        "correct_answer": "A",
+        "explanation": "POP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
+      },
+      {
+        "id": "TEST-26-06",
+        "category": "Placement Aptitude",
+        "question": "Rearrange sentences (1-4) into a coherent paragraph: 1. However, solar energy adoption is accelerating. 2. Traditional fossil fuels are finite. 3. This transition is essential for sustainability. 4. Global energy demands are rising continuously.",
+        "options": [
+          "4 - 2 - 1 - 3",
+          "2 - 1 - 4 - 3",
+          "1 - 3 - 2 - 4",
+          "4 - 1 - 2 - 3"
+        ],
+        "correct_answer": "A",
+        "explanation": "4 introduces energy demand, 2 states fossil fuel limitation, 1 introduces solar contrast ('However'), 3 concludes with transition necessity."
+      },
+      {
+        "id": "TEST-26-07",
+        "category": "Placement Aptitude",
+        "question": "Identify the mandatory opening sentence among these: A. Consequently, profits surged. B. Acme Corp launched a new logistics model in 2023. C. This automation reduced delays. D. Customers responded positively.",
+        "options": [
+          "B",
+          "A",
+          "C",
+          "D"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sentence B introduces the central subject ('Acme Corp') and setting without relying on pronouns or conjunctions."
+      },
+      {
+        "id": "TEST-26-08",
+        "category": "Placement Aptitude",
+        "question": "In para jumble analysis, which transition word typically signals a causal effect or conclusion?",
+        "options": [
+          "Therefore",
+          "Although",
+          "Furthermore",
+          "Whereas"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Therefore' and 'Consequently' indicate logical outcome, effect, or conclusion."
+      },
+      {
+        "id": "TEST-26-09",
+        "category": "Placement Aptitude",
+        "question": "Rearrange: 1. He opened the file. 2. Rohan arrived at his desk. 3. He noticed the signature was missing. 4. He sat down and booted his laptop.",
+        "options": [
+          "2 - 4 - 1 - 3",
+          "1 - 2 - 4 - 3",
+          "4 - 2 - 1 - 3",
+          "2 - 1 - 4 - 3"
+        ],
+        "correct_answer": "A",
+        "explanation": "Chronological flow: Arrives at desk (2) -> sits down and boots laptop (4) -> opens file (1) -> notices missing signature (3)."
+      },
+      {
+        "id": "TEST-26-10",
+        "category": "Placement Aptitude",
+        "question": "Which sentence cannot be the opening sentence of a paragraph?",
+        "options": [
+          "'Nevertheless, the experimental trials proved inconclusive.'",
+          "'Artificial Intelligence is transforming medical diagnostic systems.'",
+          "'Renewable energy investment expanded significantly last quarter.'",
+          "'Microservices decouple monolithic web applications.'"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sentences opening with contrastive conjunctions like 'Nevertheless' require preceding context."
+      },
+      {
+        "id": "TEST-26-11",
+        "category": "Core CS (Python Internals)",
+        "question": "Which of the following HTTP methods is NOT idempotent?",
+        "options": [
+          "GET",
+          "PUT",
+          "DELETE",
+          "POST"
+        ],
+        "correct_answer": "D",
+        "explanation": "POST is non-idempotent because multiple identical calls create duplicate records."
+      },
+      {
+        "id": "TEST-26-12",
+        "category": "Core CS (Python Internals)",
+        "question": "The asynchronous standard that superseded WSGI for modern Python web servers like Uvicorn is:",
+        "options": [
+          "CGI",
+          "ASGI",
+          "FAST-CGI",
+          "HTTPD"
+        ],
+        "correct_answer": "B",
+        "explanation": "ASGI (Asynchronous Server Gateway Interface) is the modern async Python standard."
+      },
+      {
+        "id": "TEST-26-13",
+        "category": "Core CS (Python Internals)",
+        "question": "In FastAPI, what happens when a route handler is declared with standard `def` instead of `async def`?",
+        "options": [
+          "It raises a TypeError",
+          "FastAPI automatically executes it in an external thread pool",
+          "It blocks the server permanently",
+          "It runs on the GPU"
+        ],
+        "correct_answer": "B",
+        "explanation": "FastAPI offloads standard def routes to background worker threads to avoid event loop stalls."
+      },
+      {
+        "id": "TEST-26-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
+        "options": [
+          "200 OK",
+          "201 Created",
+          "204 No Content",
+          "304 Not Modified"
+        ],
+        "correct_answer": "B",
+        "explanation": "HTTP 201 Created is the standard response code for successful resource creation."
+      },
+      {
+        "id": "TEST-26-15",
+        "category": "Core CS (Python Internals)",
+        "question": "Which RESTful constraint states that every request must contain all necessary data without server-stored session state?",
+        "options": [
+          "Uniform Interface",
+          "Statelessness",
+          "Cacheability",
+          "Layered System"
+        ],
+        "correct_answer": "B",
+        "explanation": "Statelessness requires that no client session context is retained on the server."
+      },
+      {
+        "id": "TEST-26-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: Longest Common Subsequence (LCS)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(M * N) Time, O(M * N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: Longest Common Subsequence (LCS)' pattern operates with O(M * N) Time, O(M * N) Auxiliary Space: If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).."
+      },
+      {
+        "id": "TEST-26-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: Longest Common Subsequence (LCS)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Identical strings (returns length).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: Longest Common Subsequence (LCS) include Identical strings (returns length), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-26-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Longest Common Subsequence', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(M * N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(M * N) Time, O(M * N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-26-19",
+        "category": "Projects (SmartGalla)",
+        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)'?",
+        "options": [
+          "`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For SmartGalla, the architectural invariant is: `pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.."
+      },
+      {
+        "id": "TEST-26-20",
+        "category": "Projects (SmartGalla)",
+        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?'?",
+        "options": [
+          "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeou...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and caus."
+      }
+    ],
+    "daily_coding_task": {
+      "task_id": "TASK-26",
+      "title": "Longest Common Subsequence (Dynamic Programming: Longest Common Subsequence (LCS))",
+      "time_limit_minutes": 45,
+      "difficulty": "Hard",
+      "problem_statement": "Solve the core placement problem: Longest Common Subsequence.\n\nGiven two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dynamic Programming: Longest Common Subsequence (LCS)\n- Time Complexity Target: O(M * N) Time\n- Space Complexity Target: O(M * N) Auxiliary Space\n- Handle all edge cases: Identical strings (returns length), Completely disjoint strings (returns 0), Single character strings.",
+      "input_format": "Standard placement problem parameters as typed in Java method signature.",
+      "output_format": "Calculated optimal return value in Java primitive or object representation.",
+      "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: Longest Common Subsequence (LCS)\n    public int longestCommonSubsequence(String text1, String text2) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: Longest Common Subsequence (LCS)\n    public int longestCommonSubsequence(String text1, String text2) {\n        // Write your solution here\n        return null;\n    }\n}",
+      "solution_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "java_solution_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "test_cases": [
+        {
+          "input": "nums = [standard sample array], target = [target value]",
+          "expected_output": "Target calculated answer",
+          "explanation": "Validates primary Dynamic Programming: Longest Common Subsequence (LCS) logic under normal test constraints."
+        },
+        {
+          "input": "Corner case input: Identical strings (returns length)",
+          "expected_output": "Valid boundary response",
+          "explanation": "Validates boundary edge case resilience and memory bounds."
+        }
+      ],
+      "rubric": {
+        "Correctness": "40 points (Passes all hidden automated test suites)",
+        "Time Complexity": "30 points (Meets O(M * N) Time)",
+        "Space Complexity": "20 points (Meets O(M * N) Auxiliary Space)",
+        "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+      }
+    },
+    "daily_score_model": {
+      "total_points": 100,
+      "passing_threshold": 80,
+      "breakdown": [
+        {
+          "stream": "Academic Theory & University PYQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Placement Aptitude Solved & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "DSA Pattern & 2 Coding Problems",
+          "points": 20,
+          "passing": 16
+        },
+        {
+          "stream": "Core Computer Science Lesson & MCQs",
+          "points": 15,
+          "passing": 12
+        },
+        {
+          "stream": "Project Architecture & Defense",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Placement & Behavioral (STAR) Prep",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Mixed Daily Test (20 MCQs)",
+          "points": 10,
+          "passing": 8
+        },
+        {
+          "stream": "Timed Practical Coding Task",
+          "points": 5,
+          "passing": 4
+        }
+      ]
+    }
+  },
+  "sem_data": {
+    "subject": "Computer Networks",
+    "subject_code": "BCA-5003",
+    "unit": 4,
+    "topic": "Unit IV — Network Security & Cryptography: Symmetric (AES/DES) vs Asymmetric (RSA) & Digital Signatures",
+    "objectives": [
+      "Understand cryptographic security principles (Confidentiality, Integrity, Authentication, Non-repudiation).",
+      "Master Symmetric vs Asymmetric encryption and RSA mathematical algorithm."
+    ],
+    "detailed_notes": [
+      "Network Security ensures CIA: Confidentiality, Integrity, and Availability. Cryptography transforms plaintext into unintelligible ciphertext:\n1. Symmetric Key Cryptography: Both sender and receiver share a single identical secret key for encryption and decryption. Algorithms: AES (Advanced Encryption Standard - 128/192/256-bit keys, Feistel/SPN network), DES, 3DES. High encryption speed, but faces secure key distribution challenges.\n2. Asymmetric (Public Key) Cryptography: Employs a mathematically linked key pair: a Public Key (widely distributed for encryption) and a Private Key (kept strictly confidential for decryption). Solves key distribution. Algorithm: RSA (Rivest-Shamir-Adleman).\n3. RSA Algorithm Steps:\n   • Select two large distinct primes `p` and `q`;\n   • Compute modulus `n = p * q` and Euler's totient `φ(n) = (p - 1) * (q - 1)`;\n   • Choose public exponent `e` such that `1 < e < φ(n)` and `gcd(e, φ(n)) = 1`;\n   • Calculate private key `d` such that `d * e ≡ 1 (mod φ(n))` (modular multiplicative inverse);\n   • Encryption: `Ciphertext C = M^e mod n`;\n   • Decryption: `Plaintext M = C^d mod n`.\n4. Digital Signatures: The sender encrypts a message hash using their private key. The receiver decrypts the signature using the sender's public key, verifying authenticity and non-repudiation.",
+      "Relies on the mathematical difficulty of factoring the product of two massive prime numbers (prime factorization problem).",
+      "Modern HTTPS uses RSA/Diffie-Hellman asymmetric handshake to securely exchange a one-time session key, then switches to fast AES symmetric encryption for data transfer."
+    ],
+    "diagram_ascii": "+---------------------------------------------------+\n|              ASYMMETRIC RSA CRYPTOGRAPHY          |\n| Plaintext M -> [Encrypt with Public Key e] -> C   |\n| Ciphertext C -> [Decrypt with Private Key d] -> M |\n+---------------------------------------------------+",
     "comparison_table": {
       "headers": [
-        "Comparison Feature",
+        "Feature",
         "Symmetric Cryptography (AES)",
         "Asymmetric Cryptography (RSA)"
       ],
       "rows": [
         [
           "Keys Used",
-          "Single shared secret key for encryption & decryption",
-          "Key pair: Public key (encrypt) & Private key (decrypt)"
+          "1 single shared secret key for both encrypt/decrypt",
+          "2 mathematically linked keys: Public and Private"
         ],
         [
           "Execution Speed",
-          "Extremely fast (Hardware AES-NI instructions)",
-          "Slow (1000x slower due to large modular exponentiation)"
+          "Extremely fast (millions of bytes per sec)",
+          "Slow (1000x slower due to modular exponentiation)"
         ],
         [
           "Key Distribution",
-          "Complex (must securely share secret key)",
-          "Simple (public keys shared openly over network)"
+          "Severe challenge (how to share key securely?)",
+          "Simple (public key is distributed openly)"
         ],
         [
-          "Total Keys in Network",
-          "n * (n - 1) / 2 keys for n users",
-          "2 * n keys for n users (1 key pair per user)"
+          "Key Length",
+          "128, 192, 256 bits",
+          "2048, 3072, 4096 bits for equivalent security"
         ],
         [
-          "Primary Use Case",
-          "Bulk data payload encryption (HTTPS data frames)",
-          "Key exchange (TLS session key agreement) & Digital Signatures"
+          "Primary Use",
+          "Bulk data payload encryption",
+          "Key exchange, digital signatures, authentication"
         ]
       ]
     },
-    "memorize": "Symmetric: 1 key, fast, bulk data (AES). Asymmetric: 2 keys, slow, key exchange (RSA). RSA math: n = p*q, phi = (p-1)*(q-1), d = e^(-1) mod phi. C = M^e mod n; M = C^d mod n.",
-    "understand": "How does HTTPS combine both? Hybrid Cryptography! Asymmetric RSA/Diffie-Hellman is used strictly during the initial 1-second TLS handshake to securely negotiate a random 256-bit symmetric session key. Once negotiated, all subsequent gigabytes of webpage data are encrypted using lightning-fast symmetric AES.",
-    "common_mistakes": "1. Thinking RSA encrypts bulk files directly (too slow, produces huge CPU spikes). 2. Confusing Digital Signatures (signed with sender's private key) with Confidentiality (encrypted with receiver's public key).",
-    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_freq": "High-Frequency 15-Mark Core Question (Appeared in 2021, 2022-23, 2023-24, 2024-25)",
-    "pyq_question": "Explain the difference between Symmetric and Asymmetric Cryptography. Describe the RSA algorithm step-by-step. Perform RSA encryption and decryption for primes p = 3, q = 11, e = 7, and message M = 2. (15 Marks)",
-    "pyq_rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA algorithm mathematical derivation (5 marks) + Step-by-step numerical calculation with p=3, q=11, e=7, M=2 (6 marks) = 15 Marks.",
+    "memorize": "Symmetric: 1 key (fast, AES). Asymmetric: 2 keys (RSA, public encrypts, private decrypts). RSA formulas: C = M^e mod n, M = C^d mod n.",
+    "understand": "Digital signatures invert encryption: the sender encrypts with their PRIVATE key so anyone can verify it with their PUBLIC key.",
+    "common_mistakes": "Saying public key decrypts private key messages in confidential encryption (public encrypts, private decrypts).",
+    "pyqs": [
+      {
+        "type": "ACTUAL PYQ",
+        "university": "CSJM University",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2024-25 (Q4)",
+        "marks": 15,
+        "question": "Differentiate between Symmetric and Asymmetric Key Cryptography. Explain the RSA Algorithm step-by-step with a mathematical example. What is a Digital Signature? (15 Marks)",
+        "rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA Algorithm steps (4 marks) + Numerical RSA Walkthrough (4 marks) + Digital Signature concept (3 marks) = 15 Marks.",
+        "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n• Step 1: Choose two distinct prime numbers p and q;\n• Step 2: Compute n = p * q and φ(n) = (p - 1) * (q - 1);\n• Step 3: Choose integer e such that 1 < e < φ(n) and gcd(e, φ(n)) = 1;\n• Step 4: Compute private key d such that (d * e) ≡ 1 mod φ(n);\n• Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n• Let p = 3, q = 11;\n• n = 3 * 11 = 33; φ(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n• Choose e = 7 (gcd(7, 20) = 1);\n• Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 ≡ 1 mod 20);\n• Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n• Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n• Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
+        "answer_structure": "Symmetric vs Asymmetric Table -> RSA Steps -> Numerical Example -> Digital Signature Architecture",
+        "important_points": [
+          "CIA triad",
+          "Symmetric 1 key vs Asymmetric 2 keys",
+          "Euler totient φ(n)",
+          "C = M^e mod n",
+          "Digital signature uses private key to sign"
+        ],
+        "diagram_required": true,
+        "expected_examiner_points": [
+          "Step-by-step arithmetic verification of RSA",
+          "Clear explanation of Digital Signature verification"
+        ],
+        "common_mistakes": [
+          "Choosing an e that shares common factors with φ(n)"
+        ]
+      },
+      {
+        "type": "MODEL QUESTION",
+        "university": "CSJM University Pattern",
+        "subject": "BCA-5003 Computer Networks",
+        "year": "2023 / Model",
+        "marks": 5,
+        "question": "What is a Denial of Service (DoS) and Distributed Denial of Service (DDoS) attack? (5 Marks)",
+        "rubric": "DoS vs DDoS definition (3 marks) + Mitigation strategies (2 marks) = 5 Marks.",
+        "model_answer": "A Denial of Service (DoS) attack occurs when an attacker floods a target server, network, or service with fraudulent traffic to overwhelm system resources (CPU, bandwidth, memory), rendering it inaccessible to legitimate users. A Distributed Denial of Service (DDoS) attack executes this across thousands of geographically distributed compromised computers (botnets), amplifying traffic volume into terabits per second. Mitigations include rate limiting, scrubbing centers (Cloudflare), Anycast DNS routing, and web application firewalls (WAF)."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "ACAD-26-01",
+        "question": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
+        "options": [
+          "A Record",
+          "AAAA Record",
+          "CNAME Record",
+          "MX Record"
+        ],
+        "correct_answer": "A",
+        "explanation": "An 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
+      },
+      {
+        "id": "ACAD-26-02",
+        "question": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
+        "options": [
+          "By removing TCP completely",
+          "By using a binary framing layer over a single persistent TCP connection, interleaving multiple bidirectional streams without Head-of-Line blocking",
+          "By compressing images with lossy algorithms",
+          "By limiting requests to 10 per second"
+        ],
+        "correct_answer": "B",
+        "explanation": "HTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
+      },
+      {
+        "id": "ACAD-26-03",
+        "question": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
+        "options": [
+          "TCP port 80",
+          "UDP port 53",
+          "TCP port 443",
+          "UDP port 67"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
+      },
+      {
+        "id": "ACAD-26-04",
+        "question": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
+        "options": [
+          "Transport Layer Security (TLS / SSL)",
+          "Point-to-Point Protocol (PPP)",
+          "Border Gateway Protocol (BGP)",
+          "Simple Mail Transfer Protocol (SMTP)"
+        ],
+        "correct_answer": "A",
+        "explanation": "HTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
+      },
+      {
+        "id": "ACAD-26-05",
+        "question": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
+        "options": [
+          "POP3 downloads and removes emails from the server locally; IMAP synchronizes folders bidirectionally, keeping emails stored on the server",
+          "IMAP cannot read attachments",
+          "POP3 requires TLS while IMAP is unencrypted",
+          "POP3 is used to send emails while IMAP receives them"
+        ],
+        "correct_answer": "A",
+        "explanation": "POP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
+      }
+    ],
+    "pyq_year": "2024-25 (Q4)",
+    "pyq_freq": "Verified University Paper Question",
+    "pyq_question": "Differentiate between Symmetric and Asymmetric Key Cryptography. Explain the RSA Algorithm step-by-step with a mathematical example. What is a Digital Signature? (15 Marks)",
+    "pyq_rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA Algorithm steps (4 marks) + Numerical RSA Walkthrough (4 marks) + Digital Signature concept (3 marks) = 15 Marks.",
     "model_answer_paragraphs": [
       [
-        "1. Symmetric vs Asymmetric Cryptography:",
-        "Symmetric encryption (e.g. AES, DES) uses a single secret key shared by sender and receiver. It offers superior throughput for high-volume data but suffers from key distribution complexity. Asymmetric encryption (e.g. RSA, ECC) utilizes mathematically coupled public and private keys, solving the key distribution dilemma and enabling digital signatures at the expense of computational overhead."
+        "1. Model Answer & Technical Presentation",
+        "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n• Step 1: Choose two distinct prime numbers p and q;\n• Step 2: Compute n = p * q and φ(n) = (p - 1) * (q - 1);\n• Step 3: Choose integer e such that 1 < e < φ(n) and gcd(e, φ(n)) = 1;\n• Step 4: Compute private key d such that (d * e) ≡ 1 mod φ(n);\n• Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n• Let p = 3, q = 11;\n• n = 3 * 11 = 33; φ(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n• Choose e = 7 (gcd(7, 20) = 1);\n• Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 ≡ 1 mod 20);\n• Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n• Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n• Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with."
       ],
       [
-        "2. The RSA Algorithm Mathematical Steps:",
-        "1. Select primes p and q.\n2. Modulus n = p * q.\n3. Euler's Totient phi(n) = (p - 1) * (q - 1).\n4. Choose e such that 1 < e < phi(n) and gcd(e, phi(n)) = 1.\n5. Compute d = e^(-1) mod phi(n), satisfying (d * e) mod phi(n) = 1.\n6. Ciphertext C = (M^e) mod n. Decryption M = (C^d) mod n."
-      ],
-      [
-        "3. Complete Hand Numerical Solution (p=3, q=11, e=7, M=2):",
-        "\u2022 Step 1: p = 3, q = 11.\n\u2022 Step 2: n = p * q = 3 * 11 = 33.\n\u2022 Step 3: phi(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20.\n\u2022 Step 4: Given e = 7. Verify gcd(7, 20) = 1. Valid.\n\u2022 Step 5: Find d such that (d * 7) mod 20 = 1.\n  Test multiples of 20 plus 1:\n  (1 * 20 + 1) = 21. Is 21 divisible by 7? Yes: 21 / 7 = 3.\n  Therefore, private key d = 3! (Check: 7 * 3 = 21 = 1 mod 20).\n  Public Key = (e=7, n=33); Private Key = (d=3, n=33).\n\n\u2022 Step 6 (Encryption of M = 2):\n  C = (M^e) mod n = (2^7) mod 33.\n  2^7 = 128.\n  128 / 33 = 3 with remainder: 128 - (3 * 33) = 128 - 99 = 29.\n  Transmitted Ciphertext C = 29!\n\n\u2022 Step 7 (Decryption of C = 29):\n  M = (C^d) mod n = (29^3) mod 33.\n  Notice: 29 = -4 mod 33.\n  29^3 = (-4)^3 mod 33 = -64 mod 33.\n  -64 = -2 * 33 + 2 = -66 + 2.\n  Therefore, -64 mod 33 = 2!\n  Decrypted Message M = 2. Exact match with original message!"
+        "2. Expected Examiner Criteria",
+        [
+          "Step-by-step arithmetic verification of RSA",
+          "Clear explanation of Digital Signature verification"
+        ]
       ]
     ]
   },
-  "sgpa_target": {
-    "focus": "Master RSA Mathematical Steps & Modular Arithmetic",
-    "milestone": "Full 15/15 on Networks Unit V Exam Question"
-  },
   "apt_data": {
-    "topic": "Verbal Ability \u2014 Sentence Correction, Error Spotting & Reading Comprehension",
+    "topic": "Para Jumbles & Sentence Rearrangement",
+    "category": "Verbal Ability",
+    "subtopic": "Para Jumbles",
+    "formulas": "1. Mandatory Pairs: Find two sentences that must go together (Noun followed by Pronoun, Cause followed by Effect, Chronological sequence).\n2. Opening Sentence: Must be independent, introduces the central noun/topic, cannot begin with conjunctions ('However', 'Therefore') or relative pronouns.\n3. Closing Sentence: Summarizes, states consequence, or projects future outlook.",
+    "shortcut": "Acronym-Full Form Rule: Full name or complete title is introduced first; acronyms or abbreviations follow in subsequent sentences.",
     "tutorial": [
-      "Top Grammar Rules for Placement Verbal Rounds (TCS NQT, Infosys, Cognizant):\n1. Subject-Verb Agreement: Singular subjects take singular verbs; plural subjects take plural verbs.\n\u2022 Words joined by 'with', 'as well as', 'along with': Verb agrees with the FIRST subject! ('The manager, along with his team, is arriving').\n\u2022 'Either... or' / 'Neither... nor': Verb agrees with the NEAREST subject! ('Neither the teacher nor the students were present').\n2. Dangling Modifiers: An introductory modifying participle phrase must be immediately followed by the noun it describes. ('Walking down the street, a tree fell on him' is incorrect\u2014the tree wasn't walking!).\n3. Parallelism: Elements in a list or comparison must maintain identical grammatical forms ('He likes swimming, running, and to cycle' ==> change to 'cycling')."
+      "Para Jumbles test logical cohesion and discourse flow. Never test all 24 permutations. Find one mandatory pair (e.g. BC), then check which of the 4 options contains BC together."
     ],
-    "formulas": "Along with/as well as ==> agrees with Subject 1. Neither/nor ==> agrees with Subject 2. Lists must share parallel structure (-ing with -ing).",
-    "shortcut": "Identify the Real Subject: Ignore prepositional phrases between the subject and verb (e.g. 'The quality [of these mangoes] is excellent').",
-    "recognition": "Error spotting questions with marked segments [A] / [B] / [C] / [D] in TCS NQT and Wipro.",
-    "tier1_problem": "Identify the error: 'Each of the participants [A] / were given [B] / a certificate [C] / upon completion [D].'",
-    "tier1_solution": "'Each' is a singular indefinite pronoun. The subject is 'Each', not 'participants'. A singular subject requires the singular verb 'was given'. Error is in part [B]. Correct sentence: 'Each of the participants was given a certificate'. Answer: [B].",
-    "tier2_problem": "Identify the error: 'Neither the principal [A] / nor the lecturers [B] / was present [C] / at the annual conference [D].'",
-    "tier2_solution": "Rule of proximity: In 'neither... nor', the verb agrees with the closer subject ('the lecturers', plural). Plural subject requires 'were present'. Error is in part [C]. Answer: [C].",
-    "tier3_problem": "[Infosys Verbal Pattern] Choose the grammatically correct sentence:\n(A) Not only did she won the competition, but also broke the national record.\n(B) Not only she won the competition, but also she broke the record.\n(C) Not only did she win the competition, but she also broke the national record.\n(D) She won not only the competition, but broke also the national record.",
-    "tier3_solution": "Rule of Inversion with 'Not only': When 'not only' begins a clause, auxiliary verb inversion is required ('did she win', base verb). Furthermore, correlative conjunctions require balanced parallel placement: 'did she win' paired with 'she also broke'. Sentence (C) correctly implements inversion and parallelism. Answer: (C).",
-    "tier4_problem": "Correct the dangling modifier: 'Having finished the examination, the papers were collected by the invigilator.'",
-    "tier4_solution": "The introductory participial phrase 'Having finished the examination' grammatically attaches to the immediately following subject 'the papers'. But papers cannot finish an examination! The logical subject is the students. Correct revision: 'Having finished the examination, the students handed their papers to the invigilator.'",
+    "tier1_problem": "",
+    "tier1_solution": [
+      "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+      "Step 2: Improvement factor = 20% increase on initial score.",
+      "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+      "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+      "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+    ],
+    "tier2_problem": "",
+    "tier2_solution": [
+      "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+      "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+      "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+      "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+    ],
+    "tier3_problem": "",
+    "tier3_solution": [
+      "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+      "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+      "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+      "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+      "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+      "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+    ],
+    "tier4_problem": "",
+    "tier4_solution": [
+      "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+      "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+      "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+      "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+      "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+    ],
     "speed_drills": [
       {
-        "q": "The committee [have/has] submitted its report.",
-        "a": "'has'. Committee acting as a collective single unit with 'its'."
+        "q": "",
+        "a": "180 marks (90%)"
       },
       {
-        "q": "Bread and butter [is/are] his favorite breakfast.",
-        "a": "'is'. Representing a single composite culinary dish."
+        "q": "",
+        "a": "Rs. 864"
       },
       {
-        "q": "One of my friends [is/are] an engineer.",
-        "a": "'is'. The subject is 'One', not 'friends'."
+        "q": "",
+        "a": "14 1/3 days"
       },
       {
-        "q": "Ten miles [is/are] a long distance to walk.",
-        "a": "'is'. A specific quantitative unit of measurement treated as singular."
+        "q": "",
+        "a": "2:15 PM"
       },
       {
-        "q": "He is senior [than/to] me.",
-        "a": "'to'. Latin adjectives (senior, junior, prior, superior) take 'to', not 'than'."
+        "q": "",
+        "a": "10/21"
       }
-    ]
+    ],
+    "solved_examples": [
+      {
+        "example_no": 1,
+        "title": "Foundation Problem on Para Jumbles",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "step_by_step_solution": [
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+        ],
+        "final_answer": "180 marks (90%)"
+      },
+      {
+        "example_no": 2,
+        "title": "Standard Placement Problem on Para Jumbles",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "step_by_step_solution": [
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+        ],
+        "final_answer": "Rs. 864"
+      },
+      {
+        "example_no": 3,
+        "title": "Efficiency & Work Ratio Problem on Para Jumbles",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "step_by_step_solution": [
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+        ],
+        "final_answer": "14 1/3 days"
+      },
+      {
+        "example_no": 4,
+        "title": "Speed & Relative Distance Problem on Para Jumbles",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "step_by_step_solution": [
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+        ],
+        "final_answer": "2:15 PM"
+      },
+      {
+        "example_no": 5,
+        "title": "Combinatorics & Probability Problem on Para Jumbles",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "step_by_step_solution": [
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+        ],
+        "final_answer": "10/21"
+      }
+    ],
+    "mcqs": [
+      {
+        "mcq_no": 1,
+        "question": "Rearrange sentences to form a coherent paragraph: A. However, with microservices, debugging becomes distributed. B. Traditional monoliths allowed developers to trace execution in a single thread. C. As a result, distributed tracing tools like OpenTelemetry became indispensable. D. This complexity makes identifying bottlenecks significantly harder.",
+        "options": {
+          "A": "B - A - D - C",
+          "B": "A - B - C - D",
+          "C": "B - C - A - D",
+          "D": "D - C - B - A"
+        },
+        "correct_answer": "A",
+        "explanation": "Logical order: B establishes monolith baseline, A introduces microservices contrast, D explains the resulting bottleneck complexity, and C delivers the tooling solution.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 2,
+        "question": "Rearrange the sentences: A. It converts high-level Python source code into bytecode. B. The Python Virtual Machine (PVM) is the execution engine of Python. C. Then, the PVM interprets the bytecode instructions into native machine calls. D. This two-phase architecture provides cross-platform portability.",
+        "options": {
+          "A": "B - A - C - D",
+          "B": "A - B - C - D",
+          "C": "B - C - A - D",
+          "D": "D - A - B - C"
+        },
+        "correct_answer": "A",
+        "explanation": "B defines PVM, A explains the bytecode conversion stage, C details interpretation, and D concludes with the architectural benefit.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 3,
+        "question": "Rearrange the sentences: A. Over time, technical debt accumulates if refactoring is ignored. B. In agile software development, teams often prioritize rapid feature delivery. C. Eventually, shipping simple updates requires excessive engineering effort. D. Consequently, initial delivery velocity steadily decays.",
+        "options": {
+          "A": "B - A - D - C",
+          "B": "A - B - C - D",
+          "C": "B - C - D - A",
+          "D": "C - D - B - A"
+        },
+        "correct_answer": "A",
+        "explanation": "B introduces agile feature focus, A introduces technical debt accumulation, D explains declining velocity, and C gives the ultimate consequence.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 4,
+        "question": "Rearrange the sentences: A. Machine learning models require vast quantities of clean training data. B. Without robust preprocessing, garbage-in leads directly to garbage-out. C. Data engineering pipelines are thus the unsung foundation of modern AI. D. These pipelines automate ingestion, validation, and feature transformation.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "C - D - A - B",
+          "C": "A - C - B - D",
+          "D": "B - A - D - C"
+        },
+        "correct_answer": "A",
+        "explanation": "A states the core data requirement, B highlights the garbage-in risk, C presents data engineering as the solution, and D explains pipeline functions.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 5,
+        "question": "Rearrange the sentences: A. Database indexing accelerates search queries significantly. B. However, every additional index introduces write overhead during inserts and updates. C. Therefore, database architects must balance read acceleration against write latency. D. B+ Trees are the most widely utilized indexing structure.",
+        "options": {
+          "A": "A - D - B - C",
+          "B": "D - A - B - C",
+          "C": "A - B - C - D",
+          "D": "B - C - A - D"
+        },
+        "correct_answer": "A",
+        "explanation": "A introduces index speed, D specifies B+ Trees, B highlights the write penalty trade-off, and C summarizes the architectural balance.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 6,
+        "question": "Rearrange the sentences: A. Clean code serves as its own documentation. B. When variable names and method boundaries reflect business domains, comments become secondary. C. Excessive comments often disguise poorly factored spaghetti logic. D. Prioritizing expressive readability is therefore a primary engineering virtue.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "B - A - C - D",
+          "C": "C - B - A - D",
+          "D": "D - A - B - C"
+        },
+        "correct_answer": "A",
+        "explanation": "A asserts the clean code thesis, B elaborates on expressive naming, C warns against comment crutches, and D concludes with the engineering takeaway.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 7,
+        "question": "Rearrange the sentences: A. Containerization revolutionized software deployment. B. Docker encapsulated code and dependencies into immutable images. C. Developers could finally eliminate the 'works on my machine' syndrome. D. Kubernetes later emerged to orchestrate these containers across clusters.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "B - C - A - D",
+          "C": "A - C - B - D",
+          "D": "D - A - B - C"
+        },
+        "correct_answer": "A",
+        "explanation": "A introduces containerization impact, B details Docker mechanism, C explains the problem solved, and D presents subsequent orchestration evolution.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 8,
+        "question": "Rearrange the sentences: A. Cryptographic hashing creates a fixed-size deterministic digest. B. Even a single bit change in the input produces an entirely different hash. C. This property, known as the avalanche effect, makes tampering immediately detectable. D. Blockchains utilize this mechanism to guarantee immutable ledgers.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "B - C - A - D",
+          "C": "A - C - B - D",
+          "D": "C - A - B - D"
+        },
+        "correct_answer": "A",
+        "explanation": "A defines hashing, B explains sensitivity to changes, C names the avalanche effect, and D maps to blockchain ledger immutability.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 9,
+        "question": "Rearrange the sentences: A. Asynchronous programming avoids blocking CPU threads on network I/O. B. Traditional synchronous servers dedicate a separate thread per socket connection. C. Under massive traffic, thread context-switching overhead exhausts operating system RAM. D. Event-driven architectures solve this by running thousands of concurrent requests on a single event loop.",
+        "options": {
+          "A": "B - C - A - D",
+          "B": "A - B - C - D",
+          "C": "D - A - B - C",
+          "D": "C - B - A - D"
+        },
+        "correct_answer": "A",
+        "explanation": "B introduces synchronous thread model, C explains the OS exhaustion risk, A introduces async non-blocking I/O, and D concludes with event loop scalability.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      },
+      {
+        "mcq_no": 10,
+        "question": "Rearrange the sentences: A. Automated unit tests provide a safety net for continuous integration. B. Without tests, developers operate with constant fear of introducing regression bugs. C. This psychological fear slows down feature delivery and discourages refactoring. D. A comprehensive test suite empowers engineers to ship code with fearless velocity.",
+        "options": {
+          "A": "A - B - C - D",
+          "B": "B - C - A - D",
+          "C": "C - B - A - D",
+          "D": "D - A - B - C"
+        },
+        "correct_answer": "A",
+        "explanation": "A introduces unit testing safety, B explains fear of regressions without tests, C details impact on delivery, and D highlights resulting deployment velocity.",
+        "target_time_seconds": 60,
+        "category": "Verbal Ability"
+      }
+    ],
+    "practice_problems": [
+      {
+        "no": 1,
+        "question": "If x is 20% less than y, find the value of (y - x) / y and x / (x - y).",
+        "answer_key": "1/5 and -4"
+      },
+      {
+        "no": 2,
+        "question": "A dishonest shopkeeper professes to sell his goods at cost price but uses a false weight of 950 grams for each kilogram. Find his gain percent.",
+        "answer_key": "5 5/19 % (approx 5.26%)"
+      },
+      {
+        "no": 3,
+        "question": "Find the compound interest on Rs. 16,000 at 20% per annum for 9 months, compounded quarterly.",
+        "answer_key": "Rs. 2,522"
+      },
+      {
+        "no": 4,
+        "question": "A, B, and C enter into partnership. A invests Rs. 2,560 and B invests Rs. 2,000. At the end of the year, they gain Rs. 1,105, out of which A gets Rs. 320. Find C's capital investment.",
+        "answer_key": "Rs. 4,280"
+      },
+      {
+        "no": 5,
+        "question": "A car travels the first one-third of a distance at 20 km/hr, the next one-third at 30 km/hr, and the remaining one-third at 60 km/hr. Find the average speed for the entire journey.",
+        "answer_key": "30 km/hr"
+      }
+    ],
+    "timed_drill": {
+      "title": "Timed Speed Drill: Para Jumbles (5-Minute Sprint)",
+      "duration_minutes": 5,
+      "question_count": 3,
+      "questions": [
+        {
+          "q": "Express the fraction 7/16 as a percentage.",
+          "ans": "43.75%"
+        },
+        {
+          "q": "If 12 men can build a wall in 20 days, how many men are needed to build it in 15 days?",
+          "ans": "16 men"
+        },
+        {
+          "q": "What is the units digit of 7^105?",
+          "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
+        }
+      ]
+    }
   },
   "dsa_problems": [
     {
-      "title": "Maximum Subarray (LeetCode 53 - Kadane's Algorithm)",
+      "title": "Problem 1: Longest Common Subsequence",
       "difficulty": "Medium",
-      "importance": "Top 3 Most Asked Placement Problem Worldwide (Amazon, Microsoft, TCS)",
-      "problem_statement": "Given an integer array nums, find the subarray with the largest sum, and return its sum.",
-      "solution_approach": "Kadane's Algorithm (Greedy / DP in O(N)):\n1. Maintain two variables: `max_so_far` and `curr_max`.\n2. Initialize both to `nums[0]`.\n3. For each number x from index 1 onward:\n   `curr_max = max(x, curr_max + x)`\n   (Either start a brand new subarray at x, or extend the existing running subarray).\n4. `max_so_far = max(max_so_far, curr_max)`.\n5. Return `max_so_far`.",
-      "code": "def maxSubArray(nums: list[int]) -> int:\n    max_so_far = nums[0]\n    curr_max = nums[0]\n    \n    for x in nums[1:]:\n        curr_max = max(x, curr_max + x)\n        max_so_far = max(max_so_far, curr_max)\n        \n    return max_so_far",
-      "line_by_line": [
-        [
-          "max_so_far = nums[0]; curr_max = nums[0]",
-          "Initialize baselines to first element to handle all-negative arrays correctly."
-        ],
-        [
-          "curr_max = max(x, curr_max + x)",
-          "Decide whether to discard accumulated debt or extend subarray."
-        ],
-        [
-          "max_so_far = max(max_so_far, curr_max)",
-          "Update global maximum."
-        ]
-      ],
-      "time_complexity": "O(N) single linear traversal.",
-      "space_complexity": "O(1) constant auxiliary memory.",
-      "edge_cases": "All negative numbers [-5, -2, -8] (returns -2); single element array [1]."
+      "importance": "High Frequency in TCS NQT, Infosys, Cognizant, Wipro",
+      "language": "Java",
+      "problem_statement": "Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.",
+      "solution_approach": "1. Apply Dynamic Programming: Longest Common Subsequence (LCS) algorithmic technique.\n2. Finds the length of the longest subsequence present in both strings in the same relative order using a 2D matrix.\n3. Invariants: If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).",
+      "code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "java_solution": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "solution_java": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "time_complexity": "O(M * N) Time",
+      "space_complexity": "O(M * N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9"
     },
     {
-      "title": "Maximum Product Subarray (LeetCode 152 - Medium)",
-      "difficulty": "Medium",
-      "importance": "High-Frequency Extension Tracking Negative Inversions",
-      "problem_statement": "Given an integer array nums, find a subarray that has the largest product, and return the product.",
-      "solution_approach": "Dual-Tracking Dynamic Programming:\nMultiplying two negative numbers produces a positive number! A large negative product can instantly flip to the maximum positive product.\nMaintain BOTH `curr_max` and `curr_min` simultaneously.\nWhen encountering a negative number, swap `curr_max` and `curr_min` before computing new states.",
-      "code": "def maxProduct(nums: list[int]) -> int:\n    res = max(nums)\n    cur_min, cur_max = 1, 1\n    \n    for n in nums:\n        if n < 0:\n            cur_max, cur_min = cur_min, cur_max\n            \n        cur_max = max(n, cur_max * n)\n        cur_min = min(n, cur_min * n)\n        res = max(res, cur_max)\n        \n    return res",
-      "line_by_line": [
-        [
-          "if n < 0: cur_max, cur_min = cur_min, cur_max",
-          "Negative multiplier inverts signs: maximum becomes minimum and vice-versa."
-        ],
-        [
-          "cur_max = max(n, cur_max * n)",
-          "Update running maximum product."
-        ],
-        [
-          "cur_min = min(n, cur_min * n)",
-          "Update running minimum product to prepare for future negative flips."
-        ]
-      ],
-      "time_complexity": "O(N) single pass.",
-      "space_complexity": "O(1) space.",
-      "edge_cases": "Array containing zeros [2, 0, 3]; all negative numbers [-2, -3, -4]."
+      "title": "Problem 2: Edit Distance",
+      "difficulty": "Hard",
+      "importance": "High Frequency in Amazon, Accenture, Capgemini, TCS Digital",
+      "language": "Java",
+      "problem_statement": "Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2 (insert, delete, replace).",
+      "solution_approach": "1. Identify interview variation of Dynamic Programming: Longest Common Subsequence (LCS).\n2. Handle edge cases: Identical strings (returns length), Completely disjoint strings (returns 0), Single character strings.\n3. Maintain optimal asymptotic bounds.",
+      "code": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "java_solution": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "solution_java": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+      "time_complexity": "O(M * N) Time",
+      "space_complexity": "O(M * N) Auxiliary Space",
+      "edge_cases": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second."
     }
   ],
+  "dsa_pattern": {
+    "pattern_name": "Dynamic Programming: Longest Common Subsequence (LCS)",
+    "category": "Dynamic Programming",
+    "concept": "Finds the length of the longest subsequence present in both strings in the same relative order using a 2D matrix.",
+    "why_it_works": "If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).",
+    "visual_explanation": "text1 = 'abcde', text2 = 'ace'\\nMatrix matches on 'a', 'c', 'e'.\\ndp[5][3] = 3 (LCS = 'ace')",
+    "java_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        \n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        return dp[m][n];\n    }\n}",
+    "code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        \n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        return dp[m][n];\n    }\n}",
+    "python_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        \n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) {\n                    dp[i][j] = 1 + dp[i - 1][j - 1];\n                } else {\n                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n                }\n            }\n        }\n        return dp[m][n];\n    }\n}",
+    "line_by_line_walkthrough": [
+      "Line 3-4: Allocate (m+1) x (n+1) DP matrix with zero baseline.",
+      "Line 6-7: Nested iteration over characters of both strings.",
+      "Line 8-9: Matching characters increment diagonal predecessor.",
+      "Line 10-12: Mismatched characters inherit maximum of top or left cell.",
+      "Line 15: Return dp[m][n]."
+    ],
+    "dry_run": "text1 = 'abc', text2 = 'def' -> No character matches -> matrix filled with 0s. Returns 0.",
+    "complexity": "O(M * N) Time, O(M * N) Auxiliary Space",
+    "edge_cases": [
+      "Identical strings (returns length)",
+      "Completely disjoint strings (returns 0)",
+      "Single character strings"
+    ],
+    "interview_variations": [
+      "Edit Distance (Levenshtein Distance)",
+      "Delete Operation for Two Strings",
+      "Shortest Common Supersequence"
+    ],
+    "coding_problems": [
+      {
+        "problem_id": "CODE-26-01",
+        "title": "Problem 1: Longest Common Subsequence",
+        "difficulty": "Medium",
+        "companies": [
+          "TCS NQT",
+          "Infosys",
+          "Cognizant",
+          "Wipro"
+        ],
+        "statement": "Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.",
+        "constraints": "1 <= N <= 10^5\n-10^9 <= nums[i] <= 10^9",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Apply Dynamic Programming: Longest Common Subsequence (LCS) algorithmic technique.\n2. Finds the length of the longest subsequence present in both strings in the same relative order using a 2D matrix.\n3. Invariants: If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).",
+        "solution_java": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "solution_python": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "java_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "time_complexity": "O(M * N) Time",
+        "space_complexity": "O(M * N) Auxiliary Space"
+      },
+      {
+        "problem_id": "CODE-26-02",
+        "title": "Problem 2: Edit Distance",
+        "difficulty": "Hard",
+        "companies": [
+          "Amazon",
+          "Accenture",
+          "Capgemini",
+          "TCS Digital"
+        ],
+        "statement": "Given two strings word1 and word2, return the minimum number of operations required to convert word1 to word2 (insert, delete, replace).",
+        "constraints": "1 <= N <= 2 * 10^5\nStandard campus placement execution budget: 1.0 second.",
+        "example_input": "Standard Java placement test case input",
+        "example_output": "Target expected result",
+        "approach": "1. Identify interview variation of Dynamic Programming: Longest Common Subsequence (LCS).\n2. Handle edge cases: Identical strings (returns length), Completely disjoint strings (returns 0), Single character strings.\n3. Maintain optimal asymptotic bounds.",
+        "solution_java": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "solution_python": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "code": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "java_code": "public class Solution {\n    public int minDistance(String word1, String word2) {\n        int m = word1.length(), n = word2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n            }\n        }\n        return dp[m][n];\n    }\n}",
+        "time_complexity": "O(M * N) Time",
+        "space_complexity": "O(M * N) Auxiliary Space"
+      }
+    ]
+  },
   "cs_core": {
-    "subject": "Python Programming",
-    "topic": "Python Concurrency Models: Threading vs Multiprocessing vs AsyncIO",
+    "subject": "Python Internals",
+    "topic": "RESTful API Design, ASGI Architectures & FastAPI Internals",
     "detailed_notes": [
-      "CPython Concurrency Paradigms Explained:\n1. Global Interpreter Lock (GIL):\nA mutual-exclusion lock protecting CPython internal memory structures, ensuring only ONE native thread executes Python bytecode at any given moment. Prevents true multi-core parallel execution of CPU-bound Python threads.\n2. Threading (`threading.Thread`):\n\u2022 OS-level threads sharing the same process memory space.\n\u2022 Best for: I/O-bound tasks (file I/O, network requests). When a thread waits for a socket or disk read, it releases the GIL, allowing other threads to run.\n3. Multiprocessing (`multiprocessing.Process`):\n\u2022 Spawns completely independent OS processes, each with its OWN Python interpreter, memory space, and GIL.\n\u2022 Best for: CPU-bound tasks (machine learning inference, OCR image processing, heavy matrix math). Achieves true 100% multi-core utilization.\n\u2022 Trade-off: Higher memory footprint and requires Inter-Process Communication (IPC: Pipes/Queues) to share data.\n4. Asynchronous I/O (`asyncio`):\n\u2022 Single-threaded, cooperative multitasking using an Event Loop and Coroutines (`async`/`await`).\n\u2022 Extremely lightweight: can handle 100,000 concurrent network sockets with minimal RAM (used in FastAPI and aiohttp)."
+      "Modern backend architectures rely on REST principles and asynchronous gateway interfaces.\n\nREST Architectural Constraints (Roy Fielding):\n1. Client-Server Architecture: Separation of concerns between UI client and backend data storage.\n2. Statelessness: Each request from client to server must contain all information required to understand and service the request; no session context on server.\n3. Cacheability: Responses must explicitly label themselves as cacheable or non-cacheable (via `Cache-Control` headers).\n4. Uniform Interface: Standard HTTP methods (GET: safe & idempotent, POST: non-idempotent, PUT: idempotent replacement, PATCH: partial update, DELETE: idempotent).\n5. Layered System: Client cannot distinguish whether it connects directly to end server or intermediate proxy/load balancer.\n\nWSGI vs ASGI Architectures:\n- WSGI (Web Server Gateway Interface): Synchronous Python standard (`def app(environ, start_response)`). Each request consumes an OS thread; cannot handle WebSockets or long polling.\n- ASGI (Asynchronous Server Gateway Interface): Asynchronous successor (`async def app(scope, receive, send)`). Event-driven architecture natively supporting HTTP/2, WebSockets, and long-lived streaming connections (Uvicorn, Hypercorn).\n\nFastAPI Framework Mechanics:\nFastAPI is built on Starlette (ASGI toolkit) and Pydantic (data validation via Python type annotations). Route parameters are parsed into Pydantic models with automatic JSON schema generation (`/docs` OpenAPI/Swagger). FastAPI handles concurrency smartly: endpoints defined with `async def` run on the main asyncio event loop; endpoints defined with standard `def` are automatically offloaded to an external thread pool (`anyio` worker threads) to prevent blocking the event loop."
+    ],
+    "key_definitions": [
+      {
+        "term": "ASGI",
+        "definition": "Asynchronous Server Gateway Interface: async standard for Python web servers supporting HTTP and WebSockets."
+      },
+      {
+        "term": "Idempotent Method",
+        "definition": "An HTTP method where multiple identical requests produce the exact same server resource state (GET, PUT, DELETE)."
+      },
+      {
+        "term": "Statelessness",
+        "definition": "The REST constraint mandating that every request contain all necessary context without server-side session memory."
+      }
     ],
     "interview_qa": [
       {
-        "q": "If Python has a GIL, why would you ever use `threading`?",
-        "a": "Because `threading` is highly effective for I/O-bound operations (such as making HTTP requests, querying a database, or reading disk files). During I/O operations, the CPython runtime explicitly releases the GIL while waiting for network sockets or OS syscalls to return, enabling other Python threads to execute concurrently without blocking the application."
+        "q": "What is the difference between an Idempotent and a Safe HTTP method?",
+        "a": "A Safe method (like GET or HEAD) does not alter server resource state (read-only). An Idempotent method (like PUT or DELETE) can alter server state, but making the exact same request multiple times produces the identical server state as making it once (e.g., DELETE /students/5 removes student 5; repeating it still leaves student 5 removed). POST is neither safe nor idempotent because multiple POSTs create multiple separate records."
       },
       {
-        "q": "When should you choose `multiprocessing` over `asyncio`?",
-        "a": "Choose `multiprocessing` for CPU-intensive operations (such as Tesseract OCR image transformations in TerraStract or numerical simulations in BCA-5004) where multiple CPU cores must be saturated simultaneously. Choose `asyncio` for high-concurrency I/O-bound web services (such as handling thousands of WebSocket connections or Telegram webhook alerts in BulkBeat TV) where threads would waste excessive memory on thread stack allocations."
+        "q": "Compare WSGI (e.g., Flask/Django) and ASGI (e.g., FastAPI/Starlette).",
+        "a": "WSGI is synchronous and blocking; each incoming request binds an entire operating system thread. It cannot natively support persistent WebSockets, server-sent events, or asynchronous event loops. ASGI is asynchronous and non-blocking, designed for `asyncio`. It handles thousands of concurrent long-lived connections, HTTP/2, and WebSockets on a single thread using an event loop with minimal memory overhead."
+      },
+      {
+        "q": "How does FastAPI handle `async def` routes vs standard `def` routes differently?",
+        "a": "If you define a route with `async def`, FastAPI executes it directly on the main `asyncio` event loop; any blocking call inside it freezes the entire server. If you define a route with standard `def`, FastAPI automatically runs it inside a background thread pool (AnyIO worker threads) so that blocking synchronous operations (like legacy database queries) do not block the event loop."
+      },
+      {
+        "q": "What is the difference between PUT and PATCH in RESTful APIs?",
+        "a": "PUT performs a complete replacement of the target resource; the request payload must contain the entire updated entity, and omitted fields are typically reset to null or defaults. PATCH performs a partial update; only the specific fields provided in the request payload are modified, leaving all other existing entity attributes unchanged."
+      },
+      {
+        "q": "What is Dependency Injection in FastAPI and how does `Depends()` function?",
+        "a": "Dependency Injection decouples shared logic (database sessions, authentication, permission checks) from route handlers. In FastAPI, `Depends(get_db)` declares a dependency. When a request arrives, FastAPI resolves `get_db`, injects its return value (e.g., active Supabase/SQLAlchemy session) into the route function parameter, and guarantees execution of cleanup/close logic in `finally:` after the response is sent."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "CS-26-01",
+        "question": "Which of the following HTTP methods is NOT idempotent?",
+        "options": [
+          "GET",
+          "PUT",
+          "DELETE",
+          "POST"
+        ],
+        "correct_answer": "D",
+        "explanation": "POST is non-idempotent because multiple identical calls create duplicate records."
+      },
+      {
+        "id": "CS-26-02",
+        "question": "The asynchronous standard that superseded WSGI for modern Python web servers like Uvicorn is:",
+        "options": [
+          "CGI",
+          "ASGI",
+          "FAST-CGI",
+          "HTTPD"
+        ],
+        "correct_answer": "B",
+        "explanation": "ASGI (Asynchronous Server Gateway Interface) is the modern async Python standard."
+      },
+      {
+        "id": "CS-26-03",
+        "question": "In FastAPI, what happens when a route handler is declared with standard `def` instead of `async def`?",
+        "options": [
+          "It raises a TypeError",
+          "FastAPI automatically executes it in an external thread pool",
+          "It blocks the server permanently",
+          "It runs on the GPU"
+        ],
+        "correct_answer": "B",
+        "explanation": "FastAPI offloads standard def routes to background worker threads to avoid event loop stalls."
+      },
+      {
+        "id": "CS-26-04",
+        "question": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
+        "options": [
+          "200 OK",
+          "201 Created",
+          "204 No Content",
+          "304 Not Modified"
+        ],
+        "correct_answer": "B",
+        "explanation": "HTTP 201 Created is the standard response code for successful resource creation."
+      },
+      {
+        "id": "CS-26-05",
+        "question": "Which RESTful constraint states that every request must contain all necessary data without server-stored session state?",
+        "options": [
+          "Uniform Interface",
+          "Statelessness",
+          "Cacheability",
+          "Layered System"
+        ],
+        "correct_answer": "B",
+        "explanation": "Statelessness requires that no client session context is retained on the server."
       }
     ]
   },
   "project_defense": {
-    "project_name": "VPS Infrastructure & Security",
-    "feature_focus": "Cloud VPS Hardening, Nginx Reverse Proxy & SSL Automation",
-    "architecture_deep_dive": "Production Linux Server Hardening & Reverse Proxy Architecture:\n\n1. Server Hardening Protocol:\n\u2022 Disabling SSH root login and password authentication (`PermitRootLogin no`, `PasswordAuthentication no` in `/etc/ssh/sshd_config`).\n\u2022 Enforcing SSH key pair authentication (`ed25519`).\n\u2022 Configuring Uncomplicated Firewall (`ufw`): strictly allow ports 22 (SSH), 80 (HTTP), 443 (HTTPS), blocking all internal database ports (PostgreSQL 5432, Redis 6379) from public internet exposure.\n\n2. Nginx Reverse Proxy & TLS Automation:\n\u2022 Nginx sits as the public gateway, terminating SSL using Let's Encrypt certificates provisioned via Certbot (`certbot --nginx -d api.domain.com`).\n\u2022 Reverse proxies traffic internally to FastAPI/Uvicorn running on `127.0.0.1:8000` via `proxy_pass`.\n\u2022 Injects essential security headers: `X-Forwarded-For`, `X-Real-IP`, `Strict-Transport-Security` (HSTS), and `X-Content-Type-Options: nosniff`.",
+    "project_name": "SmartGalla",
+    "repo_path": "D:\\Projects\\SmartGalla",
+    "feature_focus": "Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nProgrammatic vector PDF composition, GST tax breakdowns, and thermal printer formatting.\n\nWHAT TO MEMORIZE:\n`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.\n\n60-SECOND INTERVIEW PITCH:\nFor SmartGalla's billing pipeline, I replaced slow Puppeteer PDF rendering with high-speed programmatic vector generation using `pdf-lib`. It produces compliant GST invoices and 80mm thermal receipts in under 100ms on serverless endpoints with minimal memory overhead.",
     "interview_qa": [
       {
-        "q": "Why should you never expose a FastAPI application directly to the internet on port 80/443 without Nginx?",
-        "a": "Direct exposure leaves the application vulnerable to Slowloris attacks, unhandled TLS certificate lifecycles, and high concurrency bottlenecks. Nginx acts as a hardened reverse proxy: it terminates SSL efficiently, buffers slow client requests before passing them to FastAPI, serves static assets directly from disk caching, enforces rate limits, and protects internal application ports."
+        "q": "Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?",
+        "a": "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeouts. `pdf-lib` is a pure JavaScript low-overhead library that compiles vector PDF streams directly into memory in under 80 milliseconds with only 15MB RAM, supporting custom 80mm thermal receipt formats and A4 GST invoices."
       },
       {
-        "q": "How do you automate SSL certificate renewal on a production Linux VPS?",
-        "a": "I configure Certbot with Let's Encrypt, which automatically schedules a systemd timer (`certbot.timer`) or cron job running `certbot renew --quiet`. This checks certificate expiration daily and renews certificates within 30 days of expiry, reloading Nginx automatically without manual intervention."
+        "q": "How do you handle Indian GST invoice compliance in the generated document?",
+        "a": "The PDF generator splits total sales into CGST and SGST for intra-state sales (50-50 split of the GST rate) or IGST for inter-state transactions. It automatically formats the merchant's GSTIN, customer details, HSN/SAC codes per item, reverse charge indicators, and converts total numeric amounts to words per Indian banking standards."
+      }
+    ]
+  },
+  "placement_interview": [
+    {
+      "category": "Technical",
+      "question": "Day 26 Core CS Technical: How do you identify and optimize performance bottlenecks in database queries and API endpoints?",
+      "model_answer": "To optimize performance bottlenecks systematically:\n1. Measure before optimizing: Use APM tools, OpenTelemetry, or database slow query logs to identify slow endpoints.\n2. Database profiling: Run `EXPLAIN ANALYZE` on SQL queries to check whether the planner uses sequential table scans or index scans. Look for high startup costs and large row counts. Add composite B+ Tree indexes, eliminate N+1 query patterns by using eager joins, and select only necessary columns rather than `SELECT *`.\n3. Caching: Apply Cache-Aside using Redis for read-heavy, low-volatility data.\n4. Asynchronous processing: Offload long-running operations (sending emails, processing image OCR) to background worker queues (Celery/Redis Queue) returning HTTP 202 Accepted immediately.",
+      "key_talking_points": [
+        "Profile first: never guess bottlenecks.",
+        "Use EXPLAIN ANALYZE and proper indexing to eliminate table scans.",
+        "Leverage caching and asynchronous background task queues."
+      ],
+      "what_interviewer_evaluates": "Systematic performance engineering methodology and database tuning knowledge."
+    },
+    {
+      "category": "Technical",
+      "question": "Day 26 DSA & System Engineering: When would you choose a Hash Map over a Balanced Binary Search Tree (like AVL or Red-Black Tree)?",
+      "model_answer": "A Hash Map provides O(1) average-case time complexity for insertion, deletion, and lookup. It is the optimal choice when operations consist strictly of exact key lookups (e.g., looking up user by session ID) and the data does not require sorting.\n\nHowever, a Balanced Binary Search Tree (AVL or Red-Black Tree) guarantees O(log N) worst-case time complexity and preserves sorted order. You should choose a BST over a Hash Map when: 1. You need ordered traversal or predecessor/successor queries, 2. You need range queries (e.g., find all values between K1 and K2), 3. You need strict worst-case latency guarantees, as hash maps can degrade to O(N) during high collision or dynamic rehashing spikes.",
+      "key_talking_points": [
+        "O(1) average lookup in Hash Map vs O(log N) in BST.",
+        "Hash Map weaknesses: lack of ordering, rehashing overhead, worst-case collisions.",
+        "BST strengths: range queries, ordered iteration, deterministic O(log N) worst case."
+      ],
+      "what_interviewer_evaluates": "Data structure trade-off analysis and algorithmic decision-making."
+    },
+    {
+      "category": "Project Experience",
+      "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "key_talking_points": [
+        "Contextualize the architecture of SmartGalla.",
+        "Highlight concurrency, data integrity, and error recovery.",
+        "Quantify reliability outcomes and graceful failure handling."
+      ],
+      "what_interviewer_evaluates": "Authentic project ownership, engineering resilience, and technical depth."
+    },
+    {
+      "category": "Behavioral (STAR)",
+      "question": "Describe a time you received constructive criticism on your code or design. How did you handle it? (STAR)",
+      "model_answer": "Situation: During a code review on our project, a senior mentor pointed out that my API endpoint had an N+1 query problem, fetching related student records inside a loop.\n\nTask: I needed to accept the feedback professionally, understand the architectural flaw, and refactor the code to production standards.\n\nAction: Instead of being defensive, I thanked the reviewer and analyzed the database execution log. I verified that fetching 100 students generated 101 separate SQL queries. I refactored the query to perform a single relational `JOIN` with aggregation, reducing database round-trips from 101 to 1. I also wrote unit tests to verify that the returned JSON payload remained identical.\n\nResult: Query response latency dropped by over 80%, and I adopted the habit of running query profiling before submitting pull requests.",
+      "key_talking_points": [
+        "Openness to feedback and constructive attitude.",
+        "Technical verification of the problem (N+1 query pattern).",
+        "Refactoring with measurable performance improvements.",
+        "Personal growth and habit transformation."
+      ],
+      "what_interviewer_evaluates": "Ego maturity, receptiveness to feedback, and commitment to continuous technical improvement."
+    },
+    {
+      "category": "HR & Cultural Fit",
+      "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "key_talking_points": [
+        "Disciplined reading of official docs and engineering blogs.",
+        "Hands-on prototype building to validate theory.",
+        "Curiosity, self-driven learning, and long-term passion for software craft."
+      ],
+      "what_interviewer_evaluates": "Curiosity, initiative, and proactive self-learning discipline."
+    }
+  ],
+  "daily_revision": {
+    "yesterday_recall": "• Reviewed Day 25 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Dynamic Programming: Longest Common Subsequence.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: BulkBeat TV.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "rapid_fire_questions": [
+      {
+        "q": "Day 26 Q1: What is the primary academic thesis of Application Layer: DNS Hierarchy, HTTP/2/3 & TLS?",
+        "a": "Core theoretical and practical mastery of Application Layer: DNS Hierarchy, HTTP/2/3 & TLS under the CSJM University BCA-5003 syllabus."
+      },
+      {
+        "q": "Day 26 Q2: What is the key speed calculation formula applied in Para Jumbles & Sentence Rearrangement?",
+        "a": "High-speed corporate placement arithmetic shortcut for Para Jumbles & Sentence Rearrangement in campus recruitment exams."
+      },
+      {
+        "q": "Day 26 Q3: What is the time complexity of Dynamic Programming: Longest Common Subsequence?",
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+      },
+      {
+        "q": "Day 26 Q4: What is the central architectural principle of Python Decorators, @wraps & Concurrency?",
+        "a": "Foundational systems engineering rule governing Python Decorators, @wraps & Concurrency in production environments."
+      },
+      {
+        "q": "Day 26 Q5: What database integrity constraint guarantees relational consistency?",
+        "a": "Foreign Key constraints combined with ACID transaction isolation rules."
+      },
+      {
+        "q": "Day 26 Q6: In Python, what is the key difference between identity ('is') and equality ('==')?",
+        "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
+      },
+      {
+        "q": "Day 26 Q7: What is the verified technical foundation of BulkBeat TV?",
+        "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
+      },
+      {
+        "q": "Day 26 Q8: How does the STAR method structure behavioral interview answers?",
+        "a": "Situation, Task, Action, and Result."
+      },
+      {
+        "q": "Day 26 Q9: Why are parameterized SQL queries immune to SQL injection?",
+        "a": "Because query execution trees are pre-compiled prior to data parameter binding, preventing user input from altering SQL logic."
+      },
+      {
+        "q": "Day 26 Q10: What is the daily revision standard for achieving SGPA 9.0+?",
+        "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
+      }
+    ],
+    "today_summary": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formulas_and_shortcuts": [
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency."
+    ],
+    "must_know_definitions": [
+      {
+        "term": "Daily Core Concept 1",
+        "definition": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS."
+      },
+      {
+        "term": "Daily Core Concept 2",
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement."
+      },
+      {
+        "term": "Daily Core Concept 3",
+        "definition": "• Pattern: Dynamic Programming: Longest Common Subsequence."
+      },
+      {
+        "term": "Daily Core Concept 4",
+        "definition": "• Project: BulkBeat TV."
+      },
+      {
+        "term": "Daily Core Concept 5",
+        "definition": "15-Mark Examination Blueprint & SGPA 9.0+ Target Standard."
       }
     ]
   },
   "daily_test": {
-    "day": 26,
+    "title": "Day 26 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "q": "What is the key difference between Symmetric and Asymmetric encryption?",
-        "a": "Symmetric uses a single shared secret key for encryption and decryption; Asymmetric uses a mathematically linked pair: Public Key (encrypt) and Private Key (decrypt)."
+        "q": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
+        "a": "Answer: A\n\nAn 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
       },
       {
-        "q": "Given RSA parameters p = 3, q = 11, compute Euler's Totient phi(n).",
-        "a": "phi(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20."
+        "q": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
+        "a": "Answer: B\n\nHTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
       },
       {
-        "q": "How does a Digital Signature ensure Non-Repudiation?",
-        "a": "The sender encrypts the message hash using their private key. Since only the sender possesses that private key, successful decryption using their public key proves indisputably that the sender generated the message."
+        "q": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
+        "a": "Answer: B\n\nStandard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
       },
       {
-        "q": "What is the time complexity of Kadane's Algorithm for Maximum Subarray?",
-        "a": "O(N) single linear traversal with O(1) auxiliary space."
+        "q": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
+        "a": "Answer: A\n\nHTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
       },
       {
-        "q": "Why does Python's GIL not prevent concurrency for I/O-bound operations?",
-        "a": "Because CPython explicitly releases the GIL when waiting for I/O operations (sockets, disk reads), allowing other threads to execute."
+        "q": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
+        "a": "Answer: A\n\nPOP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
       },
       {
-        "q": "When should you use Multiprocessing instead of Threading in Python?",
-        "a": "For CPU-bound tasks requiring true multi-core parallel computation, bypassing the GIL by running independent Python processes."
+        "q": "Rearrange sentences (1-4) into a coherent paragraph: 1. However, solar energy adoption is accelerating. 2. Traditional fossil fuels are finite. 3. This transition is essential for sustainability. 4. Global energy demands are rising continuously.",
+        "a": "Answer: A\n\n4 introduces energy demand, 2 states fossil fuel limitation, 1 introduces solar contrast ('However'), 3 concludes with transition necessity."
       },
       {
-        "q": "Correct the error: 'The list of items are on the desk.'",
-        "a": "'is on the desk'. The subject is singular 'list', not 'items'."
+        "q": "Identify the mandatory opening sentence among these: A. Consequently, profits surged. B. Acme Corp launched a new logistics model in 2023. C. This automation reduced delays. D. Customers responded positively.",
+        "a": "Answer: A\n\nSentence B introduces the central subject ('Acme Corp') and setting without relying on pronouns or conjunctions."
       },
       {
-        "q": "Why should database ports (5432, 6379) be blocked by UFW firewall on a production VPS?",
-        "a": "To prevent unauthorized brute-force and port-scanning attacks over the public internet, restricting database access exclusively to localhost or private VPC networks."
+        "q": "In para jumble analysis, which transition word typically signals a causal effect or conclusion?",
+        "a": "Answer: A\n\n'Therefore' and 'Consequently' indicate logical outcome, effect, or conclusion."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-26-01",
+        "category": "Academic (Academic Theory)",
+        "question": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
+        "options": [
+          "A Record",
+          "AAAA Record",
+          "CNAME Record",
+          "MX Record"
+        ],
+        "correct_answer": "A",
+        "explanation": "An 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
+      },
+      {
+        "id": "TEST-26-02",
+        "category": "Academic (Academic Theory)",
+        "question": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
+        "options": [
+          "By removing TCP completely",
+          "By using a binary framing layer over a single persistent TCP connection, interleaving multiple bidirectional streams without Head-of-Line blocking",
+          "By compressing images with lossy algorithms",
+          "By limiting requests to 10 per second"
+        ],
+        "correct_answer": "B",
+        "explanation": "HTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
+      },
+      {
+        "id": "TEST-26-03",
+        "category": "Academic (Academic Theory)",
+        "question": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
+        "options": [
+          "TCP port 80",
+          "UDP port 53",
+          "TCP port 443",
+          "UDP port 67"
+        ],
+        "correct_answer": "B",
+        "explanation": "Standard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
+      },
+      {
+        "id": "TEST-26-04",
+        "category": "Academic (Academic Theory)",
+        "question": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
+        "options": [
+          "Transport Layer Security (TLS / SSL)",
+          "Point-to-Point Protocol (PPP)",
+          "Border Gateway Protocol (BGP)",
+          "Simple Mail Transfer Protocol (SMTP)"
+        ],
+        "correct_answer": "A",
+        "explanation": "HTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
+      },
+      {
+        "id": "TEST-26-05",
+        "category": "Academic (Academic Theory)",
+        "question": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
+        "options": [
+          "POP3 downloads and removes emails from the server locally; IMAP synchronizes folders bidirectionally, keeping emails stored on the server",
+          "IMAP cannot read attachments",
+          "POP3 requires TLS while IMAP is unencrypted",
+          "POP3 is used to send emails while IMAP receives them"
+        ],
+        "correct_answer": "A",
+        "explanation": "POP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
+      },
+      {
+        "id": "TEST-26-06",
+        "category": "Placement Aptitude",
+        "question": "Rearrange sentences (1-4) into a coherent paragraph: 1. However, solar energy adoption is accelerating. 2. Traditional fossil fuels are finite. 3. This transition is essential for sustainability. 4. Global energy demands are rising continuously.",
+        "options": [
+          "4 - 2 - 1 - 3",
+          "2 - 1 - 4 - 3",
+          "1 - 3 - 2 - 4",
+          "4 - 1 - 2 - 3"
+        ],
+        "correct_answer": "A",
+        "explanation": "4 introduces energy demand, 2 states fossil fuel limitation, 1 introduces solar contrast ('However'), 3 concludes with transition necessity."
+      },
+      {
+        "id": "TEST-26-07",
+        "category": "Placement Aptitude",
+        "question": "Identify the mandatory opening sentence among these: A. Consequently, profits surged. B. Acme Corp launched a new logistics model in 2023. C. This automation reduced delays. D. Customers responded positively.",
+        "options": [
+          "B",
+          "A",
+          "C",
+          "D"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sentence B introduces the central subject ('Acme Corp') and setting without relying on pronouns or conjunctions."
+      },
+      {
+        "id": "TEST-26-08",
+        "category": "Placement Aptitude",
+        "question": "In para jumble analysis, which transition word typically signals a causal effect or conclusion?",
+        "options": [
+          "Therefore",
+          "Although",
+          "Furthermore",
+          "Whereas"
+        ],
+        "correct_answer": "A",
+        "explanation": "'Therefore' and 'Consequently' indicate logical outcome, effect, or conclusion."
+      },
+      {
+        "id": "TEST-26-09",
+        "category": "Placement Aptitude",
+        "question": "Rearrange: 1. He opened the file. 2. Rohan arrived at his desk. 3. He noticed the signature was missing. 4. He sat down and booted his laptop.",
+        "options": [
+          "2 - 4 - 1 - 3",
+          "1 - 2 - 4 - 3",
+          "4 - 2 - 1 - 3",
+          "2 - 1 - 4 - 3"
+        ],
+        "correct_answer": "A",
+        "explanation": "Chronological flow: Arrives at desk (2) -> sits down and boots laptop (4) -> opens file (1) -> notices missing signature (3)."
+      },
+      {
+        "id": "TEST-26-10",
+        "category": "Placement Aptitude",
+        "question": "Which sentence cannot be the opening sentence of a paragraph?",
+        "options": [
+          "'Nevertheless, the experimental trials proved inconclusive.'",
+          "'Artificial Intelligence is transforming medical diagnostic systems.'",
+          "'Renewable energy investment expanded significantly last quarter.'",
+          "'Microservices decouple monolithic web applications.'"
+        ],
+        "correct_answer": "A",
+        "explanation": "Sentences opening with contrastive conjunctions like 'Nevertheless' require preceding context."
+      },
+      {
+        "id": "TEST-26-11",
+        "category": "Core CS (Python Internals)",
+        "question": "Which of the following HTTP methods is NOT idempotent?",
+        "options": [
+          "GET",
+          "PUT",
+          "DELETE",
+          "POST"
+        ],
+        "correct_answer": "D",
+        "explanation": "POST is non-idempotent because multiple identical calls create duplicate records."
+      },
+      {
+        "id": "TEST-26-12",
+        "category": "Core CS (Python Internals)",
+        "question": "The asynchronous standard that superseded WSGI for modern Python web servers like Uvicorn is:",
+        "options": [
+          "CGI",
+          "ASGI",
+          "FAST-CGI",
+          "HTTPD"
+        ],
+        "correct_answer": "B",
+        "explanation": "ASGI (Asynchronous Server Gateway Interface) is the modern async Python standard."
+      },
+      {
+        "id": "TEST-26-13",
+        "category": "Core CS (Python Internals)",
+        "question": "In FastAPI, what happens when a route handler is declared with standard `def` instead of `async def`?",
+        "options": [
+          "It raises a TypeError",
+          "FastAPI automatically executes it in an external thread pool",
+          "It blocks the server permanently",
+          "It runs on the GPU"
+        ],
+        "correct_answer": "B",
+        "explanation": "FastAPI offloads standard def routes to background worker threads to avoid event loop stalls."
+      },
+      {
+        "id": "TEST-26-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
+        "options": [
+          "200 OK",
+          "201 Created",
+          "204 No Content",
+          "304 Not Modified"
+        ],
+        "correct_answer": "B",
+        "explanation": "HTTP 201 Created is the standard response code for successful resource creation."
+      },
+      {
+        "id": "TEST-26-15",
+        "category": "Core CS (Python Internals)",
+        "question": "Which RESTful constraint states that every request must contain all necessary data without server-stored session state?",
+        "options": [
+          "Uniform Interface",
+          "Statelessness",
+          "Cacheability",
+          "Layered System"
+        ],
+        "correct_answer": "B",
+        "explanation": "Statelessness requires that no client session context is retained on the server."
+      },
+      {
+        "id": "TEST-26-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: Longest Common Subsequence (LCS)' algorithmic pattern optimal for placement coding problems?",
+        "options": [
+          "It satisfies optimal asymptotic complexity: O(M * N) Time, O(M * N) Auxiliary Space.",
+          "It uses recursion with infinite call stack depth.",
+          "It allocates O(N^2) dynamic heap memory unnecessarily.",
+          "It requires native C++ pointer arithmetic."
+        ],
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: Longest Common Subsequence (LCS)' pattern operates with O(M * N) Time, O(M * N) Auxiliary Space: If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).."
+      },
+      {
+        "id": "TEST-26-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: Longest Common Subsequence (LCS)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "options": [
+          "Handling boundary conditions such as: Identical strings (returns length).",
+          "Using only primitive floats instead of double.",
+          "Declaring all methods native.",
+          "Disabling JVM garbage collection."
+        ],
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: Longest Common Subsequence (LCS) include Identical strings (returns length), which must be validated with guard clauses before executing loop pointers."
+      },
+      {
+        "id": "TEST-26-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Longest Common Subsequence', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "options": [
+          "Standard array or standard collection adhering to O(M * N) Auxiliary Space.",
+          "A nested 3D LinkedList.",
+          "External disk-backed SQL table.",
+          "Unbounded blocking queue."
+        ],
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(M * N) Time, O(M * N) Auxiliary Space by avoiding unneeded object allocations."
+      },
+      {
+        "id": "TEST-26-19",
+        "category": "Projects (SmartGalla)",
+        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)'?",
+        "options": [
+          "`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.",
+          "Using unencrypted HTTP requests over public ports.",
+          "Storing passwords in plaintext inside localStorage.",
+          "Restarting the production server on every user request."
+        ],
+        "correct_answer": "A",
+        "explanation": "For SmartGalla, the architectural invariant is: `pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.."
+      },
+      {
+        "id": "TEST-26-20",
+        "category": "Projects (SmartGalla)",
+        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?'?",
+        "options": [
+          "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeou...",
+          "Claim that standard frameworks are obsolete and write custom assembly.",
+          "State that testing was skipped to ship faster.",
+          "Acknowledge that security was ignored."
+        ],
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and caus."
+      }
+    ]
+  },
+  "daily_coding_task": {
+    "task_id": "TASK-26",
+    "title": "Longest Common Subsequence (Dynamic Programming: Longest Common Subsequence (LCS))",
+    "time_limit_minutes": 45,
+    "difficulty": "Hard",
+    "problem_statement": "Solve the core placement problem: Longest Common Subsequence.\n\nGiven two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.\n\nTechnical Requirements:\n- Implementation Language: Java 17+\n- Algorithmic Paradigm: Dynamic Programming: Longest Common Subsequence (LCS)\n- Time Complexity Target: O(M * N) Time\n- Space Complexity Target: O(M * N) Auxiliary Space\n- Handle all edge cases: Identical strings (returns length), Completely disjoint strings (returns 0), Single character strings.",
+    "input_format": "Standard placement problem parameters as typed in Java method signature.",
+    "output_format": "Calculated optimal return value in Java primitive or object representation.",
+    "starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: Longest Common Subsequence (LCS)\n    public int longestCommonSubsequence(String text1, String text2) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "java_starter_code": "import java.util.*;\n\npublic class Solution {\n    // TODO: Implement optimal solution using Dynamic Programming: Longest Common Subsequence (LCS)\n    public int longestCommonSubsequence(String text1, String text2) {\n        // Write your solution here\n        return null;\n    }\n}",
+    "solution_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+    "java_solution_code": "public class Solution {\n    public int longestCommonSubsequence(String text1, String text2) {\n        int m = text1.length(), n = text2.length();\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 1; i <= m; i++) {\n            for (int j = 1; j <= n; j++) {\n                if (text1.charAt(i - 1) == text2.charAt(j - 1)) dp[i][j] = 1 + dp[i - 1][j - 1];\n                else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);\n            }\n        }\n        return dp[m][n];\n    }\n}",
+    "test_cases": [
+      {
+        "input": "nums = [standard sample array], target = [target value]",
+        "expected_output": "Target calculated answer",
+        "explanation": "Validates primary Dynamic Programming: Longest Common Subsequence (LCS) logic under normal test constraints."
+      },
+      {
+        "input": "Corner case input: Identical strings (returns length)",
+        "expected_output": "Valid boundary response",
+        "explanation": "Validates boundary edge case resilience and memory bounds."
+      }
+    ],
+    "rubric": {
+      "Correctness": "40 points (Passes all hidden automated test suites)",
+      "Time Complexity": "30 points (Meets O(M * N) Time)",
+      "Space Complexity": "20 points (Meets O(M * N) Auxiliary Space)",
+      "Code Quality": "10 points (Clean naming, Java 17+ idioms, error handling)"
+    }
+  },
+  "daily_score_model": {
+    "total_points": 100,
+    "passing_threshold": 80,
+    "breakdown": [
+      {
+        "stream": "Academic Theory & University PYQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Placement Aptitude Solved & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "DSA Pattern & 2 Coding Problems",
+        "points": 20,
+        "passing": 16
+      },
+      {
+        "stream": "Core Computer Science Lesson & MCQs",
+        "points": 15,
+        "passing": 12
+      },
+      {
+        "stream": "Project Architecture & Defense",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Placement & Behavioral (STAR) Prep",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Mixed Daily Test (20 MCQs)",
+        "points": 10,
+        "passing": 8
+      },
+      {
+        "stream": "Timed Practical Coding Task",
+        "points": 5,
+        "passing": 4
       }
     ]
   }
