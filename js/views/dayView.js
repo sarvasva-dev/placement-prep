@@ -4,6 +4,7 @@
  */
 
 import { Storage } from '../storage.js';
+import { renderSvgDiagram } from '../diagrams.js';
 
 export function displayValue(value, fallback = "") {
   if (value === undefined || value === null) {
@@ -224,11 +225,14 @@ function buildDayPage(container, d, daysIndex) {
         </div>
       ` : ''}
 
-      <!-- ASCII / Architecture Diagram -->
+      <!-- Interactive Vector SVG Architecture Diagram -->
       ${acad.diagram ? `
         <div style="margin: var(--space-4) 0;">
-          <h4 style="margin-bottom: var(--space-2); color: var(--color-primary);">System Architecture & Conceptual Flow</h4>
-          <div class="diagram-box">${acad.diagram}</div>
+          <h4 style="margin-bottom: var(--space-2); color: var(--color-primary); display: flex; align-items: center; justify-content: space-between;">
+            <span>System Architecture & Conceptual Flow</span>
+            <span class="badge badge-primary">Interactive Vector Model</span>
+          </h4>
+          ${renderSvgDiagram(acad.topic || acad.subject_name || '', acad.diagram)}
         </div>
       ` : ''}
 
@@ -442,11 +446,14 @@ function buildDayPage(container, d, daysIndex) {
         </div>
       </div>
 
-      <!-- Visual Representation -->
+      <!-- Visual Representation (SVG + Trace) -->
       ${dsaPattern.visual_explanation ? `
         <div style="margin: var(--space-4) 0;">
-          <h4 style="margin-bottom: var(--space-2); color: var(--color-primary);">Visual Execution Trace</h4>
-          <div class="diagram-box">${displayValue(dsaPattern.visual_explanation)}</div>
+          <h4 style="margin-bottom: var(--space-2); color: var(--color-primary); display: flex; align-items: center; justify-content: space-between;">
+            <span>Visual Execution Trace & Pointer Mechanics</span>
+            <span class="badge badge-success">Algorithm Visualizer</span>
+          </h4>
+          ${renderSvgDiagram(dsaPattern.pattern_name || '', dsaPattern.visual_explanation)}
         </div>
       ` : ''}
 
@@ -534,6 +541,15 @@ function buildDayPage(container, d, daysIndex) {
         ${formatParagraphs(coreCs.concept_lesson || (Array.isArray(coreCs.detailed_notes) ? coreCs.detailed_notes.join('\n\n') : coreCs.detailed_notes))}
       </div>
 
+      <!-- Interactive Vector SVG Architecture Diagram for Core CS -->
+      <div style="margin: var(--space-4) 0;">
+        <h4 style="margin-bottom: var(--space-2); color: var(--color-primary); display: flex; align-items: center; justify-content: space-between;">
+          <span>Underlying OS / DBMS Architecture & Execution Mechanics</span>
+          <span class="badge badge-primary">Interactive System Diagram</span>
+        </h4>
+        ${renderSvgDiagram(coreCs.topic || coreCs.subject || 'core_cs', coreCs.concept_lesson || '')}
+      </div>
+
       <!-- Key Definitions -->
       ${coreCs.key_definitions && coreCs.key_definitions.length ? `
         <div style="margin-bottom: var(--space-4);">
@@ -604,6 +620,15 @@ function buildDayPage(container, d, daysIndex) {
 
       <div style="background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); font-size: var(--font-size-sm); line-height: 1.7; border: 1px solid var(--border-color); margin-bottom: var(--space-4);">
         ${formatMultiline(proj.what_to_understand || proj.architecture_deep_dive || '')}
+      </div>
+
+      <!-- Interactive Vector SVG Architecture Diagram for Project Defense -->
+      <div style="margin: var(--space-4) 0;">
+        <h4 style="margin-bottom: var(--space-2); color: var(--color-success); display: flex; align-items: center; justify-content: space-between;">
+          <span>Verified Production System Topology & Concurrency Flow</span>
+          <span class="badge badge-success">Engineering Architecture Visualizer</span>
+        </h4>
+        ${renderSvgDiagram(proj.project_name || '', proj.topic || proj.what_to_understand || '')}
       </div>
 
       ${proj.interview_pitch_exercise ? `

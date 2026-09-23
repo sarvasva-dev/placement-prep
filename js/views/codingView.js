@@ -3,6 +3,7 @@
  */
 
 import { Storage } from '../storage.js';
+import { renderSvgDiagram } from '../diagrams.js';
 
 export function renderCodingView(container, daysIndex, initialQuery = '') {
   container.innerHTML = `
@@ -162,9 +163,13 @@ function buildCodingPage(container, codingList, daysIndex, initialQuery = '') {
             <p style="font-size: var(--font-size-sm); color: var(--text-secondary); margin-bottom: var(--space-2); line-height: 1.5;">
               ${item.intuition || 'Optimal two-pointer / hashing approach with minimal auxiliary space.'}
             </p>
-            <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+            <div style="display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-3);">
               <span class="badge badge-secondary">Time: ${item.time_complexity || 'O(N)'}</span>
               <span class="badge badge-secondary">Space: ${item.space_complexity || 'O(1)'}</span>
+            </div>
+            <!-- Interactive Algorithmic Trace SVG -->
+            <div>
+              ${renderSvgDiagram(item.pattern || '', item.intuition || item.problem || '')}
             </div>
           </div>
 

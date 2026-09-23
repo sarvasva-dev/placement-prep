@@ -3,6 +3,7 @@
  */
 
 import { Storage } from '../storage.js';
+import { renderSvgDiagram } from '../diagrams.js';
 
 export function renderPyqView(container, daysIndex, initialQuery = '') {
   container.innerHTML = `
@@ -152,6 +153,9 @@ function buildPyqPage(container, pyqList, daysIndex, initialQuery = '') {
             <div id="ans-${idx}" class="pyq-model-answer-panel" style="display: none; margin-top: var(--space-4); padding: var(--space-4); background: var(--bg-surface-2); border-radius: var(--radius-md); border-left: 3px solid var(--color-success);">
               <div style="font-size: var(--font-size-xs); font-weight: 700; color: var(--color-success); text-transform: uppercase; margin-bottom: var(--space-3);">
                 ✓ High-Scoring Benchmark Answer (Textbook Pedagogical Depth):
+              </div>
+              <div style="margin-bottom: var(--space-3);">
+                ${renderSvgDiagram(item.topic || item.subject_name || '', item.question || '')}
               </div>
               <div style="font-size: var(--font-size-sm); line-height: 1.7; color: var(--text-secondary); display: flex; flex-direction: column; gap: var(--space-3);">
                 ${(item.model_answer_paragraphs || []).map(p => {

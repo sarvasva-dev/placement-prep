@@ -3,6 +3,7 @@
  */
 
 import { Storage } from '../storage.js';
+import { renderCoreCsSvg } from '../diagrams_core.js';
 
 export function renderCoreCsView(container, daysIndex) {
   container.innerHTML = `
@@ -122,6 +123,11 @@ function buildCoreCsPage(container, coreList, daysIndex) {
           <!-- Deep-Dive Lecture Notes -->
           <div style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.7; margin-bottom: var(--space-4); background: var(--bg-surface-2); padding: var(--space-4); border-radius: var(--radius-sm); white-space: pre-line;">
             ${item.lecture}
+          </div>
+
+          <!-- Interactive Vector Architecture Diagram -->
+          <div style="margin-bottom: var(--space-4);">
+            ${renderCoreCsSvg(item.topic, item.lecture || '')}
           </div>
 
           <!-- Interview Questions Accordion -->

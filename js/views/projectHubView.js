@@ -3,6 +3,7 @@
  */
 
 import { Storage } from '../storage.js';
+import { renderProjectDefenseSvg } from '../diagrams_proj.js';
 
 export function renderProjectHubView(container, daysIndex, initialProjectKey = null) {
   container.innerHTML = `
@@ -161,6 +162,15 @@ function renderProjectCard(key, p, isVisible) {
             ` : ''}
           </div>
         </div>
+      </div>
+
+      <!-- Interactive Vector SVG Architecture Diagram -->
+      <div style="margin-bottom: var(--space-5);">
+        <h4 style="margin-bottom: var(--space-2); color: var(--color-success); display: flex; align-items: center; justify-content: space-between;">
+          <span>System Architecture & Component Topology</span>
+          <span class="badge badge-success">Interactive Vector Model</span>
+        </h4>
+        ${renderProjectDefenseSvg(p.name, p.category || '')}
       </div>
 
       <!-- Architecture Pipeline Card -->

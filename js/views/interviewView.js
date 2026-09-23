@@ -4,6 +4,7 @@
 
 import { Storage } from '../storage.js';
 import { StudyTimer } from '../timer.js';
+import { renderSvgDiagram } from '../diagrams.js';
 
 export function renderInterviewView(container, daysIndex) {
   const interviewRounds = [
@@ -216,6 +217,11 @@ export function renderInterviewView(container, daysIndex) {
                 <div style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.6;">
                   ${q.framework}
                 </div>
+              </div>
+
+              <!-- Interactive Visual Architecture Model for Interview Q -->
+              <div style="margin-bottom: var(--space-3);">
+                ${renderSvgDiagram(q.q, q.framework || '')}
               </div>
 
               <div style="background: var(--color-warning-subtle); border-left: 3px solid var(--color-warning); padding: var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-sm); color: var(--text-primary);">
