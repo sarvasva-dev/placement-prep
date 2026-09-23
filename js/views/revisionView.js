@@ -156,7 +156,7 @@ export function renderRevisionView(container, daysIndex) {
           <div class="badge badge-primary" style="margin-bottom: var(--space-1);">DAY 28</div>
           <h4 style="margin: 0 0 6px 0;">Campus Placement Simulation</h4>
           <p style="font-size: var(--font-size-xs); color: var(--text-secondary); line-height: 1.5; margin-bottom: var(--space-3);">
-            Execute complete 3-hour mock placement exam: 60-min Aptitude (TCS/Infosys pattern) + 45-min Coding (2 Python DSA problems) + 45-min Technical Mock Defense.
+            Execute complete 3-hour mock placement exam: 60-min Aptitude (TCS/Infosys pattern) + 45-min Coding (2 Java DSA problems) + 45-min Technical Mock Defense.
           </p>
           <a href="#day/28" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center;">Enter Day 28 Simulation →</a>
         </div>

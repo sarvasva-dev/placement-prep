@@ -4,7 +4,7 @@
 
 import { Storage } from '../storage.js';
 
-export function renderProjectHubView(container, daysIndex) {
+export function renderProjectHubView(container, daysIndex, initialProjectKey = null) {
   container.innerHTML = `
     <div style="text-align: center; padding: var(--space-8) 0;">
       <div class="badge badge-primary" style="margin-bottom: var(--space-2);">LOADING PROJECTS...</div>
@@ -18,7 +18,7 @@ export function renderProjectHubView(container, daysIndex) {
       return res.json();
     })
     .then(projectsData => {
-      buildProjectHubPage(container, projectsData, daysIndex);
+      buildProjectHubPage(container, projectsData, daysIndex, initialProjectKey);
     })
     .catch(err => {
       container.innerHTML = `
@@ -30,8 +30,9 @@ export function renderProjectHubView(container, daysIndex) {
     });
 }
 
-function buildProjectHubPage(container, projectsData, daysIndex) {
+function buildProjectHubPage(container, projectsData, daysIndex, initialProjectKey = null) {
   const projectKeys = Object.keys(projectsData);
+  const activeKey = (initialProjectKey && projectsData[initialProjectKey]) ? initialProjectKey : projectKeys[0];
 
   container.innerHTML = `
     <div class="project-hub-header" style="margin-bottom: var(--space-6);">
@@ -44,10 +45,11 @@ function buildProjectHubPage(container, projectsData, daysIndex) {
 
     <!-- Project Selector Tabs -->
     <div style="display: flex; gap: var(--space-2); margin-bottom: var(--space-5); overflow-x: auto; padding-bottom: var(--space-2);">
-      ${projectKeys.map((key, idx) => {
+      ${projectKeys.map((key) => {
         const p = projectsData[key];
+        const isActive = key === activeKey;
         return `
-          <button class="btn ${idx === 0 ? 'btn-primary' : 'btn-secondary'} proj-tab-btn" data-target="${key}" style="white-space: nowrap;">
+          <button class="btn ${isActive ? 'btn-primary' : 'btn-secondary'} proj-tab-btn" data-target="${key}" style="white-space: nowrap;">
             ${p.name}
           </button>
         `;
@@ -56,7 +58,7 @@ function buildProjectHubPage(container, projectsData, daysIndex) {
 
     <!-- Project Details Panels -->
     <div id="proj-panels-container">
-      ${projectKeys.map((key, idx) => renderProjectCard(key, projectsData[key], idx === 0)).join('')}
+      ${projectKeys.map((key) => renderProjectCard(key, projectsData[key], key === activeKey)).join('')}
     </div>
   `;
 

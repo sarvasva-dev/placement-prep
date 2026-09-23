@@ -5,14 +5,31 @@
 
 import { Storage } from '../storage.js';
 
-function safeText(value) {
-  if (value == null) return '';
-  if (typeof value === 'string') return value;
-  if (Array.isArray(value)) return value.map(v => safeText(v)).join('\n');
-  if (typeof value === 'object') {
-    return Object.entries(value).map(([k, v]) => `${k}: ${safeText(v)}`).join('\n');
+export function displayValue(value, fallback = "") {
+  if (value === undefined || value === null) {
+    return fallback;
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed || trimmed === "undefined" || trimmed === "null" || trimmed === "[object Object]") {
+      return fallback;
+    }
+    return trimmed;
+  }
+  if (Array.isArray(value)) {
+    if (!value.length) return fallback;
+    return value.map(item => displayValue(item, fallback)).filter(Boolean).join("\n");
+  }
+  if (typeof value === "object") {
+    const entries = Object.entries(value);
+    if (!entries.length) return fallback;
+    return entries.map(([k, v]) => `${k}: ${displayValue(v, fallback)}`).join("\n");
   }
   return String(value);
+}
+
+function safeText(value) {
+  return displayValue(value, '');
 }
 
 function formatMultiline(value) {
@@ -142,21 +159,21 @@ function buildDayPage(container, d, daysIndex) {
     </div>
 
     <!-- Table of Contents Quick Anchor Bar (All 14 Streams) -->
-    <div class="tabs-header" style="position: sticky; top: var(--header-height); z-index: 80; background: var(--bg-primary); padding: var(--space-2) 0; overflow-x: auto; white-space: nowrap; display: flex; gap: var(--space-2);">
-      <a href="#day/${dayNum}#sec-acad" class="tab-btn active">1. Academic Theory</a>
-      <a href="#day/${dayNum}#sec-pyq" class="tab-btn">2. University PYQs</a>
-      <a href="#day/${dayNum}#sec-apt-lesson" class="tab-btn">3. Aptitude Lesson</a>
-      <a href="#day/${dayNum}#sec-apt-solved" class="tab-btn">4. Aptitude Solved (5)</a>
-      <a href="#day/${dayNum}#sec-apt-mcq" class="tab-btn">5. Aptitude MCQs (10)</a>
-      <a href="#day/${dayNum}#sec-dsa-pattern" class="tab-btn">6. DSA Pattern</a>
-      <a href="#day/${dayNum}#sec-coding-probs" class="tab-btn">7. Coding Problems (2)</a>
-      <a href="#day/${dayNum}#sec-core-cs" class="tab-btn">8. Core CS</a>
-      <a href="#day/${dayNum}#sec-proj-defense" class="tab-btn">9. Project Defense</a>
-      <a href="#day/${dayNum}#sec-interview-prep" class="tab-btn">10. Placement Interview (5)</a>
-      <a href="#day/${dayNum}#sec-revision" class="tab-btn">11. Daily Revision</a>
-      <a href="#day/${dayNum}#sec-mixed-test" class="tab-btn">12. Mixed Test (20 MCQs)</a>
-      <a href="#day/${dayNum}#sec-coding-task" class="tab-btn">13. Practical Task</a>
-      <a href="#day/${dayNum}#sec-sign-off" class="tab-btn">14. Sign-Off (100 Pts)</a>
+    <div class="tabs-header day-toc-bar" style="position: sticky; top: var(--header-height); z-index: 80; background: var(--bg-primary); padding: var(--space-2) 0; overflow-x: auto; white-space: nowrap; display: flex; gap: var(--space-2);">
+      <button type="button" class="tab-btn active" data-target="sec-acad">1. Academic Theory</button>
+      <button type="button" class="tab-btn" data-target="sec-pyq">2. University PYQs</button>
+      <button type="button" class="tab-btn" data-target="sec-apt-lesson">3. Aptitude Lesson</button>
+      <button type="button" class="tab-btn" data-target="sec-apt-solved">4. Aptitude Solved (5)</button>
+      <button type="button" class="tab-btn" data-target="sec-apt-mcq">5. Aptitude MCQs (10)</button>
+      <button type="button" class="tab-btn" data-target="sec-dsa-pattern">6. DSA Pattern</button>
+      <button type="button" class="tab-btn" data-target="sec-coding-probs">7. Coding Problems (2)</button>
+      <button type="button" class="tab-btn" data-target="sec-core-cs">8. Core CS</button>
+      <button type="button" class="tab-btn" data-target="sec-proj-defense">9. Project Defense</button>
+      <button type="button" class="tab-btn" data-target="sec-interview-prep">10. Placement Interview (5)</button>
+      <button type="button" class="tab-btn" data-target="sec-revision">11. Daily Revision</button>
+      <button type="button" class="tab-btn" data-target="sec-mixed-test">12. Mixed Test (20 MCQs)</button>
+      <button type="button" class="tab-btn" data-target="sec-coding-task">13. Practical Task</button>
+      <button type="button" class="tab-btn" data-target="sec-sign-off">14. Sign-Off (100 Pts)</button>
     </div>
 
     <!-- ================================================================= -->
@@ -347,16 +364,16 @@ function buildDayPage(container, d, daysIndex) {
         ${aptSolved.map((ex, idx) => `
           <div class="quiz-card" style="padding: var(--space-4);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
-              <span class="badge badge-primary">${ex.difficulty || 'Tier ' + (idx + 1)}: ${ex.source || 'Placement Exam Pattern'}</span>
+              <span class="badge badge-primary">${displayValue(ex.tier || ex.difficulty, 'Tier ' + (idx + 1))}: ${displayValue(ex.source, 'Placement Exam Pattern')}</span>
               <span style="font-size: var(--font-size-xs); color: var(--text-muted);">Target: ${ex.target_time_seconds || 45}s</span>
             </div>
             <div class="quiz-question" style="font-weight: 600; font-size: var(--font-size-sm); color: var(--text-primary); margin-bottom: var(--space-3);">
-              #${idx + 1}: ${ex.problem}
+              #${idx + 1}: ${displayValue(ex.question || ex.problem)}
             </div>
             <button class="btn btn-secondary btn-sm toggle-ans-btn">Reveal Step-by-Step Solution</button>
             <div class="quiz-answer-block" style="margin-top: var(--space-3); font-size: var(--font-size-sm); line-height: 1.6;">
-              <strong style="color: var(--color-success); display: block; margin-bottom: var(--space-1);">Final Answer: ${ex.final_answer}</strong>
-              <div>${formatMultiline(ex.step_by_step_solution)}</div>
+              <strong style="color: var(--color-success); display: block; margin-bottom: var(--space-1);">Final Answer: ${displayValue(ex.final_answer || ex.answer)}</strong>
+              <div>${formatMultiline(ex.step_by_step_solution || ex.solution)}</div>
             </div>
           </div>
         `).join('')}
@@ -407,14 +424,14 @@ function buildDayPage(container, d, daysIndex) {
     <section id="sec-dsa-pattern" class="card">
       <div class="card-header">
         <h2 class="card-title">🧬 6. Algorithmic DSA Pattern Deep-Dive</h2>
-        <span class="badge badge-success">${dsaPattern.pattern_name || 'Pattern'}</span>
+        <span class="badge badge-success">${displayValue(dsaPattern.pattern_name, 'Pattern')}</span>
       </div>
 
       <div style="margin-bottom: var(--space-4);">
-        <h3 style="margin: 0 0 var(--space-2);">${dsaPattern.pattern_name}</h3>
-        <p style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.6;">${dsaPattern.concept}</p>
+        <h3 style="margin: 0 0 var(--space-2);">${displayValue(dsaPattern.pattern_name)}</h3>
+        <p style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.6;">${displayValue(dsaPattern.concept)}</p>
         <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); font-size: var(--font-size-sm); border-left: 3px solid var(--color-primary); margin-top: var(--space-2);">
-          <strong>Why It Works:</strong> ${dsaPattern.why_it_works}
+          <strong>Why It Works:</strong> ${displayValue(dsaPattern.why_it_works || dsaPattern.intuition)}
         </div>
       </div>
 
@@ -422,7 +439,7 @@ function buildDayPage(container, d, daysIndex) {
       ${dsaPattern.visual_explanation ? `
         <div style="margin: var(--space-4) 0;">
           <h4 style="margin-bottom: var(--space-2); color: var(--color-primary);">Visual Execution Trace</h4>
-          <div class="diagram-box">${dsaPattern.visual_explanation}</div>
+          <div class="diagram-box">${displayValue(dsaPattern.visual_explanation)}</div>
         </div>
       ` : ''}
 
@@ -430,24 +447,24 @@ function buildDayPage(container, d, daysIndex) {
       <div class="code-container" style="margin: var(--space-4) 0;">
         <div class="code-header">
           <span>Java 17+ Pattern Implementation</span>
-          <button class="copy-code-btn" data-code="${encodeURIComponent(dsaPattern.java_code || dsaPattern.code || dsaPattern.python_code || '')}">Copy Code</button>
+          <button class="copy-code-btn" data-code="${encodeURIComponent(dsaPattern.java_code || dsaPattern.java_solution || dsaPattern.code || '')}">Copy Code</button>
         </div>
-        <pre class="code-pre"><code>${dsaPattern.java_code || dsaPattern.code || dsaPattern.python_code || ''}</code></pre>
+        <pre class="code-pre"><code>${displayValue(dsaPattern.java_code || dsaPattern.java_solution || dsaPattern.code)}</code></pre>
       </div>
 
       <!-- Line-by-Line Walkthrough -->
-      ${dsaPattern.line_by_line_walkthrough && dsaPattern.line_by_line_walkthrough.length ? `
+      ${(dsaPattern.line_by_line_walkthrough || dsaPattern.line_by_line || []).length ? `
         <div style="margin: var(--space-4) 0;">
           <h4 style="margin-bottom: var(--space-2); color: var(--text-primary);">Line-by-Line Execution Logic</h4>
           <ul style="margin: 0; padding-left: 20px; font-size: var(--font-size-sm); line-height: 1.6; color: var(--text-secondary);">
-            ${dsaPattern.line_by_line_walkthrough.map(line => `<li>${line}</li>`).join('')}
+            ${(dsaPattern.line_by_line_walkthrough || dsaPattern.line_by_line).map(line => `<li>${displayValue(line)}</li>`).join('')}
           </ul>
         </div>
       ` : ''}
 
       <div style="display: flex; gap: var(--space-4); font-size: var(--font-size-xs); color: var(--text-secondary); margin-top: var(--space-3); flex-wrap: wrap;">
-        <div><strong>Complexity:</strong> ${dsaPattern.complexity || 'O(N) time, O(1) space'}</div>
-        ${dsaPattern.edge_cases ? `<div><strong>Edge Cases:</strong> ${dsaPattern.edge_cases}</div>` : ''}
+        <div><strong>Complexity:</strong> ${displayValue(dsaPattern.complexity, 'O(N) Time, O(1) Auxiliary Space')}</div>
+        ${dsaPattern.edge_cases ? `<div><strong>Edge Cases:</strong> ${displayValue(dsaPattern.edge_cases)}</div>` : ''}
       </div>
     </section>
 
@@ -463,31 +480,31 @@ function buildDayPage(container, d, daysIndex) {
       ${codingProbs.map((prob, idx) => `
         <div style="margin-bottom: var(--space-6); border-bottom: 1px solid var(--border-subtle); padding-bottom: var(--space-4);">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-2);">
-            <h3 style="margin: 0;">${prob.title}</h3>
-            <span class="badge ${prob.difficulty === 'Easy' ? 'badge-success' : 'badge-warning'}">${prob.difficulty || 'Medium'}</span>
+            <h3 style="margin: 0;">${displayValue(prob.title, 'Problem ' + (idx + 1))}</h3>
+            <span class="badge ${prob.difficulty === 'Easy' ? 'badge-success' : 'badge-warning'}">${displayValue(prob.difficulty, 'Medium')}</span>
           </div>
 
           <div class="callout callout-understand" style="margin: var(--space-3) 0;">
             <div class="callout-header">Problem Statement & Constraints</div>
-            <div>${prob.problem_statement}</div>
-            ${prob.edge_cases ? `<div style="margin-top: var(--space-2); font-size: var(--font-size-xs); color: var(--text-muted);"><strong>Constraints:</strong> ${prob.edge_cases}</div>` : ''}
+            <div>${displayValue(prob.statement || prob.problem_statement)}</div>
+            ${(prob.constraints || prob.edge_cases) ? `<div style="margin-top: var(--space-2); font-size: var(--font-size-xs); color: var(--text-muted);"><strong>Constraints:</strong> ${displayValue(prob.constraints || prob.edge_cases)}</div>` : ''}
           </div>
 
           <div style="font-size: var(--font-size-sm); margin-bottom: var(--space-3); color: var(--text-secondary);">
-            <strong>Algorithmic Strategy:</strong> ${formatMultiline(prob.solution_approach)}
+            <strong>Algorithmic Strategy:</strong> ${formatMultiline(prob.approach || prob.solution_approach)}
           </div>
 
           <div class="code-container">
             <div class="code-header">
               <span>Java 17+ Solution</span>
-              <button class="copy-code-btn" data-code="${encodeURIComponent(prob.java_code || prob.code || prob.solution_python || '')}">Copy Code</button>
+              <button class="copy-code-btn" data-code="${encodeURIComponent(prob.java_solution || prob.java_code || prob.code || '')}">Copy Code</button>
             </div>
-            <pre class="code-pre"><code>${prob.java_code || prob.code || prob.solution_python || ''}</code></pre>
+            <pre class="code-pre"><code>${displayValue(prob.java_solution || prob.java_code || prob.code)}</code></pre>
           </div>
 
           <div style="display: flex; gap: var(--space-4); font-size: var(--font-size-xs); color: var(--text-secondary); margin-top: var(--space-2);">
-            <div><strong>Time Complexity:</strong> ${prob.time_complexity || 'O(N)'}</div>
-            <div><strong>Space Complexity:</strong> ${prob.space_complexity || 'O(1)'}</div>
+            <div><strong>Time Complexity:</strong> ${displayValue(prob.time_complexity, 'O(N)')}</div>
+            <div><strong>Space Complexity:</strong> ${displayValue(prob.space_complexity, 'O(1)')}</div>
           </div>
         </div>
       `).join('')}
@@ -837,6 +854,61 @@ function buildDayPage(container, d, daysIndex) {
 
 function attachDayInteractivity(d) {
   const dayNum = d.day;
+
+  // Table of Contents Smooth Scroll & Active Tab State
+  let isManualScrolling = false;
+  let scrollTimeout = null;
+  const tocBtns = document.querySelectorAll('.day-toc-bar .tab-btn');
+  tocBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = btn.dataset.target;
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        isManualScrolling = true;
+        tocBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const topbarHeight = 70;
+        const y = targetEl.getBoundingClientRect().top + window.pageYOffset - topbarHeight;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          isManualScrolling = false;
+        }, 1000);
+      }
+    });
+  });
+
+  // Automatically highlight active TOC button on scroll
+  const sectionIds = [
+    'sec-acad', 'sec-pyq', 'sec-apt-lesson', 'sec-apt-solved', 'sec-apt-mcq',
+    'sec-dsa-pattern', 'sec-coding-probs', 'sec-core-cs', 'sec-proj-defense',
+    'sec-interview-prep', 'sec-revision', 'sec-mixed-test', 'sec-coding-task', 'sec-sign-off'
+  ];
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      if (isManualScrolling) return;
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const activeId = entry.target.id;
+          tocBtns.forEach(b => {
+            if (b.dataset.target === activeId) {
+              b.classList.add('active');
+            } else {
+              b.classList.remove('active');
+            }
+          });
+        }
+      });
+    }, { rootMargin: '-70px 0px -70% 0px', threshold: 0 });
+
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+  }
 
   // Toggle Answers in quiz cards
   document.querySelectorAll('.toggle-ans-btn').forEach(btn => {

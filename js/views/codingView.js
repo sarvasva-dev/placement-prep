@@ -4,7 +4,7 @@
 
 import { Storage } from '../storage.js';
 
-export function renderCodingView(container, daysIndex) {
+export function renderCodingView(container, daysIndex, initialQuery = '') {
   container.innerHTML = `
     <div style="text-align: center; padding: var(--space-8) 0;">
       <div class="badge badge-primary" style="margin-bottom: var(--space-2);">LOADING DSA DIRECTORY...</div>
@@ -18,7 +18,7 @@ export function renderCodingView(container, daysIndex) {
       return res.json();
     })
     .then(codingList => {
-      buildCodingPage(container, codingList, daysIndex);
+      buildCodingPage(container, codingList, daysIndex, initialQuery);
     })
     .catch(err => {
       container.innerHTML = `
@@ -30,10 +30,10 @@ export function renderCodingView(container, daysIndex) {
     });
 }
 
-function buildCodingPage(container, codingList, daysIndex) {
+function buildCodingPage(container, codingList, daysIndex, initialQuery = '') {
   let activePattern = 'all';
   let activeDifficulty = 'all';
-  let searchQuery = '';
+  let searchQuery = initialQuery || '';
 
   // Extract unique patterns
   const allPatterns = Array.from(new Set(codingList.map(p => p.pattern).filter(Boolean)));
@@ -56,7 +56,7 @@ function buildCodingPage(container, codingList, daysIndex) {
       <div style="display: flex; flex-direction: column; gap: var(--space-4);">
         <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; justify-content: space-between;">
           <div style="flex: 1; min-width: 250px;">
-            <input type="text" id="coding-search-input" class="form-control" placeholder="🔍 Search by problem name, pattern, or keyword (e.g., Two Pointers, Cycle, Subarray)..." style="width: 100%;">
+            <input type="text" id="coding-search-input" class="form-control" value="${searchQuery}" placeholder="🔍 Search by problem name, pattern, or keyword (e.g., Two Pointers, Cycle, Subarray)..." style="width: 100%;">
           </div>
           <div id="coding-results-count" class="badge badge-secondary" style="font-size: var(--font-size-sm); padding: 8px 12px;">
             Showing ${codingList.length} Problems

@@ -4,6 +4,7 @@
     "subject": "Operating Systems",
     "topic": "Processes, Threads, Context Switching & Process Control Blocks",
     "lesson": "An operating system process is an executing instance of a program in active memory. A process comprises five distinct address space segments: the Text section (compiled machine instructions), Data section (initialized global and static variables), BSS section (uninitialized globals), Heap (dynamically allocated memory via malloc/new, growing upward), and Stack (local variables, function call frames, return pointers, growing downward towards the heap).\n\nA Thread is the smallest unit of execution scheduled by the OS, often described as a lightweight process (LWP). Threads within the same process share the Text, Data, BSS, Heap, and open file descriptors, but each thread maintains its own private Program Counter (PC), CPU registers, and independent Call Stack.\n\nThe Process Control Block (PCB) is the primary OS kernel data structure representing a process. It contains: PID (Process ID), Process State (New, Ready, Running, Waiting, Terminated), Program Counter, CPU registers, CPU scheduling priority, memory-management information (page table pointers), accounting data, and I/O status info.\n\nContext Switching is the mechanism of saving the state of the currently executing process/thread into its PCB/TCB and loading the state of another ready process into CPU registers. Because the CPU cannot do useful user-space computation during context switching, it represents pure computational overhead, heavily influenced by hardware cache misses and TLB flushes.",
+    "lecture": "An operating system process is an executing instance of a program in active memory. A process comprises five distinct address space segments: the Text section (compiled machine instructions), Data section (initialized global and static variables), BSS section (uninitialized globals), Heap (dynamically allocated memory via malloc/new, growing upward), and Stack (local variables, function call frames, return pointers, growing downward towards the heap).\n\nA Thread is the smallest unit of execution scheduled by the OS, often described as a lightweight process (LWP). Threads within the same process share the Text, Data, BSS, Heap, and open file descriptors, but each thread maintains its own private Program Counter (PC), CPU registers, and independent Call Stack.\n\nThe Process Control Block (PCB) is the primary OS kernel data structure representing a process. It contains: PID (Process ID), Process State (New, Ready, Running, Waiting, Terminated), Program Counter, CPU registers, CPU scheduling priority, memory-management information (page table pointers), accounting data, and I/O status info.\n\nContext Switching is the mechanism of saving the state of the currently executing process/thread into its PCB/TCB and loading the state of another ready process into CPU registers. Because the CPU cannot do useful user-space computation during context switching, it represents pure computational overhead, heavily influenced by hardware cache misses and TLB flushes.",
     "definitions": [
       {
         "term": "Process",
@@ -19,6 +20,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the key difference between a process and a thread in terms of memory sharing?",
+        "a": "Processes run in isolated virtual address spaces; memory cannot be shared directly without explicit IPC (Inter-Process Communication like pipes, shared memory, or sockets). Threads belonging to the same process share the same virtual address space—including heap, global variables, and open files—which allows ultra-fast data sharing but introduces race conditions requiring synchronization."
+      },
+      {
+        "q": "What happens in the OS during a context switch?",
+        "a": "The CPU switches to kernel mode via an interrupt or system call. The kernel saves the program counter, registers, and stack pointer of the currently running process into its PCB. The scheduler selects a new process from the Ready queue. The kernel restores the new process's saved CPU registers and page table pointers (flushing or tagging TLB entries), switches the CPU back to user mode, and branches to the new program counter."
+      },
+      {
+        "q": "Why is thread switching faster than process switching?",
+        "a": "Thread switching does not require changing the virtual memory address space or flushing the Translation Lookaside Buffer (TLB). Only the thread's CPU registers and stack pointer are swapped, avoiding costly cache invalidations and memory mapping recalculations."
+      },
+      {
+        "q": "What is a Zombie process vs an Orphan process?",
+        "a": "A Zombie process has completed execution (terminated) but still holds an entry in the process table because its parent has not yet read its exit status via wait() or waitpid(). An Orphan process is one whose parent terminated before the child; the kernel automatically re-parents orphans to process 1 (init or systemd), which regularly invokes wait() to reap them."
+      },
+      {
+        "q": "Explain User-level Threads (ULT) vs Kernel-level Threads (KLT).",
+        "a": "User-level threads are managed by user-space runtime libraries without kernel awareness; switching requires no kernel context switch, but if one ULT makes a blocking system call, the entire process blocks. Kernel-level threads are scheduled directly by the OS kernel; blocking one thread allows other threads of the process to continue running, though thread creation and switching incur kernel mode-switch overhead."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the key difference between a process and a thread in terms of memory sharing?",
         "a": "Processes run in isolated virtual address spaces; memory cannot be shared directly without explicit IPC (Inter-Process Communication like pipes, shared memory, or sockets). Threads belonging to the same process share the same virtual address space—including heap, global variables, and open files—which allows ultra-fast data sharing but introduces race conditions requiring synchronization."
@@ -108,6 +131,7 @@
     "subject": "Operating Systems",
     "topic": "CPU Scheduling Algorithms (FCFS, SJF, SRTF, Round Robin & Priority)",
     "lesson": "CPU Scheduling is the process by which the short-term scheduler (CPU scheduler) allocates the CPU core to one of the ready processes. Schedulers operate in two modes: Non-preemptive (once allocated, the process retains CPU until it terminates or voluntarily yields for I/O) and Preemptive (the kernel can interrupt a running process when a higher-priority process arrives or its time slice expires).\n\nKey Algorithms:\n1. First-Come, First-Served (FCFS): Non-preemptive. Suffers from the Convoy Effect, where small I/O-bound processes queue behind a CPU-heavy process, drastically increasing average waiting time.\n2. Shortest Job First (SJF): Non-preemptive. Mathematically optimal in minimizing average waiting time, but impossible to implement perfectly in practice because future CPU burst lengths are unknown (estimated using exponential smoothing).\n3. Shortest Remaining Time First (SRTF): Preemptive version of SJF. Preempts current process if an incoming process has a shorter remaining burst. Can lead to starvation of long CPU bursts.\n4. Round Robin (RR): Preemptive, designed for time-sharing. Each process gets a fixed time quantum 'q'. If q is too small, context switch overhead dominates; if q is too large, RR degrades to FCFS.\n5. Priority Scheduling: Can be preemptive or non-preemptive. Can cause indefinite blocking (starvation), solved by Aging (gradually increasing the priority of processes that wait in the ready queue for long periods).",
+    "lecture": "CPU Scheduling is the process by which the short-term scheduler (CPU scheduler) allocates the CPU core to one of the ready processes. Schedulers operate in two modes: Non-preemptive (once allocated, the process retains CPU until it terminates or voluntarily yields for I/O) and Preemptive (the kernel can interrupt a running process when a higher-priority process arrives or its time slice expires).\n\nKey Algorithms:\n1. First-Come, First-Served (FCFS): Non-preemptive. Suffers from the Convoy Effect, where small I/O-bound processes queue behind a CPU-heavy process, drastically increasing average waiting time.\n2. Shortest Job First (SJF): Non-preemptive. Mathematically optimal in minimizing average waiting time, but impossible to implement perfectly in practice because future CPU burst lengths are unknown (estimated using exponential smoothing).\n3. Shortest Remaining Time First (SRTF): Preemptive version of SJF. Preempts current process if an incoming process has a shorter remaining burst. Can lead to starvation of long CPU bursts.\n4. Round Robin (RR): Preemptive, designed for time-sharing. Each process gets a fixed time quantum 'q'. If q is too small, context switch overhead dominates; if q is too large, RR degrades to FCFS.\n5. Priority Scheduling: Can be preemptive or non-preemptive. Can cause indefinite blocking (starvation), solved by Aging (gradually increasing the priority of processes that wait in the ready queue for long periods).",
     "definitions": [
       {
         "term": "Turnaround Time",
@@ -123,6 +147,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the Convoy Effect in CPU scheduling, and which algorithm causes it?",
+        "a": "The Convoy Effect occurs in FCFS scheduling when a CPU-intensive process holds the processor for a long duration, forcing all shorter, I/O-bound processes to wait idle in the ready queue. This severely degrades CPU and device utilization and inflates average waiting times."
+      },
+      {
+        "q": "Why is Shortest Job First (SJF) considered optimal, and why is it hard to implement in real OS kernels?",
+        "a": "SJF is provably optimal because scheduling the shortest job first minimizes the waiting time for all subsequent jobs in the queue. However, an OS cannot know the exact length of a process's next CPU burst in advance. Kernels approximate it using exponential averaging of historical bursts (tau_{n+1} = alpha * t_n + (1 - alpha) * tau_n)."
+      },
+      {
+        "q": "How does the choice of Time Quantum impact Round Robin performance?",
+        "a": "If the time quantum is extremely small (e.g., 1 microsecond), the CPU spends a disproportionate amount of time on context switches rather than executing user code. If the quantum is extremely large, Round Robin degenerates into FCFS, causing poor interactive response times. Rule of thumb: 80% of CPU bursts should be shorter than the time quantum."
+      },
+      {
+        "q": "What is Starvation in Priority Scheduling, and how is it resolved?",
+        "a": "Starvation (indefinite blocking) occurs when low-priority processes never get CPU time because a steady stream of higher-priority processes keeps arriving. It is resolved using Aging: dynamically incrementing a waiting process's priority over elapsed time until it becomes high enough to execute."
+      },
+      {
+        "q": "Explain the difference between Preemptive and Non-Preemptive scheduling.",
+        "a": "In non-preemptive scheduling, once a process is in the running state, it holds the CPU until it terminates or blocks for I/O. In preemptive scheduling, the OS can forcibly interrupt and move a running process back to the ready state when a higher-priority process arrives, a timer interrupt fires, or a higher-priority I/O event completes."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the Convoy Effect in CPU scheduling, and which algorithm causes it?",
         "a": "The Convoy Effect occurs in FCFS scheduling when a CPU-intensive process holds the processor for a long duration, forcing all shorter, I/O-bound processes to wait idle in the ready queue. This severely degrades CPU and device utilization and inflates average waiting times."
@@ -212,6 +258,7 @@
     "subject": "Operating Systems",
     "topic": "Process Synchronization, Race Conditions, Critical Section & Semaphores",
     "lesson": "When concurrent processes or threads access shared resources (memory variables, files, tables), non-atomic concurrent operations lead to a Race Condition—a state where the final outcome depends on the arbitrary order of thread scheduling.\n\nThe Critical Section Problem requires any valid synchronization solution to satisfy three strict criteria:\n1. Mutual Exclusion: If process P is executing in its critical section, no other process can execute in theirs.\n2. Progress: If no process is executing in its critical section and some wish to enter, selection of the next process cannot be postponed indefinitely.\n3. Bounded Waiting: A bound must exist on the number of times other processes are allowed to enter their critical sections after a process has made a request to enter, preventing starvation.\n\nSynchronization Primitives:\n- Mutex (Mutual Exclusion Lock): A binary locking mechanism with ownership semantics (only the thread that acquired the mutex can release it).\n- Semaphore: An integer variable accessed only through two standard atomic operations: wait() (also called P) and signal() (also called V).\n  - wait(S): while (S <= 0) do wait; S--;\n  - signal(S): S++;\n- Counting Semaphore: Controls access to a finite pool of identical resources, initialized to available instance count N.\n- Binary Semaphore: Value restricted between 0 and 1; functions like a mutex but lacks ownership constraints (any thread can signal it).",
+    "lecture": "When concurrent processes or threads access shared resources (memory variables, files, tables), non-atomic concurrent operations lead to a Race Condition—a state where the final outcome depends on the arbitrary order of thread scheduling.\n\nThe Critical Section Problem requires any valid synchronization solution to satisfy three strict criteria:\n1. Mutual Exclusion: If process P is executing in its critical section, no other process can execute in theirs.\n2. Progress: If no process is executing in its critical section and some wish to enter, selection of the next process cannot be postponed indefinitely.\n3. Bounded Waiting: A bound must exist on the number of times other processes are allowed to enter their critical sections after a process has made a request to enter, preventing starvation.\n\nSynchronization Primitives:\n- Mutex (Mutual Exclusion Lock): A binary locking mechanism with ownership semantics (only the thread that acquired the mutex can release it).\n- Semaphore: An integer variable accessed only through two standard atomic operations: wait() (also called P) and signal() (also called V).\n  - wait(S): while (S <= 0) do wait; S--;\n  - signal(S): S++;\n- Counting Semaphore: Controls access to a finite pool of identical resources, initialized to available instance count N.\n- Binary Semaphore: Value restricted between 0 and 1; functions like a mutex but lacks ownership constraints (any thread can signal it).",
     "definitions": [
       {
         "term": "Critical Section",
@@ -227,6 +274,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the difference between a Mutex and a Binary Semaphore?",
+        "a": "A Mutex has ownership: the thread that locks the mutex must be the exact same thread that unlocks it. A Semaphore has no concept of ownership: any thread can invoke signal() to increment the count, making semaphores suitable for signaling events between threads (e.g., producer signaling consumer) whereas mutexes are designed strictly for mutual exclusion."
+      },
+      {
+        "q": "What three conditions must any valid solution to the Critical Section problem satisfy?",
+        "a": "1. Mutual Exclusion: At most one process can execute in the critical section at any instant. 2. Progress: Only processes waiting to enter can participate in deciding who enters next, and this choice cannot be indefinitely delayed. 3. Bounded Waiting: There is a strict limit on the number of times other processes can enter before a waiting process's request is granted."
+      },
+      {
+        "q": "What is busy waiting (Spinlock), and when is a spinlock preferred over a sleep lock?",
+        "a": "Busy waiting means a thread loops continuously checking a condition (e.g., while (flag == true);), consuming CPU cycles without productive work. A spinlock is preferred in multi-core systems when the expected lock holding time is extremely short, because spinning avoids the expensive overhead of context switching the thread into sleep and waking it later."
+      },
+      {
+        "q": "What are the atomic hardware instructions used to implement locks?",
+        "a": "Modern CPUs provide atomic instructions like Test-and-Set and Compare-And-Swap (CAS). These instructions execute uninterrupted at the hardware bus level, allowing software to test and update a memory location in a single clock cycle without race conditions."
+      },
+      {
+        "q": "What is Priority Inversion, and how does Priority Inheritance solve it?",
+        "a": "Priority Inversion occurs when a high-priority task is blocked waiting for a lock held by a low-priority task, and a medium-priority task preempts the low-priority task, indirectly delaying the high-priority task indefinitely. Priority Inheritance solves this by temporarily promoting the priority of the low-priority lock holder to match that of the highest-priority waiting task until the lock is released."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the difference between a Mutex and a Binary Semaphore?",
         "a": "A Mutex has ownership: the thread that locks the mutex must be the exact same thread that unlocks it. A Semaphore has no concept of ownership: any thread can invoke signal() to increment the count, making semaphores suitable for signaling events between threads (e.g., producer signaling consumer) whereas mutexes are designed strictly for mutual exclusion."
@@ -316,6 +385,7 @@
     "subject": "Operating Systems",
     "topic": "Classical Synchronization Problems (Producer-Consumer, Dining Philosophers, Readers-Writers)",
     "lesson": "Classical synchronization problems serve as universal test cases for evaluating concurrency paradigms.\n\n1. Producer-Consumer Problem (Bounded Buffer):\nProducers generate items and append to a fixed-size buffer (size N); Consumers remove items. Three synchronization primitives are needed:\n- `mutex = 1`: Enforces mutual exclusion on buffer insert/delete.\n- `empty = N`: Counting semaphore tracking available empty slots. Producer calls `wait(empty)`.\n- `full = 0`: Counting semaphore tracking populated slots. Consumer calls `wait(full)`.\n\n2. Readers-Writers Problem:\nMultiple readers can concurrently read data without conflict, but a writer requires exclusive access. First Readers-Writers variation prioritizes readers, risking writer starvation; Second variation prioritizes writers to ensure write updates are not starved by a continuous stream of readers.\n\n3. Dining Philosophers Problem:\nFive philosophers sit around a circular table with 5 chopsticks; each alternates between thinking and eating. To eat, a philosopher requires both left and right chopsticks. If every philosopher picks up their left chopstick simultaneously, a circular wait occurs, resulting in total Deadlock. Solutions include: asymmetric pickup (odd philosophers pick left first, even pick right first), limiting table capacity to 4, or using an atomic monitor condition.",
+    "lecture": "Classical synchronization problems serve as universal test cases for evaluating concurrency paradigms.\n\n1. Producer-Consumer Problem (Bounded Buffer):\nProducers generate items and append to a fixed-size buffer (size N); Consumers remove items. Three synchronization primitives are needed:\n- `mutex = 1`: Enforces mutual exclusion on buffer insert/delete.\n- `empty = N`: Counting semaphore tracking available empty slots. Producer calls `wait(empty)`.\n- `full = 0`: Counting semaphore tracking populated slots. Consumer calls `wait(full)`.\n\n2. Readers-Writers Problem:\nMultiple readers can concurrently read data without conflict, but a writer requires exclusive access. First Readers-Writers variation prioritizes readers, risking writer starvation; Second variation prioritizes writers to ensure write updates are not starved by a continuous stream of readers.\n\n3. Dining Philosophers Problem:\nFive philosophers sit around a circular table with 5 chopsticks; each alternates between thinking and eating. To eat, a philosopher requires both left and right chopsticks. If every philosopher picks up their left chopstick simultaneously, a circular wait occurs, resulting in total Deadlock. Solutions include: asymmetric pickup (odd philosophers pick left first, even pick right first), limiting table capacity to 4, or using an atomic monitor condition.",
     "definitions": [
       {
         "term": "Bounded Buffer",
@@ -331,6 +401,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "How does the Producer-Consumer problem avoid race conditions and deadlocks using semaphores?",
+        "a": "It uses three semaphores: a binary semaphore 'mutex' (1) to protect buffer modifications, a counting semaphore 'empty' (initialized to buffer capacity N), and a counting semaphore 'full' (initialized to 0). The producer does wait(empty), wait(mutex), writes, signal(mutex), signal(full). The consumer does wait(full), wait(mutex), reads, signal(mutex), signal(empty). Swapping wait(empty) and wait(mutex) would cause a deadlock if the buffer is full."
+      },
+      {
+        "q": "Why does the naive Dining Philosophers implementation deadlock, and how is it solved?",
+        "a": "Deadlock occurs because if all 5 philosophers get hungry at the same moment and pick up their left chopstick, all chopsticks are taken, and every philosopher blocks waiting for the right chopstick (Circular Wait). Solutions include: 1) Asymmetric strategy: odd-numbered philosophers pick left then right, even pick right then left; 2) Allow at most 4 philosophers to sit at the table simultaneously; 3) Pick both chopsticks atomically inside a critical section."
+      },
+      {
+        "q": "Explain the difference between Reader-Preference and Writer-Preference in the Readers-Writers problem.",
+        "a": "In Reader-Preference, if at least one reader is actively reading, incoming readers are immediately granted access, which can starve waiting writers indefinitely. In Writer-Preference, once a writer signals its intention to write, no new readers are allowed to start reading; existing readers finish, and the writer acquires the lock, preventing writer starvation."
+      },
+      {
+        "q": "What is the consequence of reversing wait(empty) and wait(mutex) in Producer-Consumer?",
+        "a": "If the producer executes wait(mutex) first when the buffer is full (empty = 0), it locks the mutex and then blocks on wait(empty). The consumer needs to acquire the mutex to consume an item and signal empty, but cannot do so because the producer holds the mutex. Both threads block forever in a deadlock."
+      },
+      {
+        "q": "How can Java or Python Monitors simplify synchronization compared to semaphores?",
+        "a": "Monitors encapsulate shared state, locks, and condition variables within an object class. Only one thread can execute an object's synchronized method at a time. Programmers do not need to manually pair wait() and signal() across multiple semaphores, dramatically reducing human locking bugs like forgotten unlocks or out-of-order acquisitions."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "How does the Producer-Consumer problem avoid race conditions and deadlocks using semaphores?",
         "a": "It uses three semaphores: a binary semaphore 'mutex' (1) to protect buffer modifications, a counting semaphore 'empty' (initialized to buffer capacity N), and a counting semaphore 'full' (initialized to 0). The producer does wait(empty), wait(mutex), writes, signal(mutex), signal(full). The consumer does wait(full), wait(mutex), reads, signal(mutex), signal(empty). Swapping wait(empty) and wait(mutex) would cause a deadlock if the buffer is full."
@@ -420,6 +512,7 @@
     "subject": "Operating Systems",
     "topic": "Deadlocks: 4 Coffman Conditions, Resource Allocation Graphs & Banker's Algorithm",
     "lesson": "A Deadlock is a state in which a set of concurrent processes are blocked because each process holds resources and waits for other resources held by other processes in the same set.\n\nThe 4 Coffman Conditions (All must hold simultaneously for a deadlock to occur):\n1. Mutual Exclusion: At least one resource must be held in a non-shareable mode.\n2. Hold and Wait: A process must be holding at least one resource and waiting to acquire additional resources held by others.\n3. No Preemption: Resources cannot be forcibly confiscated from a process; they can only be released voluntarily.\n4. Circular Wait: A closed chain of processes exists {P0, P1, ..., Pn} such that P0 waits for a resource held by P1, P1 waits for P2, and Pn waits for P0.\n\nHandling Strategies:\n- Deadlock Prevention: Invalidate at least one Coffman condition (e.g., impose global linear resource ordering to eliminate Circular Wait).\n- Deadlock Avoidance: System evaluates dynamic state before granting allocations to ensure the system remains in a 'Safe State'. The Banker's Algorithm uses vectors (Available, Max, Allocation, Need = Max - Allocation) to test whether there exists a safe sequence where all processes can finish.\n- Deadlock Detection & Recovery: Allow deadlocks to occur, run detection algorithms (wait-for graphs), and recover via process termination or resource preemption.\n- Ostrich Algorithm: Ignore the problem entirely (used by most general-purpose OS kernels due to the high cost of continuous prevention).",
+    "lecture": "A Deadlock is a state in which a set of concurrent processes are blocked because each process holds resources and waits for other resources held by other processes in the same set.\n\nThe 4 Coffman Conditions (All must hold simultaneously for a deadlock to occur):\n1. Mutual Exclusion: At least one resource must be held in a non-shareable mode.\n2. Hold and Wait: A process must be holding at least one resource and waiting to acquire additional resources held by others.\n3. No Preemption: Resources cannot be forcibly confiscated from a process; they can only be released voluntarily.\n4. Circular Wait: A closed chain of processes exists {P0, P1, ..., Pn} such that P0 waits for a resource held by P1, P1 waits for P2, and Pn waits for P0.\n\nHandling Strategies:\n- Deadlock Prevention: Invalidate at least one Coffman condition (e.g., impose global linear resource ordering to eliminate Circular Wait).\n- Deadlock Avoidance: System evaluates dynamic state before granting allocations to ensure the system remains in a 'Safe State'. The Banker's Algorithm uses vectors (Available, Max, Allocation, Need = Max - Allocation) to test whether there exists a safe sequence where all processes can finish.\n- Deadlock Detection & Recovery: Allow deadlocks to occur, run detection algorithms (wait-for graphs), and recover via process termination or resource preemption.\n- Ostrich Algorithm: Ignore the problem entirely (used by most general-purpose OS kernels due to the high cost of continuous prevention).",
     "definitions": [
       {
         "term": "Safe State",
@@ -435,6 +528,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What are the four necessary and sufficient conditions for a deadlock to occur?",
+        "a": "The Coffman conditions: 1. Mutual Exclusion (resources cannot be shared), 2. Hold and Wait (processes retain allocated resources while requesting new ones), 3. No Preemption (resources cannot be forcibly revoked), and 4. Circular Wait (a circular chain of processes each waiting for a resource held by the next)."
+      },
+      {
+        "q": "How does the Banker's Algorithm determine if a state is safe?",
+        "a": "It calculates Need = Max - Allocation for each process. It simulates execution using Work = Available vector. It finds a process Pi whose Need <= Work. If found, it assumes Pi completes, returns its resources (Work = Work + Allocation_i), marks Pi finished, and repeats. If all processes can be marked finished, a 'safe sequence' exists and the state is safe; otherwise, it is unsafe."
+      },
+      {
+        "q": "Is an unsafe state always a deadlocked state?",
+        "a": "No. An unsafe state is not necessarily deadlocked; it is simply a state from which the OS cannot guarantee avoiding a deadlock if all processes simultaneously demand their maximum resource limits. If processes do not request their maximum claims, execution may still complete without deadlock."
+      },
+      {
+        "q": "How can Circular Wait be prevented in practice?",
+        "a": "By imposing a strict global total ordering on all resource types (e.g., Lock 1 has ID 10, Lock 2 has ID 20). Processes must request resources strictly in monotonically increasing order of resource IDs. If a process holds Lock 20, it is forbidden from requesting Lock 10, mathematically preventing circular dependency cycles."
+      },
+      {
+        "q": "What is the difference between a Deadlock and a Livelock?",
+        "a": "In a deadlock, processes are in a blocked (sleeping) state, waiting for events that will never occur, consuming zero CPU cycles. In a livelock, processes actively change their internal states in response to each other (e.g., repeatedly yielding and retrying a lock), remaining busy and consuming 100% CPU, but making zero forward progress."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What are the four necessary and sufficient conditions for a deadlock to occur?",
         "a": "The Coffman conditions: 1. Mutual Exclusion (resources cannot be shared), 2. Hold and Wait (processes retain allocated resources while requesting new ones), 3. No Preemption (resources cannot be forcibly revoked), and 4. Circular Wait (a circular chain of processes each waiting for a resource held by the next)."
@@ -524,6 +639,7 @@
     "subject": "Operating Systems",
     "topic": "Memory Management: Contiguous Allocation, Paging, Segmentation & TLB",
     "lesson": "Memory management bridges logical process address space to physical hardware RAM.\n\nContiguous Allocation & Fragmentation:\n- Internal Fragmentation: Allocated memory block is larger than requested memory; unused memory inside the partition is wasted.\n- External Fragmentation: Total free memory space exists to satisfy a request, but it is split into non-contiguous fragments. Resolved via Compaction (costly memory copying) or Non-contiguous Paging.\n\nPaging Architecture:\nPhysical memory is broken into fixed-size blocks called Frames. Logical address space is broken into blocks of identical size called Pages (commonly 4KB). The CPU generates logical addresses split into: Page Number (p) and Page Offset (d).\nThe Page Table maps page number p to frame number f. Physical address = (f * page_size) + d. Paging completely eliminates external fragmentation, but introduces slight internal fragmentation on the final page of a process.\n\nTranslation Lookaside Buffer (TLB):\nAccessing a page table in RAM requires two memory accesses per data lookup (one for page table entry, one for physical data). The TLB is an ultra-fast hardware associative associative cache inside the MMU (Memory Management Unit). If page p is found in TLB (TLB Hit), frame f is retrieved in ~1 nanosecond. Effective Memory Access Time (EMAT) = Hit_Rate * (TLB_time + RAM_time) + (1 - Hit_Rate) * (TLB_time + 2 * RAM_time).\n\nSegmentation:\nDivides memory into variable-sized logical segments reflecting programmer view (Code, Stack, Heap, Functions). Each entry in the Segment Table contains Base (physical starting address) and Limit (segment length), checking against boundary violations.",
+    "lecture": "Memory management bridges logical process address space to physical hardware RAM.\n\nContiguous Allocation & Fragmentation:\n- Internal Fragmentation: Allocated memory block is larger than requested memory; unused memory inside the partition is wasted.\n- External Fragmentation: Total free memory space exists to satisfy a request, but it is split into non-contiguous fragments. Resolved via Compaction (costly memory copying) or Non-contiguous Paging.\n\nPaging Architecture:\nPhysical memory is broken into fixed-size blocks called Frames. Logical address space is broken into blocks of identical size called Pages (commonly 4KB). The CPU generates logical addresses split into: Page Number (p) and Page Offset (d).\nThe Page Table maps page number p to frame number f. Physical address = (f * page_size) + d. Paging completely eliminates external fragmentation, but introduces slight internal fragmentation on the final page of a process.\n\nTranslation Lookaside Buffer (TLB):\nAccessing a page table in RAM requires two memory accesses per data lookup (one for page table entry, one for physical data). The TLB is an ultra-fast hardware associative associative cache inside the MMU (Memory Management Unit). If page p is found in TLB (TLB Hit), frame f is retrieved in ~1 nanosecond. Effective Memory Access Time (EMAT) = Hit_Rate * (TLB_time + RAM_time) + (1 - Hit_Rate) * (TLB_time + 2 * RAM_time).\n\nSegmentation:\nDivides memory into variable-sized logical segments reflecting programmer view (Code, Stack, Heap, Functions). Each entry in the Segment Table contains Base (physical starting address) and Limit (segment length), checking against boundary violations.",
     "definitions": [
       {
         "term": "Page vs Frame",
@@ -539,6 +655,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Explain the difference between Internal and External Fragmentation.",
+        "a": "Internal fragmentation occurs when memory is allocated in fixed-size blocks (e.g., 4KB pages) and a process requests less than the block size (e.g., 1KB), leaving 3KB unused inside the block. External fragmentation occurs in variable-partition systems when total free memory is sufficient to satisfy a request, but the space is scattered into small non-contiguous holes across RAM, preventing a large process from fitting."
+      },
+      {
+        "q": "How does Paging eliminate External Fragmentation?",
+        "a": "In paging, any logical page of a process can be placed into any available physical frame anywhere in RAM, regardless of whether the frames are physically contiguous. Because no contiguous chunk of physical memory is required, external fragmentation cannot occur."
+      },
+      {
+        "q": "What is the Translation Lookaside Buffer (TLB), and what is a TLB Miss?",
+        "a": "The TLB is an associative hardware cache inside the Memory Management Unit (MMU) that stores recent page-to-frame translations. On a memory reference, the MMU checks the TLB. If present (TLB hit), physical frame address is obtained immediately. On a TLB miss, the MMU must read the multi-level page table from RAM (adding memory latency), load the translation into the TLB, and then perform the data lookup."
+      },
+      {
+        "q": "Given a 32-bit logical address with 4KB page size, calculate the number of bits for Page Number and Offset.",
+        "a": "Page size = 4KB = 2^12 bytes. Therefore, 12 bits are required for the Page Offset (d). The remaining 32 - 12 = 20 bits specify the Page Number (p). A process can thus have 2^20 pages (1,048,576 pages)."
+      },
+      {
+        "q": "What is Multi-level Paging, and why is it necessary for 64-bit architectures?",
+        "a": "A linear page table for a 32-bit system with 2^20 entries at 4 bytes each takes 4MB of contiguous RAM per process. In 64-bit systems, a single linear page table would require petabytes of storage. Multi-level paging breaks the page table itself into pages, allowing non-contiguous allocation and letting the OS allocate page tables only for virtual address regions that are actually in use, avoiding massive memory waste."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Explain the difference between Internal and External Fragmentation.",
         "a": "Internal fragmentation occurs when memory is allocated in fixed-size blocks (e.g., 4KB pages) and a process requests less than the block size (e.g., 1KB), leaving 3KB unused inside the block. External fragmentation occurs in variable-partition systems when total free memory is sufficient to satisfy a request, but the space is scattered into small non-contiguous holes across RAM, preventing a large process from fitting."
@@ -628,6 +766,7 @@
     "subject": "Operating Systems",
     "topic": "Virtual Memory: Demand Paging, Page Faults, Page Replacement & Thrashing",
     "lesson": "Virtual memory decouples the programmer's logical address space from physical RAM capacity, allowing execution of processes whose total memory footprint exceeds physical RAM.\n\nDemand Paging & Page Fault Handling:\nPages are loaded into RAM only when referenced during execution. Each page table entry includes a Valid/Invalid bit (Valid: page is in RAM; Invalid: page is on swap disk or unallocated). When the CPU references an invalid page, a hardware trap called a Page Fault occurs:\n1. Trap to kernel mode.\n2. Check if address is valid in process virtual memory.\n3. Find a free frame in physical RAM.\n4. Issue disk I/O to read the missing page from swap storage into the frame.\n5. Update page table entry (valid bit = 1, frame number = f).\n6. Restart the interrupted machine instruction.\n\nPage Replacement Algorithms:\n- FIFO (First-In, First-Out): Replaces oldest page. Suffers from Belady's Anomaly: allocating MORE physical frames can paradoxically increase the number of page faults.\n- Optimal Page Replacement (OPT/MIN): Replaces the page that will not be used for the longest period in the future. Unimplementable in practice; used as a theoretical benchmark.\n- LRU (Least Recently Used): Replaces the page that has not been referenced for the longest time. Stack algorithm (immune to Belady's Anomaly), implemented via timestamp counters or reference bits.\n\nThrashing:\nWhen physical memory is overcommitted and processes lack sufficient frames to hold their 'Working Set', page fault frequency spikes exponentially. The CPU spends virtually all time swapping pages in/out of disk rather than executing instructions, causing CPU utilization to collapse to near zero. Resolved using the Working Set Model or local page replacement.",
+    "lecture": "Virtual memory decouples the programmer's logical address space from physical RAM capacity, allowing execution of processes whose total memory footprint exceeds physical RAM.\n\nDemand Paging & Page Fault Handling:\nPages are loaded into RAM only when referenced during execution. Each page table entry includes a Valid/Invalid bit (Valid: page is in RAM; Invalid: page is on swap disk or unallocated). When the CPU references an invalid page, a hardware trap called a Page Fault occurs:\n1. Trap to kernel mode.\n2. Check if address is valid in process virtual memory.\n3. Find a free frame in physical RAM.\n4. Issue disk I/O to read the missing page from swap storage into the frame.\n5. Update page table entry (valid bit = 1, frame number = f).\n6. Restart the interrupted machine instruction.\n\nPage Replacement Algorithms:\n- FIFO (First-In, First-Out): Replaces oldest page. Suffers from Belady's Anomaly: allocating MORE physical frames can paradoxically increase the number of page faults.\n- Optimal Page Replacement (OPT/MIN): Replaces the page that will not be used for the longest period in the future. Unimplementable in practice; used as a theoretical benchmark.\n- LRU (Least Recently Used): Replaces the page that has not been referenced for the longest time. Stack algorithm (immune to Belady's Anomaly), implemented via timestamp counters or reference bits.\n\nThrashing:\nWhen physical memory is overcommitted and processes lack sufficient frames to hold their 'Working Set', page fault frequency spikes exponentially. The CPU spends virtually all time swapping pages in/out of disk rather than executing instructions, causing CPU utilization to collapse to near zero. Resolved using the Working Set Model or local page replacement.",
     "definitions": [
       {
         "term": "Page Fault",
@@ -643,6 +782,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Walk through the sequence of events that occurs during a Page Fault.",
+        "a": "1. CPU attempts to access virtual address whose page table entry has valid bit = 0. 2. Hardware triggers a page fault trap to OS kernel. 3. OS checks process memory map: if illegal access, terminate (segmentation fault). 4. If legal, OS finds a free physical frame (or evicts a victim page using LRU). 5. Schedules disk I/O to read page from swap space into selected frame. 6. While disk transfers, CPU context-switches to another ready process. 7. On I/O completion interrupt, OS updates page table with frame number and valid bit = 1. 8. Interrupted instruction is restarted."
+      },
+      {
+        "q": "What is Belady's Anomaly, and which page replacement algorithms are susceptible to it?",
+        "a": "Belady's Anomaly is the counter-intuitive phenomenon where increasing the number of physical page frames results in an increased number of page faults for a given reference string. It occurs in algorithms that do not satisfy the 'inclusion property' (known as Stack Algorithms), most notably FIFO. Stack algorithms like LRU and Optimal are provably immune to Belady's Anomaly."
+      },
+      {
+        "q": "What is Thrashing, what causes it, and how can the OS eliminate it?",
+        "a": "Thrashing occurs when the total working sets of all running processes exceed physical RAM capacity. The system spends nearly 100% of time handling page faults and disk I/O, causing CPU utilization to drop. The OS scheduler, seeing low CPU utilization, mistakenly admits more processes, worsening the thrashing. The OS eliminates thrashing by: 1) Suspending (swapping out) one or more active processes to free frames, 2) Applying the Working Set Model to ensure a process is allocated its working set before execution."
+      },
+      {
+        "q": "How does the Dirty Bit (Modify Bit) optimize page replacement?",
+        "a": "Each page table entry includes a Dirty Bit, set to 1 by hardware whenever a byte in that page is written. When a victim page is selected for replacement: if dirty bit = 0, the page was never modified since being loaded from disk, so it can be discarded immediately without writing to disk. If dirty bit = 1, it must be written back to swap disk, cutting page replacement I/O overhead in half for read-only pages."
+      },
+      {
+        "q": "Explain the Working Set Model of a process.",
+        "a": "Introduced by Peter Denning, a process's Working Set W(t, delta) is the set of pages referenced by the process during the most recent time window delta. If total working set demand of all active processes exceeds physical frames, thrashing begins. The OS tracks working sets and temporarily suspends processes whose working set cannot fit in RAM."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Walk through the sequence of events that occurs during a Page Fault.",
         "a": "1. CPU attempts to access virtual address whose page table entry has valid bit = 0. 2. Hardware triggers a page fault trap to OS kernel. 3. OS checks process memory map: if illegal access, terminate (segmentation fault). 4. If legal, OS finds a free physical frame (or evicts a victim page using LRU). 5. Schedules disk I/O to read page from swap space into selected frame. 6. While disk transfers, CPU context-switches to another ready process. 7. On I/O completion interrupt, OS updates page table with frame number and valid bit = 1. 8. Interrupted instruction is restarted."
@@ -732,6 +893,7 @@
     "subject": "DBMS",
     "topic": "DBMS Architecture, 3-Tier Schema, Data Independence & Relational Foundations",
     "lesson": "A Database Management System (DBMS) is software designed to store, manage, query, and enforce integrity over structured data.\n\nThe ANSI-SPARC 3-Level Architecture:\n1. External Level (View Level): Describes user-facing views tailored to specific applications or roles (e.g., Student view vs HOD view in CSMS). Hides non-relevant data.\n2. Conceptual Level (Logical Level): Describes WHAT data is stored and relationships between entities across the entire database (tables, columns, constraints, foreign keys). Managed by DBA.\n3. Internal Level (Physical Level): Describes HOW data is physically organized on disk storage (B+ trees, byte offsets, block clustering, index files, compression).\n\nData Independence:\n- Logical Data Independence: The ability to modify conceptual schema (e.g., adding an address column or splitting tables) without modifying external views or application code.\n- Physical Data Independence: The ability to alter physical storage structures (e.g., rebuilding B+ trees, migrating to SSDs, changing hash partitions) without altering the conceptual schema.\n\nRelational Model Foundations (Codd's Rules):\nData is structured into Relations (tables), Tuples (rows), and Attributes (columns). Key constraints enforce mathematical validity: Domain Constraint (values must belong to defined data type), Entity Integrity (Primary Key cannot be NULL), and Referential Integrity (Foreign Key must either match an existing primary key in the referenced relation or be NULL).",
+    "lecture": "A Database Management System (DBMS) is software designed to store, manage, query, and enforce integrity over structured data.\n\nThe ANSI-SPARC 3-Level Architecture:\n1. External Level (View Level): Describes user-facing views tailored to specific applications or roles (e.g., Student view vs HOD view in CSMS). Hides non-relevant data.\n2. Conceptual Level (Logical Level): Describes WHAT data is stored and relationships between entities across the entire database (tables, columns, constraints, foreign keys). Managed by DBA.\n3. Internal Level (Physical Level): Describes HOW data is physically organized on disk storage (B+ trees, byte offsets, block clustering, index files, compression).\n\nData Independence:\n- Logical Data Independence: The ability to modify conceptual schema (e.g., adding an address column or splitting tables) without modifying external views or application code.\n- Physical Data Independence: The ability to alter physical storage structures (e.g., rebuilding B+ trees, migrating to SSDs, changing hash partitions) without altering the conceptual schema.\n\nRelational Model Foundations (Codd's Rules):\nData is structured into Relations (tables), Tuples (rows), and Attributes (columns). Key constraints enforce mathematical validity: Domain Constraint (values must belong to defined data type), Entity Integrity (Primary Key cannot be NULL), and Referential Integrity (Foreign Key must either match an existing primary key in the referenced relation or be NULL).",
     "definitions": [
       {
         "term": "Physical Data Independence",
@@ -747,6 +909,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the difference between Logical and Physical Data Independence?",
+        "a": "Logical Data Independence allows changes to the conceptual schema (adding columns, creating views, modifying entities) without breaking existing application code or user views. Physical Data Independence allows changing physical storage layouts (file organizations, disk paths, B-tree indexes) without altering the logical schema or queries. Logical independence is harder to achieve because applications are tightly coupled to data attributes."
+      },
+      {
+        "q": "What are Codd's foundational constraints in the relational model?",
+        "a": "1. Domain Constraint: Every column value must be an atomic value from that domain. 2. Entity Integrity Constraint: Every table must have a Primary Key whose attributes cannot be NULL. 3. Referential Integrity Constraint: A Foreign Key in a child table must reference a valid, existing Primary Key in the parent table or be explicitly NULL."
+      },
+      {
+        "q": "Why is Primary Key required to be NOT NULL in relational databases?",
+        "a": "A primary key uniquely identifies individual tuples within a relation. If a primary key attribute were permitted to be NULL, the database engine could not distinguish between records or enforce unique entity identity, violating the foundational mathematical set definition of a relation."
+      },
+      {
+        "q": "Explain the difference between DDL, DML, DCL, and TCL in SQL.",
+        "a": "DDL (Data Definition Language: CREATE, ALTER, DROP, TRUNCATE) defines database schemas and structure. DML (Data Manipulation Language: SELECT, INSERT, UPDATE, DELETE) queries and alters data rows. DCL (Data Control Language: GRANT, REVOKE) manages security permissions. TCL (Transaction Control Language: COMMIT, ROLLBACK, SAVEPOINT) manages transaction execution."
+      },
+      {
+        "q": "What is the difference between DROP, TRUNCATE, and DELETE?",
+        "a": "DELETE is a DML command that removes rows one-by-one, logs each deletion in transaction logs, activates triggers, and can be rolled back. TRUNCATE is a DDL command that deallocates entire data pages, removing all rows ultra-fast with minimal logging; it cannot be filtered with WHERE and cannot activate delete triggers. DROP is a DDL command that destroys the entire table structure and its data from the database catalog."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the difference between Logical and Physical Data Independence?",
         "a": "Logical Data Independence allows changes to the conceptual schema (adding columns, creating views, modifying entities) without breaking existing application code or user views. Physical Data Independence allows changing physical storage layouts (file organizations, disk paths, B-tree indexes) without altering the logical schema or queries. Logical independence is harder to achieve because applications are tightly coupled to data attributes."
@@ -836,6 +1020,7 @@
     "subject": "DBMS",
     "topic": "Relational Algebra, SQL Joins & Subquery Optimization",
     "lesson": "Relational Algebra is the formal procedural query language underlying SQL query compilation and optimization.\n\nFundamental Operators:\n1. Selection (sigma): Filters tuples satisfying a predicate: sigma_{dept='CS'}(Students).\n2. Projection (pi): Selects specific columns and eliminates duplicates: pi_{name, roll}(Students).\n3. Cartesian Product (X): Combines every tuple of R with every tuple of S.\n4. Set Operations: Union (U), Set Difference (-), Intersection (cap) (require Union Compatibility).\n5. Natural Join (bowtie): Equijoin on all common attribute names followed by projection eliminating duplicate columns.\n\nSQL Joins Deep-Dive:\n- INNER JOIN: Returns rows with matching values in both tables.\n- LEFT OUTER JOIN: Returns all rows from left table, with matched rows from right table (or NULL if no match).\n- RIGHT OUTER JOIN: Returns all rows from right table, with matched left rows or NULL.\n- FULL OUTER JOIN: Combines LEFT and RIGHT join results; returns all rows from both tables, filling NULLs on mismatches.\n- CROSS JOIN: Cartesian product of both tables (size = N * M).\n- SELF JOIN: Joining a table to itself using aliases (common for hierarchical manager-employee relationships).\n\nSubqueries vs Joins:\nCorrelated Subqueries execute once for every candidate row evaluated by the outer query, resulting in O(N*M) execution. Query optimizers transform correlated subqueries into equivalent Hash Joins or Merge Joins to run in O(N + M) time.",
+    "lecture": "Relational Algebra is the formal procedural query language underlying SQL query compilation and optimization.\n\nFundamental Operators:\n1. Selection (sigma): Filters tuples satisfying a predicate: sigma_{dept='CS'}(Students).\n2. Projection (pi): Selects specific columns and eliminates duplicates: pi_{name, roll}(Students).\n3. Cartesian Product (X): Combines every tuple of R with every tuple of S.\n4. Set Operations: Union (U), Set Difference (-), Intersection (cap) (require Union Compatibility).\n5. Natural Join (bowtie): Equijoin on all common attribute names followed by projection eliminating duplicate columns.\n\nSQL Joins Deep-Dive:\n- INNER JOIN: Returns rows with matching values in both tables.\n- LEFT OUTER JOIN: Returns all rows from left table, with matched rows from right table (or NULL if no match).\n- RIGHT OUTER JOIN: Returns all rows from right table, with matched left rows or NULL.\n- FULL OUTER JOIN: Combines LEFT and RIGHT join results; returns all rows from both tables, filling NULLs on mismatches.\n- CROSS JOIN: Cartesian product of both tables (size = N * M).\n- SELF JOIN: Joining a table to itself using aliases (common for hierarchical manager-employee relationships).\n\nSubqueries vs Joins:\nCorrelated Subqueries execute once for every candidate row evaluated by the outer query, resulting in O(N*M) execution. Query optimizers transform correlated subqueries into equivalent Hash Joins or Merge Joins to run in O(N + M) time.",
     "definitions": [
       {
         "term": "Cartesian Product",
@@ -851,6 +1036,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the difference between WHERE and HAVING clauses in SQL?",
+        "a": "WHERE filters individual rows before any grouping occurs and cannot evaluate aggregate functions (e.g., WHERE count(*) > 5 is illegal). HAVING filters aggregated groups after the GROUP BY clause has executed and is specifically designed to evaluate aggregate conditions (e.g., HAVING sum(salary) > 50000)."
+      },
+      {
+        "q": "Explain the difference between INNER JOIN, LEFT JOIN, and FULL OUTER JOIN.",
+        "a": "INNER JOIN returns only rows where the join condition evaluates to TRUE in both tables. LEFT JOIN returns all rows from the left table; matching rows from the right table are populated, and unmatched right columns return NULL. FULL OUTER JOIN returns all rows from both tables, populating columns with NULL whenever an opposite record does not exist."
+      },
+      {
+        "q": "Why are correlated subqueries generally slower than JOINs, and how do database query engines optimize them?",
+        "a": "A correlated subquery references values from the outer query, forcing the engine to execute the inner query once for every single row in the outer table (nested loop, O(N * M)). Modern query planners optimize these by rewriting correlated subqueries into INNER or LEFT JOINs, allowing the query engine to use fast O(N + M) Hash Join or Merge Join algorithms."
+      },
+      {
+        "q": "Write a query to find the N-th highest salary from an Employee table without using LIMIT/TOP.",
+        "a": "SELECT DISTINCT salary FROM Employee E1 WHERE (N - 1) = (SELECT COUNT(DISTINCT salary) FROM Employee E2 WHERE E2.salary > E1.salary). Alternatively, using modern window functions: WITH RankedSalaries AS (SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) as rank_pos FROM Employee) SELECT salary FROM RankedSalaries WHERE rank_pos = N."
+      },
+      {
+        "q": "What is the difference between RANK(), DENSE_RANK(), and ROW_NUMBER() in SQL?",
+        "a": "ROW_NUMBER() assigns a unique sequential integer to every row regardless of ties (1, 2, 3, 4). RANK() assigns the same rank to identical values but leaves gaps in rank sequence after ties (1, 2, 2, 4). DENSE_RANK() assigns the same rank to ties without skipping subsequent ranks (1, 2, 2, 3)."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the difference between WHERE and HAVING clauses in SQL?",
         "a": "WHERE filters individual rows before any grouping occurs and cannot evaluate aggregate functions (e.g., WHERE count(*) > 5 is illegal). HAVING filters aggregated groups after the GROUP BY clause has executed and is specifically designed to evaluate aggregate conditions (e.g., HAVING sum(salary) > 50000)."
@@ -940,6 +1147,7 @@
     "subject": "DBMS",
     "topic": "Database Normalization: 1NF, 2NF, 3NF, BCNF & Functional Dependencies",
     "lesson": "Normalization is the systematic process of decomposing database relations to minimize data redundancy and eliminate Update, Insertion, and Deletion Anomalies while preserving Functional Dependencies and ensuring Lossless Join.\n\nFunctional Dependency (FD: X -> Y):\nIf two tuples agree on attribute set X, they must also agree on attribute set Y. X is the Determinant.\n\nNormal Forms Progression:\n1. First Normal Form (1NF): Every attribute value must be atomic (indivisible single values; no repeating groups, arrays, or comma-separated lists).\n2. Second Normal Form (2NF): Must be in 1NF AND have NO Partial Functional Dependency. Every non-prime attribute must be fully functionally dependent on the ENTIRE candidate key. (Applies only when candidate key is composite).\n3. Third Normal Form (3NF): Must be in 2NF AND have NO Transitive Dependency. For every non-trivial FD X -> Y, either X is a Superkey OR Y is a Prime Attribute (member of a candidate key).\n4. Boyce-Codd Normal Form (BCNF): A stricter version of 3NF. For every non-trivial FD X -> Y, X MUST be a Superkey. BCNF completely eliminates all functional redundancy, but decomposing into BCNF may sometimes sacrifice Dependency Preservation.\n\nArmstrong's Axioms:\nReflexivity (if Y subset X, X -> Y), Augmentation (if X -> Y, XZ -> YZ), Transitivity (if X -> Y and Y -> Z, X -> Z).",
+    "lecture": "Normalization is the systematic process of decomposing database relations to minimize data redundancy and eliminate Update, Insertion, and Deletion Anomalies while preserving Functional Dependencies and ensuring Lossless Join.\n\nFunctional Dependency (FD: X -> Y):\nIf two tuples agree on attribute set X, they must also agree on attribute set Y. X is the Determinant.\n\nNormal Forms Progression:\n1. First Normal Form (1NF): Every attribute value must be atomic (indivisible single values; no repeating groups, arrays, or comma-separated lists).\n2. Second Normal Form (2NF): Must be in 1NF AND have NO Partial Functional Dependency. Every non-prime attribute must be fully functionally dependent on the ENTIRE candidate key. (Applies only when candidate key is composite).\n3. Third Normal Form (3NF): Must be in 2NF AND have NO Transitive Dependency. For every non-trivial FD X -> Y, either X is a Superkey OR Y is a Prime Attribute (member of a candidate key).\n4. Boyce-Codd Normal Form (BCNF): A stricter version of 3NF. For every non-trivial FD X -> Y, X MUST be a Superkey. BCNF completely eliminates all functional redundancy, but decomposing into BCNF may sometimes sacrifice Dependency Preservation.\n\nArmstrong's Axioms:\nReflexivity (if Y subset X, X -> Y), Augmentation (if X -> Y, XZ -> YZ), Transitivity (if X -> Y and Y -> Z, X -> Z).",
     "definitions": [
       {
         "term": "Functional Dependency",
@@ -955,6 +1163,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What are Insertion, Deletion, and Modification anomalies in an unnormalized database?",
+        "a": "Insertion Anomaly: Inability to record certain information without inserting extraneous dummy data (e.g., cannot register a new department without enrolling a student). Deletion Anomaly: Deleting one piece of data inadvertently deletes unrelated vital data (e.g., deleting the last student enrolled in a course deletes the course catalog record). Modification Anomaly: Inconsistent data when updating redundant instances in multiple rows (e.g., updating a professor's phone number in one row but missing other student rows)."
+      },
+      {
+        "q": "What is the exact distinction between 3NF and BCNF?",
+        "a": "For every non-trivial functional dependency X -> Y: In 3NF, the rule is satisfied if X is a Superkey OR Y is a prime attribute. In BCNF, the rule strictly requires X to be a Superkey with NO exceptions. BCNF is strictly stronger than 3NF. Any relation in BCNF is guaranteed to be in 3NF, but a 3NF relation with overlapping candidate keys may violate BCNF."
+      },
+      {
+        "q": "Can a table with a single-attribute primary key violate 2NF?",
+        "a": "No. 2NF states that no non-prime attribute can be dependent on a proper subset of a candidate key (no partial dependency). If the candidate key consists of a single attribute, it has no proper subsets other than empty set, making partial dependency mathematically impossible. A 1NF table with a single-column primary key is automatically in 2NF."
+      },
+      {
+        "q": "What is a Lossless Join Decomposition, and why is it critical?",
+        "a": "A decomposition of relation R into R1 and R2 is lossless if natural join R1 bowtie R2 recovers exactly relation R without generating false 'spurious tuples'. Mathematically, the common attribute must be a superkey in at least one of the decomposed relations: (R1 cap R2 -> R1) OR (R1 cap R2 -> R2)."
+      },
+      {
+        "q": "What is Denormalization, and when is it recommended in production systems?",
+        "a": "Denormalization is the deliberate re-introduction of redundancy into normalized relations (e.g., storing customer_name directly inside the orders table). It is used in read-heavy analytics, data warehouses, and microservices to avoid expensive multi-table JOIN operations, trading write performance and storage space for ultra-fast query execution speeds."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What are Insertion, Deletion, and Modification anomalies in an unnormalized database?",
         "a": "Insertion Anomaly: Inability to record certain information without inserting extraneous dummy data (e.g., cannot register a new department without enrolling a student). Deletion Anomaly: Deleting one piece of data inadvertently deletes unrelated vital data (e.g., deleting the last student enrolled in a course deletes the course catalog record). Modification Anomaly: Inconsistent data when updating redundant instances in multiple rows (e.g., updating a professor's phone number in one row but missing other student rows)."
@@ -1044,6 +1274,7 @@
     "subject": "DBMS",
     "topic": "Transactions & ACID Properties (Atomicity, Consistency, Isolation, Durability)",
     "lesson": "A Database Transaction is a logical unit of work comprising one or more database operations (reads, writes) that must execute reliably as an indivisible whole.\n\nThe ACID Properties:\n1. Atomicity ('All or Nothing'): Either all operations of the transaction complete successfully and are committed, or the entire transaction is aborted and rolled back to its initial state. Enforced by the DBMS Recovery Manager using Write-Ahead Logging (WAL).\n2. Consistency: A transaction transforms the database from one valid consistent state to another, preserving all declared schema constraints (primary keys, foreign keys, CHECK constraints, trigger invariants).\n3. Isolation: The execution of concurrent transactions must occur without mutual interference. The intermediate uncommitted state of a transaction must remain invisible to other concurrent transactions. Enforced by Concurrency Control Manager.\n4. Durability: Once a transaction commits, its modifications are permanently recorded in non-volatile storage and will survive subsequent power failures or system crashes. Enforced via WAL flush to disk.\n\nTransaction State Diagram:\nActive -> Partially Committed (after final statement executes) -> Committed (after log flushed to disk).\nActive -> Failed (on error/abort) -> Aborted (after rollback cleans up uncommitted changes).",
+    "lecture": "A Database Transaction is a logical unit of work comprising one or more database operations (reads, writes) that must execute reliably as an indivisible whole.\n\nThe ACID Properties:\n1. Atomicity ('All or Nothing'): Either all operations of the transaction complete successfully and are committed, or the entire transaction is aborted and rolled back to its initial state. Enforced by the DBMS Recovery Manager using Write-Ahead Logging (WAL).\n2. Consistency: A transaction transforms the database from one valid consistent state to another, preserving all declared schema constraints (primary keys, foreign keys, CHECK constraints, trigger invariants).\n3. Isolation: The execution of concurrent transactions must occur without mutual interference. The intermediate uncommitted state of a transaction must remain invisible to other concurrent transactions. Enforced by Concurrency Control Manager.\n4. Durability: Once a transaction commits, its modifications are permanently recorded in non-volatile storage and will survive subsequent power failures or system crashes. Enforced via WAL flush to disk.\n\nTransaction State Diagram:\nActive -> Partially Committed (after final statement executes) -> Committed (after log flushed to disk).\nActive -> Failed (on error/abort) -> Aborted (after rollback cleans up uncommitted changes).",
     "definitions": [
       {
         "term": "Atomicity",
@@ -1059,6 +1290,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "How does a database enforce Atomicity and Durability during a sudden system crash?",
+        "a": "Using Write-Ahead Logging (WAL). Before any data page is modified in RAM or written to disk, an append-only log record describing the change (Undo and Redo logs) is flushed to non-volatile disk. On system restart after a crash, the recovery manager runs the ARIES protocol: Analysis phase identifies dirty pages, Redo phase replays all logged changes to re-establish state (Durability), and Undo phase rolls back all uncommitted transactions (Atomicity)."
+      },
+      {
+        "q": "What is the difference between a Partially Committed state and a Committed state?",
+        "a": "A transaction enters the Partially Committed state immediately after its final SQL statement has executed in memory, but before its commit log records are permanently written to disk. It transitions to the Committed state only after the WAL commit record has been physically flushed to persistent storage."
+      },
+      {
+        "q": "Explain the difference between Compensating Transactions and standard Rollback.",
+        "a": "A standard rollback relies on database undo logs within a single ACID transaction to revert uncommitted memory changes. A Compensating Transaction is used in distributed architectures (e.g., Saga Pattern across microservices) where local transactions have already committed; a subsequent failure triggers dedicated business actions (e.g., refunding a captured credit card) to logically offset prior committed steps."
+      },
+      {
+        "q": "Can Consistency in ACID be guaranteed exclusively by the database engine?",
+        "a": "No. While the DBMS strictly enforces declared schema constraints (unique keys, foreign keys, data types), application-level business consistency (e.g., account balance cannot transfer more than ledger limits) relies heavily on correct application logic written by the software engineer."
+      },
+      {
+        "q": "What is the Checkpoint mechanism in database recovery?",
+        "a": "A Checkpoint periodically flushes all dirty in-memory data buffer pages and log records to persistent disk, and writes a CHECKPOINT record with active transaction IDs to the log. During crash recovery, the DBMS only needs to scan logs back to the most recent checkpoint rather than replaying the entire history of the database."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "How does a database enforce Atomicity and Durability during a sudden system crash?",
         "a": "Using Write-Ahead Logging (WAL). Before any data page is modified in RAM or written to disk, an append-only log record describing the change (Undo and Redo logs) is flushed to non-volatile disk. On system restart after a crash, the recovery manager runs the ARIES protocol: Analysis phase identifies dirty pages, Redo phase replays all logged changes to re-establish state (Durability), and Undo phase rolls back all uncommitted transactions (Atomicity)."
@@ -1148,6 +1401,7 @@
     "subject": "DBMS",
     "topic": "Concurrency Control: Isolation Levels & Read Phenomena",
     "lesson": "Concurrent execution of transactions increases throughput and resource utilization, but uncoordinated access leads to three classic Concurrency Read Phenomena:\n1. Dirty Read: Transaction T1 updates a row without committing; Transaction T2 reads the uncommitted row. If T1 rolls back, T2 has read non-existent data.\n2. Non-Repeatable Read (Fuzzy Read): T1 reads a row; T2 modifies or deletes that row and commits. T1 re-reads the same row and finds different values.\n3. Phantom Read: T1 executes a range query (e.g., SELECT * WHERE age > 20); T2 inserts new matching rows and commits. T1 re-executes the query and discovers new 'phantom' rows.\n\nSQL-92 Standard Isolation Levels:\n- Read Uncommitted: Allows Dirty Reads, Non-Repeatable Reads, Phantom Reads. Highest throughput, lowest consistency.\n- Read Committed: Prevents Dirty Reads. Still permits Non-Repeatable Reads and Phantom Reads. (Default in PostgreSQL & Oracle).\n- Repeatable Read: Prevents Dirty Reads and Non-Repeatable Reads. Still permits Phantom Reads in standard definitions (MySQL InnoDB prevents phantoms via Next-Key Locks).\n- Serializable: Prevents all read phenomena. Concurrent execution produces results identical to serial execution. Lowest throughput.\n\nMulti-Version Concurrency Control (MVCC):\nModern databases (PostgreSQL, MySQL InnoDB) implement isolation via MVCC: Readers never block Writers, and Writers never block Readers. Each update creates a new row version with transaction timestamp (xmin, xmax). Transactions view a consistent historical snapshot.",
+    "lecture": "Concurrent execution of transactions increases throughput and resource utilization, but uncoordinated access leads to three classic Concurrency Read Phenomena:\n1. Dirty Read: Transaction T1 updates a row without committing; Transaction T2 reads the uncommitted row. If T1 rolls back, T2 has read non-existent data.\n2. Non-Repeatable Read (Fuzzy Read): T1 reads a row; T2 modifies or deletes that row and commits. T1 re-reads the same row and finds different values.\n3. Phantom Read: T1 executes a range query (e.g., SELECT * WHERE age > 20); T2 inserts new matching rows and commits. T1 re-executes the query and discovers new 'phantom' rows.\n\nSQL-92 Standard Isolation Levels:\n- Read Uncommitted: Allows Dirty Reads, Non-Repeatable Reads, Phantom Reads. Highest throughput, lowest consistency.\n- Read Committed: Prevents Dirty Reads. Still permits Non-Repeatable Reads and Phantom Reads. (Default in PostgreSQL & Oracle).\n- Repeatable Read: Prevents Dirty Reads and Non-Repeatable Reads. Still permits Phantom Reads in standard definitions (MySQL InnoDB prevents phantoms via Next-Key Locks).\n- Serializable: Prevents all read phenomena. Concurrent execution produces results identical to serial execution. Lowest throughput.\n\nMulti-Version Concurrency Control (MVCC):\nModern databases (PostgreSQL, MySQL InnoDB) implement isolation via MVCC: Readers never block Writers, and Writers never block Readers. Each update creates a new row version with transaction timestamp (xmin, xmax). Transactions view a consistent historical snapshot.",
     "definitions": [
       {
         "term": "Dirty Read",
@@ -1163,6 +1417,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Explain the difference between a Non-Repeatable Read and a Phantom Read.",
+        "a": "A Non-Repeatable Read occurs when a transaction re-reads a specific single row and discovers the data inside that row has changed because another transaction modified or deleted it. A Phantom Read occurs during range queries (e.g., WHERE score > 75) when a transaction re-executes the query and finds new rows that were inserted by another transaction fulfilling the range condition."
+      },
+      {
+        "q": "What is MVCC (Multi-Version Concurrency Control) and why is it preferred over lock-based concurrency?",
+        "a": "MVCC maintains multiple physical versions of each row tagged with creation and deletion transaction IDs (e.g., xmin, xmax in PostgreSQL). When a transaction reads data, it reads the snapshot version visible at its start timestamp. This achieves high concurrency because 'readers never block writers, and writers never block readers', eliminating read lock contention."
+      },
+      {
+        "q": "What is the default isolation level in PostgreSQL vs MySQL InnoDB?",
+        "a": "PostgreSQL defaults to Read Committed. MySQL InnoDB defaults to Repeatable Read (which additionally prevents phantom reads using Next-Key Locking)."
+      },
+      {
+        "q": "How does Snapshot Isolation differ from Strict Serializability?",
+        "a": "In Snapshot Isolation, a transaction reads from a private snapshot of the database taken when the transaction started. It avoids dirty reads, non-repeatable reads, and phantom reads. However, it can permit Write Skew anomalies (two concurrent transactions reading overlapping data, modifying disjoint rows, and violating a global constraint). Strict Serializability prevents write skew."
+      },
+      {
+        "q": "What is Write Skew anomaly, and provide a concrete example?",
+        "a": "Write skew occurs under Snapshot Isolation. Example: A hospital requires at least one doctor on call. Doctors Alice and Bob are both on call. Alice submits a transaction to take leave: her transaction checks the snapshot, sees Bob is on call, and sets her status to inactive. Simultaneously, Bob submits a transaction, checks his snapshot, sees Alice is on call, and sets his status to inactive. Both commit, leaving zero doctors on call."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Explain the difference between a Non-Repeatable Read and a Phantom Read.",
         "a": "A Non-Repeatable Read occurs when a transaction re-reads a specific single row and discovers the data inside that row has changed because another transaction modified or deleted it. A Phantom Read occurs during range queries (e.g., WHERE score > 75) when a transaction re-executes the query and finds new rows that were inserted by another transaction fulfilling the range condition."
@@ -1252,6 +1528,7 @@
     "subject": "DBMS",
     "topic": "Lock-Based Protocols, Two-Phase Locking (2PL) & Serializability",
     "lesson": "To guarantee serializability among concurrent transactions, database systems enforce Lock-Based Concurrency Protocols.\n\nLock Modes:\n- Shared Lock (S-Lock / Read Lock): Multiple transactions can acquire shared locks on the same data item concurrently.\n- Exclusive Lock (X-Lock / Write Lock): Only one transaction can hold an exclusive lock; all other lock requests (S or X) are blocked.\n\nTwo-Phase Locking Protocol (2PL):\n2PL guarantees Conflict Serializability. A transaction must adhere to two distinct, non-overlapping phases:\n1. Growing Phase: The transaction may acquire locks, but cannot release any lock.\n2. Shrinking Phase: The transaction may release locks, but cannot acquire any new locks.\nThe point where the transaction acquires its final lock is the Lock Point.\n\nVariations of 2PL:\n- Strict 2PL: All Exclusive locks must be held until the transaction commits or aborts. Prevents Cascading Aborts (Cascadeless schedules).\n- Rigorous 2PL: ALL locks (both Shared and Exclusive) are held until transaction commits. Guarantees serializability and simplifies recovery.\n\nDeadlocks in 2PL:\n2PL guarantees serializability but does NOT prevent Deadlocks. Handled via Wait-For Graphs (cycle detection) or timestamp schemes (Wait-Die: older waits, younger dies; Wound-Wait: older preempts younger, younger waits).",
+    "lecture": "To guarantee serializability among concurrent transactions, database systems enforce Lock-Based Concurrency Protocols.\n\nLock Modes:\n- Shared Lock (S-Lock / Read Lock): Multiple transactions can acquire shared locks on the same data item concurrently.\n- Exclusive Lock (X-Lock / Write Lock): Only one transaction can hold an exclusive lock; all other lock requests (S or X) are blocked.\n\nTwo-Phase Locking Protocol (2PL):\n2PL guarantees Conflict Serializability. A transaction must adhere to two distinct, non-overlapping phases:\n1. Growing Phase: The transaction may acquire locks, but cannot release any lock.\n2. Shrinking Phase: The transaction may release locks, but cannot acquire any new locks.\nThe point where the transaction acquires its final lock is the Lock Point.\n\nVariations of 2PL:\n- Strict 2PL: All Exclusive locks must be held until the transaction commits or aborts. Prevents Cascading Aborts (Cascadeless schedules).\n- Rigorous 2PL: ALL locks (both Shared and Exclusive) are held until transaction commits. Guarantees serializability and simplifies recovery.\n\nDeadlocks in 2PL:\n2PL guarantees serializability but does NOT prevent Deadlocks. Handled via Wait-For Graphs (cycle detection) or timestamp schemes (Wait-Die: older waits, younger dies; Wound-Wait: older preempts younger, younger waits).",
     "definitions": [
       {
         "term": "Two-Phase Locking (2PL)",
@@ -1267,6 +1544,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Does basic Two-Phase Locking (2PL) prevent deadlocks?",
+        "a": "No. Basic 2PL guarantees Conflict Serializability, but it does NOT prevent deadlocks. Example: T1 holds Lock A and requests Lock B; T2 holds Lock B and requests Lock A. Both transactions are in their growing phase and block indefinitely, forming a deadlock."
+      },
+      {
+        "q": "What is Cascading Rollback (Cascading Abort) and how does Strict 2PL prevent it?",
+        "a": "Cascading Rollback occurs when an uncommitted transaction T1 modifies a row and releases its lock early in its shrinking phase. T2 reads that updated row and proceeds. If T1 subsequently aborts, T2 must also be aborted, triggering a cascade of rollbacks across multiple transactions. Strict 2PL prevents this by holding all exclusive locks until commit/abort, ensuring uncommitted updates are never visible."
+      },
+      {
+        "q": "What is the difference between Wait-Die and Wound-Wait deadlock prevention schemes?",
+        "a": "Both assign unique timestamps to transactions (lower timestamp = older transaction). In Wait-Die (non-preemptive): if older requests resource held by younger, older waits; if younger requests resource held by older, younger dies (aborts and restarts). In Wound-Wait (preemptive): if older requests resource held by younger, older 'wounds' (preempts/aborts) younger; if younger requests resource held by older, younger waits."
+      },
+      {
+        "q": "What defines conflicting operations in transaction schedules?",
+        "a": "Two operations conflict if and only if: 1) They belong to different transactions, 2) They access the exact same data item, and 3) At least one of the two operations is a WRITE operation. Read-Read operations never conflict."
+      },
+      {
+        "q": "How does a Precedence Graph (Serialization Graph) test for Conflict Serializability?",
+        "a": "Create a directed graph with a node for each committed transaction. Draw a directed edge Ti -> Tj if an operation of Ti conflicts with an operation of Tj and Ti executed before Tj. If the precedence graph contains NO cycles, the schedule is Conflict Serializable; if a cycle exists, it is not conflict serializable."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Does basic Two-Phase Locking (2PL) prevent deadlocks?",
         "a": "No. Basic 2PL guarantees Conflict Serializability, but it does NOT prevent deadlocks. Example: T1 holds Lock A and requests Lock B; T2 holds Lock B and requests Lock A. Both transactions are in their growing phase and block indefinitely, forming a deadlock."
@@ -1356,6 +1655,7 @@
     "subject": "DBMS",
     "topic": "Database Indexing: B-Trees, B+ Trees, Clustered vs Non-Clustered Indexes",
     "lesson": "A Database Index is an auxiliary search data structure that optimizes data retrieval without scanning every table page.\n\nB-Tree vs B+ Tree Architecture:\n- B-Tree: Stores keys and actual data record pointers in both internal routing nodes and leaf nodes. Searching for keys stored in top internal nodes can terminate early without reaching leaves.\n- B+ Tree: The universal choice for relational databases (PostgreSQL, MySQL InnoDB, SQLite). Internal nodes store ONLY routing keys and child node pointers (maximizing fan-out and reducing tree depth to 3-4 levels for billions of rows). ALL actual record pointers reside exclusively in the leaf nodes. Furthermore, leaf nodes are linked via a doubly linked list, enabling ultra-fast sequential range scans.\n\nClustered vs Non-Clustered Indexes:\n- Clustered Index: Determines the physical sorting order of rows on disk. A table can have at most ONE clustered index (usually the Primary Key). In MySQL InnoDB, the clustered index table is the data itself (Index-Organized Table).\n- Non-Clustered (Secondary) Index: A separate search structure. Leaf nodes store the indexed key along with a pointer to the physical row (or clustered primary key). Requires a secondary lookup (Bookmark Lookup) to fetch non-indexed columns unless satisfied by a Covering Index.",
+    "lecture": "A Database Index is an auxiliary search data structure that optimizes data retrieval without scanning every table page.\n\nB-Tree vs B+ Tree Architecture:\n- B-Tree: Stores keys and actual data record pointers in both internal routing nodes and leaf nodes. Searching for keys stored in top internal nodes can terminate early without reaching leaves.\n- B+ Tree: The universal choice for relational databases (PostgreSQL, MySQL InnoDB, SQLite). Internal nodes store ONLY routing keys and child node pointers (maximizing fan-out and reducing tree depth to 3-4 levels for billions of rows). ALL actual record pointers reside exclusively in the leaf nodes. Furthermore, leaf nodes are linked via a doubly linked list, enabling ultra-fast sequential range scans.\n\nClustered vs Non-Clustered Indexes:\n- Clustered Index: Determines the physical sorting order of rows on disk. A table can have at most ONE clustered index (usually the Primary Key). In MySQL InnoDB, the clustered index table is the data itself (Index-Organized Table).\n- Non-Clustered (Secondary) Index: A separate search structure. Leaf nodes store the indexed key along with a pointer to the physical row (or clustered primary key). Requires a secondary lookup (Bookmark Lookup) to fetch non-indexed columns unless satisfied by a Covering Index.",
     "definitions": [
       {
         "term": "B+ Tree",
@@ -1371,6 +1671,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Why do relational database engines use B+ Trees instead of B-Trees or Binary Search Trees for indexing?",
+        "a": "1. High Fan-out and Shallow Depth: Because internal nodes store only keys without data pointers, thousands of keys fit in a single 16KB disk page, keeping tree height to 3-4 levels for millions of rows (minimizing disk I/O). 2. Range Queries: In a B+ Tree, all leaf nodes are connected in a doubly linked list; range scans simply traverse leaves sequentially without tree back-tracking. 3. Predictable Latency: Every lookup traverses the exact same number of levels to the leaf."
+      },
+      {
+        "q": "What is the difference between a Clustered and a Non-Clustered index?",
+        "a": "A Clustered Index dictates the actual physical sorting order of table rows on disk; therefore, a table can have only ONE clustered index. In a Non-Clustered Index, data rows are stored independently, and the index contains pointers back to the rows. A table can have multiple non-clustered indexes."
+      },
+      {
+        "q": "What is a Covering Index in SQL optimization?",
+        "a": "A Covering Index includes all columns referenced in the query's SELECT, WHERE, JOIN, and ORDER BY clauses (e.g., using CREATE INDEX idx_emp ON Employee(dept_id, salary)). The database engine can satisfy the query entirely from the index tree without performing a secondary lookup to read the main table data pages, drastically reducing I/O."
+      },
+      {
+        "q": "What is Index Selectivity and how does it affect query optimizer decisions?",
+        "a": "Selectivity is the ratio of distinct values in a column to total row count: Cardinality / Total Rows. High selectivity (e.g., primary key or email, near 1.0) makes indexes extremely effective. Low selectivity (e.g., gender with only 2 distinct values) causes the query optimizer to skip the index and perform a Full Table Scan because scanning non-clustered index pointers for 50% of the rows is slower than a sequential disk scan."
+      },
+      {
+        "q": "What is the write penalty of having too many indexes on a table?",
+        "a": "Every INSERT, UPDATE, or DELETE statement must not only modify the primary table pages, but must also update every single secondary index tree (including balancing node splits or merges). Having excessive indexes slows down write throughput and inflates storage footprint."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Why do relational database engines use B+ Trees instead of B-Trees or Binary Search Trees for indexing?",
         "a": "1. High Fan-out and Shallow Depth: Because internal nodes store only keys without data pointers, thousands of keys fit in a single 16KB disk page, keeping tree height to 3-4 levels for millions of rows (minimizing disk I/O). 2. Range Queries: In a B+ Tree, all leaf nodes are connected in a doubly linked list; range scans simply traverse leaves sequentially without tree back-tracking. 3. Predictable Latency: Every lookup traverses the exact same number of levels to the leaf."
@@ -1460,6 +1782,7 @@
     "subject": "Computer Networks",
     "topic": "OSI 7-Layer Architecture vs TCP/IP Protocol Suite",
     "lesson": "Computer network communications rely on layered protocol stacks to provide modularity, standardization, and interoperability.\n\nThe OSI 7-Layer Reference Model (Theoretical Framework):\n1. Physical Layer: Transmission of raw, unstructured bit streams over physical media (voltages, fiber photons, radio waves).\n2. Data Link Layer: Node-to-node framing, physical MAC addressing, flow control, and error detection (Ethernet, Wi-Fi).\n3. Network Layer: End-to-end logical addressing and routing packets across heterogeneous networks (IP, ICMP, OSPF, BGP).\n4. Transport Layer: End-to-end process-to-process communication, port multiplexing, segmentation, error recovery (TCP, UDP).\n5. Session Layer: Establishes, manages, and terminates presentation dialog sessions between applications (RPC, NetBIOS).\n6. Presentation Layer: Translation, character encoding, data compression, and encryption/decryption (TLS/SSL, ASCII, JPEG).\n7. Application Layer: High-level protocols interacting directly with end-user software (HTTP/HTTPS, DNS, SMTP, SSH).\n\nThe TCP/IP 4-Layer Implementation Model:\n1. Network Access (Link) Layer: Maps to OSI Physical and Data Link.\n2. Internet Layer: Maps to OSI Network.\n3. Transport Layer: Maps to OSI Transport.\n4. Application Layer: Collapses OSI Session, Presentation, and Application layers into a single application stack.\n\nData Encapsulation:\nData -> Segment (Transport) -> Packet (Network) -> Frame (Data Link) -> Bits (Physical).",
+    "lecture": "Computer network communications rely on layered protocol stacks to provide modularity, standardization, and interoperability.\n\nThe OSI 7-Layer Reference Model (Theoretical Framework):\n1. Physical Layer: Transmission of raw, unstructured bit streams over physical media (voltages, fiber photons, radio waves).\n2. Data Link Layer: Node-to-node framing, physical MAC addressing, flow control, and error detection (Ethernet, Wi-Fi).\n3. Network Layer: End-to-end logical addressing and routing packets across heterogeneous networks (IP, ICMP, OSPF, BGP).\n4. Transport Layer: End-to-end process-to-process communication, port multiplexing, segmentation, error recovery (TCP, UDP).\n5. Session Layer: Establishes, manages, and terminates presentation dialog sessions between applications (RPC, NetBIOS).\n6. Presentation Layer: Translation, character encoding, data compression, and encryption/decryption (TLS/SSL, ASCII, JPEG).\n7. Application Layer: High-level protocols interacting directly with end-user software (HTTP/HTTPS, DNS, SMTP, SSH).\n\nThe TCP/IP 4-Layer Implementation Model:\n1. Network Access (Link) Layer: Maps to OSI Physical and Data Link.\n2. Internet Layer: Maps to OSI Network.\n3. Transport Layer: Maps to OSI Transport.\n4. Application Layer: Collapses OSI Session, Presentation, and Application layers into a single application stack.\n\nData Encapsulation:\nData -> Segment (Transport) -> Packet (Network) -> Frame (Data Link) -> Bits (Physical).",
     "definitions": [
       {
         "term": "Encapsulation",
@@ -1475,6 +1798,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What are the Protocol Data Units (PDUs) at each layer of the OSI model?",
+        "a": "Physical layer: Bits. Data Link layer: Frames. Network layer: Packets. Transport layer: Segments (for TCP) or Datagrams (for UDP). Application/Presentation/Session layers: Messages or Data."
+      },
+      {
+        "q": "Why does the practical TCP/IP suite combine OSI Session and Presentation into the Application layer?",
+        "a": "In real-world software, encryption (TLS), compression (gzip), and session management are application-specific concerns handled directly by user-space libraries (like OpenSSL) or web runtimes, rather than generic operating system kernel network drivers."
+      },
+      {
+        "q": "What happens during network encapsulation as data moves down the stack?",
+        "a": "The application payload is passed to the transport layer, which prefixes a TCP/UDP header containing source/dest ports to form a Segment. The network layer adds an IP header with source/dest IP addresses to form a Packet. The data link layer adds a header (MAC addresses) and trailer (CRC/FCS checksum) to form a Frame. The physical layer encodes the frame into bits for physical transmission."
+      },
+      {
+        "q": "Explain the difference between End-to-End communication and Hop-by-Hop communication.",
+        "a": "End-to-End communication occurs between the originating source host and final destination host across intermediate routers (governed by Transport and Network layers: TCP/IP). Hop-by-Hop communication occurs only between two physically adjacent network nodes on the same local link (governed by the Data Link layer using MAC addresses)."
+      },
+      {
+        "q": "What are well-known ports and give examples of standard network protocols?",
+        "a": "Port numbers 0 to 1023 are reserved well-known ports assigned by IANA for core services: Port 80 (HTTP), Port 443 (HTTPS), Port 22 (SSH), Port 53 (DNS), Port 25 (SMTP), Port 21 (FTP)."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What are the Protocol Data Units (PDUs) at each layer of the OSI model?",
         "a": "Physical layer: Bits. Data Link layer: Frames. Network layer: Packets. Transport layer: Segments (for TCP) or Datagrams (for UDP). Application/Presentation/Session layers: Messages or Data."
@@ -1564,6 +1909,7 @@
     "subject": "Computer Networks",
     "topic": "Data Link Layer: Framing, Error Detection (CRC) & Sliding Window Protocols",
     "lesson": "The Data Link Layer is responsible for reliable node-to-node frame delivery across a physical link.\n\nFraming Techniques:\n1. Character Count: Transmitter includes frame length in the header (fragile: one transmission error corrupts subsequent boundaries).\n2. Byte Stuffing: Delimits frames with special FLAG bytes; inserts an ESC byte before any data byte that happens to match FLAG.\n3. Bit Stuffing: Frame boundary is delimited by 01111110 (0 followed by six 1s and a 0). The sender automatically inserts a 0 after every sequence of five consecutive 1s in data; the receiver strips the stuffed 0.\n\nError Detection & Correction:\n- Parity Bit: Adds a single bit for odd/even parity (detects single-bit errors).\n- Checksum: 16-bit 1's complement sum of 16-bit words (used in IP/TCP headers).\n- Cyclic Redundancy Check (CRC): Polynomial division over Galois Field GF(2). Generator polynomial G(x) divides data bits padded with degree(G) zeroes using XOR. The remainder is appended as the Frame Check Sequence (FCS). Detects all single, double, odd, and burst errors.\n\nFlow Control Protocols:\n- Stop-and-Wait: Sender transmits one frame and waits for ACK. Inefficient on high-latency links (bandwidth-delay product waste).\n- Go-Back-N (GBN): Sender uses sliding window of size N. If frame i is lost, receiver discards all subsequent frames; sender retransmits all frames from i to N upon timeout (Cumulative ACK).\n- Selective Repeat (SR): Receiver buffers out-of-order frames within a window; sender retransmits ONLY the specific lost frame (Individual ACK). Window size must be <= 2^(k-1) to avoid sequence number ambiguity.",
+    "lecture": "The Data Link Layer is responsible for reliable node-to-node frame delivery across a physical link.\n\nFraming Techniques:\n1. Character Count: Transmitter includes frame length in the header (fragile: one transmission error corrupts subsequent boundaries).\n2. Byte Stuffing: Delimits frames with special FLAG bytes; inserts an ESC byte before any data byte that happens to match FLAG.\n3. Bit Stuffing: Frame boundary is delimited by 01111110 (0 followed by six 1s and a 0). The sender automatically inserts a 0 after every sequence of five consecutive 1s in data; the receiver strips the stuffed 0.\n\nError Detection & Correction:\n- Parity Bit: Adds a single bit for odd/even parity (detects single-bit errors).\n- Checksum: 16-bit 1's complement sum of 16-bit words (used in IP/TCP headers).\n- Cyclic Redundancy Check (CRC): Polynomial division over Galois Field GF(2). Generator polynomial G(x) divides data bits padded with degree(G) zeroes using XOR. The remainder is appended as the Frame Check Sequence (FCS). Detects all single, double, odd, and burst errors.\n\nFlow Control Protocols:\n- Stop-and-Wait: Sender transmits one frame and waits for ACK. Inefficient on high-latency links (bandwidth-delay product waste).\n- Go-Back-N (GBN): Sender uses sliding window of size N. If frame i is lost, receiver discards all subsequent frames; sender retransmits all frames from i to N upon timeout (Cumulative ACK).\n- Selective Repeat (SR): Receiver buffers out-of-order frames within a window; sender retransmits ONLY the specific lost frame (Individual ACK). Window size must be <= 2^(k-1) to avoid sequence number ambiguity.",
     "definitions": [
       {
         "term": "Bit Stuffing",
@@ -1579,6 +1925,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "How does Bit Stuffing work and why is it necessary in HDLC framing?",
+        "a": "HDLC uses the flag pattern 01111110 to designate frame boundaries. To prevent user data from accidentally mimicking this flag and causing premature frame termination, the sender inspects the data stream and automatically stuffs an extra '0' bit after every five consecutive '1' bits. The receiver detects any sequence of five 1s followed by a 0 and automatically strips the 0 bit."
+      },
+      {
+        "q": "Explain how Cyclic Redundancy Check (CRC) detects errors.",
+        "a": "Let data be D with length k and generator polynomial be G with degree r. 1. Sender appends r zeroes to D. 2. Sender performs modulo-2 binary division (using bitwise XOR without borrows) of padded D by G. 3. The r-bit remainder R is the CRC checksum. 4. Sender transmits (D + R). 5. Receiver divides the incoming frame by G. If remainder is 0, the frame is error-free; if non-zero, a transmission error occurred and the frame is dropped."
+      },
+      {
+        "q": "Compare Go-Back-N and Selective Repeat sliding window protocols.",
+        "a": "In Go-Back-N (GBN), the receiver accepts frames strictly in sequence and uses cumulative ACKs; if a frame is lost, all subsequent frames are dropped, forcing the sender to retransmit the entire window. In Selective Repeat (SR), the receiver maintains a receive window, accepts out-of-order frames, and sends individual ACKs; the sender retransmits only the single lost frame, saving bandwidth at the cost of receiver buffer memory."
+      },
+      {
+        "q": "Why must the window size in Selective Repeat be at most half the sequence number space (Ws <= 2^(k-1))?",
+        "a": "If window size exceeds 2^(k-1), an overlap occurs between the current sequence window and the next window. If all ACKs are lost, the sender retransmits old frames; the receiver cannot distinguish whether the incoming frame is a duplicate retransmission of an old frame or a brand-new frame from the next sequence cycle."
+      },
+      {
+        "q": "What is the Bandwidth-Delay Product (BDP) and why is it important?",
+        "a": "BDP = Bandwidth (bits/sec) * Round Trip Time (seconds). It represents the maximum volume of unacknowledged data in transit across the network pipe at any given instant. To achieve maximum throughput, the sliding window size must be at least equal to the BDP."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "How does Bit Stuffing work and why is it necessary in HDLC framing?",
         "a": "HDLC uses the flag pattern 01111110 to designate frame boundaries. To prevent user data from accidentally mimicking this flag and causing premature frame termination, the sender inspects the data stream and automatically stuffs an extra '0' bit after every five consecutive '1' bits. The receiver detects any sequence of five 1s followed by a 0 and automatically strips the 0 bit."
@@ -1668,6 +2036,7 @@
     "subject": "Computer Networks",
     "topic": "Medium Access Control (MAC): CSMA/CD, CSMA/CA, Ethernet & Collision Handling",
     "lesson": "When multiple nodes share a single broadcast transmission medium, the Medium Access Control (MAC) sublayer manages channel allocation to prevent and resolve transmission collisions.\n\nRandom Access Protocols Evolution:\n1. Pure ALOHA: Transmit whenever ready. Throughput max = 18.4% (vulnerable period = 2 * T_frame).\n2. Slotted ALOHA: Time divided into discrete slots equal to T_frame; transmit only at slot start. Throughput max = 36.8%.\n3. CSMA (Carrier Sense Multiple Access): 'Listen before talk'. Node senses channel before transmitting (1-persistent, p-persistent, non-persistent).\n\nCSMA/CD (Collision Detection — Ethernet IEEE 802.3):\n'Listen while talk'. Sender continuously monitors medium while transmitting. If signal energy exceeds threshold (collision), the sender immediately aborts transmission, broadcasts a 32-bit Jam Signal to notify all nodes, and waits for a backoff period.\n- Exponential Backoff Algorithm: After collision k (capped at 10), pick random r in [0, 2^k - 1]; wait r * 51.2 microseconds. After 16 collisions, abort.\n- Minimum Frame Size Rule: Frame transmission time must be >= 2 * propagation delay (T_tx >= 2 * T_prop) so sender is still transmitting when the collision echo returns. In standard 10Mbps Ethernet, min frame size is 64 bytes (512 bits).\n\nCSMA/CA (Collision Avoidance — Wi-Fi IEEE 802.11):\nWireless transceivers cannot transmit and listen simultaneously (transmitted power drowns out received signals). Uses Interframe Spaces (DIFS, SIFS) and optional RTS/CTS (Request-to-Send / Clear-to-Send) handshakes to solve the Hidden Terminal Problem.",
+    "lecture": "When multiple nodes share a single broadcast transmission medium, the Medium Access Control (MAC) sublayer manages channel allocation to prevent and resolve transmission collisions.\n\nRandom Access Protocols Evolution:\n1. Pure ALOHA: Transmit whenever ready. Throughput max = 18.4% (vulnerable period = 2 * T_frame).\n2. Slotted ALOHA: Time divided into discrete slots equal to T_frame; transmit only at slot start. Throughput max = 36.8%.\n3. CSMA (Carrier Sense Multiple Access): 'Listen before talk'. Node senses channel before transmitting (1-persistent, p-persistent, non-persistent).\n\nCSMA/CD (Collision Detection — Ethernet IEEE 802.3):\n'Listen while talk'. Sender continuously monitors medium while transmitting. If signal energy exceeds threshold (collision), the sender immediately aborts transmission, broadcasts a 32-bit Jam Signal to notify all nodes, and waits for a backoff period.\n- Exponential Backoff Algorithm: After collision k (capped at 10), pick random r in [0, 2^k - 1]; wait r * 51.2 microseconds. After 16 collisions, abort.\n- Minimum Frame Size Rule: Frame transmission time must be >= 2 * propagation delay (T_tx >= 2 * T_prop) so sender is still transmitting when the collision echo returns. In standard 10Mbps Ethernet, min frame size is 64 bytes (512 bits).\n\nCSMA/CA (Collision Avoidance — Wi-Fi IEEE 802.11):\nWireless transceivers cannot transmit and listen simultaneously (transmitted power drowns out received signals). Uses Interframe Spaces (DIFS, SIFS) and optional RTS/CTS (Request-to-Send / Clear-to-Send) handshakes to solve the Hidden Terminal Problem.",
     "definitions": [
       {
         "term": "CSMA/CD",
@@ -1683,6 +2052,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Why does Ethernet require a Minimum Frame Size of 64 bytes in CSMA/CD?",
+        "a": "For CSMA/CD to work, the transmitting station must still be transmitting its frame when a collision notification returns from the furthest point on the network. Mathematically, Transmission Time (T_tx) >= 2 * Propagation Delay (T_prop). For 10Mbps Ethernet over a 2.5km collision domain, round-trip time is ~51.2 microseconds. In 51.2 microseconds at 10Mbps, 512 bits (64 bytes) are transmitted. Any frame smaller than 64 bytes could finish before a collision arrives, violating collision detection."
+      },
+      {
+        "q": "How does Binary Exponential Backoff resolve repeat collisions?",
+        "a": "After the k-th collision, the node chooses a random slot wait time r from the range [0, 2^k - 1] (k is capped at 10). The wait duration is r * slot_time (51.2 microseconds). As collisions repeat, the contention window expands exponentially (1, 2, 4, 8, ... up to 1024), dynamically spreading competing nodes across wider intervals and dramatically reducing re-collision probability."
+      },
+      {
+        "q": "Why is CSMA/CD not used in wireless Wi-Fi networks?",
+        "a": "In wireless transmission, the transmitted signal from an antenna is millions of times stronger than incoming signals from distant nodes. A wireless radio's own transmission blinds its receiver, making hardware collision detection impossible. Wireless networks instead use CSMA/CA (Collision Avoidance) with RTS/CTS."
+      },
+      {
+        "q": "Explain the Hidden Terminal Problem and how RTS/CTS resolves it.",
+        "a": "Node A and Node C are both in range of Access Point B, but out of radio range of each other. A senses the channel, detects silence, and transmits to B. Simultaneously, C senses the channel, detects silence, and transmits to B. Their transmissions collide at B. Solved via RTS/CTS: A sends Request-To-Send to B; B broadcasts Clear-To-Send (CTS) containing transmission duration. Node C overhears B's CTS and silences its transmitter."
+      },
+      {
+        "q": "What is the difference between a Hub, a Switch, and a Router regarding collision and broadcast domains?",
+        "a": "A Hub (Layer 1) has 1 collision domain and 1 broadcast domain across all ports. A Switch (Layer 2) creates a dedicated collision domain per port, but maintains 1 unified broadcast domain. A Router (Layer 3) creates separate collision domains per port AND separates broadcast domains, preventing broadcast packet propagation between subnets."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Why does Ethernet require a Minimum Frame Size of 64 bytes in CSMA/CD?",
         "a": "For CSMA/CD to work, the transmitting station must still be transmitting its frame when a collision notification returns from the furthest point on the network. Mathematically, Transmission Time (T_tx) >= 2 * Propagation Delay (T_prop). For 10Mbps Ethernet over a 2.5km collision domain, round-trip time is ~51.2 microseconds. In 51.2 microseconds at 10Mbps, 512 bits (64 bytes) are transmitted. Any frame smaller than 64 bytes could finish before a collision arrives, violating collision detection."
@@ -1772,6 +2163,7 @@
     "subject": "Computer Networks",
     "topic": "Network Layer: IPv4 Addressing, CIDR Subnetting, ARP, ICMP & NAT",
     "lesson": "The Network Layer is responsible for host-to-host packet routing and logical IP addressing across internetworks.\n\nIPv4 Addressing & CIDR:\nIPv4 uses 32-bit addresses (4 octets). Historically divided into Classes: Class A (/8, 0.0.0.0 to 127.255.255.255), Class B (/16, 128.0.0.0 to 191.255.255.255), Class C (/24, 192.0.0.0 to 223.255.255.255), Class D (Multicast), Class E (Reserved).\nClassless Inter-Domain Routing (CIDR) replaced classful networks: an address is written as IP/prefix (e.g., 192.168.1.0/26). Prefix bits denote Network ID; remaining (32 - prefix) bits denote Host ID. Usable hosts = 2^(32 - prefix) - 2 (subtracting Network Address where host bits are all 0s, and Broadcast Address where host bits are all 1s).\n\nAuxiliary Protocols:\n- ARP (Address Resolution Protocol): Resolves a known 32-bit IPv4 address to a 48-bit physical MAC address. Broadcasts ARP Request ('Who has IP X?'); target replies with Unicast ARP Reply containing its MAC.\n- ICMP (Internet Control Message Protocol): Diagnostics and error reporting (Ping uses Echo Request/Reply; Traceroute uses ICMP Time Exceeded when TTL expires).\n- NAT (Network Address Translation): Translates private IP addresses (RFC 1918: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) into public routable IPs, using Port Address Translation (PAT/NAPT) to multiplex thousands of internal hosts over a single public IP.",
+    "lecture": "The Network Layer is responsible for host-to-host packet routing and logical IP addressing across internetworks.\n\nIPv4 Addressing & CIDR:\nIPv4 uses 32-bit addresses (4 octets). Historically divided into Classes: Class A (/8, 0.0.0.0 to 127.255.255.255), Class B (/16, 128.0.0.0 to 191.255.255.255), Class C (/24, 192.0.0.0 to 223.255.255.255), Class D (Multicast), Class E (Reserved).\nClassless Inter-Domain Routing (CIDR) replaced classful networks: an address is written as IP/prefix (e.g., 192.168.1.0/26). Prefix bits denote Network ID; remaining (32 - prefix) bits denote Host ID. Usable hosts = 2^(32 - prefix) - 2 (subtracting Network Address where host bits are all 0s, and Broadcast Address where host bits are all 1s).\n\nAuxiliary Protocols:\n- ARP (Address Resolution Protocol): Resolves a known 32-bit IPv4 address to a 48-bit physical MAC address. Broadcasts ARP Request ('Who has IP X?'); target replies with Unicast ARP Reply containing its MAC.\n- ICMP (Internet Control Message Protocol): Diagnostics and error reporting (Ping uses Echo Request/Reply; Traceroute uses ICMP Time Exceeded when TTL expires).\n- NAT (Network Address Translation): Translates private IP addresses (RFC 1918: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) into public routable IPs, using Port Address Translation (PAT/NAPT) to multiplex thousands of internal hosts over a single public IP.",
     "definitions": [
       {
         "term": "CIDR",
@@ -1787,6 +2179,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Given the IP address 172.16.10.45/28, find the Network Address, Broadcast Address, and number of usable host addresses.",
+        "a": "Prefix is /28. Host bits = 32 - 28 = 4 bits. Block size = 2^4 = 16. In the 4th octet, 45 falls into the block [32 to 47]. Network Address = 172.16.10.32. Broadcast Address = 172.16.10.47. Usable Host range = 172.16.10.33 to 172.16.10.46. Number of usable hosts = 2^4 - 2 = 14 hosts."
+      },
+      {
+        "q": "How does Traceroute work under the hood using IP TTL and ICMP?",
+        "a": "Traceroute sends packets (UDP or ICMP) starting with IP Time-To-Live TTL = 1. The first router decrements TTL to 0, drops the packet, and returns an ICMP Type 11 'Time-to-Live Exceeded' message; traceroute records the router's IP and round-trip time. It then sends a packet with TTL = 2 to discover the second router, incrementing TTL sequentially until the packet reaches the destination, which responds with ICMP Echo Reply or Port Unreachable."
+      },
+      {
+        "q": "What is the difference between ARP and RARP?",
+        "a": "ARP (Address Resolution Protocol) resolves a known logical IP address to an unknown physical hardware MAC address. RARP (Reverse ARP) allowed a diskless workstation that knows only its physical MAC address to request and discover its assigned IP address from a central server on boot (now superseded by DHCP)."
+      },
+      {
+        "q": "What are RFC 1918 Private IP ranges and why can't they be routed on the public Internet?",
+        "a": "The three private ranges are: 10.0.0.0/8 (10.0.0.0 - 10.255.255.255), 172.16.0.0/12 (172.16.0.0 - 172.31.255.255), and 192.168.0.0/16 (192.168.0.0 - 192.168.255.255). Public Internet backbone routers are configured to drop packets with private destination addresses because they are reused across millions of internal private LANs globally and lack globally unique routing paths."
+      },
+      {
+        "q": "How does Port Address Translation (PAT / NAT Overload) allow multiple devices to share one public IP?",
+        "a": "The NAT router maintains a stateful translation table: (Private IP, Private Port <-> Public IP, Translated Port). When an internal host (192.168.1.10:5000) requests an external site, the router rewrites the source IP to its public IP and assigns a unique temporary source port (203.0.113.1:40001). When the response arrives at port 40001, the router matches the entry in its table and forwards the packet back to 192.168.1.10:5000."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Given the IP address 172.16.10.45/28, find the Network Address, Broadcast Address, and number of usable host addresses.",
         "a": "Prefix is /28. Host bits = 32 - 28 = 4 bits. Block size = 2^4 = 16. In the 4th octet, 45 falls into the block [32 to 47]. Network Address = 172.16.10.32. Broadcast Address = 172.16.10.47. Usable Host range = 172.16.10.33 to 172.16.10.46. Number of usable hosts = 2^4 - 2 = 14 hosts."
@@ -1876,6 +2290,7 @@
     "subject": "Computer Networks",
     "topic": "Routing Algorithms: Distance Vector (RIP), Link State (OSPF) & BGP",
     "lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP — Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF — Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
+    "lecture": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP — Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF — Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
     "definitions": [
       {
         "term": "Distance Vector",
@@ -1891,6 +2306,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the Count-to-Infinity problem in RIP, and how do Split Horizon and Poison Reverse resolve it?",
+        "a": "When a link to destination X fails, router A marks distance to X as infinite. However, neighbor B previously advertised a route to X through A with cost 2. A thinks B has an alternate path and updates its cost to 3; B updates to 4, bouncing back and forth until reaching infinity (16 hops). Split Horizon prevents this by forbidding a router from advertising a learned route back out the same interface it arrived on. Poison Reverse sets the cost of that reversed route explicitly to infinity (16), immediately neutralizing loop formation."
+      },
+      {
+        "q": "Why does OSPF converge significantly faster than RIP?",
+        "a": "In OSPF, when a link state changes, an LSA is immediately flooded across the entire network, and each router independently recalculates its shortest path tree using Dijkstra's algorithm. In RIP, routers must wait for periodic timer intervals (30s) to slowly propagate distance vectors hop-by-hop through neighbors, leading to slow convergence and transient routing loops."
+      },
+      {
+        "q": "What is the difference between an Interior Gateway Protocol (IGP) and an Exterior Gateway Protocol (EGP)?",
+        "a": "IGPs (like OSPF and RIP) operate inside a single autonomous organization's network domain, focusing on optimizing technical metrics like path latency, bandwidth, and hop count. EGPs (like BGP) operate between distinct Internet Service Providers and autonomous systems, where routing choices are governed by commercial peering contracts, geopolitical transit rules, and administrative policy rather than lowest cost."
+      },
+      {
+        "q": "How does BGP prevent routing loops across the global Internet?",
+        "a": "BGP is a Path-Vector protocol. When an AS advertises a route to a BGP neighbor, it prepends its own Autonomous System Number (ASN) to the AS-Path attribute list. When a router receives a BGP advertisement, it checks the AS-Path list: if its own ASN is already present, it rejects the advertisement immediately, mathematically preventing routing loops across autonomous domains."
+      },
+      {
+        "q": "Explain Dijkstra's shortest path algorithm used in OSPF.",
+        "a": "Dijkstra's algorithm finds the shortest path from a source node to all other nodes in a weighted graph with non-negative edge costs. It maintains a set of visited vertices and a priority queue of candidate vertices ordered by distance from source. In each iteration, it extracts the unvisited vertex with minimal tentative distance, marks it visited, and relaxes all outgoing edges to adjacent unvisited neighbors. It terminates when all vertices are visited in O((V + E) log V) time."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the Count-to-Infinity problem in RIP, and how do Split Horizon and Poison Reverse resolve it?",
         "a": "When a link to destination X fails, router A marks distance to X as infinite. However, neighbor B previously advertised a route to X through A with cost 2. A thinks B has an alternate path and updates its cost to 3; B updates to 4, bouncing back and forth until reaching infinity (16 hops). Split Horizon prevents this by forbidding a router from advertising a learned route back out the same interface it arrived on. Poison Reverse sets the cost of that reversed route explicitly to infinity (16), immediately neutralizing loop formation."
@@ -1980,6 +2417,7 @@
     "subject": "Computer Networks",
     "topic": "Transport Layer: TCP vs UDP, 3-Way Handshake & 4-Way Connection Teardown",
     "lesson": "The Transport Layer delivers process-to-process communication using 16-bit Port numbers.\n\nTCP (Transmission Control Protocol) vs UDP (User Datagram Protocol):\n- TCP: Connection-oriented, reliable byte stream. Provides ordered delivery, retransmission of lost segments, flow control, and congestion control. Header size: 20 to 60 bytes. (Used by HTTP, HTTPS, SSH, SMTP, FTP).\n- UDP: Connectionless, unreliable datagrams. Zero handshake overhead, no retransmissions, no flow control, minimal 8-byte header. Provides fast delivery with low latency. (Used by DNS, DHCP, VoIP, video streaming, online gaming, WebRTC).\n\nTCP 3-Way Handshake (Connection Establishment):\n1. Client -> Server: SYN (seq = client_isn).\n2. Server -> Client: SYN-ACK (seq = server_isn, ack = client_isn + 1).\n3. Client -> Server: ACK (seq = client_isn + 1, ack = server_isn + 1). (Data payload may now be transmitted).\n\nTCP 4-Way Teardown (Connection Termination):\nTCP connections are full-duplex and must be closed independently in each direction:\n1. Client -> Server: FIN (seq = u). Client enters FIN_WAIT_1.\n2. Server -> Client: ACK (ack = u + 1). Server enters CLOSE_WAIT; Client enters FIN_WAIT_2.\n3. Server -> Client: FIN (seq = v). Server enters LAST_ACK.\n4. Client -> Server: ACK (ack = v + 1). Client enters TIME_WAIT (waits 2 * MSL, ~120s), ensuring final ACK arrived and flushing old packets. Server closes.",
+    "lecture": "The Transport Layer delivers process-to-process communication using 16-bit Port numbers.\n\nTCP (Transmission Control Protocol) vs UDP (User Datagram Protocol):\n- TCP: Connection-oriented, reliable byte stream. Provides ordered delivery, retransmission of lost segments, flow control, and congestion control. Header size: 20 to 60 bytes. (Used by HTTP, HTTPS, SSH, SMTP, FTP).\n- UDP: Connectionless, unreliable datagrams. Zero handshake overhead, no retransmissions, no flow control, minimal 8-byte header. Provides fast delivery with low latency. (Used by DNS, DHCP, VoIP, video streaming, online gaming, WebRTC).\n\nTCP 3-Way Handshake (Connection Establishment):\n1. Client -> Server: SYN (seq = client_isn).\n2. Server -> Client: SYN-ACK (seq = server_isn, ack = client_isn + 1).\n3. Client -> Server: ACK (seq = client_isn + 1, ack = server_isn + 1). (Data payload may now be transmitted).\n\nTCP 4-Way Teardown (Connection Termination):\nTCP connections are full-duplex and must be closed independently in each direction:\n1. Client -> Server: FIN (seq = u). Client enters FIN_WAIT_1.\n2. Server -> Client: ACK (ack = u + 1). Server enters CLOSE_WAIT; Client enters FIN_WAIT_2.\n3. Server -> Client: FIN (seq = v). Server enters LAST_ACK.\n4. Client -> Server: ACK (ack = v + 1). Client enters TIME_WAIT (waits 2 * MSL, ~120s), ensuring final ACK arrived and flushing old packets. Server closes.",
     "definitions": [
       {
         "term": "3-Way Handshake",
@@ -1995,6 +2433,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Walk through the TCP 3-Way Handshake and explain why 2 handshakes are insufficient.",
+        "a": "1. Client sends SYN with random Initial Sequence Number (ISN_c). 2. Server replies with SYN-ACK, acknowledging ISN_c + 1 and presenting its own ISN_s. 3. Client replies with ACK for ISN_s + 1. Two handshakes are insufficient because the client must acknowledge the server's sequence number; without the 3rd step, a delayed duplicate SYN from an old dead connection arriving at the server would cause the server to allocate resources and assume an active connection, resulting in half-open phantom connections."
+      },
+      {
+        "q": "Why is TCP connection termination a 4-way exchange instead of a 3-way exchange?",
+        "a": "TCP is a full-duplex protocol: both directions of data flow are independent. When the client sends FIN, it signals that it has no more data to send, but it can still receive data. The server acknowledges with an ACK, entering CLOSE_WAIT. The server may still have pending outbound buffers to transmit. Once the server finishes sending all remaining data, it sends its own separate FIN, which the client acknowledges."
+      },
+      {
+        "q": "What is the purpose of the TIME_WAIT state in TCP, and how long does it last?",
+        "a": "The endpoint that actively initiates connection close enters TIME_WAIT after sending its final ACK. It lasts for 2 * Maximum Segment Lifetime (2 * MSL, typically 1 to 2 minutes). It serves two critical functions: 1) Guarantees that the final ACK was received by the peer (if lost, the peer retransmits FIN, which can still be ACKed), and 2) Allows all lingering duplicate segments in the network to expire before the same IP:port pair is reused for a new connection."
+      },
+      {
+        "q": "What is a SYN Flood attack and how do SYN Cookies mitigate it?",
+        "a": "An attacker floods a server with thousands of TCP SYN packets with spoofed source IPs, ignoring the SYN-ACK responses. The server allocates TCB state memory in its listen backlog queue for each half-open connection until memory is exhausted, denying legitimate clients. SYN Cookies mitigate this by eliminating server state allocation during handshake: the server encodes connection parameters cryptographically into the SYN-ACK Initial Sequence Number; memory state is allocated only when the client returns a valid ACK."
+      },
+      {
+        "q": "Why does DNS use UDP for queries but TCP for Zone Transfers?",
+        "a": "Standard DNS queries are small, single-packet requests where UDP provides ultra-low latency without handshake delays. If a UDP query packet drops, the client simply re-queries after a timeout. However, DNS Zone Transfers (synchronizing full zone files between primary and secondary nameservers) transmit large, multi-megabyte payloads requiring reliable ordered delivery, making TCP mandatory."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Walk through the TCP 3-Way Handshake and explain why 2 handshakes are insufficient.",
         "a": "1. Client sends SYN with random Initial Sequence Number (ISN_c). 2. Server replies with SYN-ACK, acknowledging ISN_c + 1 and presenting its own ISN_s. 3. Client replies with ACK for ISN_s + 1. Two handshakes are insufficient because the client must acknowledge the server's sequence number; without the 3rd step, a delayed duplicate SYN from an old dead connection arriving at the server would cause the server to allocate resources and assume an active connection, resulting in half-open phantom connections."
@@ -2084,6 +2544,7 @@
     "subject": "Computer Networks",
     "topic": "TCP Congestion Control & Flow Control: Sliding Window, Slow Start & Fast Recovery",
     "lesson": "TCP employs distinct mechanisms for Flow Control (protecting the receiver from being overwhelmed) and Congestion Control (protecting intermediate network routers from buffer collapse).\n\nFlow Control (Receiver Window — rwnd):\nThe receiver advertises its available buffer space in the 16-bit 'Window Size' field of every TCP ACK. The sender is strictly constrained: Effective Window = min(rwnd, cwnd). If rwnd drops to 0, sender stops transmitting and starts a Persist Timer, periodically sending 1-byte Window Probes to detect when the receiver's buffer reopens.\n\nCongestion Control (Congestion Window — cwnd):\nManaged dynamically by sender algorithms based on perceived network packet loss:\n1. Slow Start: cwnd starts at 1 MSS (or initial 10 MSS). For EVERY received ACK, cwnd increments by 1 MSS (exponential growth: 1 -> 2 -> 4 -> 8 MSS). Continues until cwnd reaches Slow Start Threshold (ssthresh).\n2. Congestion Avoidance: Once cwnd >= ssthresh, growth shifts to linear: cwnd increases by 1 MSS per Round Trip Time (Additive Increase).\n3. Multiplicative Decrease:\n- On Triple Duplicate ACKs (Mild Congestion): Fast Retransmit immediately sends the missing segment without waiting for RTO timer. ssthresh is set to cwnd / 2, cwnd is set to ssthresh + 3 MSS, and Fast Recovery begins (AIMD: Additive Increase, Multiplicative Decrease).\n- On Retransmission Timeout (Severe Congestion): ssthresh = cwnd / 2, cwnd collapses to 1 MSS, and execution resets to Slow Start.",
+    "lecture": "TCP employs distinct mechanisms for Flow Control (protecting the receiver from being overwhelmed) and Congestion Control (protecting intermediate network routers from buffer collapse).\n\nFlow Control (Receiver Window — rwnd):\nThe receiver advertises its available buffer space in the 16-bit 'Window Size' field of every TCP ACK. The sender is strictly constrained: Effective Window = min(rwnd, cwnd). If rwnd drops to 0, sender stops transmitting and starts a Persist Timer, periodically sending 1-byte Window Probes to detect when the receiver's buffer reopens.\n\nCongestion Control (Congestion Window — cwnd):\nManaged dynamically by sender algorithms based on perceived network packet loss:\n1. Slow Start: cwnd starts at 1 MSS (or initial 10 MSS). For EVERY received ACK, cwnd increments by 1 MSS (exponential growth: 1 -> 2 -> 4 -> 8 MSS). Continues until cwnd reaches Slow Start Threshold (ssthresh).\n2. Congestion Avoidance: Once cwnd >= ssthresh, growth shifts to linear: cwnd increases by 1 MSS per Round Trip Time (Additive Increase).\n3. Multiplicative Decrease:\n- On Triple Duplicate ACKs (Mild Congestion): Fast Retransmit immediately sends the missing segment without waiting for RTO timer. ssthresh is set to cwnd / 2, cwnd is set to ssthresh + 3 MSS, and Fast Recovery begins (AIMD: Additive Increase, Multiplicative Decrease).\n- On Retransmission Timeout (Severe Congestion): ssthresh = cwnd / 2, cwnd collapses to 1 MSS, and execution resets to Slow Start.",
     "definitions": [
       {
         "term": "Flow Control",
@@ -2099,6 +2560,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the critical difference between Flow Control and Congestion Control in TCP?",
+        "a": "Flow Control is an end-to-end mechanism between sender and receiver; it prevents a fast sender from overflowing a slow receiver's local buffer, enforced via the receiver's advertised window (rwnd). Congestion Control is a global mechanism between sender and intermediate network routers; it prevents senders from injecting more traffic than network links and router buffers can handle, enforced via the congestion window (cwnd). Sender transmission limit = min(rwnd, cwnd)."
+      },
+      {
+        "q": "Why does Slow Start grow exponentially if it is called 'Slow' Start?",
+        "a": "It is called 'Slow' only in comparison to blasting the entire receiver window at full line rate upon connection startup (which would instantly cause router buffer overflows). It starts at 1 MSS, but because cwnd increments by 1 for every ACK received, the window doubles every RTT (1 -> 2 -> 4 -> 8 -> 16 MSS), producing rapid exponential ramp-up until reaching ssthresh."
+      },
+      {
+        "q": "How does TCP Fast Retransmit identify packet loss before the Retransmission Timeout (RTO) expires?",
+        "a": "When a segment is lost in transit but subsequent segments arrive, the receiver sends duplicate ACKs repeating the exact sequence number of the missing byte for each out-of-order segment received. When the sender receives 3 Duplicate ACKs (total 4 identical ACKs), it treats this as proof that the packet was lost rather than delayed, and retransmits the missing segment immediately without waiting for the slow RTO timer to expire."
+      },
+      {
+        "q": "What happens to cwnd and ssthresh when a retransmission timeout (RTO) occurs?",
+        "a": "An RTO indicates severe network congestion or link failure. The sender: 1) Sets ssthresh = cwnd / 2 (halving the threshold), 2) Collapses cwnd back down to 1 MSS, and 3) Restarts from the Slow Start phase, slowly probing available network bandwidth again."
+      },
+      {
+        "q": "What is the Silly Window Syndrome and how does Nagle's Algorithm address it on the sender side?",
+        "a": "Silly Window Syndrome occurs when data is exchanged in tiny 1-byte increments (e.g., Telnet keystrokes), causing massive 40-byte TCP/IP header overhead per byte of data. Nagle's Algorithm solves this on the sender: if a small chunk of data is ready to send, transmit it only if there is no unacknowledged in-flight data; otherwise, buffer outgoing bytes until either a full MSS accumulates or all previous in-flight packets are ACKed."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the critical difference between Flow Control and Congestion Control in TCP?",
         "a": "Flow Control is an end-to-end mechanism between sender and receiver; it prevents a fast sender from overflowing a slow receiver's local buffer, enforced via the receiver's advertised window (rwnd). Congestion Control is a global mechanism between sender and intermediate network routers; it prevents senders from injecting more traffic than network links and router buffers can handle, enforced via the congestion window (cwnd). Sender transmission limit = min(rwnd, cwnd)."
@@ -2188,6 +2671,7 @@
     "subject": "Python Internals",
     "topic": "Python Memory Model: Reference Counting, Generational Garbage Collection & Object Model",
     "lesson": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
+    "lecture": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
     "definitions": [
       {
         "term": "PyObject",
@@ -2203,6 +2687,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Explain how CPython's memory management handles circular references.",
+        "a": "Reference counting cannot collect circular references (e.g., two objects pointing to each other) because their reference counts never drop to zero. CPython solves this using a generational cyclic garbage collector (gc module). It tracks container objects (lists, dicts, custom classes), temporarily isolates their internal reference counts, decrements references within the subgraph, and identifies object groups with zero external incoming references. These unreachable subgraphs are then deallocated."
+      },
+      {
+        "q": "What is the Generational Hypothesis in garbage collection?",
+        "a": "The Generational Hypothesis observes that in almost all software systems, the vast majority of allocated objects are short-lived (e.g., local variables in function scopes) and die shortly after creation. CPython divides objects into 3 generations (0, 1, 2). Gen 0 is scanned frequently for quick collection; long-surviving objects are promoted to Gen 1 and Gen 2, which are scanned much less frequently, minimizing CPU overhead."
+      },
+      {
+        "q": "What is PyMalloc and why doesn't Python return all freed memory back to the operating system immediately?",
+        "a": "PyMalloc is CPython's custom memory allocator for objects <= 512 bytes, organizing memory into Arenas (256KB) and Pools (4KB). When Python objects are freed, memory is returned to the pool for reuse by future Python allocations rather than releasing it to the OS kernel via free(). The OS only reclaims memory when an entire 256KB arena becomes completely empty."
+      },
+      {
+        "q": "Why is `is` different from `==` in Python, and how does integer interning work?",
+        "a": "`==` checks for value equality (invoking `__eq__`), comparing whether two objects contain the same data. `is` checks for object identity (comparing memory addresses, `id(a) == id(b)`). CPython pre-allocates and interns small integers in the range [-5, 256] globally at startup. For integers in this range, `a = 10; b = 10; a is b` evaluates to True because both variables point to the exact same pre-allocated singleton PyObject in memory."
+      },
+      {
+        "q": "What are `__slots__` in Python classes and how do they optimize memory?",
+        "a": "By default, every Python instance stores its attributes in a dynamic dictionary (`self.__dict__`), which incurs substantial hash table memory overhead (~150-200 bytes per instance). Specifying `__slots__ = ('name', 'age')` in a class prevents the creation of `__dict__` and allocates a compact, fixed-size C array of attribute pointers, reducing memory consumption by over 60% when instantiating millions of objects."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Explain how CPython's memory management handles circular references.",
         "a": "Reference counting cannot collect circular references (e.g., two objects pointing to each other) because their reference counts never drop to zero. CPython solves this using a generational cyclic garbage collector (gc module). It tracks container objects (lists, dicts, custom classes), temporarily isolates their internal reference counts, decrements references within the subgraph, and identifies object groups with zero external incoming references. These unreachable subgraphs are then deallocated."
@@ -2292,6 +2798,7 @@
     "subject": "Python Internals",
     "topic": "Global Interpreter Lock (GIL), Threading vs Multiprocessing & AsyncIO Event Loop",
     "lesson": "Concurrency in Python is shaped by the Global Interpreter Lock (GIL).\n\nThe Global Interpreter Lock (GIL):\nThe GIL is a mutual-exclusion mutex used by CPython to prevent multiple native OS threads from executing Python bytecode simultaneously on multiple CPU cores. It was introduced to make CPython's memory management (reference count updates) thread-safe without adding fine-grained lock overhead to every single object.\n\nConcurrency Paradigms in Python:\n1. `threading` (Multi-Threading):\n- Native OS threads managed by the kernel, but constrained by the GIL.\n- CPU-Bound Tasks: Running multiple threads on CPU-heavy code provides ZERO speedup (and often slows down execution due to GIL contention).\n- I/O-Bound Tasks: Highly effective. When a thread performs network I/O, file reads, or sleep, CPython voluntarily releases the GIL, allowing other threads to execute concurrently.\n\n2. `multiprocessing` (Multi-Processing):\n- Spawns completely separate OS processes, each with its own independent Python interpreter, memory space, and GIL.\n- Enables true parallel execution across multi-core CPUs for CPU-bound tasks.\n- Inter-Process Communication (IPC) requires data serialization (`pickle`) over pipes or queues, incurring IPC overhead.\n\n3. `asyncio` (Cooperative Asynchronous I/O):\n- Single-threaded, single-process concurrency based on an Event Loop and Coroutines (`async def`, `await`).\n- Extremely lightweight (thousands of concurrent connections take minimal RAM). Coroutines cooperatively yield control back to the event loop during non-blocking socket operations.",
+    "lecture": "Concurrency in Python is shaped by the Global Interpreter Lock (GIL).\n\nThe Global Interpreter Lock (GIL):\nThe GIL is a mutual-exclusion mutex used by CPython to prevent multiple native OS threads from executing Python bytecode simultaneously on multiple CPU cores. It was introduced to make CPython's memory management (reference count updates) thread-safe without adding fine-grained lock overhead to every single object.\n\nConcurrency Paradigms in Python:\n1. `threading` (Multi-Threading):\n- Native OS threads managed by the kernel, but constrained by the GIL.\n- CPU-Bound Tasks: Running multiple threads on CPU-heavy code provides ZERO speedup (and often slows down execution due to GIL contention).\n- I/O-Bound Tasks: Highly effective. When a thread performs network I/O, file reads, or sleep, CPython voluntarily releases the GIL, allowing other threads to execute concurrently.\n\n2. `multiprocessing` (Multi-Processing):\n- Spawns completely separate OS processes, each with its own independent Python interpreter, memory space, and GIL.\n- Enables true parallel execution across multi-core CPUs for CPU-bound tasks.\n- Inter-Process Communication (IPC) requires data serialization (`pickle`) over pipes or queues, incurring IPC overhead.\n\n3. `asyncio` (Cooperative Asynchronous I/O):\n- Single-threaded, single-process concurrency based on an Event Loop and Coroutines (`async def`, `await`).\n- Extremely lightweight (thousands of concurrent connections take minimal RAM). Coroutines cooperatively yield control back to the event loop during non-blocking socket operations.",
     "definitions": [
       {
         "term": "Global Interpreter Lock (GIL)",
@@ -2307,6 +2814,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Why does Python have the GIL, and what are its trade-offs?",
+        "a": "CPython's memory management relies on reference counting (`ob_refcnt`). Without the GIL, every increment/decrement of a reference count would require thread synchronization locks, causing massive performance degradation in single-threaded programs and risking race condition memory corruptions. The GIL simplifies C extensions and guarantees thread-safe memory management, but prevents multi-threaded Python programs from executing CPU-bound code in parallel across multiple cores."
+      },
+      {
+        "q": "When should you use `threading`, `multiprocessing`, or `asyncio`?",
+        "a": "- Use `multiprocessing` for CPU-bound tasks (image processing, data science, mathematical simulations) to utilize multiple physical CPU cores in parallel. - Use `threading` for legacy I/O-bound tasks where libraries block synchronously (file system reads, synchronous database drivers). - Use `asyncio` for high-concurrency, network-heavy I/O-bound tasks (FastAPI servers, microservices, web scrapers) where tens of thousands of idle socket connections can be handled on a single thread with minimal RAM."
+      },
+      {
+        "q": "Does Python's GIL prevent race conditions in multi-threaded programs?",
+        "a": "No. The GIL only guarantees CPython internal interpreter memory safety (protecting reference counts and C pointers); it does NOT protect application-level shared state. In Python, an operation like `counter += 1` compiles to multiple bytecode instructions (LOAD_FAST, LOAD_CONST, BINARY_ADD, STORE_FAST). The thread can be context-switched between these instructions, producing race conditions. Programmers must still use `threading.Lock`."
+      },
+      {
+        "q": "How does an `asyncio` event loop differ from multi-threading?",
+        "a": "Multi-threading uses preemptive scheduling where the OS kernel arbitrarily interrupts threads at any instruction. `asyncio` uses cooperative multitasking on a single thread: coroutines yield execution control explicitly using `await`. Because only one coroutine executes at any millisecond, there is zero thread context-switch overhead and no shared-memory race conditions during synchronous blocks."
+      },
+      {
+        "q": "What happens if you execute a blocking synchronous operation (like `time.sleep(5)`) inside an `asyncio` coroutine?",
+        "a": "Because `asyncio` runs on a single thread, a blocking synchronous call halts the entire event loop. No other coroutines or tasks can execute or handle incoming network traffic during those 5 seconds. To run blocking operations safely in asyncio, you must offload them to a thread pool executor via `asyncio.to_thread(func)` or `loop.run_in_executor()`."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Why does Python have the GIL, and what are its trade-offs?",
         "a": "CPython's memory management relies on reference counting (`ob_refcnt`). Without the GIL, every increment/decrement of a reference count would require thread synchronization locks, causing massive performance degradation in single-threaded programs and risking race condition memory corruptions. The GIL simplifies C extensions and guarantees thread-safe memory management, but prevents multi-threaded Python programs from executing CPU-bound code in parallel across multiple cores."
@@ -2396,6 +2925,7 @@
     "subject": "Python Internals",
     "topic": "Python Advanced Patterns: Decorators, Generators, Iterators & Context Managers",
     "lesson": "Python's expressive syntax is built upon first-class functions and standard protocols.\n\n1. Decorators:\nA decorator is a higher-order function that takes a function as input, extends its behavior without modifying source code, and returns a callable: `@my_decorator def func(): ...` translates directly to `func = my_decorator(func)`. Always apply `@functools.wraps(func)` to preserve original docstrings, names, and argument signatures.\n\n2. Iterators & Iterable Protocol:\n- An Iterable implements `__iter__()` returning an Iterator.\n- An Iterator implements `__next__()` returning successive items, raising `StopIteration` when exhausted. Every iterator is also an iterable returning itself in `__iter__()`.\n\n3. Generators (`yield`):\nA generator is a function containing the `yield` keyword. Calling it returns a generator object without running the body. Execution resumes only when `next()` is called, pausing at `yield` and preserving local stack frames in heap memory. Provides Lazy Evaluation: streams infinite or multi-gigabyte datasets with O(1) memory footprint.\n\n4. Context Managers (`with` statement):\nGuarantees deterministic resource acquisition and release (e.g., closing file handles or database connections even if exceptions occur). Implements the Context Management Protocol:\n- `__enter__(self)`: Acquires resource and returns target to `as` variable.\n- `__exit__(self, exc_type, exc_val, exc_tb)`: Executes cleanup. Returning True suppresses raised exceptions.",
+    "lecture": "Python's expressive syntax is built upon first-class functions and standard protocols.\n\n1. Decorators:\nA decorator is a higher-order function that takes a function as input, extends its behavior without modifying source code, and returns a callable: `@my_decorator def func(): ...` translates directly to `func = my_decorator(func)`. Always apply `@functools.wraps(func)` to preserve original docstrings, names, and argument signatures.\n\n2. Iterators & Iterable Protocol:\n- An Iterable implements `__iter__()` returning an Iterator.\n- An Iterator implements `__next__()` returning successive items, raising `StopIteration` when exhausted. Every iterator is also an iterable returning itself in `__iter__()`.\n\n3. Generators (`yield`):\nA generator is a function containing the `yield` keyword. Calling it returns a generator object without running the body. Execution resumes only when `next()` is called, pausing at `yield` and preserving local stack frames in heap memory. Provides Lazy Evaluation: streams infinite or multi-gigabyte datasets with O(1) memory footprint.\n\n4. Context Managers (`with` statement):\nGuarantees deterministic resource acquisition and release (e.g., closing file handles or database connections even if exceptions occur). Implements the Context Management Protocol:\n- `__enter__(self)`: Acquires resource and returns target to `as` variable.\n- `__exit__(self, exc_type, exc_val, exc_tb)`: Executes cleanup. Returning True suppresses raised exceptions.",
     "definitions": [
       {
         "term": "Decorator",
@@ -2411,6 +2941,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "How do Decorators work in Python, and why is `functools.wraps` essential?",
+        "a": "A decorator takes a function as an argument, wraps it inside an inner wrapper function that adds pre/post execution logic, and returns the wrapper. Without `@functools.wraps(original_func)`, the decorated function's metadata (`__name__`, `__doc__`, module, annotations) is overwritten by the wrapper's metadata, breaking reflection, debugging, and documentation tools like Swagger/FastAPI."
+      },
+      {
+        "q": "What is the difference between a Generator and a standard List in Python?",
+        "a": "A list calculates and allocates all elements in memory simultaneously at creation time (O(N) space). A generator uses lazy evaluation: it computes the next value only when requested via `next()` or a for loop, yielding one item at a time and maintaining internal execution state in O(1) space. A generator reading a 10GB log file consumes negligible RAM."
+      },
+      {
+        "q": "Explain the difference between `__iter__` and `__next__`.",
+        "a": "`__iter__` must return an iterator object (an object that implements `__next__`). `__next__` retrieves the next value in the iteration sequence and raises `StopIteration` when elements are exhausted. An iterable only needs `__iter__`; an iterator must implement both `__iter__` (returning `self`) and `__next__`."
+      },
+      {
+        "q": "How does the Context Manager protocol work, and what do the arguments to `__exit__` represent?",
+        "a": "When entering a `with` block, Python calls `__enter__()`. Upon leaving the block (normally or via exception), Python calls `__exit__(exc_type, exc_val, exc_tb)`. If no exception occurred, all three arguments are None. If an exception occurred, they contain the exception class, exception instance, and traceback. If `__exit__` returns True, the exception is swallowed; otherwise, it propagates normally."
+      },
+      {
+        "q": "How does `contextlib.contextmanager` simplify creating context managers?",
+        "a": "It allows creating a context manager using a single generator function with `yield` instead of writing a full class with `__enter__` and `__exit__`. Code before `yield` runs during `__enter__`, the yielded value is bound to the `as` variable, and code inside `finally:` after `yield` runs automatically during `__exit__`."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "How do Decorators work in Python, and why is `functools.wraps` essential?",
         "a": "A decorator takes a function as an argument, wraps it inside an inner wrapper function that adds pre/post execution logic, and returns the wrapper. Without `@functools.wraps(original_func)`, the decorated function's metadata (`__name__`, `__doc__`, module, annotations) is overwritten by the wrapper's metadata, breaking reflection, debugging, and documentation tools like Swagger/FastAPI."
@@ -2500,6 +3052,7 @@
     "subject": "Python Internals",
     "topic": "Object-Oriented Python: Dunder Methods, MRO (C3 Linearization) & Metaclasses",
     "lesson": "Object-oriented programming in Python is dynamic and extensible through special 'dunder' (double underscore) magic methods.\n\nCore Dunder Methods:\n- `__new__(cls, ...)`: Responsible for physically creating and returning a new instance in memory. Runs before `__init__` (used in Singletons and immutable types).\n- `__init__(self, ...)`: Initializes instance attributes on the already-created object.\n- `__repr__` vs `__str__`: `__repr__` provides an unambiguous developer representation (`eval(repr(x)) == x`); `__str__` provides a readable end-user string.\n- `__call__`: Allows an object instance to be invoked as a function: `obj()`.\n- `__eq__`, `__hash__`: Dict keys and sets require hashable objects. If a class overrides `__eq__`, Python sets `__hash__ = None` unless explicitly implemented.\n\nMultiple Inheritance & Method Resolution Order (MRO):\nWhen multiple base classes exist (e.g., class D(B, C)), Python resolves attribute lookups using the C3 Linearization Algorithm.\nProperties of C3 Linearization:\n1. Children precede their parents (Local Precedence Order).\n2. Base class declaration order is strictly preserved.\n3. Monotonicity: A class always appears before its superclasses in every subclass MRO.\nInspectable via `ClassName.__mro__` or `ClassName.mro()`.\n\n`super()` Behavior:\n`super()` does NOT necessarily call the immediate parent class; it delegates to the NEXT class in the dynamic MRO chain, enabling cooperative multi-inheritance without duplicate calls in diamond inheritance hierarchies.",
+    "lecture": "Object-oriented programming in Python is dynamic and extensible through special 'dunder' (double underscore) magic methods.\n\nCore Dunder Methods:\n- `__new__(cls, ...)`: Responsible for physically creating and returning a new instance in memory. Runs before `__init__` (used in Singletons and immutable types).\n- `__init__(self, ...)`: Initializes instance attributes on the already-created object.\n- `__repr__` vs `__str__`: `__repr__` provides an unambiguous developer representation (`eval(repr(x)) == x`); `__str__` provides a readable end-user string.\n- `__call__`: Allows an object instance to be invoked as a function: `obj()`.\n- `__eq__`, `__hash__`: Dict keys and sets require hashable objects. If a class overrides `__eq__`, Python sets `__hash__ = None` unless explicitly implemented.\n\nMultiple Inheritance & Method Resolution Order (MRO):\nWhen multiple base classes exist (e.g., class D(B, C)), Python resolves attribute lookups using the C3 Linearization Algorithm.\nProperties of C3 Linearization:\n1. Children precede their parents (Local Precedence Order).\n2. Base class declaration order is strictly preserved.\n3. Monotonicity: A class always appears before its superclasses in every subclass MRO.\nInspectable via `ClassName.__mro__` or `ClassName.mro()`.\n\n`super()` Behavior:\n`super()` does NOT necessarily call the immediate parent class; it delegates to the NEXT class in the dynamic MRO chain, enabling cooperative multi-inheritance without duplicate calls in diamond inheritance hierarchies.",
     "definitions": [
       {
         "term": "Method Resolution Order (MRO)",
@@ -2515,6 +3068,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the difference between `__new__` and `__init__` in Python?",
+        "a": "`__new__` is the actual instance creator; it is a static method taking the class `cls` as its first parameter and must return a newly created object instance (usually via `super().__new__(cls)`). `__init__` is the instance initializer; it takes the newly created instance `self` and populates attributes, returning nothing (`None`). `__new__` is used when subclassing immutable types (int, str, tuple) or implementing the Singleton design pattern."
+      },
+      {
+        "q": "How does Python solve the Diamond Problem in multiple inheritance?",
+        "a": "In a diamond inheritance (Class D inherits from B and C, both inheriting from A), Python uses the C3 Linearization algorithm to compute a single linear Method Resolution Order (MRO: D -> B -> C -> A -> object). Calls to `super()` follow this exact linear sequence, guaranteeing that base class A's method is executed exactly once without duplicate calls."
+      },
+      {
+        "q": "What is the difference between `__str__` and `__repr__`?",
+        "a": "`__repr__` is intended for developers and debugging; its output should ideally be unambiguous and look like valid Python code to recreate the object (`eval(repr(x)) == x`). `__str__` is intended for end-users, providing a readable string representation. If `__str__` is not defined, Python falls back to `__repr__`."
+      },
+      {
+        "q": "Why must an object be immutable to be used as a dictionary key or set element?",
+        "a": "Dictionary lookups rely on hash tables where key positions are determined by `hash(key)`. If an object were mutable (like a list) and its contents changed after being inserted into a dict, its hash value would change. The dictionary would then search for the key in a different hash bucket, making the item unfindable. Thus, dict keys must be hashable and immutable."
+      },
+      {
+        "q": "What is a Metaclass in Python and give a real-world use case?",
+        "a": "A metaclass is the 'class of a class'—just as an object is an instance of a class, a class is an instance of a metaclass (by default, `type`). Metaclasses allow intercepting and modifying class definition construction at import time. Real-world use cases include ORMs (like SQLAlchemy or Django Models) and validation frameworks (like Pydantic v1), where field declarations are parsed into SQL columns or validation schemas before instantiation."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the difference between `__new__` and `__init__` in Python?",
         "a": "`__new__` is the actual instance creator; it is a static method taking the class `cls` as its first parameter and must return a newly created object instance (usually via `super().__new__(cls)`). `__init__` is the instance initializer; it takes the newly created instance `self` and populates attributes, returning nothing (`None`). `__new__` is used when subclassing immutable types (int, str, tuple) or implementing the Singleton design pattern."
@@ -2604,6 +3179,7 @@
     "subject": "Python Internals",
     "topic": "RESTful API Design, ASGI Architectures & FastAPI Internals",
     "lesson": "Modern backend architectures rely on REST principles and asynchronous gateway interfaces.\n\nREST Architectural Constraints (Roy Fielding):\n1. Client-Server Architecture: Separation of concerns between UI client and backend data storage.\n2. Statelessness: Each request from client to server must contain all information required to understand and service the request; no session context on server.\n3. Cacheability: Responses must explicitly label themselves as cacheable or non-cacheable (via `Cache-Control` headers).\n4. Uniform Interface: Standard HTTP methods (GET: safe & idempotent, POST: non-idempotent, PUT: idempotent replacement, PATCH: partial update, DELETE: idempotent).\n5. Layered System: Client cannot distinguish whether it connects directly to end server or intermediate proxy/load balancer.\n\nWSGI vs ASGI Architectures:\n- WSGI (Web Server Gateway Interface): Synchronous Python standard (`def app(environ, start_response)`). Each request consumes an OS thread; cannot handle WebSockets or long polling.\n- ASGI (Asynchronous Server Gateway Interface): Asynchronous successor (`async def app(scope, receive, send)`). Event-driven architecture natively supporting HTTP/2, WebSockets, and long-lived streaming connections (Uvicorn, Hypercorn).\n\nFastAPI Framework Mechanics:\nFastAPI is built on Starlette (ASGI toolkit) and Pydantic (data validation via Python type annotations). Route parameters are parsed into Pydantic models with automatic JSON schema generation (`/docs` OpenAPI/Swagger). FastAPI handles concurrency smartly: endpoints defined with `async def` run on the main asyncio event loop; endpoints defined with standard `def` are automatically offloaded to an external thread pool (`anyio` worker threads) to prevent blocking the event loop.",
+    "lecture": "Modern backend architectures rely on REST principles and asynchronous gateway interfaces.\n\nREST Architectural Constraints (Roy Fielding):\n1. Client-Server Architecture: Separation of concerns between UI client and backend data storage.\n2. Statelessness: Each request from client to server must contain all information required to understand and service the request; no session context on server.\n3. Cacheability: Responses must explicitly label themselves as cacheable or non-cacheable (via `Cache-Control` headers).\n4. Uniform Interface: Standard HTTP methods (GET: safe & idempotent, POST: non-idempotent, PUT: idempotent replacement, PATCH: partial update, DELETE: idempotent).\n5. Layered System: Client cannot distinguish whether it connects directly to end server or intermediate proxy/load balancer.\n\nWSGI vs ASGI Architectures:\n- WSGI (Web Server Gateway Interface): Synchronous Python standard (`def app(environ, start_response)`). Each request consumes an OS thread; cannot handle WebSockets or long polling.\n- ASGI (Asynchronous Server Gateway Interface): Asynchronous successor (`async def app(scope, receive, send)`). Event-driven architecture natively supporting HTTP/2, WebSockets, and long-lived streaming connections (Uvicorn, Hypercorn).\n\nFastAPI Framework Mechanics:\nFastAPI is built on Starlette (ASGI toolkit) and Pydantic (data validation via Python type annotations). Route parameters are parsed into Pydantic models with automatic JSON schema generation (`/docs` OpenAPI/Swagger). FastAPI handles concurrency smartly: endpoints defined with `async def` run on the main asyncio event loop; endpoints defined with standard `def` are automatically offloaded to an external thread pool (`anyio` worker threads) to prevent blocking the event loop.",
     "definitions": [
       {
         "term": "ASGI",
@@ -2619,6 +3195,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the difference between an Idempotent and a Safe HTTP method?",
+        "a": "A Safe method (like GET or HEAD) does not alter server resource state (read-only). An Idempotent method (like PUT or DELETE) can alter server state, but making the exact same request multiple times produces the identical server state as making it once (e.g., DELETE /students/5 removes student 5; repeating it still leaves student 5 removed). POST is neither safe nor idempotent because multiple POSTs create multiple separate records."
+      },
+      {
+        "q": "Compare WSGI (e.g., Flask/Django) and ASGI (e.g., FastAPI/Starlette).",
+        "a": "WSGI is synchronous and blocking; each incoming request binds an entire operating system thread. It cannot natively support persistent WebSockets, server-sent events, or asynchronous event loops. ASGI is asynchronous and non-blocking, designed for `asyncio`. It handles thousands of concurrent long-lived connections, HTTP/2, and WebSockets on a single thread using an event loop with minimal memory overhead."
+      },
+      {
+        "q": "How does FastAPI handle `async def` routes vs standard `def` routes differently?",
+        "a": "If you define a route with `async def`, FastAPI executes it directly on the main `asyncio` event loop; any blocking call inside it freezes the entire server. If you define a route with standard `def`, FastAPI automatically runs it inside a background thread pool (AnyIO worker threads) so that blocking synchronous operations (like legacy database queries) do not block the event loop."
+      },
+      {
+        "q": "What is the difference between PUT and PATCH in RESTful APIs?",
+        "a": "PUT performs a complete replacement of the target resource; the request payload must contain the entire updated entity, and omitted fields are typically reset to null or defaults. PATCH performs a partial update; only the specific fields provided in the request payload are modified, leaving all other existing entity attributes unchanged."
+      },
+      {
+        "q": "What is Dependency Injection in FastAPI and how does `Depends()` function?",
+        "a": "Dependency Injection decouples shared logic (database sessions, authentication, permission checks) from route handlers. In FastAPI, `Depends(get_db)` declares a dependency. When a request arrives, FastAPI resolves `get_db`, injects its return value (e.g., active Supabase/SQLAlchemy session) into the route function parameter, and guarantees execution of cleanup/close logic in `finally:` after the response is sent."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the difference between an Idempotent and a Safe HTTP method?",
         "a": "A Safe method (like GET or HEAD) does not alter server resource state (read-only). An Idempotent method (like PUT or DELETE) can alter server state, but making the exact same request multiple times produces the identical server state as making it once (e.g., DELETE /students/5 removes student 5; repeating it still leaves student 5 removed). POST is neither safe nor idempotent because multiple POSTs create multiple separate records."
@@ -2708,6 +3306,7 @@
     "subject": "System Design",
     "topic": "Scalability, High Availability, Load Balancing & Consistent Hashing",
     "lesson": "System design is the process of architecting scalable, reliable, and maintainable software systems serving millions of users.\n\nVertical vs Horizontal Scaling:\n- Vertical Scaling (Scale Up): Adding more CPU, RAM, or disk to a single machine. Hard physical limits, expensive, single point of failure (SPOF).\n- Horizontal Scaling (Scale Out): Adding more commodity machines to a cluster. Requires stateless application layers and distributed data storage.\n\nLoad Balancing Algorithms:\nLoad balancers (NGINX, HAProxy, AWS ALB) distribute incoming network traffic across backend server pools:\n1. Round Robin: Distributes requests sequentially across servers.\n2. Least Connections: Routes traffic to the server with fewest active connections (ideal for long-lived sessions).\n3. IP Hash: Hashes client IP to ensure session stickiness without server-side shared state.\nOperates at Layer 4 (Transport/TCP: fast, byte-level routing) or Layer 7 (Application/HTTP: smart routing based on URI, cookies, headers).\n\nConsistent Hashing:\nTraditional hash routing (`server = hash(key) % N`) causes catastrophic cache invalidation when server count N changes (almost 100% of keys remap). Consistent Hashing maps both servers and keys onto a virtual circular 360-degree ring (Hash Ring). A key is assigned to the first server encountered clockwise. When a server is added or removed, ONLY K/N keys are remapped on average. Virtual Nodes (vnodes) replicate each physical server across multiple ring positions, preventing hotspot skew and ensuring uniform data distribution.",
+    "lecture": "System design is the process of architecting scalable, reliable, and maintainable software systems serving millions of users.\n\nVertical vs Horizontal Scaling:\n- Vertical Scaling (Scale Up): Adding more CPU, RAM, or disk to a single machine. Hard physical limits, expensive, single point of failure (SPOF).\n- Horizontal Scaling (Scale Out): Adding more commodity machines to a cluster. Requires stateless application layers and distributed data storage.\n\nLoad Balancing Algorithms:\nLoad balancers (NGINX, HAProxy, AWS ALB) distribute incoming network traffic across backend server pools:\n1. Round Robin: Distributes requests sequentially across servers.\n2. Least Connections: Routes traffic to the server with fewest active connections (ideal for long-lived sessions).\n3. IP Hash: Hashes client IP to ensure session stickiness without server-side shared state.\nOperates at Layer 4 (Transport/TCP: fast, byte-level routing) or Layer 7 (Application/HTTP: smart routing based on URI, cookies, headers).\n\nConsistent Hashing:\nTraditional hash routing (`server = hash(key) % N`) causes catastrophic cache invalidation when server count N changes (almost 100% of keys remap). Consistent Hashing maps both servers and keys onto a virtual circular 360-degree ring (Hash Ring). A key is assigned to the first server encountered clockwise. When a server is added or removed, ONLY K/N keys are remapped on average. Virtual Nodes (vnodes) replicate each physical server across multiple ring positions, preventing hotspot skew and ensuring uniform data distribution.",
     "definitions": [
       {
         "term": "Horizontal Scaling",
@@ -2723,6 +3322,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What problem does Consistent Hashing solve in distributed caching and storage?",
+        "a": "In a distributed system using standard modulo hashing `server = hash(key) % N`, adding or removing a single server changes N, causing nearly 100% of all cached keys to remap to different servers. This triggers a catastrophic cache avalanche where the underlying database is swamped with requests. Consistent Hashing maps both keys and servers to a circular 2^32 hash ring. Adding or removing a server remaps only K/N keys (where K is total keys, N is server count), localizing redistribution."
+      },
+      {
+        "q": "What are Virtual Nodes in Consistent Hashing, and why are they necessary?",
+        "a": "Without virtual nodes, physical servers placed randomly on the hash ring can lead to non-uniform, highly unequal partition sizes, creating Hotspots where one server receives 80% of traffic. Virtual nodes assign multiple (e.g., 100-200) distinct hash labels across the ring for each physical machine, smoothing out variance and ensuring uniformly balanced load."
+      },
+      {
+        "q": "Explain the difference between Layer 4 and Layer 7 Load Balancing.",
+        "a": "Layer 4 load balancing operates at the Transport layer (TCP/UDP); it inspects only IP addresses and port numbers, forwarding raw packets without decrypting TLS or inspecting HTTP content (ultra-fast, low CPU). Layer 7 load balancing operates at the Application layer (HTTP/HTTPS); it can inspect URLs, HTTP headers, cookies, and POST bodies, allowing content-based routing (e.g., `/api/payments` routes to payment cluster, `/static` routes to CDN) and TLS termination."
+      },
+      {
+        "q": "What is a Single Point of Failure (SPOF) and how do redundancy and failover eliminate it?",
+        "a": "A SPOF is any single component whose failure brings down the entire system. It is eliminated through Redundancy (deploying duplicate active or passive components) paired with Automated Failover. For example, deploying redundant load balancers using VRRP / Keepalived with a shared floating IP ensures that if the primary load balancer crashes, the backup takes over the IP within milliseconds."
+      },
+      {
+        "q": "What is the difference between High Availability (HA) and Fault Tolerance?",
+        "a": "High Availability aims to minimize downtime across a system (e.g., '99.999% uptime', allowing ~5 minutes of downtime per year) through rapid automated recovery and failover. Fault Tolerance guarantees zero interruption or degradation of service even when hardware components fail, typically requiring fully synchronized duplicate hardware executing lockstep."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What problem does Consistent Hashing solve in distributed caching and storage?",
         "a": "In a distributed system using standard modulo hashing `server = hash(key) % N`, adding or removing a single server changes N, causing nearly 100% of all cached keys to remap to different servers. This triggers a catastrophic cache avalanche where the underlying database is swamped with requests. Consistent Hashing maps both keys and servers to a circular 2^32 hash ring. Adding or removing a server remaps only K/N keys (where K is total keys, N is server count), localizing redistribution."
@@ -2812,6 +3433,7 @@
     "subject": "System Design",
     "topic": "Caching Strategies, Cache Invalidation, Eviction Policies & Redis",
     "lesson": "Caching stores copies of frequently accessed data in fast, volatile memory (RAM) to minimize disk and database I/O latency.\n\nCaching Patterns:\n1. Cache-Aside (Lazy Loading): The application first queries the cache. On Cache Hit, return data. On Cache Miss, query the database, write the data into the cache, and return it. Highly resilient (cache failure does not break the app), but data can become stale.\n2. Read-Through: Application treats cache as main data store; the cache provider automatically fetches missing data from DB on misses.\n3. Write-Through: Data is written to cache AND database synchronously before acknowledging write. High consistency, higher write latency.\n4. Write-Behind (Write-Back): Data is written directly to cache and acknowledged immediately; the cache asynchronously batches writes to DB. Ultra-fast write throughput, but risks data loss if the cache node crashes before flushing.\n\nCache Invalidation & Problems:\n- Cache Invalidation: 'There are only two hard things in Computer Science: cache invalidation and naming things' (Phil Karlton). Handled via TTL (Time-To-Live) and event-based purge.\n- Cache Penetration: Queries for non-existent keys miss cache and repeatedly hit DB. Solved using Bloom Filters or caching null values.\n- Cache Breakdown (Stampede): A popular key with high traffic expires; thousands of concurrent requests simultaneously hit DB. Solved with Mutex Locks on cache misses.\n- Cache Avalanche: Thousands of cached keys share identical TTL and expire at the exact same second. Solved by adding random jitter to TTLs.\n\nEviction Policies: LRU (Least Recently Used), LFU (Least Frequently Used), FIFO.",
+    "lecture": "Caching stores copies of frequently accessed data in fast, volatile memory (RAM) to minimize disk and database I/O latency.\n\nCaching Patterns:\n1. Cache-Aside (Lazy Loading): The application first queries the cache. On Cache Hit, return data. On Cache Miss, query the database, write the data into the cache, and return it. Highly resilient (cache failure does not break the app), but data can become stale.\n2. Read-Through: Application treats cache as main data store; the cache provider automatically fetches missing data from DB on misses.\n3. Write-Through: Data is written to cache AND database synchronously before acknowledging write. High consistency, higher write latency.\n4. Write-Behind (Write-Back): Data is written directly to cache and acknowledged immediately; the cache asynchronously batches writes to DB. Ultra-fast write throughput, but risks data loss if the cache node crashes before flushing.\n\nCache Invalidation & Problems:\n- Cache Invalidation: 'There are only two hard things in Computer Science: cache invalidation and naming things' (Phil Karlton). Handled via TTL (Time-To-Live) and event-based purge.\n- Cache Penetration: Queries for non-existent keys miss cache and repeatedly hit DB. Solved using Bloom Filters or caching null values.\n- Cache Breakdown (Stampede): A popular key with high traffic expires; thousands of concurrent requests simultaneously hit DB. Solved with Mutex Locks on cache misses.\n- Cache Avalanche: Thousands of cached keys share identical TTL and expire at the exact same second. Solved by adding random jitter to TTLs.\n\nEviction Policies: LRU (Least Recently Used), LFU (Least Frequently Used), FIFO.",
     "definitions": [
       {
         "term": "Cache-Aside",
@@ -2827,6 +3449,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "What is the difference between Cache-Aside and Write-Through caching strategies?",
+        "a": "In Cache-Aside, the application code directly orchestrates caching: it queries the cache, fetches from DB on a miss, and populates the cache. Writes go directly to the DB and invalidate the cache key. In Write-Through, the application writes exclusively to the cache; the cache infrastructure synchronously writes to the database before returning success. Write-Through ensures cache-DB consistency but increases write latency."
+      },
+      {
+        "q": "Explain Cache Avalanche, Cache Penetration, and Cache Breakdown, along with their solutions.",
+        "a": "1. Cache Avalanche: Massive numbers of keys expire simultaneously, overwhelming the DB. Solution: Add random jitter (e.g., TTL = base + rand(0, 300)s). 2. Cache Penetration: Clients query keys that do not exist in cache or DB (e.g., malicious IDs). Solution: Use Bloom Filters to reject non-existent keys, or cache empty NULL results with short TTL. 3. Cache Breakdown (Stampede): A single mega-popular hot key expires, and thousands of concurrent requests hit the DB. Solution: Use distributed mutex locking so only the first request queries DB while others wait."
+      },
+      {
+        "q": "How does a Bloom Filter work and why is it useful in front of a database?",
+        "a": "A Bloom Filter is a space-efficient probabilistic bit array. An item is hashed by k independent hash functions, setting corresponding bits to 1. To check membership, the bits are checked: if ANY bit is 0, the item is DEFINITELY NOT in the set (zero false negatives). If all bits are 1, the item is PROBABLY in the set (small false positive rate). Placing it in front of a DB prevents costly disk lookups for non-existent user IDs or URLs."
+      },
+      {
+        "q": "What is the difference between LRU and LFU cache eviction policies?",
+        "a": "LRU (Least Recently Used) evicts the item that has not been accessed for the longest duration of time, implemented via a Doubly Linked List paired with a Hash Map (O(1) access and update). LFU (Least Frequently Used) tracks access frequency counts and evicts the item with the lowest hit counter, which is ideal when certain static assets are accessed frequently over long time horizons."
+      },
+      {
+        "q": "Why is Redis preferred as a distributed cache over Memcached in modern architectures?",
+        "a": "Memcached is a multithreaded simple key-value string store. Redis is an in-memory data structures store supporting rich data types (Strings, Hashes, Lists, Sets, Sorted Sets, Bitmaps, HyperLogLogs), disk persistence (RDB snapshots and AOF logs), built-in replication, clustering, pub/sub messaging, and atomic Lua scripting."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "What is the difference between Cache-Aside and Write-Through caching strategies?",
         "a": "In Cache-Aside, the application code directly orchestrates caching: it queries the cache, fetches from DB on a miss, and populates the cache. Writes go directly to the DB and invalidate the cache key. In Write-Through, the application writes exclusively to the cache; the cache infrastructure synchronously writes to the database before returning success. Write-Through ensures cache-DB consistency but increases write latency."
@@ -2916,6 +3560,7 @@
     "subject": "System Design",
     "topic": "Database Scaling: Replication, Sharding, CAP Theorem & PACELC",
     "lesson": "When databases outgrow a single server, distributed architectures scale read and write throughput.\n\nReplication (Scaling Reads):\n- Primary-Replica (Master-Slave): All writes go to the Primary node. The Primary streams replication logs to Replicas (Read Slaves). Reads are distributed across Replicas. If Primary fails, a Replica is promoted.\n- Synchronous Replication: Primary waits for replicas to confirm write before returning success (strong consistency, higher latency).\n- Asynchronous Replication: Primary returns immediately after local write; replicas lag slightly (Replication Lag), risking data loss on sudden primary crash.\n\nDatabase Sharding (Scaling Writes):\nHorizontal partitioning: splitting rows of a table across multiple independent physical database instances (Shards). Partitioned by Shard Key (e.g., hash(user_id) % num_shards). Challenges: Cross-shard joins are extremely slow, distributed transactions require Two-Phase Commit (2PC), and resharding requires rebalancing.\n\nThe CAP Theorem (Eric Brewer):\nA distributed data system can simultaneously provide at most TWO of the following three guarantees:\n1. Consistency (C): Every read receives the most recent write or an error (linearizability).\n2. Availability (A): Every non-failing node returns a non-error response (without guaranteeing latest data).\n3. Partition Tolerance (P): The system continues functioning despite dropped or delayed network packets between nodes.\nBecause network cables and switches inevitably fail in physical distributed systems, Partition Tolerance (P) is non-negotiable. Systems must choose between CP (Consistency over Availability, e.g., Spanner, MongoDB, HBase) or AP (Availability over Consistency, e.g., Cassandra, DynamoDB).\n\nThe PACELC Theorem:\nExpands CAP: If there is a Partition (P), how does system trade off Availability (A) and Consistency (C); Else (E), how does system trade off Latency (L) and Consistency (C)? (e.g., DynamoDB is PA/EL).",
+    "lecture": "When databases outgrow a single server, distributed architectures scale read and write throughput.\n\nReplication (Scaling Reads):\n- Primary-Replica (Master-Slave): All writes go to the Primary node. The Primary streams replication logs to Replicas (Read Slaves). Reads are distributed across Replicas. If Primary fails, a Replica is promoted.\n- Synchronous Replication: Primary waits for replicas to confirm write before returning success (strong consistency, higher latency).\n- Asynchronous Replication: Primary returns immediately after local write; replicas lag slightly (Replication Lag), risking data loss on sudden primary crash.\n\nDatabase Sharding (Scaling Writes):\nHorizontal partitioning: splitting rows of a table across multiple independent physical database instances (Shards). Partitioned by Shard Key (e.g., hash(user_id) % num_shards). Challenges: Cross-shard joins are extremely slow, distributed transactions require Two-Phase Commit (2PC), and resharding requires rebalancing.\n\nThe CAP Theorem (Eric Brewer):\nA distributed data system can simultaneously provide at most TWO of the following three guarantees:\n1. Consistency (C): Every read receives the most recent write or an error (linearizability).\n2. Availability (A): Every non-failing node returns a non-error response (without guaranteeing latest data).\n3. Partition Tolerance (P): The system continues functioning despite dropped or delayed network packets between nodes.\nBecause network cables and switches inevitably fail in physical distributed systems, Partition Tolerance (P) is non-negotiable. Systems must choose between CP (Consistency over Availability, e.g., Spanner, MongoDB, HBase) or AP (Availability over Consistency, e.g., Cassandra, DynamoDB).\n\nThe PACELC Theorem:\nExpands CAP: If there is a Partition (P), how does system trade off Availability (A) and Consistency (C); Else (E), how does system trade off Latency (L) and Consistency (C)? (e.g., DynamoDB is PA/EL).",
     "definitions": [
       {
         "term": "Sharding",
@@ -2931,6 +3576,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Why is 'CA' (Consistency + Availability without Partition Tolerance) practically impossible in distributed systems?",
+        "a": "In any real-world distributed physical network, network cables can be severed, switches can fail, or routers can drop packets (Network Partition). When two nodes cannot communicate, if a write occurs on Node 1: the system can either 1) Reject the write or block reads on Node 2 to preserve Consistency (CP), sacrificing Availability; or 2) Accept the write and allow Node 2 to serve stale reads to preserve Availability (AP), sacrificing Consistency. Because network partitions cannot be prevented, a distributed system must choose between CP and AP."
+      },
+      {
+        "q": "What is Database Sharding and what are its major architectural challenges?",
+        "a": "Sharding is horizontal partitioning: splitting rows of a large database across multiple independent servers using a Shard Key (e.g., hash(user_id) % num_shards). Major challenges: 1. Cross-shard JOINs: Queries joining tables across different shards become prohibitively slow and must be executed in application code. 2. Cross-shard Transactions: Enforcing ACID across shards requires slow Two-Phase Commit (2PC). 3. Hotspot Shards: Unequal distribution of active users can overwhelm a single shard. 4. Resharding: Adding shards requires costly data migration."
+      },
+      {
+        "q": "Explain Replication Lag and how to prevent users from seeing their own stale writes.",
+        "a": "In asynchronous primary-replica architectures, writes commit to the primary and stream asynchronously to replicas. If a replica lags by 500ms and a user updates their profile and immediately refreshes the page (routed to the replica), they see their old profile. Solution ('Read-Your-Own-Writes' consistency): Route read requests for recently updated data directly to the Primary for a short window (e.g., 5 seconds after a user edit), while routing generic reads to replicas."
+      },
+      {
+        "q": "What is the PACELC theorem and how does it extend the CAP theorem?",
+        "a": "CAP only describes system behavior when a network partition occurs. PACELC states: If there is a Partition (P), trade off Availability (A) vs Consistency (C); ELSE (E), during normal fault-free operation, trade off Latency (L) vs Consistency (C). For example, MongoDB chooses PC/EC (prefers consistency always), whereas Amazon DynamoDB chooses PA/EL (prefers availability and low latency always)."
+      },
+      {
+        "q": "What is Eventual Consistency and what is a Vector Clock?",
+        "a": "Eventual consistency guarantees that in the absence of new updates, all replicas will eventually synchronize and return the identical value. Vector Clocks are arrays of logical timestamps maintained by distributed nodes to track causal relationships between updates and detect conflicting concurrent writes without relying on synchronized physical wall-clock times."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Why is 'CA' (Consistency + Availability without Partition Tolerance) practically impossible in distributed systems?",
         "a": "In any real-world distributed physical network, network cables can be severed, switches can fail, or routers can drop packets (Network Partition). When two nodes cannot communicate, if a write occurs on Node 1: the system can either 1) Reject the write or block reads on Node 2 to preserve Consistency (CP), sacrificing Availability; or 2) Accept the write and allow Node 2 to serve stale reads to preserve Availability (AP), sacrificing Consistency. Because network partitions cannot be prevented, a distributed system must choose between CP and AP."
@@ -3020,6 +3687,7 @@
     "subject": "System Design",
     "topic": "System Design Interview Blueprint: URL Shortener & API Rate Limiter",
     "lesson": "Senior placement interviews evaluate architectural problem-solving through end-to-end design problems.\n\nSystem Design 4-Step Framework:\n1. Scope & Requirements: Clarify functional requirements, non-functional requirements (throughput, latency, availability), and back-of-the-envelope calculations.\n2. High-Level Design: Define API endpoints, core services, database schema, and high-level data flow diagrams.\n3. Deep-Dive Design: Address bottlenecks, data partitioning, caching, fault tolerance, and concurrency.\n4. Wrap-up: Discuss failure modes, monitoring, and telemetry.\n\nCase 1: Scalable URL Shortener (Bitly):\n- Requirements: Shorten long URL to 7-character alias (e.g., `bit.ly/3xZ9qL`); redirect short URL with HTTP 301/302; high read/write ratio (100:1).\n- Base62 Encoding: Characters [0-9, a-z, A-Z] (62 chars). A 7-character string supports 62^7 = 3.52 trillion unique URLs.\n- ID Generation: Do not use MD5/SHA256 truncation (hash collisions). Use distributed unique 64-bit integer ID generator (Twitter Snowflake or Ticket Server) and encode the integer directly into Base62.\n- Redirection: HTTP 301 (Permanent Redirect: browser caches redirect, reducing server load) vs HTTP 302 (Temporary: traffic passes through server for analytics).\n- Caching: Redis cluster caching top 20% hot URLs (80/20 Pareto principle).\n\nCase 2: API Rate Limiter:\n- Algorithms: Token Bucket (refills tokens at rate r, allows bursts), Leaky Bucket (smooth constant output rate via queue), Fixed Window Counter (vulnerable to 2x boundary spikes), Sliding Window Log (accurate, high memory), Sliding Window Counter (hybrid, memory efficient).\n- Architecture: Distributed Redis with Lua scripts (`EVAL`) executing atomic token decrement and TTL checks without race conditions.",
+    "lecture": "Senior placement interviews evaluate architectural problem-solving through end-to-end design problems.\n\nSystem Design 4-Step Framework:\n1. Scope & Requirements: Clarify functional requirements, non-functional requirements (throughput, latency, availability), and back-of-the-envelope calculations.\n2. High-Level Design: Define API endpoints, core services, database schema, and high-level data flow diagrams.\n3. Deep-Dive Design: Address bottlenecks, data partitioning, caching, fault tolerance, and concurrency.\n4. Wrap-up: Discuss failure modes, monitoring, and telemetry.\n\nCase 1: Scalable URL Shortener (Bitly):\n- Requirements: Shorten long URL to 7-character alias (e.g., `bit.ly/3xZ9qL`); redirect short URL with HTTP 301/302; high read/write ratio (100:1).\n- Base62 Encoding: Characters [0-9, a-z, A-Z] (62 chars). A 7-character string supports 62^7 = 3.52 trillion unique URLs.\n- ID Generation: Do not use MD5/SHA256 truncation (hash collisions). Use distributed unique 64-bit integer ID generator (Twitter Snowflake or Ticket Server) and encode the integer directly into Base62.\n- Redirection: HTTP 301 (Permanent Redirect: browser caches redirect, reducing server load) vs HTTP 302 (Temporary: traffic passes through server for analytics).\n- Caching: Redis cluster caching top 20% hot URLs (80/20 Pareto principle).\n\nCase 2: API Rate Limiter:\n- Algorithms: Token Bucket (refills tokens at rate r, allows bursts), Leaky Bucket (smooth constant output rate via queue), Fixed Window Counter (vulnerable to 2x boundary spikes), Sliding Window Log (accurate, high memory), Sliding Window Counter (hybrid, memory efficient).\n- Architecture: Distributed Redis with Lua scripts (`EVAL`) executing atomic token decrement and TTL checks without race conditions.",
     "definitions": [
       {
         "term": "Base62 Encoding",
@@ -3035,6 +3703,28 @@
       }
     ],
     "interview_questions": [
+      {
+        "q": "Design a scalable URL Shortener (like TinyURL/Bitly): How do you generate unique 7-character short codes without collisions?",
+        "a": "Avoid hashing long URLs with MD5/SHA256 and taking the first 7 characters, because hash truncations cause collisions requiring expensive DB deduplication. Instead, use a distributed auto-incrementing 64-bit ID generator (like Twitter Snowflake or centralized Redis INCR). Convert the 64-bit integer ID into Base62 (62 characters: [a-zA-Z0-9]). A 7-character Base62 string yields 62^7 = 3.52 trillion unique combinations. Because every integer ID is unique, every Base62 short URL is mathematically guaranteed collision-free."
+      },
+      {
+        "q": "In a URL shortener, what is the trade-off between returning HTTP 301 Permanent Redirect vs HTTP 302 Temporary Redirect?",
+        "a": "HTTP 301 Permanent Redirect instructs the user's browser to cache the target long URL locally. Subsequent visits redirect instantly from browser cache without hitting the URL shortener server, significantly reducing backend load. However, because the server is bypassed, you lose click analytics (tracking timestamps, user devices, geolocations). HTTP 302 Temporary Redirect forces every request through the shortener, enabling precise real-time analytics at the cost of higher server traffic."
+      },
+      {
+        "q": "Explain the Token Bucket algorithm for API rate limiting and compare it to Leaky Bucket.",
+        "a": "Token Bucket: A bucket with maximum capacity B holds tokens. Tokens are added at a constant rate R per second. Each incoming request consumes 1 token. If tokens are available, the request proceeds; if empty, it is rejected (HTTP 429 Too Many Requests). Token Bucket allows bursts of traffic up to capacity B. Leaky Bucket: Requests enter a FIFO queue of fixed capacity and leak out at a strictly constant rate. Excess requests overflow and are dropped. Leaky bucket smooths out bursts into a constant flow."
+      },
+      {
+        "q": "Why must Redis Rate Limiter operations be executed using atomic Lua scripts?",
+        "a": "A rate limiter involves reading the current counter, checking if it exceeds the limit, incrementing the counter, and resetting TTL. In a distributed multi-threaded system, concurrent requests cause race conditions where two simultaneous requests read counter = 99 (limit 100) and both increment, allowing 101 requests through. A Redis Lua script (`EVAL`) executes entirely atomically inside Redis's single-threaded event loop, preventing race conditions without distributed locks."
+      },
+      {
+        "q": "How does Twitter Snowflake generate unique IDs in a distributed system without coordination?",
+        "a": "Snowflake generates 64-bit integers composed of: 1 bit unused (sign bit = 0), 41 bits timestamp in milliseconds (gives 69 years of IDs), 10 bits machine/worker ID (supports 1024 distinct server nodes), and 12 bits sequence number (allows 4096 IDs per millisecond per machine). Because each machine generates IDs independently using its hardware clock and worker ID, no inter-server network coordination or database locking is needed."
+      }
+    ],
+    "interview_qa": [
       {
         "q": "Design a scalable URL Shortener (like TinyURL/Bitly): How do you generate unique 7-character short codes without collisions?",
         "a": "Avoid hashing long URLs with MD5/SHA256 and taking the first 7 characters, because hash truncations cause collisions requiring expensive DB deduplication. Instead, use a distributed auto-incrementing 64-bit ID generator (like Twitter Snowflake or centralized Redis INCR). Convert the 64-bit integer ID into Base62 (62 characters: [a-zA-Z0-9]). A 7-character Base62 string yields 62^7 = 3.52 trillion unique combinations. Because every integer ID is unique, every Base62 short URL is mathematically guaranteed collision-free."

@@ -99,7 +99,7 @@ function buildDoNotStudyPage(container, data, daysIndex) {
 
         <div style="background: var(--bg-surface-2); padding: var(--space-3); border-radius: var(--radius-sm); text-align: center;">
           <div style="font-size: var(--font-size-xl); font-weight: 800; color: var(--color-success);">90 Mins</div>
-          <div style="font-size: var(--font-size-xs); font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Python Coding DSA</div>
+          <div style="font-size: var(--font-size-xs); font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Java Coding DSA</div>
           <div style="font-size: var(--font-size-xs); color: var(--text-secondary); margin-top: 2px;">2 Problems & Edge Cases</div>
         </div>
 

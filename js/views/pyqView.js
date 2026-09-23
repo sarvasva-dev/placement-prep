@@ -4,7 +4,7 @@
 
 import { Storage } from '../storage.js';
 
-export function renderPyqView(container, daysIndex) {
+export function renderPyqView(container, daysIndex, initialQuery = '') {
   container.innerHTML = `
     <div style="text-align: center; padding: var(--space-8) 0;">
       <div class="badge badge-primary" style="margin-bottom: var(--space-2);">LOADING QUESTION ARCHIVE...</div>
@@ -18,7 +18,7 @@ export function renderPyqView(container, daysIndex) {
       return res.json();
     })
     .then(pyqList => {
-      buildPyqPage(container, pyqList, daysIndex);
+      buildPyqPage(container, pyqList, daysIndex, initialQuery);
     })
     .catch(err => {
       container.innerHTML = `
@@ -30,9 +30,9 @@ export function renderPyqView(container, daysIndex) {
     });
 }
 
-function buildPyqPage(container, pyqList, daysIndex) {
+function buildPyqPage(container, pyqList, daysIndex, initialQuery = '') {
   let activeFilter = 'all';
-  let searchQuery = '';
+  let searchQuery = initialQuery || '';
 
   container.innerHTML = `
     <div class="pyq-header" style="margin-bottom: var(--space-6);">
@@ -48,7 +48,7 @@ function buildPyqPage(container, pyqList, daysIndex) {
       <div style="display: flex; flex-direction: column; gap: var(--space-4);">
         <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; justify-content: space-between;">
           <div style="flex: 1; min-width: 250px;">
-            <input type="text" id="pyq-search-input" class="form-control" placeholder="🔍 Search question, topic, algorithm, or year (e.g., Simon, SECI, Gauss, CRC)..." style="width: 100%;">
+            <input type="text" id="pyq-search-input" class="form-control" value="${searchQuery}" placeholder="🔍 Search question, topic, algorithm, or year (e.g., Simon, SECI, Gauss, CRC)..." style="width: 100%;">
           </div>
           <div id="pyq-results-count" class="badge badge-secondary" style="font-size: var(--font-size-sm); padding: 8px 12px;">
             Showing ${pyqList.length} Questions

@@ -97,7 +97,7 @@ export function renderDashboard(container, daysIndex, semesterData) {
           </div>
           <div style="font-size: var(--font-size-sm); font-weight: 600;">${currentDayMeta.subject}</div>
           <p style="font-size: var(--font-size-xs); margin-top: 4px;">${currentDayMeta.topic}</p>
-          <a href="#day/${activeDay}#sem" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Open Lecture & PYQs →</a>
+          <a href="#day/${activeDay}" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Open Lecture & PYQs →</a>
         </div>
 
         <div style="background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
@@ -107,7 +107,7 @@ export function renderDashboard(container, daysIndex, semesterData) {
           </div>
           <div style="font-size: var(--font-size-sm); font-weight: 600;">${currentDayMeta.aptitude}</div>
           <p style="font-size: var(--font-size-xs); margin-top: 4px;">4-Tier Drills, Shortcuts & Company Traps</p>
-          <a href="#day/${activeDay}#apt" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Solve Aptitude →</a>
+          <a href="#day/${activeDay}" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Solve Aptitude →</a>
         </div>
 
         <div style="background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
@@ -117,7 +117,7 @@ export function renderDashboard(container, daysIndex, semesterData) {
           </div>
           <div style="font-size: var(--font-size-sm); font-weight: 600;">${Array.isArray(currentDayMeta.dsa) ? currentDayMeta.dsa.join(', ') : (currentDayMeta.dsa_pattern || currentDayMeta.dsa || 'Algorithmic Optimization')}</div>
           <p style="font-size: var(--font-size-xs); margin-top: 4px;">Line-by-line walks & complexities</p>
-          <a href="#day/${activeDay}#code" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Code in Java →</a>
+          <a href="#day/${activeDay}" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Code in Java →</a>
         </div>
 
         <div style="background: var(--bg-surface); padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
@@ -127,7 +127,7 @@ export function renderDashboard(container, daysIndex, semesterData) {
           </div>
           <div style="font-size: var(--font-size-sm); font-weight: 600;">${currentDayMeta.project || 'System Design'}</div>
           <p style="font-size: var(--font-size-xs); margin-top: 4px;">Grounded in verified D:\\Projects code</p>
-          <a href="#day/${activeDay}#proj" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Defend Code →</a>
+          <a href="#day/${activeDay}" class="btn btn-secondary btn-sm" style="margin-top: var(--space-2);">Defend Code →</a>
         </div>
       </div>
     </div>

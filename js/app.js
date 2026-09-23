@@ -200,11 +200,30 @@ class StudyApp {
     });
   }
 
+  renderNotFound(rawHash, message = null) {
+    const safeHash = String(rawHash || '').replace(/[<>&"']/g, '');
+    this.contentContainer.innerHTML = `
+      <div class="card" style="border-left: 4px solid var(--color-danger); max-width: 680px; margin: var(--space-8) auto; padding: var(--space-6); text-align: center;">
+        <div class="badge badge-danger" style="margin-bottom: var(--space-2);">404 ERROR</div>
+        <h2 style="margin-bottom: var(--space-2); color: var(--text-primary);">Route Not Found</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--space-4); line-height: 1.6;">
+          ${message ? message : `The requested location <code style="color: var(--color-danger); font-size: var(--font-size-sm);">#${safeHash}</code> does not match any valid curriculum view.`}
+        </p>
+        <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+          <a href="#dashboard" class="btn btn-primary">Go to Dashboard</a>
+          <a href="#day/1" class="btn btn-secondary">Go to Day 1</a>
+        </div>
+      </div>
+    `;
+  }
+
   handleRoute() {
-    const rawHash = window.location.hash.slice(1) || 'dashboard';
-    const [path] = rawHash.split('?');
-    const segments = path.split('/');
+    const rawHash = (window.location.hash.slice(1) || 'dashboard').trim();
+    const [pathPart, queryPart] = rawHash.split('?');
+    const segments = pathPart.split('/').map(s => s.trim()).filter(Boolean);
     const rootRoute = segments[0] || 'dashboard';
+    const subRoute = segments[1];
+    const queryParams = new URLSearchParams(queryPart || '');
 
     // Close mobile drawer on route change
     if (this.sidebar) {
@@ -224,17 +243,26 @@ class StudyApp {
         renderDashboard(this.contentContainer, this.daysIndex, this.semesterData);
         break;
 
-      case 'day':
-        const dayNumber = parseInt(segments[1] || '1', 10);
+      case 'days':
+        renderDashboard(this.contentContainer, this.daysIndex, this.semesterData);
+        break;
+
+      case 'day': {
+        const dayNumber = parseInt(subRoute || '1', 10);
+        if (isNaN(dayNumber) || dayNumber < 1 || dayNumber > 30) {
+          this.renderNotFound(rawHash, `Day <strong>${subRoute || ''}</strong> is out of range. Valid preparation days are <strong>Day 1 to Day 30</strong>.`);
+          return;
+        }
         renderDayView(this.contentContainer, dayNumber, this.daysIndex);
         break;
+      }
 
       case 'semester':
         renderSemesterView(this.contentContainer, this.daysIndex);
         break;
 
       case 'pyqs':
-        renderPyqView(this.contentContainer, this.daysIndex);
+        renderPyqView(this.contentContainer, this.daysIndex, queryParams.get('q') || '');
         break;
 
       case 'aptitude':
@@ -242,7 +270,7 @@ class StudyApp {
         break;
 
       case 'coding':
-        renderCodingView(this.contentContainer, this.daysIndex);
+        renderCodingView(this.contentContainer, this.daysIndex, queryParams.get('problem') || '');
         break;
 
       case 'core-cs':
@@ -250,7 +278,7 @@ class StudyApp {
         break;
 
       case 'projects':
-        renderProjectHubView(this.contentContainer, this.daysIndex);
+        renderProjectHubView(this.contentContainer, this.daysIndex, subRoute);
         break;
 
       case 'interviews':
@@ -278,7 +306,7 @@ class StudyApp {
         break;
 
       default:
-        renderDashboard(this.contentContainer, this.daysIndex, this.semesterData);
+        this.renderNotFound(rawHash);
         break;
     }
   }
