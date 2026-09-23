@@ -1,0 +1,212 @@
+{
+  "day": 23,
+  "title": "Numerical Integration (Trapezoidal & Simpson's), Pie Charts & Coin Change DP",
+  "sem_data": {
+    "subject": "BCA-5004 Numerical Methods",
+    "topic": "Unit IV \u2014 Numerical Integration: Trapezoidal Rule, Simpson's 1/3 Rule & Simpson's 3/8 Rule",
+    "detailed_notes": [
+      "Numerical integration (Numerical Quadrature) evaluates the definite integral I = int_a^b f(x) dx of a function known only at discrete tabulated points (x0, y0), (x1, y1), ..., (xn, yn), or when an analytical antiderivative cannot be expressed in elementary terms.",
+      "General Newton-Cotes Quadrature Formula:\nDerived by replacing the integrand f(x) with an interpolating polynomial P_n(x) of degree n using Newton's Forward Difference formula.\nLet step size h = (b - a) / n, where x_i = x0 + i*h.",
+      "1. Trapezoidal Rule (n = 1, Linear Interpolation):\n\u2022 Approximates the curve between adjacent points as straight line segments (trapezoids).\n\u2022 Formula: int_a^b f(x) dx = (h/2) * [ (y0 + yn) + 2*(y1 + y2 + ... + y_{n-1}) ].\n\u2022 Global Truncation Error: E_T = - [(b - a) * h^2 / 12] * f''(xi) = O(h^2).\n\u2022 Degree of Precision = 1 (Exact for polynomials of degree <= 1).",
+      "2. Simpson's 1/3 Rule (n = 2, Parabolic Interpolation):\n\u2022 Approximates the curve through sets of 3 points as second-degree parabolas.\n\u2022 Requirement: The total number of subintervals n MUST BE EVEN (n = 2, 4, 6, 8, ...).\n\u2022 Formula: int_a^b f(x) dx = (h/3) * [ (y0 + yn) + 4*(Odd Ordinates: y1 + y3 + ...) + 2*(Even Ordinates: y2 + y4 + ...) ].\n\u2022 Global Truncation Error: E_S13 = - [(b - a) * h^4 / 180] * f^(4)(xi) = O(h^4).\n\u2022 Degree of Precision = 3 (Exact for cubics, even though derived with parabolas!).",
+      "3. Simpson's 3/8 Rule (n = 3, Cubic Interpolation):\n\u2022 Approximates curve through sets of 4 points using third-degree cubics.\n\u2022 Requirement: Total number of subintervals n MUST BE A MULTIPLE OF 3 (n = 3, 6, 9, ...).\n\u2022 Formula: int_a^b f(x) dx = (3h/8) * [ (y0 + yn) + 3*(y1 + y2 + y4 + y5 + ...) + 2*(y3 + y6 + ...) ].\n\u2022 Global Truncation Error: E_S38 = - [(b - a) * h^4 / 80] * f^(4)(xi) = O(h^4)."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|             NUMERICAL INTEGRATION CURVE PARTITIONING                    |\n+-------------------------------------------------------------------------+\n|  y ^                                                                    |\n|    |             * y2                                                   |\n|    |            / \\                                                     |\n|    |      * y1 /   \\   * y3                                             |\n|    |     / \\  /     \\ / \\                                               |\n|    | y0 *   \\/       *   * yn                                           |\n|    |    |   |   |    |   |                                              |\n|    +----+---+---+----+---+-----> x                                      |\n|        x0  x1  x2   x3  xn                                              |\n|         <--h--><--h-->                                                  |\n|  Trapezoidal: Chords (n=1) | Simpson 1/3: Parabolas (n=2, n even)       |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Rule",
+        "Subintervals Constraint",
+        "Interpolating Polynomial",
+        "Global Error",
+        "Degree of Precision"
+      ],
+      "rows": [
+        [
+          "Trapezoidal Rule",
+          "Any number of intervals n >= 1",
+          "Linear (Degree 1)",
+          "O(h^2)",
+          "1"
+        ],
+        [
+          "Simpson's 1/3 Rule",
+          "n must be strictly EVEN (2, 4, 6...)",
+          "Quadratic (Degree 2)",
+          "O(h^4)",
+          "3"
+        ],
+        [
+          "Simpson's 3/8 Rule",
+          "n must be a MULTIPLE OF 3 (3, 6, 9...)",
+          "Cubic (Degree 3)",
+          "O(h^4)",
+          "3"
+        ]
+      ]
+    },
+    "memorize": "Trapezoidal: (h/2)[Ends + 2*Others]. Simpson 1/3: (h/3)[Ends + 4*Odds + 2*Evens] (n even!). Simpson 3/8: (3h/8)[Ends + 3*Non-multiples + 2*Multiples-of-3].",
+    "understand": "Why does Simpson's 1/3 rule have precision 3 when derived with a quadratic (degree 2) parabola? Due to symmetry: the odd error term of degree 3 cancels out exactly over symmetric interval [-h, +h], granting cubic accuracy for free!",
+    "common_mistakes": "1. Applying Simpson's 1/3 rule when n is odd. 2. Forgetting to divide by 2 or 3 in the leading factor ((h/2) or (h/3)).",
+    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "4 Consecutive University Sessions (Q7/Q8 - 15 Marks Core Question)",
+    "pyq_question": "Evaluate the integral I = int_0^1 (1 / (1 + x^2)) dx by dividing the interval into 6 equal parts using: (i) Trapezoidal Rule, (ii) Simpson's 1/3 Rule, and (iii) Simpson's 3/8 Rule. Hence, find the approximate value of pi. (15 Marks)",
+    "pyq_rubric": "Interval partition & table of values (3 marks) + Trapezoidal calculation (3 marks) + Simpson's 1/3 calculation & pi value (4 marks) + Simpson's 3/8 calculation (3 marks) + Comparison of accuracy (2 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Table of Ordinates:",
+        "Let f(x) = 1 / (1 + x^2), lower limit a = 0, upper limit b = 1, number of subintervals n = 6.\nStep size h = (b - a) / n = (1 - 0) / 6 = 1/6 \u2248 0.16667.\nx0 = 0.0000 ==> y0 = 1 / (1 + 0^2) = 1.00000\nx1 = 1/6 ==> y1 = 1 / (1 + 1/36) = 36/37 \u2248 0.97297\nx2 = 2/6 ==> y2 = 1 / (1 + 4/36) = 36/40 = 0.90000\nx3 = 3/6 ==> y3 = 1 / (1 + 9/36) = 36/45 = 0.80000\nx4 = 4/6 ==> y4 = 1 / (1 + 16/36) = 36/52 = 9/13 \u2248 0.69231\nx5 = 5/6 ==> y5 = 1 / (1 + 25/36) = 36/61 \u2248 0.59016\nx6 = 6/6 = 1 ==> y6 = 1 / (1 + 1) = 0.50000"
+      ],
+      [
+        "2. Evaluation by Trapezoidal Rule:",
+        "Formula: I_T = (h/2) * [ (y0 + y6) + 2*(y1 + y2 + y3 + y4 + y5) ]\nEnds = y0 + y6 = 1.00000 + 0.50000 = 1.50000\nOthers = 0.97297 + 0.90000 + 0.80000 + 0.69231 + 0.59016 = 3.95544\nI_T = (1/12) * [ 1.50000 + 2*(3.95544) ] = (1/12) * [ 1.50000 + 7.91088 ] = 9.41088 / 12 = 0.78424."
+      ],
+      [
+        "3. Evaluation by Simpson's 1/3 Rule:",
+        "Formula: I_S13 = (h/3) * [ (y0 + y6) + 4*(y1 + y3 + y5) + 2*(y2 + y4) ]\nEnds = 1.50000\nOdds (y1 + y3 + y5) = 0.97297 + 0.80000 + 0.59016 = 2.36313\nEvens (y2 + y4) = 0.90000 + 0.69231 = 1.59231\nI_S13 = (1/18) * [ 1.50000 + 4*(2.36313) + 2*(1.59231) ]\n= (1/18) * [ 1.50000 + 9.45252 + 3.18462 ] = 14.13714 / 18 = 0.785396 \u2248 0.78540."
+      ],
+      [
+        "4. Evaluation by Simpson's 3/8 Rule & Pi Estimation:",
+        "Formula: I_S38 = (3h/8) * [ (y0 + y6) + 3*(y1 + y2 + y4 + y5) + 2*(y3) ]\nNon-multiples of 3 = 0.97297 + 0.90000 + 0.69231 + 0.59016 = 3.15544\nMultiples of 3 = y3 = 0.80000\nI_S38 = (3/48) * [ 1.50000 + 3*(3.15544) + 2*(0.80000) ] = (1/16) * [ 1.50000 + 9.46632 + 1.60000 ] = 12.56632 / 16 = 0.785395.\n\nEstimation of Pi:\nAnalytically, int_0^1 (1 / (1 + x^2)) dx = [arctan(x)]_0^1 = arctan(1) - arctan(0) = pi / 4.\nTherefore, pi \u2248 4 * I_S13 = 4 * 0.785396 = 3.141584 \u2248 3.1416. Matches true pi to 4 decimal places!"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Trapezoidal & Simpson's 1/3, 3/8 Hand Calculations",
+    "milestone": "Full 15/15 on Numerical Integration Exam Question"
+  },
+  "apt_data": {
+    "topic": "Data Interpretation (DI) \u2014 Pie Charts & Degree Conversions",
+    "tutorial": [
+      "Pie Chart Fundamentals:\n\u2022 A pie chart displays data as sectors of a circle where the central angle is proportional to the quantity.\n\u2022 Full Circle = 360 degrees = 100%.\n\u2022 Conversion Formulas:\n  - Degrees to Percentage: Percentage = (Angle in Degrees / 360) * 100.\n  - Percentage to Degrees: Angle in Degrees = (Percentage / 100) * 360 = Percentage * 3.6.\n  - Crucial Constant: 1% = 3.6 degrees | 10% = 36 degrees | 25% = 90 degrees."
+    ],
+    "formulas": "Degrees = % * 3.6. Percentage = (Degrees / 3.6). Sector Value = (Angle / 360) * Total Value.",
+    "shortcut": "Calculate in Percentages First: Convert degrees to percentages before computing actual numeric values to keep arithmetic mental and fast.",
+    "recognition": "Look for circular sector diagrams with degree markings (e.g. 72\u00b0, 108\u00b0, 54\u00b0) in TCS NQT, Wipro, and Infosys.",
+    "tier1_problem": "A student spends time across 24 hours: School = 108 degrees, Sleep = 120 degrees, Play = 60 degrees, Study = 72 degrees. How many hours are spent on Study?",
+    "tier1_solution": "Total hours = 24. Full circle = 360 degrees.\nStudy angle = 72 degrees.\nHours spent = (72 / 360) * 24 = (1 / 5) * 24 = 4.8 hours (4 hours 48 minutes). Answer: 4.8 hours.",
+    "tier2_problem": "In a pie chart, expenditure on Food is 25%, Rent is 20%, Transport is 15%, and Others is 40%. What is the central angle for Transport?",
+    "tier2_solution": "Angle = Percentage * 3.6 = 15 * 3.6 = 54 degrees. Answer: 54 degrees.",
+    "tier3_problem": "[Infosys Placement DI] A company's total annual budget is Rs 72 Crores. A pie chart shows departmental allocation: R&D = 90 degrees, Marketing = 75 degrees, Operations = 120 degrees, HR = 45 degrees, Legal = 30 degrees. How much more money is allocated to Operations than Marketing?",
+    "tier3_solution": "Angle difference between Operations and Marketing = 120 - 75 = 45 degrees.\nDifference in money = (45 / 360) * 72 Crores = (1 / 8) * 72 = 9 Crores. Answer: Rs 9 Crores.",
+    "tier4_problem": "A pie chart represents revenue of 4 divisions: A=108\u00b0, B=72\u00b0, C=126\u00b0, D=54\u00b0. If division C's revenue is Rs 42 lakhs, find the total revenue of all divisions combined.",
+    "tier4_solution": "Angle for division C = 126 degrees.\nFraction of total = 126 / 360 = 7 / 20.\nLet total revenue be T.\n(7 / 20) * T = 42 lakhs.\nT = 42 * (20 / 7) = 6 * 20 = 120 lakhs = Rs 1.2 Crores. Answer: Rs 120 lakhs.",
+    "speed_drills": [
+      {
+        "q": "Convert 30% into degrees.",
+        "a": "30 * 3.6 = 108 degrees."
+      },
+      {
+        "q": "Convert 90 degrees into percentage.",
+        "a": "90 / 3.6 = 25%."
+      },
+      {
+        "q": "If total is 1,200 and sector is 54 degrees, find value.",
+        "a": "(54 / 360) * 1200 = (3/20) * 1200 = 180."
+      },
+      {
+        "q": "Sector A = 144 degrees, Sector B = 72 degrees. Ratio of A to B?",
+        "a": "144 : 72 = 2 : 1."
+      },
+      {
+        "q": "Angles in pie chart: 100\u00b0, 80\u00b0, 120\u00b0, X\u00b0. Find X.",
+        "a": "360 - (100+80+120) = 360 - 300 = 60 degrees."
+      }
+    ]
+  },
+  "dsa_problems": [
+    {
+      "title": "Coin Change (LeetCode 322 - Medium)",
+      "difficulty": "Medium",
+      "importance": "Unbounded Knapsack Foundation Problem (Amazon, Microsoft, Google)",
+      "problem_statement": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money. Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1. You may assume you have an infinite number of each kind of coin.",
+      "solution_approach": "Bottom-Up Dynamic Programming (Unbounded Knapsack):\n1. Define `dp[a]` as the minimum coins needed to make amount `a`.\n2. Initialize `dp = [float('inf')] * (amount + 1)` and `dp[0] = 0`.\n3. For every sub-amount from 1 to `amount`:\n   For every coin in `coins`:\n     if `a - coin >= 0`: dp[a] = min(dp[a], 1 + dp[a - coin])\n4. Return `dp[amount]` if not infinity, else -1.",
+      "code": "def coinChange(coins: list[int], amount: int) -> int:\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    \n    for a in range(1, amount + 1):\n        for c in coins:\n            if a - c >= 0:\n                dp[a] = min(dp[a], 1 + dp[a - c])\n                \n    return dp[amount] if dp[amount] != float('inf') else -1",
+      "line_by_line": [
+        [
+          "dp = [float('inf')] * (amount + 1)",
+          "Fill DP array with infinity sentinel representing unreachable states."
+        ],
+        [
+          "dp[0] = 0",
+          "Base case: 0 coins needed to make amount 0."
+        ],
+        [
+          "dp[a] = min(dp[a], 1 + dp[a - c])",
+          "Take minimum between skipping coin and taking coin c."
+        ]
+      ],
+      "time_complexity": "O(amount * len(coins)).",
+      "space_complexity": "O(amount) space for DP table.",
+      "edge_cases": "amount = 0 (returns 0); no valid combination (returns -1); coin value > amount."
+    }
+  ],
+  "cs_core": {
+    "subject": "Computer Networks",
+    "topic": "Application Protocols Evolution: HTTP/1.1 vs HTTP/2 vs HTTP/3 (QUIC)",
+    "detailed_notes": [
+      "The Evolution of Web Transport:\n1. HTTP/1.1 (1997):\n\u2022 Plaintext protocol using TCP sockets.\n\u2022 Keep-Alive allows persistent TCP connections, but suffers from Head-of-Line (HoL) Blocking at the application layer: subsequent HTTP requests must wait for the preceding response to finish.\n\u2022 Browsers worked around this by opening up to 6 parallel TCP connections per host.\n2. HTTP/2 (2015):\n\u2022 Binary Framing Layer replacing textual headers.\n\u2022 Multiplexing: Multiple bidirectional request/response streams over a single shared TCP socket, eliminating application-layer HoL blocking.\n\u2022 HPACK Header Compression: Eliminates repetitive header overhead.\n\u2022 Remaining Flaw: TCP-level HoL blocking! If a single TCP packet drops on a lossy Wi-Fi network, the OS kernel stalls all streams until the missing segment is retransmitted.\n3. HTTP/3 (2022):\n\u2022 Completely replaces TCP with QUIC over UDP!\n\u2022 Stream Independence: Streams are independent at the transport layer; a dropped packet in Stream 1 never blocks Stream 2.\n\u2022 0-RTT Connection Establishment: Combines transport handshake and TLS 1.3 encryption in 1 round trip.\n\u2022 Connection Migration: Uses Connection IDs instead of IP/Port tuples, allowing smooth roaming from Wi-Fi to 5G without socket teardown."
+    ],
+    "interview_qa": [
+      {
+        "q": "Why did HTTP/3 replace TCP with UDP?",
+        "a": "Because TCP suffers from transport-layer Head-of-Line (HoL) blocking: if one packet is lost, the operating system holds back all subsequent data in its buffer until the lost segment is retransmitted, stalling all multiplexed HTTP/2 streams. HTTP/3 uses QUIC over UDP, implementing independent stream reliability, zero-RTT connection establishment, and connection migration across networks."
+      },
+      {
+        "q": "What is HPACK compression in HTTP/2?",
+        "a": "HPACK is a specialized header compression algorithm that eliminates redundant HTTP headers. It maintains static and dynamic lookup tables between client and server: headers like `User-Agent` or `Cookie` sent in the first request are indexed, allowing subsequent requests to transmit only a 1-byte integer reference instead of repeating the entire header string."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "Freelance Proposal Engineering",
+    "feature_focus": "Freelancing Scope Definition & Technical Proposal Writing",
+    "architecture_deep_dive": "Packaging Technical Competencies into High-Value Client Deliverables:\n\n1. The 3 Core Freelance Offerings based on verified code:\n\u2022 Offering 1 (Document Automation & OCR Pipelines): Extracting structured tabular data from PDFs/scans using TerraStract's hybrid PyMuPDF/Tesseract engine.\n\u2022 Offering 2 (API Backend & Webhook Integration): Building production FastAPI microservices, JWT authentication, and Telegram/WhatsApp bot notifications.\n\u2022 Offering 3 (Web Scraping & Real-Time Monitoring): Scheduled headless browsers and aiohttp workers with anti-blocking headers.\n\n2. Statement of Work (SOW) Structure:\nEvery proposal must define: Executive Summary, Exact Deliverables, Acceptance Criteria, Out-of-Scope boundaries (to prevent scope creep), and Milestone-Based Payment schedules (30% upfront, 40% on staging demo, 30% on handover).",
+    "interview_qa": [
+      {
+        "q": "How do you protect yourself against scope creep when executing client projects?",
+        "a": "By drafting a strict Statement of Work (SOW) that lists both 'In-Scope' deliverables and explicit 'Out-of-Scope' features before accepting the project. Any client request outside the agreed SOW is formally treated as a Change Request (CR) with a separate timeline and billing quote."
+      },
+      {
+        "q": "What payment structure do you use for technical freelance contracts?",
+        "a": "I use a 3-stage milestone structure: 30% upfront advance to begin architecture, 40% upon deploying a functional staging demo on a private VPS for client review, and the final 30% prior to releasing repository ownership, production credentials, and final documentation."
+      }
+    ]
+  },
+  "daily_test": {
+    "day": 23,
+    "questions": [
+      {
+        "q": "What is the subinterval constraint for Simpson's 1/3 Rule?",
+        "a": "The number of subintervals n must be strictly EVEN (n = 2, 4, 6, 8, ...)."
+      },
+      {
+        "q": "What is the global truncation error order of Simpson's 3/8 Rule?",
+        "a": "O(h^4)."
+      },
+      {
+        "q": "Convert 72 degrees in a pie chart into a percentage.",
+        "a": "72 / 3.6 = 20%."
+      },
+      {
+        "q": "What is the state transition formula for LeetCode 322 (Coin Change)?",
+        "a": "dp[a] = min(dp[a], 1 + dp[a - c]) for every coin c where a - c >= 0."
+      },
+      {
+        "q": "What is Head-of-Line (HoL) blocking in HTTP/1.1?",
+        "a": "A condition where subsequent HTTP requests on a persistent TCP connection must wait in line until the current response finishes transferring."
+      },
+      {
+        "q": "Why does HTTP/3 use QUIC over UDP instead of TCP?",
+        "a": "To eliminate transport-layer Head-of-Line blocking across streams and support 0-RTT connection establishment and connection migration."
+      },
+      {
+        "q": "What is the degree of precision of Simpson's 1/3 Rule?",
+        "a": "3 (Exact for polynomials up to cubic degree due to interval symmetry)."
+      },
+      {
+        "q": "Name two key components of a Statement of Work (SOW) in freelancing.",
+        "a": "Acceptance criteria and an explicit list of Out-of-Scope features."
+      }
+    ]
+  }
+}

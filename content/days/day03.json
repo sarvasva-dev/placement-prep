@@ -1,0 +1,163 @@
+{
+  "day": 3,
+  "title": "Java Fundamentals, JVM Architecture & Profit/Loss Foundations",
+  "sem_data": {
+    "subject": "BCA-5002 Java Programming",
+    "topic": "Unit I \u2014 Java Core, JVM Architecture & Runtime Memory Areas",
+    "detailed_notes": [
+      "Java is an object-oriented, class-based, concurrent programming language developed by James Gosling at Sun Microsystems in 1995. Its defining architectural paradigm is 'Write Once, Run Anywhere' (WORA), enabled by compiling high-level Java source code (.java) into an intermediate, platform-neutral byte representation called Bytecode (.class) rather than machine-specific binary.",
+      "The Java Virtual Machine (JVM) is an abstract computing machine that provides the runtime execution environment for Java bytecode. It manages system memory, dynamically loads classes, and translates bytecode into host machine instructions.",
+      "The JVM Architecture is divided into 3 primary functional subsystems:\n1. ClassLoader Subsystem: Responsible for dynamic loading, linking, and initialization of class files. It implements the Delegation-Hierarchy Principle across three built-in loaders: Bootstrap ClassLoader (loads core JDK classes from rt.jar / jrt-fs), Extension/Platform ClassLoader (loads extensions from lib/ext), and Application/System ClassLoader (loads classes from the application CLASSPATH). Linking involves Verification (ensuring bytecode safety), Preparation (allocating memory for static fields), and Resolution (mapping symbolic references to direct memory addresses).\n2. Runtime Data Areas (JVM Memory):\n   - Method Area (Metaspace): Stores per-class structures, field/method metadata, runtime constant pools, and method bytecode. Shared across all threads.\n   - Heap Area: The central memory reservoir where all class instances (objects) and arrays are allocated. Managed automatically by the Garbage Collector. Shared across all threads.\n   - JVM Stacks: Thread-private memory created concurrently with each thread. Stores Stack Frames containing local variable arrays, operand stacks, and method return data.\n   - Program Counter (PC) Registers: Thread-private register containing the memory address of the JVM instruction currently executing.\n   - Native Method Stacks: Allocates memory for native C/C++ libraries executed via JNI (Java Native Interface).\n3. Execution Engine: Executes bytecode instructions via the Interpreter (translates instruction-by-instruction), the JIT (Just-In-Time) Compiler (compiles frequently executed hot-spot loops directly into native CPU machine code for high performance), and the Garbage Collector (automatically reclaims unreachable heap objects)."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    JAVA VIRTUAL MACHINE (JVM) ARCHITECTURE              |\n+-------------------------------------------------------------------------+\n|   +-----------------------------------------------------------------+   |\n|   |                     CLASSLOADER SUBSYSTEM                       |   |\n|   |     Loading (Bootstrap, Ext, App) | Linking | Initialization    |   |\n|   +-----------------------------------------------------------------+   |\n|                                    |                                    |\n|                                    v                                    |\n|   +-----------------------------------------------------------------+   |\n|   |                      RUNTIME DATA AREAS                         |\n|   |  +---------------------------+  +----------------------------+  |   |\n|   |  |   Method Area (Metaspace) |  |         Heap Area          |  |   |\n|   |  |  (Class Metadata, Pools)  |  |  (All Objects & Arrays)    |  |   |\n|   |  +---------------------------+  +----------------------------+  |   |\n|   |  +---------------------------+  +----------------------------+  |   |\n|   |  | JVM Stack (Per-Thread)    |  | PC Registers (Per-Thread)  |  |   |\n|   |  |  (Frames, Local Vars)     |  |  (Next Bytecode Opcode)    |  |   |\n|   |  +---------------------------+  +----------------------------+  |   |\n|   |  +-----------------------------------------------------------+  |   |\n|   |  | Native Method Stack (Per-Thread, C/C++ JNI Calls)         |  |   |\n|   |  +-----------------------------------------------------------+  |   |\n|   +-----------------------------------------------------------------+   |\n|                                    |                                    |\n|                                    v                                    |\n|   +-----------------------------------------------------------------+   |\n|   |                       EXECUTION ENGINE                          |   |\n|   |   Interpreter  |  JIT Compiler (HotSpots)  |  Garbage Collector |   |\n|   +-----------------------------------------------------------------+   |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Dimension",
+        "JDK (Java Development Kit)",
+        "JRE (Java Runtime Environment)",
+        "JVM (Java Virtual Machine)"
+      ],
+      "rows": [
+        [
+          "Definition",
+          "Full software development package for developers",
+          "Runtime package required to execute Java programs",
+          "Abstract virtual machine that runs compiled bytecode"
+        ],
+        [
+          "Components",
+          "JRE + Development Tools (javac, javadoc, jdb)",
+          "JVM + Core Class Libraries (rt.jar, util, lang)",
+          "ClassLoader, Runtime Data Areas, Execution Engine"
+        ],
+        [
+          "Target Audience",
+          "Software programmers writing Java code",
+          "End-users wanting to execute existing Java apps",
+          "Abstract specification implemented per platform"
+        ],
+        [
+          "Platform Dependency",
+          "Platform-dependent (installer specific to OS)",
+          "Platform-dependent (installer specific to OS)",
+          "Platform-dependent (converts bytecode to native OS ops)"
+        ],
+        [
+          "Primary Role",
+          "Compiles .java source code into .class bytecode",
+          "Provides environment and standard libraries for execution",
+          "Executes bytecode instructions directly on CPU"
+        ]
+      ]
+    },
+    "memorize": "WORA: Write Once, Run Anywhere. JVM 3 Subsystems: ClassLoader, Runtime Data Areas, Execution Engine. Memory Areas: Method Area, Heap (shared); Stack, PC Register, Native Stack (per-thread). JIT compiles HotSpots.",
+    "understand": "Bytecode is platform-independent; the JVM is platform-dependent. Sun wrote different JVMs for Windows, Linux, and macOS, allowing the exact same compiled .class file to execute identically on every OS.",
+    "common_mistakes": "1. Stating that Java bytecode is executed purely by an interpreter (modern JVMs use a hybrid JIT compiler). 2. Confusing Stack (holds method frames and primitive local variables) with Heap (holds all instantiated objects).",
+    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q1 - 15m), 2022-23 (Q1a - 15m), 2023-24 (Q1 - 15m), 2024-25 (Q1 - 15m)",
+    "pyq_question": "Explain the architecture of the Java Virtual Machine (JVM) with a neat block diagram. Discuss the functions of ClassLoader and Execution Engine. (15 Marks)",
+    "pyq_rubric": "JVM Architecture block diagram (4 marks) + ClassLoader explanation (3 marks) + 5 Runtime Data Areas (5 marks) + Execution Engine & JIT (3 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Architectural Overview & Philosophy:",
+        "The Java Virtual Machine (JVM) is the cornerstone of Java's platform independence. Java source code is compiled by 'javac' into platform-neutral bytecode (.class files). The JVM is an abstract computing machine implemented in software that loads, verifies, and executes this bytecode on a specific physical host operating system."
+      ],
+      [
+        "2. ClassLoader Subsystem:",
+        "The ClassLoader subsystem performs three critical operations:\n\u2022 Loading: Dynamically loads class files into memory using a delegation hierarchy. When a class is requested, the Application ClassLoader delegates to the Extension ClassLoader, which delegates to the Bootstrap ClassLoader. If the parent cannot find the class, the child attempts to load it.\n\u2022 Linking: Subdivided into Verification (checks that bytecode does not violate security constraints or cause stack overflows), Preparation (allocates memory for static fields and initializes them to default values), and Resolution (replaces symbolic references in the constant pool with direct memory pointers).\n\u2022 Initialization: Executes static initializers and assigns explicit values to static variables."
+      ],
+      [
+        "3. Runtime Data Areas (JVM Memory Model):",
+        "The JVM divides physical memory into five distinct runtime regions:\na) Method Area (Metaspace): A shared memory space storing class metadata, method code, and constant runtime pools.\nb) Heap Area: The global shared memory pool where all object instances and arrays reside. It is divided into Young Generation (Eden, S0, S1) and Old Generation for generational garbage collection.\nc) JVM Stacks: Thread-private memory. For every method invocation, a new Stack Frame is pushed, storing local variables, operand stacks, and frame data. When the method returns, its frame is popped.\nd) PC Registers: Thread-private registers tracking the address of the currently executing JVM opcode.\ne) Native Method Stacks: Manages execution of non-Java code invoked via JNI (e.g. C/C++ libraries)."
+      ],
+      [
+        "4. Execution Engine & JIT Compiler:",
+        "The Execution Engine executes the loaded bytecode through two complementary mechanisms: The Interpreter reads and executes opcodes sequentially, providing immediate startup. Concurrently, the JIT (Just-In-Time) Compiler identifies frequently executed code segments ('HotSpots') and compiles them directly into native machine instructions, caching them in memory for near-C++ execution speed. The Garbage Collector operates asynchronously in the background, identifying unreachable heap objects and reclaiming memory automatically."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Differentiate between JDK, JRE, and JVM with an illustrative diagram. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "What is the role of the JIT (Just-In-Time) compiler in JVM performance optimization? (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master JVM Architecture, ClassLoader stages, and Runtime Memory regions.",
+    "milestone": "Secure full 15/15 marks on University Question 1 (BCA-5002 Java Core)."
+  },
+  "apt_data": {
+    "topic": "Profit & Loss \u2014 Cost Price, Selling Price, Margins & Successive Markups",
+    "tutorial": [
+      "Cost Price (CP): The actual expenditure incurred in acquiring or producing a commodity.",
+      "Selling Price (SP): The monetary value at which the commodity is sold to a customer.",
+      "Profit and Loss are always calculated on the Cost Price (CP) unless explicitly stated otherwise:\n\u2022 Profit = SP - CP (when SP > CP)    ==> Profit % = (Profit / CP) * 100\n\u2022 Loss = CP - SP (when CP > SP)      ==> Loss % = (Loss / CP) * 100",
+      "Multiplying Factors (The Professional Speed Technique):\nInstead of setting up algebraic equations, multiply CP directly by the factor:\n\u2022 20% Profit ==> SP = CP * 1.20\n\u2022 15% Loss   ==> SP = CP * 0.85\n\u2022 To find CP from SP: CP = SP / (Multiplying Factor). If SP = 720 at 20% profit, CP = 720 / 1.2 = Rs. 600."
+    ],
+    "formulas": "1. SP = CP * [(100 + Profit%) / 100] = CP * [(100 - Loss%) / 100]\n2. CP = [SP * 100] / (100 + Profit%) = [SP * 100] / (100 - Loss%)\n3. Invariant Profit Equivalence: If an article is sold at x% profit and another at x% loss with equal SP, there is ALWAYS an overall loss of (x^2 / 100)%.",
+    "shortcut": "Fractional Factor Conversion:\n25% Profit = +1/4 ==> SP/CP = 5/4. If SP = 500, then 5 units = 500 ==> 1 unit = 100 ==> CP = 4 units = Rs. 400.\n16.67% Loss = -1/6 ==> SP/CP = 5/6. If CP = 600, SP = 5 units = Rs. 500.",
+    "recognition": "Keywords: 'sold at a gain of x%', 'by selling an article for Rs. X a man loses y%', 'two articles sold for Rs. X each, one at a profit of p% and the other at a loss of p%'.",
+    "p1_q": "[Foundation] A merchant buys a bicycle for Rs. 1,400 and sells it at a loss of 15%. What is the selling price of the bicycle?",
+    "p1_s": "Step 1: Identify CP = Rs. 1400, Loss = 15%.\nStep 2: Using the Multiplying Factor method:\nSP = CP * (1 - 0.15) = 1400 * 0.85.\nStep 3: Fast calculation: 1400 * 0.85 = 14 * 85 = 14 * (80 + 5) = 1120 + 70 = Rs. 1,190.\nAnswer: Selling Price is Rs. 1,190.",
+    "p2_q": "[Standard Placement] By selling a mobile phone for Rs. 4,500, a shopkeeper incurs a loss of 10%. At what price should he sell it to gain 20%?",
+    "p2_s": "Step 1: Find the Cost Price (CP) from the initial sale:\nSP1 = Rs. 4500 at 10% loss ==> Factor = 0.90.\nCP = SP1 / 0.90 = 4500 / 0.90 = Rs. 5,000.\nStep 2: Calculate the new Selling Price (SP2) for 20% gain:\nSP2 = CP * 1.20 = 5000 * 1.20 = Rs. 6,000.\nFast Direct Ratio Method: SP2 = SP1 * [(100 + 20) / (100 - 10)] = 4500 * (120 / 90) = 4500 * (4 / 3) = 1500 * 4 = Rs. 6,000.\nAnswer: Rs. 6,000.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Wipro Elite National Talent Hunt]",
+    "p3_q": "A man sells two flats for Rs. 19.95 lakhs each. On one he gains 5% and on the other he loses 5%. Find his total percentage gain or loss, and the absolute loss in Rupees.",
+    "p3_s": "Step 1: Universal Placement Theorem: When two articles are sold at the SAME selling price (SP), one at a gain of x% and the other at a loss of x%, the net transaction ALWAYS results in a loss given by: Loss % = (x / 10)^2 % = (x^2 / 100)%.\nHere x = 5%.\nNet Loss % = (5^2 / 100)% = 25 / 100 = 0.25% loss (or 1/4% loss).\nStep 2: Calculate the absolute loss in Rupees:\nTotal SP = 19.95 + 19.95 = 39.90 lakhs.\nSince Net Loss = 0.25% = 1/400, Total SP represents (1 - 1/400) = 399/400 of Total CP.\nTotal CP = (39.90 lakhs * 400) / 399 = 0.10 * 400 = 40.00 lakhs.\nAbsolute Loss = Total CP - Total SP = 40.00 - 39.90 = 0.10 lakhs = Rs. 10,000.\nAnswer: 0.25% loss, with an absolute loss of Rs. 10,000.",
+    "p4_q": "[Hard / Time-Pressure] A dishonest dealer professes to sell his goods at cost price, but uses a false weight of 900 grams for a 1 kg weight. Find his actual gain percentage.",
+    "p4_s": "Step 1: Formula for False Weight Gain:\nGain % = [Error / (True Value - Error)] * 100 = [Error / False Value] * 100.\nStep 2: Here, True Value = 1000g, False Value = 900g, Error = 1000 - 900 = 100g.\nStep 3: Gain % = (100 / 900) * 100 = 100 / 9 = 11.11% (or 11 1/9%).\nIntuition: The dealer pays for only 900g (his CP) while collecting money for 1000g (his SP). His profit is 100g on an expenditure of 900g.\nAnswer: 11.11% gain.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "An article is sold for Rs. 300 with a profit of 25%. Find the cost price."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "If CP is Rs. 80 and SP is Rs. 100, find the profit percentage."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "By selling 33 meters of cloth, a shopkeeper gains the selling price of 11 meters. Find the gain percent."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "A TV and a refrigerator were sold for Rs. 12,000 each. The TV was sold at 20% loss and the refrigerator at 20% gain. What was the net result?"
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "A trader marks his goods 40% above CP and allows a 20% discount. Find his profit percentage."
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "CP = 300 / 1.25 = Rs. 240. Answer: Rs. 240."
+      ],
+      [
+        "Solution Q2:",
+        "Profit = 20 on 80 ==> (20/80)*100 = 25%. Answer: 25%."
+      ],
+      [
+        "Solution Q3:",
+        "Gain = SP of 11 ==> 33 SP - 33 CP = 11 SP ==> 22 SP = 33 CP ==> SP/CP = 3/2. Profit = (1/2)*100 = 50%. Answer: 50%."
+      ],
+      [
+        "Solution Q4:",
+        "Same SP, equal profit and loss of 20%: Loss % = 20^2 / 100 = 4% loss. Answer: 4% loss."
+      ],
+      [
+        "Solution Q5:",
+        "Net % = 40 - 20 - (40*20)/100 = 20 - 8 = +12% profit. Answer: 12% profit."
+      ]
+    ],
+    "trap": "In false weight problems, NEVER divide error by 1000g! Always divide error by the actual amount delivered (900g), because the seller's investment is only in the delivered quantity."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

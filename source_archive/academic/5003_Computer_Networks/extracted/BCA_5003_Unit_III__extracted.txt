@@ -1,0 +1,782 @@
+SOURCE PROVENANCE: D:\Projects\Placement_Master_Handbook_Web\source_archive\academic\5003_Computer_Networks\notes\BCA_5003_Unit_III_.pdf
+PAGES EXTRACTED: 15 / 15
+
+--- PAGE 1 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 1
+BCA-5003: COMPUTER NETWORK
+UNIT III — COMPLETE DETAILED NOTES + TOPIC-WISE PYQ ANSWER BOOK
+Telephony • Point-to-Point Controls • ISDN • Switching • Data-Link Control • Multiplexing
+Unit-I format: Index → detailed notes → diagrams/graphs → PYQs with years → long model
+answers → revision plan
+Prepared from the supplied Unit-III content. Technical inaccuracies in raw material have been
+corrected for safe exam writing.
+
+
+--- PAGE 2 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 2
+Index
+No.
+Topic
+PYQ years found in supplied Unit-III material
+1
+Unit-III roadmap and score strategy
+—
+2
+Data-link layer services, framing, error control and flow control
+2016, 2018, 2019, 2024–25
+3
+Piggybacking and Stop-and-Wait efficiency numerical
+2017, 2023–24, 2025–26
+4
+Sliding-window protocol, Go-Back-N and Selective Repeat ARQ
+2021, 2023–24, 2025–26
+5
+Switching: circuit, message and packet switching
+2019, 2022–23, 2024–25, 2025–26
+6
+Framing protocols: Ethernet, PPP, HDLC, Frame Relay, ATM, SONET/SDH
+2023–24, 2024–25, 2025–26
+7
+Multiplexing: FDM, TDM and WDM
+2017, 2018, 2021, 2022–23
+8
+ISDN architecture, channels and services
+2015, 2018, 2021, 2022–23, 2023–24, 2025–26
+9
+Congestion control: leaky bucket and token bucket
+2023–24, 2024–25, 2025–26
+10
+Applications of computer networks and final revision
+2023–24, 2025–26
+How to score well in Unit III
+1. Memorize all three switching techniques with diagrams and comparison table.
+2. Practise Stop-and-Wait efficiency and learn what propagation delay and transmission time mean.
+3. Draw Go-Back-N and Selective Repeat sequence diagrams until you can reproduce them without looking.
+4. For multiplexing, draw MUX → shared link → DEMUX and explain FDM, TDM and WDM in separate paragraphs.
+5. For ISDN, always include B, D and H channels plus bearer, teleservices and supplementary services.
+
+
+--- PAGE 3 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 3
+1. Unit-III Roadmap
+Unit III focuses on reliable data transfer, switching, multiplexing, telephony/ISDN, and congestion control. It connects the
+Data-Link Layer with wide-area networking concepts. The most scoring parts are diagrams, comparison tables, flow-control
+protocols, switching techniques, multiplexing, and ISDN.
+Recommended order
+1. Data-link layer functions and framing.
+2. Stop-and-Wait, piggybacking, sliding window, Go-Back-N and Selective Repeat.
+3. Circuit, message and packet switching.
+4. Multiplexing: FDM, TDM, WDM.
+5. ISDN architecture, channels and services.
+6. Congestion and traffic shaping: leaky bucket and token bucket.
+Exam writing rule
+Whenever a question says “explain”, write an introduction, a labelled diagram, working steps, advantages/limitations,
+and a conclusion. For comparison questions, prefer a table. For protocol questions, show sender and receiver
+interaction using arrows and time direction.
+2. Data-Link Layer: Services and Core Functions
+The Data-Link Layer is Layer 2 of the OSI model. It provides node-to-node delivery over a single communication link. While
+the Physical Layer sends raw bits, the Data-Link Layer groups those bits into frames and manages local delivery, errors, flow,
+and access to a shared medium.
+Core functions
+Function
+Detailed meaning
+Framing
+Divides continuous bit stream into identifiable blocks called frames. Headers/trailers carry addressing, control, and error-detection info
+Physical/MAC addressing
+Adds local source and destination hardware addresses for link-level delivery.
+Error control
+Detects damaged/lost/duplicate frames using CRC/checksums, ACK/NAK, sequence numbers, timers, and retransmission.
+Flow control
+Prevents a fast sender from overflowing a slow receiver’s buffer or processing capacity.
+Access control
+Coordinates which device may transmit when several devices share a common medium.
+Link management
+Establishes, maintains, and releases a link when connection-oriented operation is used.
+Frame concept diagram
+Raw bit stream from Physical Layer:
+101011001001101010010101001010...
+Data-Link Layer groups it as:
+[Header | Payload/Data | Trailer/FCS] [Header | Payload/Data | Trailer/FCS]
+A frame header may contain MAC addresses, sequence/control information, and a type/length field. A trailer commonly carries
+error-detection bits such as Frame Check Sequence (FCS).
+3. Framing
+Framing is the Data-Link Layer process of dividing a continuous stream of bits into meaningful, manageable units called
+frames. The receiver must be able to identify where each frame begins and ends. Frames make addressing, error checking,
+flow control, and retransmission possible.
+Why framing is necessary
+• The Physical Layer provides an unstructured bit stream; the Data-Link Layer needs clear boundaries.
+
+
+--- PAGE 4 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 4
+• A receiver must know which bits belong together for CRC/error detection.
+• Lost or damaged units can be retransmitted as individual frames instead of retransmitting a complete file.
+• Sequence numbers and acknowledgements operate on frames.
+Common framing approaches
+Method
+Idea
+Example
+Character/byte count
+Header carries length of the frame.
+Some legacy protocols.
+Byte stuffing
+Special flag bytes mark boundaries; escape bytes handle flag-like data.
+PPP-style byte-oriented framing.
+Bit stuffing
+Special flag bit pattern marks frames; sender inserts a 0 after five consecutive 1s in data.
+HDLC.
+Physical-layer coding violation
+Uses an unused physical signal pattern to mark boundary.
+Certain LAN designs.
+Typical frame formats
+Ethernet (conceptual):
+[Preamble | SFD | Destination MAC | Source MAC | Type/Length | Data + Pad | FCS]
+PPP:
+[Flag | Address | Control | Protocol | Payload | FCS | Flag]
+HDLC:
+[Flag | Address | Control | Information | FCS | Flag]
+ATM cell:
+[5-byte Header | 48-byte Payload] — fixed 53-byte cell.
+4. Error Control, Stop-and-Wait and Piggybacking
+Error control is the set of procedures that ensures frames are delivered correctly despite loss, corruption, duplication, or
+acknowledgement loss. It uses error detection, ACK/NAK messages, sequence numbers, timers, and retransmission.
+Error-control building blocks
+• Error-detection code: CRC/checksum/parity detects corruption.
+• Sequence numbers: distinguish new frames from duplicate retransmissions.
+• Acknowledgement (ACK): confirms a correct frame.
+• Negative acknowledgement (NAK): requests a specific retransmission where used.
+• Timer: prevents sender from waiting forever if a frame/ACK is lost.
+Stop-and-Wait ARQ
+In Stop-and-Wait ARQ, the sender sends one frame and waits for its acknowledgement before sending the next frame.
+Sequence numbers (usually 0 and 1) prevent duplicate-delivery errors after retransmission. The method is simple but has poor
+utilization when propagation delay is high compared with frame transmission time.
+Stop-and-Wait time diagram
+Sender Receiver
+Frame 0 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII ACK 1
+Frame 1 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII ACK 0
+Time flows downward ↓
+Efficiency of Stop-and-Wait (ideal simplified case)
+Let Tt = frame transmission time and Tp = one-way propagation delay. Ignoring ACK transmission/processing delay:
+Efficiency η = Tt / (Tt + 2Tp) = 1 / (1 + 2a), where a = Tp/Tt.
+Piggybacking
+
+
+--- PAGE 5 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 5
+In full-duplex communication, both sides may send data. Instead of sending a separate ACK frame immediately, a receiver
+can delay the ACK briefly and place it inside the header of its next outgoing data frame. This is called piggybacking: the
+acknowledgement gets a “free ride” with reverse-direction data.
+Piggybacking diagram
+A → B: [Data frame 0]
+B → A: [Data frame 0 + ACK for A’s frame] ← piggybacked ACK
+A → B: [Data frame 1 + ACK for B’s frame]
+Benefit: fewer separate control frames, lower overhead, better bandwidth use. Limitation: ACK cannot wait indefinitely; a
+delayed-ACK timer must send a separate ACK if reverse-direction data does not arrive soon.
+5. Sliding Window, Go-Back-N and Selective Repeat
+Sliding-window protocols improve link utilization by allowing multiple frames to be sent before acknowledgements are
+received. The sender maintains a window of sequence numbers it is permitted to transmit. As ACKs arrive, the window
+advances—or “slides”—and additional frames may be sent.
+Sliding-window diagram
+Sequence numbers: 0 1 2 3 4 5 6 7
+Sender window: [0] [1] [2] [3] 4 5 6 7
+After ACK for 0: 0 [1] [2] [3] [4] 5 6 7
+Go-Back-N ARQ
+Go-Back-N allows the sender to transmit up to N unacknowledged frames. The receiver normally accepts only the next
+expected frame; its receive window is effectively one. If frame k is lost or damaged, frames after k are discarded even if they
+arrive correctly. The sender retransmits frame k and all later outstanding frames after a NAK or timeout.
+Go-Back-N loss diagram
+Sender Receiver
+Frame 0 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII accepted; ACK 1
+Frame 1 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII accepted; ACK 2
+Frame 2 IIIIIII X lost/damaged
+Frame 3 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII discarded (expects 2)
+Frame 4 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII discarded (expects 2)
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII NAK 2 / repeated ACK 2
+Frame 2 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII retransmitted
+Frame 3 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII retransmitted
+Frame 4 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII retransmitted
+Selective Repeat ARQ
+Selective Repeat allows the receiver to accept and buffer correctly received frames that arrive out of order. If frame k is
+lost/damaged, the sender retransmits only frame k. The receiver then places buffered frames in sequence once the missing
+frame is obtained. This is more bandwidth-efficient than Go-Back-N but needs more complex sender/receiver logic and buffer
+space.
+Selective Repeat loss diagram
+Sender Receiver
+Frame 0 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII accepted
+Frame 1 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII accepted
+Frame 2 IIIIIII X lost/damaged
+Frame 3 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII buffered (out of order)
+Frame 4 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII buffered (out of order)
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII NAK 2
+Frame 2 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII retransmitted; then 2,3,4 delivered in order
+Go-Back-N versus Selective Repeat
+Basis
+Go-Back-N
+Selective Repeat
+Retransmission
+Resends lost/damaged frame and all subsequent outstanding frames.
+Resends only lost/damaged frame(s).
+Receiver behaviour
+Discards out-of-order frames.
+Buffers valid out-of-order frames.
+Complexity
+Lower.
+Higher due to buffers, individual ACKs/timers, sorting.
+
+
+--- PAGE 6 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 6
+Basis
+Go-Back-N
+Selective Repeat
+Bandwidth when errors occur
+May waste bandwidth by retransmitting good frames.
+More efficient; avoids unnecessary retransmission.
+Receiver window
+Usually 1.
+More than 1; must be limited to avoid sequence ambiguity.
+6. Switching Techniques
+Switching is the process of transferring data from a source to a destination through intermediate network nodes. Switching
+techniques decide whether a route is reserved, whether an entire message is stored, or whether data is divided into packets.
+The three classical techniques are circuit switching, message switching, and packet switching.
+Circuit switching
+Circuit switching establishes a dedicated end-to-end path before data transfer. Resources along the path are reserved for the
+complete session. It has three phases: setup, data transfer, and teardown. Traditional telephone networks are the standard
+example.
+Circuit-switching phases
+A II setup request III [Switch 1] III [Switch 2] III B
+A IIIIIIIIIIIII dedicated path established IIIIIIIIIIIII B
+A IIIIIIIIIII reserved circuit/data flow IIIIIIIIIIII B
+A IIIIIIIIIIIII teardown / release IIIIIIIIIIIIIIIII B
+Advantages: predictable bandwidth/delay after setup, in-order delivery, suitable for continuous real-time streams.
+Limitations: idle reserved bandwidth is wasted; setup required; a path failure interrupts the circuit.
+Message switching
+Message switching transfers the entire message from one node to the next using store-and-forward operation. No dedicated
+path is required. Every intermediate node must receive and store the complete message before forwarding it. This can
+produce high delay and requires large buffers. Telegraph systems historically used this approach.
+Message-switching diagram
+Source II [store entire M] II Switch 1 II [store entire M] II Switch 2 II Destination
+Packet switching
+Packet switching divides a message into smaller packets. Each packet carries control/addressing information and is forwarded
+through the network. At the destination, packets are reassembled. Packet switching uses links efficiently because multiple
+users can share capacity statistically. The Internet is based on packet switching.
+Packet-switching diagram
+Message → [P1][P2][P3][P4]
+P1 → Route A → Destination
+P2 → Route B → Destination
+P3 → Route A → Destination
+P4 → Route C → Destination
+Destination reassembles P1,P2,P3,P4 in correct order.
+Packet switching types
+Type
+Working
+Example
+Virtual circuit / connection-oriented
+A logical path is set up first; packets follow that path and use a virtual-circuit identifier. X.25, Frame Relay, ATM, MPLS concepts.
+Datagram / connectionless
+No setup; every packet is independently routed and carries destination address. Packets may follow different paths/arrive out of order.
+Internet Protocol (IP).
+Comparison of switching techniques
+Basis
+Circuit switching
+Message switching
+Packet switching
+Unit transferred
+Continuous stream over reserved circuit.
+Complete message.
+Small packets.
+Setup
+Required.
+Not required.
+Datagram: no; virtual circuit: yes.
+Resource reservation
+Yes.
+No.
+Usually no dedicated physical reservation.
+Store-and-forward
+No for each message; path pre-established.
+Entire message stored at each node.
+Usually packet stored/forwarded at each node.
+
+
+--- PAGE 7 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 7
+Basis
+Circuit switching
+Message switching
+Packet switching
+Delay
+Setup delay, then predictable transmission.
+High, especially for long messages.
+Lower than message switching; may vary.
+Example
+Traditional telephone network.
+Telegraph-like systems.
+Internet.
+7. Multiplexing
+Multiplexing is a technique that allows multiple independent signals or data streams to share one high-capacity communication
+link. At the sender, a multiplexer (MUX) combines input streams. At the receiver, a demultiplexer (DEMUX) separates the
+composite stream back into original streams. Multiplexing improves utilization of expensive high-bandwidth links.
+MUX/DEMUX diagram
+Input 1 III
+Input 2 IIIIII [ MULTIPLEXER ] III Shared high-capacity link IIII [ DEMULTIPLEXER ] III Output 1
+Input 3
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+Output 2
+Input 4
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+Output 3 / Output 4
+7.1 Frequency-Division Multiplexing (FDM)
+FDM is an analog multiplexing technique. The total bandwidth of a link is divided into separate frequency bands; each
+user/channel modulates a different carrier frequency. All channels are transmitted simultaneously. Guard bands are unused
+frequency gaps placed between channels to prevent overlap and interference.
+FDM frequency graph
+Frequency →
+| Channel 1 | guard | Channel 2 | guard | Channel 3 | guard | Channel 4 |
+Each channel occupies a different frequency band at the same time.
+Examples: radio/TV broadcasting and traditional analog telephone carrier systems.
+7.2 Time-Division Multiplexing (TDM)
+TDM is a digital multiplexing technique in which users share the entire channel bandwidth, but each receives a time slot. The
+multiplexer interleaves data units in time; the demultiplexer uses timing/frame information to send each unit to the correct
+output.
+TDM time graph
+Time → | Ch1 | Ch2 | Ch3 | Ch4 | Ch1 | Ch2 | Ch3 | Ch4 | ...
+All users use the same frequency/channel bandwidth, but at different time slots.
+Synchronous TDM: every input has a reserved time slot in every frame, even if it has no data, so capacity can be wasted.
+Statistical TDM: time slots are assigned dynamically to inputs that actually have data, improving efficiency but requiring
+address/control information.
+7.3 Wavelength-Division Multiplexing (WDM)
+WDM is multiplexing for optical fibre. Multiple optical signals with different wavelengths (colours) are combined onto one fibre
+and separated at the other end. It is conceptually similar to FDM, except it uses light wavelengths rather than radio-frequency
+carrier bands. Dense WDM (DWDM) spaces wavelengths very closely to support many channels.
+WDM diagram
+λ1 (red light) III
+λ2 (green light) IIIII [Optical MUX] II One fibre III [Optical DEMUX] III λ1, λ2, λ3 ...
+λ3 (blue light) II
+Comparison of FDM, TDM and WDM
+Basis
+FDM
+TDM
+WDM
+Resource shared
+Frequency bands.
+Time slots.
+Optical wavelengths.
+Signal/domain
+Usually analog/RF.
+Usually digital data.
+Optical fibre/light.
+
+
+--- PAGE 8 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 8
+Basis
+FDM
+TDM
+WDM
+Transmission
+All channels simultaneously at different frequencies.
+Channels take turns in time.
+All optical channels simultaneously at different wavelengths.
+Need
+Guard bands/filtering.
+Synchronization and framing.
+Optical MUX/DEMUX, wavelength control.
+Example
+Radio broadcasting.
+Digital telephony/links.
+Fibre-optic backbone.
+8. ISDN: Integrated Services Digital Network
+ISDN is a digital telecommunications technology designed to carry voice, data, text, images, and signalling over a common
+digital network interface. It was historically important because it integrated multiple services on telephone infrastructure and
+allowed simultaneous voice/data communication.
+ISDN channels
+Channel
+Typical rate
+Purpose
+B channel (Bearer)
+64 kbps
+Carries user information such as voice, data, fax, or other bearer traffic. Multiple B channels may be bonde
+D channel (Delta/Data signalling)
+16 kbps in BRI; 64 kbps in PRI
+Primarily carries signalling/control information: call setup, call clearing, ringing, and network control. It may 
+H channel (High-rate)
+H0 = 384 kbps; H11 = 1.536 Mbps; H12 = 1.920 Mbps
+Carries higher-rate information such as video, high-speed data, or multiple combined channels.
+ISDN access types
+Interface
+Composition
+Typical context
+BRI — Basic Rate Interface
+2B + D = two 64-kbps B channels plus 16-kbps D channel.
+Homes/small offices; total user channels 144 kbps exclu
+PRI — Primary Rate Interface
+T1 regions: 23B + D; E1 regions: 30B + D.
+Larger organisations and PBX connections.
+Conceptual ISDN protocol architecture
+OSI / ISDN concept:
+Network layer: Call control (Q.931) / packet services as applicable
+Data-link layer: LAPD (D channel signalling); user data protocols on B channels
+Physical layer: BRI / PRI interface, line coding, electrical/mechanical specifications
+B channels: primarily user bearer information
+D channel: signalling and control
+ISDN services
+Service category
+Meaning
+Examples
+Bearer services
+Network transports information without changing/manipulating its content; broadly related to lower OSI layers.
+Circuit-switched data, packet data transport.
+Teleservices
+Complete end-user communication services; network/application functions may process content.
+Telephony, telefax, teletex, videotex, teleconferencing.
+Supplementary services
+Additional capabilities added to bearer/teleservices.
+Call waiting, caller ID, call forwarding, conference calling, reverse
+Narrowband ISDN versus Broadband ISDN
+Basis
+N-ISDN
+B-ISDN
+Basic unit / rate
+Built around 64-kbps channels.
+Designed for much higher rates, typically broadband services.
+Transport orientation
+Historically circuit switching and packet/frame services.
+Broadband packet/cell-based approaches; ATM historically central.
+Medium
+Telephone copper and digital telephony infrastructure.
+Fibre-optic and broadband-capable media.
+Typical services
+Voice, low-rate data, fax.
+High-speed data, video, multimedia.
+9. Congestion Control and Traffic Shaping
+Congestion occurs when packets arrive at routers or network links faster than they can be processed, queued, and forwarded.
+Queues grow, delay rises, buffers overflow, packets are dropped, and retransmissions may create even more traffic. In severe
+cases, the network can experience congestion collapse.
+Congestion feedback cycle
+
+
+--- PAGE 9 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 9
+More offered traffic → queues grow → delay/loss increases → senders retransmit → even more traffic →
+congestion worsens
+Congestion control aims to regulate the entry and rate of traffic so that the network can operate efficiently. Traffic shaping is
+one approach: it controls the rate and burst pattern before packets enter the network.
+Leaky bucket algorithm
+Leaky bucket shapes bursty traffic into a steady output stream. Incoming packets enter a finite queue/bucket. Packets leave at
+a fixed rate. If the bucket/queue becomes full, newly arriving packets are discarded or marked depending on implementation.
+Leaky-bucket diagram
+Bursty packets → [ Bucket / finite queue ] → fixed-rate leak → Network
+overflow when full → packet drop
+Advantages: smooth, predictable output; protects network from sudden bursts.
+Limitation: it does not allow a host to use previously unused capacity to transmit a later burst; excess packets can be dropped
+when queue is full.
+Token bucket algorithm
+Token bucket controls average traffic rate while allowing controlled bursts. Tokens are added to a bucket at a fixed rate up to a
+maximum capacity. A packet may be sent only when sufficient tokens are available; sending consumes tokens. If the host has
+been idle, tokens accumulate and it can send a burst up to the stored-token limit.
+Token-bucket diagram
+Clock → token generator → [ Token bucket (max capacity) ]
+Packets IIIIIIIIIIIIIIIIIIIIII [Need token(s)?] II yes → transmit to network
+III no → wait or queue/drop (policy dependent)
+Leaky bucket versus token bucket
+Basis
+Leaky bucket
+Token bucket
+Output rate
+Usually fixed/constant.
+Average rate controlled; bursts allowed if tokens accumulated.
+Idle-period credit
+No useful credit accumulates for future bursts.
+Tokens accumulate up to bucket capacity.
+Burst handling
+Smooths/removes bursts; overflow may be dropped.
+Allows bursts within stored token limit.
+Best use
+Strict rate shaping.
+Rate limiting with controlled burst tolerance.
+10. Applications of Computer Networks
+Computer networks support communication, resource sharing, remote access, distributed applications, Internet services, and
+collaboration. They are fundamental to education, banking, health care, e-commerce, government services, cloud computing,
+and software development.
+• Data sharing: multiple authorised users can access databases, documents, and shared information.
+• Remote data access: users can securely access applications/files from another location through cloud services, VPNs, or
+remote desktop.
+• Resource sharing: printers, storage, servers, software licences, and Internet links can be shared.
+• Communication: email, chat, VoIP, video meetings, social platforms, and collaboration tools.
+• Internet: access to web services, online learning, streaming, search, e-commerce, and digital government.
+• Intranet: private internal organisational network for employees and internal applications.
+• Extranet: secure extension of an intranet for authorised external partners, suppliers, or customers.
+• File sharing and teamwork: cloud storage and collaborative editing support team projects in real time.
+
+
+--- PAGE 10 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 10
+11. Topic-Wise PYQ Answer Bank
+The questions below are mapped to the Unit-III concepts above. Each model answer is written for detailed university
+examination preparation.
+Q1. What is piggybacking?
+Asked: 2023–24, 2025–26
+Answer
+Piggybacking is an acknowledgement technique used in full-duplex data communication. When both stations have data to
+send, a receiver does not immediately transmit a separate ACK frame for every incoming data frame. Instead, it waits briefly
+and attaches the acknowledgement number to the header of its next outgoing data frame.
+In this way, the ACK gets a “free ride” with the reverse-direction data frame. A separate ACK would otherwise need its own
+header, control information, and error-checking field, creating unnecessary overhead.
+Working: Station A sends a data frame to station B. B receives it correctly and must acknowledge it. If B has its own data
+ready to send to A, B includes the ACK field in that outgoing data frame. If B has no outgoing data within a short delay interval,
+B sends a separate acknowledgement so that A is not forced to wait unnecessarily.
+Advantages: reduces control-frame overhead, uses bandwidth more efficiently, and is especially useful in bidirectional
+full-duplex data transfer.
+Limitation: the receiver must not delay an ACK indefinitely; a delayed-ACK timer is necessary.
+Conclusion: Piggybacking improves efficiency by combining acknowledgement and reverse-direction data in one frame.
+Q2. A channel has bit rate 4 kbps and one-way propagation delay 20 ms. For what minimum frame size
+does Stop-and-Wait give efficiency at least 50%?
+Asked: 2017
+Answer
+For Stop-and-Wait ARQ, ignoring ACK transmission and processing delays:
+η = Tt / (Tt + 2Tp)
+Given: η = 0.5, bit rate R = 4 kbps = 4000 bps, one-way propagation delay Tp = 20 ms = 0.020 s.
+0.5 = Tt / (Tt + 2 × 0.020)
+0.5(Tt + 0.040) = Tt
+0.5Tt + 0.020 = Tt
+0.5Tt = 0.020
+Tt = 0.040 second = 40 ms
+Frame size = bit rate × transmission time
+= 4000 bits/s × 0.040 s
+= 160 bits.
+Answer: The frame size must be at least 160 bits for efficiency of at least 50%. Any frame size greater than or equal to 160
+bits satisfies the condition under the stated assumptions.
+Q3. Describe the sliding-window protocol. / Write short note on Go-Back-N.
+Asked: 2021, 2023–24, 2025–26
+Answer
+The sliding-window protocol is a flow-control and error-control technique that permits the sender to transmit multiple frames
+before waiting for acknowledgements. The number of unacknowledged frames that may be sent is the sender window size.
+When ACKs arrive, the sending window slides forward and new frames become eligible for transmission.
+It is more efficient than Stop-and-Wait because the link can remain busy while earlier frames are propagating and
+acknowledgements are returning. Sliding-window protocols use sequence numbers to identify frames.
+
+
+--- PAGE 11 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 11
+Go-Back-N ARQ: The sender may have up to N outstanding frames. The receiver accepts only the next expected frame and
+discards later out-of-order frames. If frame 2 is lost, frames 3 and 4 are discarded even if they arrive correctly. The sender
+retransmits frame 2 and every later unacknowledged frame after a timeout or NAK.
+Advantages: higher throughput than Stop-and-Wait; sender implementation is simpler than Selective Repeat.
+Disadvantage: when errors occur, correctly transmitted later frames may be unnecessarily retransmitted, wasting bandwidth.
+Conclusion: Sliding-window protocols improve performance by pipelining frames; Go-Back-N provides a practical trade-off
+between simplicity and efficiency.
+Q4. Compare Go-Back-N and Selective Repeat.
+Asked: 2021
+Answer
+Go-Back-N: retransmits the damaged/lost frame and all subsequent outstanding frames. The receiver discards out-of-order
+frames and normally has a receive window of one. It is simpler but wastes bandwidth when an error occurs.
+Selective Repeat: retransmits only the specific damaged/lost frame. The receiver accepts/buffers valid out-of-order frames,
+requiring larger buffers and more complex control. It uses bandwidth more efficiently, especially on links with non-trivial error
+rate.
+Key comparison: Go-Back-N has low complexity and potentially high retransmission waste; Selective Repeat has higher
+complexity but avoids retransmitting frames already received correctly.
+Q5. Explain different types of switching techniques.
+Asked: 2024–25; related: 2019, 2022–23, 2025–26
+Answer
+Switching is the process of moving information through intermediate network nodes from source to destination. The principal
+switching techniques are circuit switching, message switching, and packet switching.
+1. Circuit switching: a dedicated end-to-end path is established before transmission. Resources are reserved for the
+complete session. It has setup, data-transfer, and teardown phases. It offers predictable performance after setup but wastes
+reserved capacity during silence. Traditional telephone calls are an example.
+2. Message switching: the complete message is stored at every intermediate node and then forwarded when the next link is
+available. There is no dedicated path. It needs large buffers and can create high delay, especially for long messages.
+Telegraph networks are a historical example.
+3. Packet switching: the message is divided into small packets. Packets are stored and forwarded individually, allowing
+better sharing of network links. In datagram packet switching, every packet is routed independently; in virtual-circuit packet
+switching, a logical route is established first. The Internet uses packet switching.
+Conclusion: Circuit switching is best for a dedicated continuous path; message switching is mainly historical due to high
+delay; packet switching is the dominant technique in modern data networks because of efficient resource sharing.
+Q6. What is framing? Explain different framing protocols with formats.
+Asked: 2023–24, 2024–25, 2025–26
+Answer
+Framing is a Data-Link Layer function that divides a continuous bit stream into identifiable blocks called frames. A frame
+contains a header, payload, and often a trailer. It permits error detection, addressing, sequencing, flow control, and reliable
+retransmission.
+Ethernet frame: [Preamble | Start Frame Delimiter | Destination MAC | Source MAC | Type/Length | Data/Pad | FCS]. It is
+used in LAN Ethernet networks. The FCS commonly uses CRC for error detection.
+PPP frame: [Flag | Address | Control | Protocol | Payload | FCS | Flag]. PPP is used on point-to-point links and supports link
+setup/control functions.
+HDLC frame: [Flag | Address | Control | Information | FCS | Flag]. HDLC is a bit-oriented synchronous Data-Link protocol for
+point-to-point/multipoint links. It uses flag sequences and bit stuffing.
+
+
+--- PAGE 12 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 12
+Frame Relay: uses variable-length frames and virtual circuits in WANs; its header identifies the virtual connection, commonly
+through DLCI-related information.
+ATM: uses fixed 53-byte cells: [5-byte header | 48-byte payload]. It was designed for efficient integrated voice, video, and data
+transport using virtual circuits.
+SONET/SDH: optical telecom transport standards that use synchronised frame structures with overhead and payload sections
+for high-speed network transport.
+Conclusion: Framing protocols define how devices identify frame boundaries and interpret addressing, control, payload, and
+error-checking fields.
+Q7. Explain multiplexing. Explain FDM, TDM and WDM.
+Asked: 2017, 2021, 2022–23, 2023–24
+Answer
+Multiplexing is a method of combining several independent signals/data streams so that they can share one high-capacity
+communication link. A multiplexer combines the streams at sender side, and a demultiplexer separates them at receiver side.
+FDM: Frequency-Division Multiplexing divides link bandwidth into separate frequency bands. Each signal modulates a
+different carrier and all channels travel simultaneously. Guard bands reduce overlap. FDM is mainly associated with
+analog/RF communication, such as radio broadcasting.
+TDM: Time-Division Multiplexing divides access by time. Each source gets a time slot and uses the full channel bandwidth
+during that slot. Synchronous TDM reserves slots even for idle sources; statistical TDM assigns slots dynamically to active
+sources. TDM is widely used for digital data.
+WDM: Wavelength-Division Multiplexing combines light signals of different wavelengths on one optical fibre. It is the fibre-optic
+counterpart of FDM. DWDM allows many closely spaced optical channels on the same fibre.
+Conclusion: FDM shares frequencies, TDM shares time, and WDM shares optical wavelengths. All improve utilisation of a
+high-capacity link.
+Q8. Explain ISDN architecture and its services.
+Asked: 2023–24, 2025–26; related: 2015, 2018, 2021, 2022–23
+Answer
+ISDN stands for Integrated Services Digital Network. It is a digital telecommunication network designed to carry voice, data,
+text, images, and signalling services through standard digital interfaces. It can support simultaneous voice and data
+communication.
+Channels: B channel is a 64-kbps bearer channel that carries user voice/data. D channel is mainly for signalling and control; it
+is 16 kbps in BRI and 64 kbps in PRI. H channels provide higher rates: H0 = 384 kbps, H11 = 1.536 Mbps, and H12 = 1.920
+Mbps.
+Interfaces: BRI = 2B + D, mainly for smaller users. PRI provides many B channels plus one D channel—23B+D in T1 systems
+and 30B+D in E1 systems.
+Architecture: Physical layer defines BRI/PRI interfaces and line/electrical characteristics. D-channel data-link signalling uses
+LAPD. Call control is handled by protocols such as Q.931. B channels carry user bearer traffic and may connect to
+circuit-switched, packet-switched, or other networks.
+Services: Bearer services transfer information without altering content. Teleservices provide end-user services such as
+telephony, fax, teletex, videotex, and teleconferencing. Supplementary services add functions such as call waiting, caller
+identification, call forwarding, and conference calling.
+Conclusion: ISDN integrated several digital telecommunication services over common interfaces and was important in the
+transition from analog telephony to modern digital networks.
+Q9. Describe congestion control algorithms. Explain leaky bucket and token bucket.
+Asked: 2023–24, 2024–25, 2025–26
+Answer
+
+
+--- PAGE 13 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 13
+Congestion occurs when traffic offered to a network exceeds its ability to process and forward packets. Queues become long,
+delay increases, buffers overflow, packets are dropped, and retransmissions can make the situation worse. Congestion control
+prevents or reduces this overload.
+Leaky bucket algorithm: Incoming packets are placed in a finite queue/bucket. Packets are released at a constant rate, like
+water leaking through a small hole. Bursty input is converted into smooth output. If the bucket becomes full, excess packets
+are discarded or marked. It provides strict rate shaping but does not allow a later burst to use capacity saved during an idle
+period.
+Token bucket algorithm: Tokens are generated at a fixed rate and stored in a bucket up to a maximum. Sending a packet
+requires enough tokens; sending consumes tokens. During idle time, tokens accumulate, so a source may later send a burst
+up to the available token amount. It controls average rate while allowing controlled bursts.
+Comparison: Leaky bucket gives a fixed smooth output; token bucket permits bursts after idle periods. Leaky bucket is strict
+shaping; token bucket is flexible rate limiting.
+Conclusion: Both mechanisms regulate traffic before it overloads network resources, but token bucket is usually preferred
+where burst tolerance is required.
+Q10. Explain applications of computer networks.
+Asked: 2023–24, 2025–26
+Answer
+Computer networks connect devices so that users and organisations can share information, communicate, access remote
+resources, and run distributed services.
+1. Data sharing: users share files, databases, documents, and information through servers/cloud storage.
+2. Remote data access: authorised users access data and applications from remote locations using Internet, VPN, and
+remote desktop services.
+3. Resource sharing: shared printers, storage, Internet access, servers, and software reduce cost.
+4. Communication: email, messaging, VoIP, video conferencing, online classes, and collaborative platforms enable rapid
+interaction.
+5. Internet services: web browsing, e-commerce, digital payments, social media, streaming, search, and cloud applications.
+6. Intranet and extranet: intranets support internal organisational work; extranets provide controlled access to suppliers,
+partners, or customers.
+7. Collaboration: teams can co-edit documents, manage projects, exchange code, and work across locations.
+Conclusion: Networks are the infrastructure behind modern communication, business operations, education, cloud
+computing, and digital services.
+
+
+--- PAGE 14 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 14
+12. Final Revision Sheet
+Must-draw diagrams
+• Stop-and-Wait sender/receiver timing diagram.
+• Piggybacked acknowledgement diagram.
+• Sliding-window sequence-number diagram.
+• Go-Back-N and Selective Repeat loss/retransmission diagrams.
+• Circuit switching: setup → data transfer → teardown.
+• Message switching: store-and-forward path.
+• Packet switching: packets using different routes.
+• MUX → shared link → DEMUX; FDM frequency bands; TDM time slots; WDM wavelengths.
+• ISDN B/D/H channel architecture and satellite-like channel mapping is not required; draw correct ISDN interface diagram.
+• Leaky bucket and token bucket diagrams.
+Formula box
+Stop-and-Wait efficiency: η = Tt / (Tt + 2Tp) = 1/(1 + 2a)
+Where: Tt = frame transmission time, Tp = one-way propagation delay, a = Tp/Tt.
+Frame size: Frame size in bits = link bit rate × Tt.
+Fast comparisons to memorise
+Topic
+One-line difference
+Stop-and-Wait vs Sliding Window
+Stop-and-Wait allows one outstanding frame; sliding window allows multiple outstanding frames.
+Go-Back-N vs Selective Repeat
+GBN resends from error onward; SR resends only erroneous/lost frame and buffers others.
+Circuit vs Packet switching
+Circuit reserves an end-to-end path; packet switching shares links using packets.
+FDM vs TDM
+FDM divides frequency; TDM divides time.
+TDM vs WDM
+TDM uses time slots for data streams; WDM uses different light wavelengths in fibre.
+Leaky vs Token bucket
+Leaky bucket makes fixed-rate output; token bucket allows controlled bursts.
+BRI vs PRI
+BRI is 2B+D; PRI has many B channels plus one D channel.
+7-Day Unit-III Study Plan
+Day
+Focus
+Output
+1
+Data-link functions and framing
+Write frame definition and formats; practise Q6.
+2
+Stop-and-Wait, piggybacking, efficiency
+Solve the 2017 numerical repeatedly; write Q1/Q2.
+3
+Sliding window, GBN, SR
+Draw time diagrams; learn Q3/Q4.
+4
+Switching
+Draw all three switching techniques; write Q5.
+5
+Multiplexing
+Draw FDM/TDM/WDM and learn comparison; write Q7.
+6
+ISDN and congestion control
+Prepare Q8/Q9 including diagrams and tables.
+7
+Full PYQ mock
+Write Q1–Q10; revise diagrams/formula sheet.
+Final accuracy notes
+• A D channel is primarily a signalling/control channel; do not state that it “does not carry data” in every possible context.
+• Go-Back-N receiver normally discards out-of-order frames; Selective Repeat buffers them.
+• Message switching stores the entire message at each node; packet switching normally stores/forwards packets.
+• FDM is frequency sharing, TDM is time sharing, WDM is optical wavelength sharing.
+
+
+--- PAGE 15 ---
+BCA-5003 Computer Network — Unit III Detailed Notes + Topic-Wise PYQ Answers
+Page 15
+• Token bucket permits a burst only if enough tokens have accumulated; it does not allow unlimited bursting.
+• ISDN is historically important; use its classical BRI/PRI terminology accurately in exams.
+For a 10-CGPA attempt: do active recall. Close the notes, draw the diagrams and write each PYQ in handwriting; then
+check only what you missed. Repeat at least twice before the exam.

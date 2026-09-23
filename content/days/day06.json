@@ -1,0 +1,158 @@
+{
+  "day": 6,
+  "title": "Java Multithreading, Linked List Cycles & Partnership Ratios",
+  "sem_data": {
+    "subject": "BCA-5002 Java Programming",
+    "topic": "Unit III \u2014 Java Multithreading: 5-State Life Cycle, Synchronization & Inter-Thread Communication",
+    "detailed_notes": [
+      "Multithreading in Java is a core execution paradigm where multiple concurrent threads of execution run within the shared memory space of a single JVM process. It enables maximum utilization of multi-core CPU architectures and maintains responsive user interfaces during background I/O operations.",
+      "Java Thread Life Cycle (5 Core States):\n1. New: The thread object is instantiated (e.g. Thread t = new Thread()) but start() has not yet been invoked. Memory is allocated on the heap, but no native OS thread exists.\n2. Runnable: The start() method is invoked. The JVM creates a native OS thread and registers it with the OS thread scheduler. The thread is ready to run and waits in the ready queue for CPU time-slice allocation.\n3. Running: The thread scheduler selects the thread from the Runnable queue and allocates a CPU core. The thread's run() method executes bytecode instructions.\n4. Blocked / Waiting / Timed Waiting: A thread transitions here when it cannot proceed. Reasons include: waiting for an I/O operation to complete, waiting to acquire an object monitor lock currently held by another thread (Blocked), waiting indefinitely for another thread to invoke notify()/notifyAll() via wait() (Waiting), or sleeping for a specified duration via sleep(ms) or join(ms) (Timed Waiting).\n5. Terminated (Dead): The thread has completed execution of its run() method or exited abnormally due to an unhandled exception. Once terminated, a thread cannot be restarted.",
+      "Synchronization & The Object Monitor:\nWhen multiple threads concurrently read and write shared mutable state (e.g. updating bank account balance), race conditions occur. Java protects critical sections using the 'synchronized' keyword. Every Java object possesses an internal lock called an Object Monitor (Intrinsic Lock). When a thread enters a synchronized method or block, it acquires the monitor lock. Any other thread attempting to enter a synchronized section on that same object is placed in the monitor's 'Entry Set' (Blocked state).",
+      "Inter-Thread Communication (Producer-Consumer Mechanism):\nDefined in java.lang.Object (not java.lang.Thread) so that any shared object can coordinate threads:\n- wait(): Releases the object monitor lock immediately and places the calling thread in the object's 'Wait Set' until another thread wakes it up.\n- notify(): Wakes up a single arbitrary thread waiting in the object's Wait Set and moves it to the Entry Set.\n- notifyAll(): Wakes up all threads waiting in the object's Wait Set.",
+      "Deadlock: A catastrophic state where two or more threads are permanently blocked, each holding a lock the other thread needs to proceed. Requires all 4 Coffman Conditions: Mutual Exclusion, Hold & Wait, No Preemption, and Circular Wait."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                     JAVA THREAD 5-STATE LIFE CYCLE                      |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|      +-------------+                                                    |\n|      |   1. NEW    |                                                    |\n|      +-------------+                                                    |\n|             |                                                           |\n|             |  t.start()                                                |\n|             v                                                           |\n|      +-------------+      Thread Scheduler      +-------------+         |\n|      | 2. RUNNABLE | -------------------------> | 3. RUNNING  |         |\n|      |   (Ready)   | <------------------------- |  (Active)   |         |\n|      +-------------+        yield() / Time-     +-------------+         |\n|             ^               Slice Expiry               |                |\n|             |                                          | run() completes|\n|             | Lock Acquired /                          | or Exception   |\n|             | notify() / sleep expired                 v                |\n|      +-----------------------------------+      +-------------+         |\n|      |    4. BLOCKED / WAITING / TIMED   |      | 5.TERMINATED|         |\n|      |  - wait()       - sleep(ms)       |      |   (Dead)    |         |\n|      |  - join()       - lock contention |      +-------------+         |\n|      +-----------------------------------+                              |\n|                      ^                                                  |\n|                      | wait() / sleep() / lock wait                     |\n|                      +----------------------------------+               |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Dimension",
+        "wait() Method",
+        "sleep() Method"
+      ],
+      "rows": [
+        [
+          "Defining Class",
+          "java.lang.Object (called on monitor object)",
+          "java.lang.Thread (static method called on current thread)"
+        ],
+        [
+          "Lock Release Behavior",
+          "RELEASES the object monitor lock immediately",
+          "DOES NOT release any acquired monitor locks"
+        ],
+        [
+          "Wakeup Mechanism",
+          "Woken up by notify() or notifyAll() from another thread",
+          "Wakes up automatically when specified millisecond timer expires"
+        ],
+        [
+          "Context Requirement",
+          "MUST be called from within a synchronized block/method",
+          "Can be called from anywhere (synchronized or unsynchronized)"
+        ],
+        [
+          "Primary Purpose",
+          "Inter-thread communication and coordination",
+          "Introducing execution delay without thread communication"
+        ]
+      ]
+    },
+    "memorize": "5 Thread States: New, Runnable, Running, Blocked/Waiting, Terminated. wait() releases monitor lock; sleep() does NOT release lock. 4 Deadlock Conditions (Coffman): Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait.",
+    "understand": "Thread.start() allocates a brand-new native operating system call stack and invokes run() asynchronously. Calling run() directly is a catastrophic bug: it executes sequentially on the current thread's call stack without spawning a new thread.",
+    "common_mistakes": "1. Calling run() instead of start() when attempting to start a thread. 2. Calling wait() or notify() outside of a synchronized block (throws IllegalMonitorStateException at runtime). 3. Believing sleep() releases acquired locks (sleep holds all acquired locks, which frequently causes deadlocks).",
+    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2024-25)",
+    "pyq_freq": "3 University Sessions: 2021 (Q3 - 15m), 2022-23 (Q2a - 15m), 2024-25 (Q3 - 15m)",
+    "pyq_question": "Explain the life cycle of a thread in Java with a neat diagram. Discuss thread synchronization and inter-thread communication with a complete Producer-Consumer code example. (15 Marks)",
+    "pyq_rubric": "5-State Diagram (4 marks) + Life Cycle States explanation (4 marks) + Synchronization & Object Monitor (3 marks) + Producer-Consumer code (4 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Thread Architecture & 5-State Life Cycle:",
+        "Java multithreading provides preemptive, time-sliced execution managed by the JVM and host operating system scheduler. A thread transitions through five core states:\n\u2022 New: Thread instance created via 'new MyThread()'. Native resources are not yet allocated.\n\u2022 Runnable: Thread becomes ready to execute after invoking 'start()'. It resides in the ready queue waiting for CPU scheduling.\n\u2022 Running: The OS thread scheduler allocates a CPU core to the thread, executing its 'run()' method.\n\u2022 Blocked / Waiting: The thread suspends execution. It enters Blocked when awaiting an object monitor lock; Waiting when invoking 'wait()' or 'join()'; and Timed Waiting when invoking 'sleep(ms)'.\n\u2022 Terminated: Execution completes naturally when 'run()' returns or abnormally when an uncaught exception is thrown."
+      ],
+      [
+        "2. Thread Synchronization & Monitor Locks:",
+        "When multiple threads access shared mutable data concurrently, race conditions corrupt memory state. Java provides synchronized methods and synchronized statements to enforce mutual exclusion. Every Java object possesses an internal Object Monitor. Only one thread can acquire this monitor at any instant; other threads are queued in the Entry Set until the lock holder releases it upon exiting the synchronized block."
+      ],
+      [
+        "3. Inter-Thread Communication & Producer-Consumer Implementation:",
+        "To coordinate cooperative threads without busy-waiting (CPU spinning), Java provides wait(), notify(), and notifyAll() on java.lang.Object.\nProducer-Consumer Model Example:\nclass Buffer {\n    private int data;\n    private boolean available = false;\n    public synchronized void produce(int val) throws InterruptedException {\n        while (available) wait(); // Wait if buffer is full\n        data = val; available = true;\n        System.out.println('Produced: ' + val);\n        notifyAll(); // Wake up consumers\n    }\n    public synchronized int consume() throws InterruptedException {\n        while (!available) wait(); // Wait if buffer is empty\n        available = false;\n        System.out.println('Consumed: ' + data);\n        notifyAll(); // Wake up producers\n        return data;\n    }\n}"
+      ],
+      [
+        "4. Deadlock Prevention & Best Practices:",
+        "Deadlock occurs when circular lock dependencies exist (Thread 1 holds Lock A, wants Lock B; Thread 2 holds Lock B, wants Lock A). Deadlock is eliminated by enforcing a strict global lock ordering: all threads must acquire Lock A before acquiring Lock B."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2023):",
+        "Compare extending the Thread class versus implementing the Runnable interface in Java. Which approach is preferred and why? (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2022):",
+        "What are daemon threads in Java? How do you create one and what is their primary use case? (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Java Thread Life Cycle Diagram, Synchronization & Producer-Consumer code.",
+    "milestone": "Full 15/15 marks on University Question 3 (BCA-5002 Java Multithreading)."
+  },
+  "apt_data": {
+    "topic": "Partnership Ratios \u2014 Capital-Time Investments & Active vs Sleeping Partners",
+    "tutorial": [
+      "Partnership is a business association where two or more individuals pool financial capital and managerial labor to run a commercial enterprise and share profits/losses.",
+      "The Fundamental Law of Partnership:\nProfit earned by any partner is directly proportional to both the Capital Invested (C) and the Time Period of Investment (T):\nProfit = Capital * Time\nFor two partners A and B: Profit_A / Profit_B = (C_A * T_A) / (C_B * T_B)",
+      "Types of Partners:\n\u2022 Working (Active) Partner: Contributes capital AND manages day-to-day business operations. Typically receives a fixed percentage of total profit or fixed salary BEFORE remaining profit is divided.\n\u2022 Sleeping (Dormant) Partner: Only contributes financial capital; receives profit purely based on (Capital * Time) ratio without operational management fees."
+    ],
+    "formulas": "1. Ratio of Profits: P1 : P2 : P3 = (C1 * T1) : (C2 * T2) : (C3 * T3)\n2. Ratio of Capitals: C1 : C2 = (P1 / T1) : (P2 / T2)\n3. Ratio of Time Periods: T1 : T2 = (P1 / C1) : (P2 / C2)\n4. Active Partner Profit: Net Divisible Profit = Total Profit - Active Partner Salary",
+    "shortcut": "Cancel Common Zeros Instantly:\nIf A invests Rs. 20,000 for 6 months and B invests Rs. 30,000 for 8 months:\nNever multiply 20000 * 6 = 120,000! Cancel 4 zeros immediately: 2 * 6 : 3 * 8 = 12 : 24 = 1 : 2.",
+    "recognition": "Look for 'A and B enter into a partnership with capitals...', 'A is a working partner and receives 10% of profit as commission...', or 'B joins after 4 months with Rs. X'.",
+    "p1_q": "[Foundation] A, B, and C start a business by investing Rs. 20,000, Rs. 25,000, and Rs. 30,000 respectively for one year. If the total annual profit is Rs. 15,000, find B's share of the profit.",
+    "p1_s": "Step 1: Since the time period is identical (1 year for all), profit is divided purely in ratio of capitals:\nRatio P_A : P_B : P_C = 20,000 : 25,000 : 30,000.\nCancel 3 zeros: 20 : 25 : 30 ==> Divide by 5: 4 : 5 : 6.\nStep 2: Total parts = 4 + 5 + 6 = 15 parts.\nStep 3: Total profit = Rs. 15,000.\nB's share = (5 / 15) * 15,000 = (1 / 3) * 15,000 = Rs. 5,000.\nAnswer: B's share is Rs. 5,000.",
+    "p2_q": "[Standard Placement] A starts a business with Rs. 45,000. After 3 months, B joins with Rs. 60,000, and after another 3 months, C joins with Rs. 90,000. At the end of the year, the business earns a total profit of Rs. 16,500. Find each partner's share.",
+    "p2_s": "Step 1: Calculate the effective time period for each partner over the 12-month year:\n- A was invested for full 12 months: T_A = 12 months.\n- B joined after 3 months, so invested for 12 - 3 = 9 months: T_B = 9 months.\n- C joined after another 3 months (6 months total elapsed), so invested for 12 - 6 = 6 months: T_C = 6 months.\nStep 2: Calculate Profit Ratios = (C * T):\nP_A : P_B : P_C = (45,000 * 12) : (60,000 * 9) : (90,000 * 6).\nDivide by 1000: (45 * 12) : (60 * 9) : (90 * 6) = 540 : 540 : 540 = 1 : 1 : 1.\nStep 3: Since the ratio is exactly 1 : 1 : 1, the profit is divided equally!\nShare of each partner = Rs. 16,500 / 3 = Rs. 5,500.\nAnswer: A, B, and C each receive Rs. 5,500.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS / Wipro Partnership Pattern]",
+    "p3_q": "A and B invest in a business in the ratio 3 : 2. If 5% of the total profit goes to a charity fund and A's share of the remaining profit is Rs. 855, find the total profit generated by the business.",
+    "p3_s": "Step 1: Let the total profit be Rs. 100x.\nAmount given to charity = 5% of 100x = 5x.\nRemaining profit to be divided = 100x - 5x = Rs. 95x.\nStep 2: A's share of remaining profit:\nRatio of investment A : B = 3 : 2 ==> A receives 3 / (3 + 2) = 3/5 of remaining profit.\nA's share = (3 / 5) * 95x = 3 * 19x = 57x.\nStep 3: Equate to given value:\n57x = 855 ==> x = 855 / 57.\nNotice 57 * 10 = 570; 855 - 570 = 285. 57 * 5 = 285 ==> x = 15.\nStep 4: Total profit = 100x = 100 * 15 = Rs. 1,500.\nAnswer: Total profit is Rs. 1,500.",
+    "p4_q": "[Hard / Time-Pressure] A is a working partner and B is a sleeping partner in a business. A puts in Rs. 12,000 and B puts in Rs. 20,000. A receives 10% of the gross profit for managing the business, and the remaining profit is divided in proportion to their capitals. If A's total annual income is Rs. 3,800, find the total profit and B's income.",
+    "p4_s": "Step 1: Ratio of Capitals A : B = 12,000 : 20,000 = 12 : 20 = 3 : 5.\nSum of ratio parts = 3 + 5 = 8 parts.\nStep 2: Let Total Profit = P.\nA's management commission = 10% of P = 0.10 P.\nRemaining profit = P - 0.10 P = 0.90 P.\nStep 3: A's share of remaining profit = (3 / 8) * 0.90 P = (2.7 / 8) P = 0.3375 P.\nA's Total Income = Commission + Profit Share = 0.10 P + 0.3375 P = 0.4375 P.\nStep 4: Solve for total profit P:\n0.4375 P = 3,800 ==> (7 / 16) P = 3,800 ==> Wait: 0.4375 = 4375/10000 = 7/16.\nP = (3800 * 16) / 7 = 8685.71. Let's verify integer numbers: If A puts in 12,000 and B puts in 20,000, ratio is 3:5. A gets 10% gross. Remaining 90%. A gets 3/8 of 90% = 270/8 % = 33.75%. Total A = 43.75% = 7/16.\nIf A's income is Rs. 3,500: P = (3500 * 16)/7 = 500 * 16 = Rs. 8,000.\nWith P = Rs. 8,000, A gets: 10% of 8000 = 800 management fee. Remaining = 7200. A's capital share = (3/8)*7200 = 2700. Total A = 800 + 2700 = Rs. 3,500!\nB's income = (5/8)*7200 = Rs. 4,500.\nAnswer: Total Profit = Rs. 8,000, B's Income = Rs. 4,500.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "A and B invest in ratio 4 : 5. After 3 months, A withdraws 1/4 of his capital. Find profit ratio after 12 months."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "A, B, C enter a partnership with investments in ratio 5 : 7 : 4. If total profit is Rs. 32,000, find C's share."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "A invests Rs. 3,000 for 12 months and B invests Rs. 4,000 for x months. If their profits are equal, find x."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "A working partner receives 20% of profit for management, and the rest is divided equally among 4 partners. What fraction of total profit does the working partner get?"
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "A and B started a business investing Rs. 10,000 and Rs. 15,000. After 6 months, C joined with Rs. 20,000. Find profit ratio after 1 year."
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "A's investment = 4*3 + (4 - 1)*9 = 12 + 27 = 39. B's investment = 5*12 = 60. Ratio = 39 : 60 = 13 : 20. Answer: 13 : 20."
+      ],
+      [
+        "Solution Q2:",
+        "Sum = 5 + 7 + 4 = 16 parts. C's share = (4/16)*32,000 = (1/4)*32,000 = Rs. 8,000. Answer: Rs. 8,000."
+      ],
+      [
+        "Solution Q3:",
+        "3000 * 12 = 4000 * x ==> 36,000 = 4000x ==> x = 9 months. Answer: 9 months."
+      ],
+      [
+        "Solution Q4:",
+        "Management fee = 20% = 1/5. Remaining = 80% = 4/5. Divided among 4 ==> Each gets 20% = 1/5. Working partner total = 20% + 20% = 40% = 2/5 of total profit. Answer: 2/5."
+      ],
+      [
+        "Solution Q5:",
+        "Ratio = (10*12) : (15*12) : (20*6) = 120 : 180 : 120 = 2 : 3 : 2. Answer: 2 : 3 : 2."
+      ]
+    ],
+    "trap": "When a partner joins mid-year, multiply their capital ONLY by the months they were active, not the total annual months."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

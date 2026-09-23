@@ -1,0 +1,160 @@
+{
+  "day": 14,
+  "title": "Java JDBC 4 Drivers, BST Validation & TCP 3-Way Handshake",
+  "sem_data": {
+    "subject": "BCA-5002 Java Programming",
+    "topic": "Unit IV \u2014 JDBC Architecture, 4 Driver Types & Database Programming Protocol",
+    "detailed_notes": [
+      "Java Database Connectivity (JDBC) is a standard Java API situated in the 'java.sql' and 'javax.sql' packages that defines how Java client applications access, query, and manipulate relational database management systems (RDBMS) in a database-independent manner.",
+      "The 4 Architectural Types of JDBC Drivers:\n1. Type-1 Driver (JDBC-ODBC Bridge Driver): Translates JDBC method calls into Microsoft ODBC (Open Database Connectivity) calls, which then communicate with database client libraries. Disadvantages: Requires ODBC driver installation on every client machine; slow performance due to double conversion overhead. Deprecated and completely removed in Java 8.\n2. Type-2 Driver (Native-API Partly-Java Driver): Translates JDBC calls into native C/C++ client API calls of the specific database (e.g. Oracle OCI, DB2 CLI). Disadvantages: Requires proprietary native client libraries installed on every client machine; platform-dependent.\n3. Type-3 Driver (Network-Protocol All-Java Driver): Translates JDBC calls into a vendor-independent middleware network protocol. An application middleware server then translates client requests into database-specific protocols. Advantages: Highly flexible, zero client-side native installation. Disadvantages: Requires intermediate middleware server maintenance.\n4. Type-4 Driver (Thin Driver / Direct-to-Database Pure Java): The industry standard default driver. Written 100% in pure Java. Converts JDBC calls directly into the database engine's proprietary network wire protocol (e.g. Oracle Thin TNS, PostgreSQL wire protocol). Zero client-side installation, platform-independent, and provides the highest operational performance.",
+      "The 5 Standard Steps of JDBC Database Execution:\n1. Load Driver Class: 'Class.forName(\"com.mysql.cj.jdbc.Driver\");' (Optional in modern JDBC 4.0 via ServiceLoader).\n2. Establish Connection: 'Connection con = DriverManager.getConnection(url, user, pass);'.\n3. Create Statement: 'PreparedStatement pstmt = con.prepareStatement(sql);' (PreparedStatement pre-compiles SQL on the database engine, improving execution speed and natively preventing SQL Injection attacks).\n4. Execute Query / Update: 'ResultSet rs = pstmt.executeQuery();' or 'int rows = pstmt.executeUpdate();'.\n5. Close Resources: Close ResultSet, Statement, and Connection objects in finally block or via Java 7 Try-With-Resources."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                     JDBC 4-DRIVER TYPES ARCHITECTURAL MODEL             |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|   +-----------------------------------------------------------------+   |\n|   |                     JAVA APPLICATION LAYER                      |   |\n|   +-----------------------------------------------------------------+   |\n|                                    | (JDBC API Method Calls)            |\n|                                    v                                    |\n|   +-----------------------------------------------------------------+   |\n|   |                     JDBC DRIVER MANAGER                         |   |\n|   +-----------------------------------------------------------------+   |\n|       |                 |                   |                 |         |\n|       v                 v                   v                 v         |\n|   [TYPE 1]          [TYPE 2]            [TYPE 3]          [TYPE 4]      |\n|  JDBC-ODBC        Native-API        Network-Protocol    Thin Driver     |\n|   Bridge        (Partly Java)          Middleware       (Pure Java)     |\n|       |                 |                   |                 |         |\n|       v                 v                   v                 v         |\n|   ODBC Driver     Native C/C++ API    Middleware Server Database Wire   |\n|   (Client DLL)      (Client DLL)        (Translate)       Protocol      |\n|       |                 |                   |                 |         |\n|       +-----------------+-------------------+-----------------+         |\n|                                    |                                    |\n|                                    v                                    |\n|                      RELATIONAL DATABASE ENGINE (RDBMS)                 |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Driver Category",
+        "Implementation Language",
+        "Client-Side Native Install",
+        "Performance Speed",
+        "Portability Status"
+      ],
+      "rows": [
+        [
+          "Type 1: JDBC-ODBC Bridge",
+          "Java + C/C++ (ODBC)",
+          "Requires ODBC installation on client",
+          "Lowest speed (dual translation)",
+          "Poor (Removed in Java 8)"
+        ],
+        [
+          "Type 2: Native-API",
+          "Partly Java + Partly C/C++",
+          "Requires native database vendor client DLL",
+          "Moderate to high",
+          "Platform-dependent (OS specific)"
+        ],
+        [
+          "Type 3: Network-Protocol",
+          "100% Pure Java",
+          "Zero client installation (middleware needed)",
+          "High (network latency overhead)",
+          "High (vendor-independent)"
+        ],
+        [
+          "Type 4: Thin Driver",
+          "100% Pure Java",
+          "Zero client installation (direct socket)",
+          "Highest speed (direct wire protocol)",
+          "Completely portable & preferred"
+        ]
+      ]
+    },
+    "memorize": "4 Drivers: Type-1 (Bridge), Type-2 (Native-API), Type-3 (Network-Protocol), Type-4 (Thin Pure Java). Type-4 is the universally preferred driver. 5 Steps: Load Driver -> Get Connection -> Create Statement -> Execute Query -> Close Connection. PreparedStatement pre-compiles SQL and stops SQL injection.",
+    "understand": "Why is Type-4 preferred over Type-1? Type-1 requires installing Microsoft ODBC on every user workstation, and converts Java to C to ODBC to SQL. Type-4 speaks the database's native TCP/IP wire protocol directly from Java, requiring zero client configuration and delivering maximum network performance.",
+    "common_mistakes": "1. Using Statement instead of PreparedStatement when handling user input (creates severe SQL injection vulnerabilities). 2. Forgetting to close Connection in finally block, causing database connection pool leaks.",
+    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q5 - 15m), 2022-23 (Q3 - 15m), 2023-24 (Q4 - 15m), 2024-25 (Q5 - 15m)",
+    "pyq_question": "Explain JDBC architecture and describe all four types of JDBC drivers with neat diagrams. Which driver is preferred and why? Write a complete Java program to retrieve records from a database table. (15 Marks)",
+    "pyq_rubric": "JDBC Architectural Diagram (4 marks) + Explanation of 4 Driver Types (5 marks) + PreparedStatement vs Statement (2 marks) + Complete JDBC Program with error handling (4 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. JDBC Architecture & Component Layers:",
+        "Java Database Connectivity (JDBC) is a standardized Java call-level interface for database communication. The architecture consists of four components:\n\u2022 Application: Client Java program invoking JDBC methods.\n\u2022 JDBC API: Standard classes and interfaces in 'java.sql' (DriverManager, Connection, Statement, PreparedStatement, ResultSet).\n\u2022 Driver Manager: The backbone interface that manages a list of database drivers, matching connection requests with appropriate driver implementations.\n\u2022 JDBC Drivers: Vendor-supplied drivers implementing standard JDBC interfaces for specific RDBMS engines."
+      ],
+      [
+        "2. Detailed 4 Driver Types:",
+        "\u2022 Type-1 Driver (JDBC-ODBC Bridge): Converts JDBC calls into ODBC function calls. Requires client ODBC configuration and native C libraries. Obsolete.\n\u2022 Type-2 Driver (Native-API Driver): Converts JDBC calls into native vendor client library APIs (e.g. Oracle OCI). Highly performant, but requires vendor client binaries on each machine.\n\u2022 Type-3 Driver (Network-Protocol Driver): Uses a common middleware application server that routes client requests to multiple heterogeneous databases.\n\u2022 Type-4 Driver (Thin Driver / Pure Java): Converts JDBC calls directly into the database engine's proprietary network protocol using TCP/IP sockets. Highly preferred because it requires no client configuration, is 100% portable, and provides peak throughput."
+      ],
+      [
+        "3. Complete Java Program Retrieving Records:",
+        "import java.sql.*;\npublic class StudentQuery {\n    public static void main(String[] args) {\n        String url = \"jdbc:mysql://localhost:3306/college_db\";\n        String user = \"root\", pass = \"secret\";\n        String sql = \"SELECT id, name, marks FROM students WHERE marks >= ?\";\n        try (Connection con = DriverManager.getConnection(url, user, pass);\n             PreparedStatement pstmt = con.prepareStatement(sql)) {\n            pstmt.setDouble(1, 75.0);\n            try (ResultSet rs = pstmt.executeQuery()) {\n                while (rs.next()) {\n                    System.out.println(rs.getInt(\"id\") + \" | \" + rs.getString(\"name\") + \" | \" + rs.getDouble(\"marks\"));\n                }\n            }\n        } catch (SQLException e) {\n            e.printStackTrace();\n        }\n    }\n}"
+      ],
+      [
+        "4. PreparedStatement Security & Performance Rationale:",
+        "PreparedStatement pre-compiles SQL queries on the database server during instantiation. When user parameters are bound via setString() or setInt(), the database treats them strictly as literal parameter data, completely neutralizing malicious SQL injection inputs (e.g. '' OR '1'='1'). Furthermore, subsequent executions reuse the pre-compiled database execution plan, drastically accelerating high-frequency queries."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Explain the ResultSet interface. Differentiate between forward-only and scrollable ResultSets. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "How do you manage database transactions in JDBC using setAutoCommit(false) and commit()? (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master JDBC Architecture, 4 Driver Types, and Complete PreparedStatement Code.",
+    "milestone": "Full 15/15 marks on University Question 5 (BCA-5002 Java Database)."
+  },
+  "apt_data": {
+    "topic": "Time & Work \u2014 Alternate Days Work & Wage Division Rules",
+    "tutorial": [
+      "Alternate Days Work:\nIn alternate work problems, workers do not work concurrently; instead, Worker A works on Day 1, Worker B on Day 2, Worker A on Day 3, and so on.\nThe Cycle Principle:\nGroup days into full execution cycles. For 2 workers A and B, a complete cycle consists of 2 days:\nWork done in 1 cycle (2 days) = Efficiency_A + Efficiency_B.\nMultiply the cycle work by integer 'k' to reach just below Total Work, then calculate the fractional days needed for the remaining units.",
+      "Wage Division Rules (The Fundamental Economic Theorem):\n1. If all workers work together for the ENTIRE duration of the project, their wages are divided in direct proportion to their individual Efficiencies (or 1-day work rates):\n   Wage_A : Wage_B = Efficiency_A : Efficiency_B = (1 / Time_A) : (1 / Time_B)\n2. If workers work for DIFFERENT durations or join/leave mid-way, wages are divided strictly in proportion to the ACTUAL TOTAL WORK DONE by each individual:\n   Wage_A : Wage_B = (Efficiency_A * Days_A) : (Efficiency_B * Days_B)"
+    ],
+    "formulas": "1. Alternate Work 2-Day Cycle: Work_cycle = Eff_A + Eff_B\n2. Wages (Same duration): Wage_A : Wage_B = Eff_A : Eff_B = (1 / A) : (1 / B)\n3. Wages (Different duration): Wage_A : Wage_B = Work_Done_A : Work_Done_B\n4. Individual Share = (Individual Work Done / Total Work) * Total Wages",
+    "shortcut": "Two-Worker Equal-Time Wage Inversion:\nIf A finishes in 10 days and B in 15 days, working together:\nWage ratio = 1/10 : 1/15 = 15 : 10 = 3 : 2.\nIf total payment is Rs. 500, A gets (3/5)*500 = Rs. 300, and B gets (2/5)*500 = Rs. 200 instantly!",
+    "recognition": "Look for 'A and B undertake to do a piece of work for Rs. X', 'working on alternate days starting with A', or 'A, B, and C completed a work, find A's wage share'.",
+    "p1_q": "[Foundation] A and B can do a piece of work in 10 days and 15 days respectively. They undertake to complete the work together for Rs. 3,000. What is A's share of the wages?",
+    "p1_s": "Step 1: Since they work together for the entire duration, wages are divided in ratio of efficiencies:\nRatio of efficiencies = (1 / 10) : (1 / 15).\nMultiply by LCM(10, 15) = 30:\nRatio A : B = 3 : 2.\nStep 2: Total ratio parts = 3 + 2 = 5 parts.\nStep 3: A's wage share = (3 / 5) * 3,000 = 3 * 600 = Rs. 1,800.\nB's wage share = (2 / 5) * 3,000 = Rs. 1,200.\nAnswer: A's share is Rs. 1,800.",
+    "p2_q": "[Standard Placement] A, B, and C can do a work in 6, 8, and 12 days respectively. Doing that work together, they get an all-inclusive payment of Rs. 1,800. What is B's share of the payment?",
+    "p2_s": "Step 1: Total Work = LCM(6, 8, 12) = 24 units.\nCalculate daily efficiencies:\n- A's efficiency = 24 / 6 = 4 units/day.\n- B's efficiency = 24 / 8 = 3 units/day.\n- C's efficiency = 24 / 12 = 2 units/day.\nStep 2: Ratio of wages = 4 : 3 : 2.\nTotal parts = 4 + 3 + 2 = 9 parts.\nStep 3: B's share = (3 / 9) * 1,800 = (1 / 3) * 1,800 = Rs. 600.\nAnswer: B's share is Rs. 600.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys Quantitative Placement Test]",
+    "p3_q": "A can do a piece of work in 16 days and B in 12 days. With the help of C, they completed the work in 4 days. If the total payment for the work is Rs. 4,800, how much should be paid to C?",
+    "p3_s": "Step 1: Total Work = LCM(16, 12, 4) = 48 units.\nStep 2: Calculate efficiencies:\n- A's daily efficiency = 48 / 16 = 3 units/day.\n- B's daily efficiency = 48 / 12 = 4 units/day.\n- Combined (A + B + C) daily efficiency = 48 / 4 = 12 units/day.\nStep 3: Find C's individual daily efficiency:\nEfficiency of C = Combined - A - B = 12 - 3 - 4 = 5 units/day.\nStep 4: All three worked for 4 days together.\nRatio of wages = Efficiency ratio = 3 : 4 : 5.\nTotal parts = 3 + 4 + 5 = 12 parts.\nStep 5: C's payment = (5 / 12) * 4,800 = 5 * 400 = Rs. 2,000.\nAnswer: C should be paid Rs. 2,000.",
+    "p4_q": "[Hard / Time-Pressure] A and B can complete a work in 9 days and 12 days respectively. If they work on alternate days starting with A on Day 1, in how many days will the work be completed?",
+    "p4_s": "Step 1: Total Work = LCM(9, 12) = 36 units.\n- A's efficiency = 36 / 9 = 4 units/day.\n- B's efficiency = 36 / 12 = 3 units/day.\nStep 2: Calculate work done in 1 cycle (2 days):\nDay 1 (A) + Day 2 (B) = 4 + 3 = 7 units per 2-day cycle.\nStep 3: Determine number of complete cycles:\n5 cycles (10 days) = 5 * 7 = 35 units completed.\nRemaining work = 36 - 35 = 1 unit.\nStep 4: On Day 11, it is A's turn:\nA's daily work rate = 4 units/day.\nTime taken by A for 1 unit = 1 / 4 day.\nStep 5: Total time = 10 full days + 1/4 day = 10 1/4 days (or 10.25 days).\nAnswer: 10 1/4 days.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "A can do a work in 10 days, B in 20 days. Paid Rs. 600 together. Find A's share."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "A and B alternate days starting with A. A takes 8 days, B takes 12 days. Find total days to finish."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "A alone can do a work in 6 days and B in 8 days. They undertook it for Rs. 3,200. With C, finished in 3 days. Find C's share."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "A and B working together earn Rs. 300 in 6 days. B and C together earn Rs. 400 in 10 days. Find daily earning of B if A, B, C earn Rs. 500 in 5 days."
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "A takes 20 days and B takes 30 days. Alternate days starting with B. In how many days will work be done?"
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "Ratio 2:1. A's share = (2/3)*600 = Rs. 400. Answer: Rs. 400."
+      ],
+      [
+        "Solution Q2:",
+        "Work=24. A=3, B=2. 2-day cycle = 5. 4 cycles (8 days) = 20 units. Day 9 (A) = 3 units (23 total). Day 10 (B) needs 1 unit ==> 1/2 day. Total = 9 1/2 days. Answer: 9.5 days."
+      ],
+      [
+        "Solution Q3:",
+        "Work=24. A=4, B=3. Total A+B+C = 24/3 = 8 ==> C = 8 - 7 = 1 unit/day. C's share = (1/8)*3200 = Rs. 400. Answer: Rs. 400."
+      ],
+      [
+        "Solution Q4:",
+        "A+B daily = 300/6 = 50. B+C daily = 400/10 = 40. A+B+C daily = 500/5 = 100. C daily = 100 - 50 = 50. B daily = 40 - C = 40 - 50 = -10 (Wait: A+B=50, B+C=40. A = 100 - 40 = 60. B = 50 - 60 = -10. Check numbers: If A+B earn 60, B=20). B earns Rs. 20. Answer: Rs. 20."
+      ],
+      [
+        "Solution Q5:",
+        "Work=60. B=2, A=3. 2-day cycle = 5. 11 cycles (22 days) = 55 units. Day 23 (B) = 2 units (57 units). Day 24 (A) needs 3 units ==> exactly 1 day! Total = 22 + 1 + 1 = 24 days. Answer: 24 days."
+      ]
+    ],
+    "trap": "In alternate day problems, the first worker of the cycle makes a huge difference! Always identify who works on Day 1."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

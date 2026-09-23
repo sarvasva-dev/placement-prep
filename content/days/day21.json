@@ -1,0 +1,247 @@
+{
+  "day": 21,
+  "title": "Java Session Tracking, Seating Arrangements, Stock DP & DBMS Window Functions",
+  "sem_data": {
+    "subject": "BCA-5002 Java Programming",
+    "topic": "Unit IV \u2014 Session Tracking in Web Applications: Cookies, Hidden Form Fields, URL Rewriting & HttpSession",
+    "detailed_notes": [
+      "HTTP is inherently a stateless protocol: every incoming HTTP request is treated as independent with no memory of prior client interactions. Session tracking is the mechanism used by web containers to maintain conversational state across multiple requests from the same user (e.g., shopping cart, authentication login).",
+      "The 4 Primary Session Tracking Mechanisms in Java Servlets:\n1. Cookies (`javax.servlet.http.Cookie`):\n\u2022 Small key-value text tokens sent by the server via the `Set-Cookie` HTTP header and stored locally on the client's browser disk/RAM.\n\u2022 On subsequent requests to that domain, the browser automatically transmits the cookies in the `Cookie` request header.\n\u2022 Persistent Cookie (has `setMaxAge(seconds) > 0`) vs Non-Persistent / Session Cookie (`setMaxAge(-1)` destroyed when browser closes).\n\u2022 Limitations: Users can disable cookies in browser settings; maximum size is limited to 4KB per cookie; security vulnerabilities if sensitive data is stored unencrypted.",
+      "2. Hidden Form Fields:\n\u2022 HTML form elements `<input type=\"hidden\" name=\"sessionId\" value=\"XYZ123\">` embedded directly into dynamic HTML pages.\n\u2022 Invisible to users on the page, but submitted with form POST/GET requests.\n\u2022 Limitations: Only works for pages reached via HTML `<form>` submissions; navigating via normal hyperlink clicks (`<a>`) fails to transmit hidden fields.",
+      "3. URL Rewriting:\n\u2022 The session identifier is dynamically appended to the end of every URL hyperlink: `href=\"catalog.jsp;jsessionid=1048576\"`.\n\u2022 Implemented in Servlets using `response.encodeURL(url)` or `response.encodeRedirectURL(url)`.\n\u2022 Advantage: Works 100% reliably even if the client browser has completely disabled cookies!\n\u2022 Limitations: Exposes session IDs in browser address bars and server access logs; tedious because every URL in the app must be rewritten.",
+      "4. HttpSession API (Container-Managed Sessions):\n\u2022 High-level, enterprise-standard session tracking interface provided by the Web Container (Tomcat).\n\u2022 Server generates a unique 128-bit session token (`JSESSIONID`) and stores actual conversational objects in server memory.\n\u2022 The container sends the `JSESSIONID` to the browser via a session cookie (or URL rewriting fallback).\n\u2022 Methods: `request.getSession(true)` (creates or retrieves session), `session.setAttribute(name, obj)`, `session.getAttribute(name)`, `session.invalidate()` (logout/destroy session), `session.setMaxInactiveInterval(seconds)`."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                     HTTPSESSION ARCHITECTURE & FLOW                     |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|   BROWSER                                            APACHE TOMCAT      |\n|      |                                                     |            |\n|      |--- 1. POST /login (username, password) ------------>|            |\n|      |                                                     | Create:    |\n|      |                                                     | HttpSession|\n|      |<-- 2. HTTP 200 OK [Set-Cookie: JSESSIONID=AB8912] --| Object     |\n|      |                                                     | in RAM     |\n|      |                                                     |            |\n|      |--- 3. GET /cart [Cookie: JSESSIONID=AB8912] ------->| Lookup     |\n|      |                                                     | Session    |\n|      |<-- 4. HTTP 200 OK (Render user-specific cart) ------| by ID      |\n|      |                                                     |            |\n|      |--- 5. GET /logout --------------------------------->| session.   |\n|      |                                                     | invalidate |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Tracking Technique",
+        "Where State is Stored",
+        "Client Cookie Dependency",
+        "Security Risk",
+        "Ease of Implementation"
+      ],
+      "rows": [
+        [
+          "Cookies",
+          "Client browser storage",
+          "Requires cookies enabled",
+          "High (XSS attacks, tampering)",
+          "Simple (`Cookie` class)"
+        ],
+        [
+          "Hidden Form Fields",
+          "Embedded inside HTML forms",
+          "No cookie dependency",
+          "Moderate (view source reveals ID)",
+          "Cumbersome (forms only)"
+        ],
+        [
+          "URL Rewriting",
+          "Appended to URL query path",
+          "No cookie dependency",
+          "High (URL logging & referer leaks)",
+          "Moderate (encodeURL)"
+        ],
+        [
+          "HttpSession",
+          "Server RAM (Container heap)",
+          "Uses JSESSIONID cookie / fallback",
+          "Very Low (data stays on server)",
+          "High (Standard API)"
+        ]
+      ]
+    },
+    "memorize": "HTTP is stateless. 4 Session methods: Cookies, Hidden Form Fields, URL Rewriting, HttpSession. HttpSession stores objects in server memory and tracks client via JSESSIONID.",
+    "understand": "Why is HttpSession superior? Security and bandwidth. Storing an entire shopping cart inside client cookies means transmitting several kilobytes of cart data back and forth across every single HTTP request. HttpSession stores the heavy Java objects securely in server memory and transmits only a tiny 32-character JSESSIONID token.",
+    "common_mistakes": "1. Calling `request.getSession(false)` when you intended to create a new session (returns null if session doesn't already exist). 2. Forgetting to call `session.invalidate()` on logout.",
+    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "High-Frequency 15-Mark Core Question (Q4/Q5 - 15m in 4 consecutive exam sessions)",
+    "pyq_question": "What is Session Tracking? Why is it required in web applications? Explain the four session tracking techniques in Java Servlets with suitable code examples. Differentiate between Cookies and HttpSession. (15 Marks)",
+    "pyq_rubric": "Statelessness of HTTP & Need for Session Tracking (3 marks) + 4 Techniques detailed explanation (6 marks) + HttpSession code example (3 marks) + Cookies vs HttpSession comparison (3 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Need for Session Tracking:",
+        "The Hypertext Transfer Protocol (HTTP) is a stateless protocol: the server cannot inherently distinguish whether two successive requests originate from the same user or different users. Session tracking bridges this architectural gap by associating a conversational state with each unique client across multi-step transactions such as e-commerce shopping carts or authenticated student portals."
+      ],
+      [
+        "2. Detailed Analysis of the 4 Session Tracking Techniques:",
+        "\u2022 Cookies: A Cookie is a key-value header (`Cookie: user=sarthak`) stored by the browser. Persistent cookies have an expiry time set via `cookie.setMaxAge(3600)`. Stored on client side.\n\u2022 Hidden Form Fields: Hidden inputs (`<input type=\"hidden\" name=\"user\" value=\"sarthak\">`) pass state during form submissions without rendering visible UI.\n\u2022 URL Rewriting: Appends session identifiers directly to hyperlinks (`servlet?jsessionid=123`). Vital when clients disable browser cookies.\n\u2022 HttpSession Interface: The container creates an `HttpSession` object in server RAM, assigns a unique `JSESSIONID`, and manages expiration timeouts automatically via `web.xml` or `session.setMaxInactiveInterval(1800)`."
+      ],
+      [
+        "3. Java Code Implementation of HttpSession for User Authentication:",
+        "import java.io.*;\nimport javax.servlet.*;\nimport javax.servlet.http.*;\n\npublic class LoginServlet extends HttpServlet {\n    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {\n        String user = req.getParameter(\"username\");\n        String pass = req.getParameter(\"password\");\n        if (\"admin\".equals(user) && \"pass123\".equals(pass)) {\n            HttpSession session = req.getSession(true); // Create new session\n            session.setAttribute(\"currentUser\", user);\n            res.sendRedirect(\"dashboard.jsp\");\n        } else {\n            res.sendRedirect(\"login.html?error=invalid\");\n        }\n    }\n}"
+      ],
+      [
+        "4. Cookies vs HttpSession Comparison:",
+        "Cookies store data client-side in the browser (limited to 4KB strings, vulnerable to tampering). HttpSession stores arbitrary Java objects (Lists, Maps, User models) safely on the server, exchanging only the session ID."
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master 4 Session Tracking Methods & HttpSession API",
+    "milestone": "Full 15/15 on Java Web Development Exam Question"
+  },
+  "apt_data": {
+    "topic": "Logical Reasoning \u2014 Seating Arrangements (Linear & Circular)",
+    "tutorial": [
+      "Seating Arrangement Deduction Strategy:\n1. Circular Arrangements:\n\u2022 Facing Inwards (Towards Center): Right = Anti-Clockwise; Left = Clockwise.\n\u2022 Facing Outwards (Away from Center): Right = Clockwise; Left = Anti-Clockwise.\n\u2022 Fixed Anchor Rule: Always place the first person at the bottom facing inwards so their left/right matches your natural left/right.",
+      "2. Linear Arrangements:\n\u2022 Facing North: Left = West (Left hand side); Right = East (Right hand side).\n\u2022 Facing South: Left = East (Right hand side); Right = West (Left hand side).",
+      "3. Crucial Clue Distinctions:\n\u2022 'A is sitting second to the left of B' ==> Exactly 1 person between A and B.\n\u2022 'A is sitting immediate left of B' ==> A and B are adjacent: [A][B].\n\u2022 'A is to the left of B' ==> A can be anywhere to B's left."
+    ],
+    "formulas": "Circular ring of N people: Opposite person is at (N/2) distance for even N.",
+    "shortcut": "Start with Definite Clues: Never start with negative clues ('A does not sit next to B'). Start with clues establishing direct fixed relative positions ('A sits 3rd to right of B').",
+    "recognition": "Look for '8 friends A, B, C, D, E, F, G, H are sitting around a circular table facing center...' in TCS NQT, Wipro, and Infosys.",
+    "tier1_problem": "5 friends (P, Q, R, S, T) are sitting in a row facing North. S is between T and Q. Q is to the immediate left of R. P is to the immediate left of T. Who is sitting in the middle?",
+    "tier1_solution": "From clues:\n1. 'P is to immediate left of T' ==> [P, T]\n2. 'S is between T and Q' ==> [P, T, S, Q]\n3. 'Q is immediate left of R' ==> [P, T, S, Q, R]\nComplete order: P, T, S, Q, R. Middle person is S. Answer: S.",
+    "tier2_problem": "6 people (A, B, C, D, E, F) are sitting in a circle facing the center. B is between D and C. A is between E and D. F is to the right of D. Who is between A and F?",
+    "tier2_solution": "Anchor D at bottom. B is between D and C ==> Order clockwise: D, B, C. A is between E and D ==> E, A, D. F is to the right of D (anti-clockwise) ==> F sits between C and E. Full circle clockwise: D -> B -> C -> F -> E -> A -> (back to D). Looking at positions: between A and F sits E. Answer: E.",
+    "tier3_problem": "[TCS Digital Pattern] 8 persons (A to H) sit around a circular table facing center. B sits 3rd to left of G. Only 2 people sit between G and D. C sits 2nd to right of D. F is not an immediate neighbor of B. A sits 3rd to right of F. Who sits opposite to H?",
+    "tier3_solution": "Fix G at position 1. B is 3rd to left of G (clockwise 3 steps) ==> Position 6. Two people between G and D: D can be pos 4. C is 2nd to right of D ==> pos 2. F cannot be next to B (not 5 or 7). F must be 8. A sits 3rd to right of F ==> pos 3. Remaining positions: E and H. Solving constraints places H at position 5, directly opposite G or C. Systematic deduction gives H opposite C. Answer: C.",
+    "tier4_problem": "8 friends are seated in a straight line. 4 face North and 4 face South. No two adjacent people face the same direction. A sits 2nd from the left end and faces North. B sits 3rd to the right of A. How many people sit between B and the right end?",
+    "tier4_solution": "Line has 8 positions (1 to 8). Since adjacent people face alternate directions, and Pos 2 (A) faces North:\nPos 1: South, Pos 2: North (A), Pos 3: South, Pos 4: North, Pos 5: South, Pos 6: North, Pos 7: South, Pos 8: North.\nA is at Pos 2 facing North. 'Right' for North is towards higher positions. B is 3rd to the right of A ==> Pos 2 + 3 = Pos 5.\nB is at Pos 5. Positions to the right of B are Pos 6, Pos 7, Pos 8 (Total 3 people). Answer: 3 people.",
+    "speed_drills": [
+      {
+        "q": "In a row of 7 people facing North, A is 4th from left and 4th from right. Where is A?",
+        "a": "Exactly in the middle (Position 4)."
+      },
+      {
+        "q": "6 people sit in a circle facing inward. Who is opposite to person at position 1?",
+        "a": "Person at position 1 + 6/2 = Position 4."
+      },
+      {
+        "q": "A, B, C sit in a row. A is left of B and C is right of B. Order?",
+        "a": "A - B - C."
+      },
+      {
+        "q": "If X is sitting immediate right of Y who faces South, is X to the West or East of Y?",
+        "a": "West. When facing South, Right is West."
+      },
+      {
+        "q": "In a round table of 8, how many people sit between P and Q if P is opposite Q?",
+        "a": "Exactly 3 people on either side."
+      }
+    ]
+  },
+  "dsa_problems": [
+    {
+      "title": "Best Time to Buy and Sell Stock (LeetCode 121 - Easy)",
+      "difficulty": "Easy",
+      "importance": "Top 3 Most Asked Placement Problem (TCS, Infosys, Amazon, Microsoft)",
+      "problem_statement": "You are given an array prices where prices[i] is the price of a given stock on the ith day. You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock. Return the maximum profit you can achieve. If you cannot achieve any profit, return 0.",
+      "solution_approach": "Single-Pass Running Minimum (Greedy / DP):\n1. Track the minimum price seen so far: `min_price = infinity`.\n2. Track the maximum profit: `max_profit = 0`.\n3. For every price: update `min_price = min(min_price, price)`.\n4. Calculate potential profit if sold today: `price - min_price`.\n5. Update `max_profit = max(max_profit, price - min_price)`.",
+      "code": "def maxProfit(prices: list[int]) -> int:\n    min_price = float('inf')\n    max_profit = 0\n    \n    for price in prices:\n        if price < min_price:\n            min_price = price\n        elif price - min_price > max_profit:\n            max_profit = price - min_price\n            \n    return max_profit",
+      "line_by_line": [
+        [
+          "min_price = float('inf')",
+          "Initialize minimum purchase baseline to positive infinity."
+        ],
+        [
+          "if price < min_price: min_price = price",
+          "Found a cheaper historical day to buy."
+        ],
+        [
+          "elif price - min_price > max_profit",
+          "Calculate potential upside if sold today against historical dip."
+        ]
+      ],
+      "time_complexity": "O(N) single linear scan.",
+      "space_complexity": "O(1) constant auxiliary memory.",
+      "edge_cases": "Strictly decreasing prices [7, 6, 4, 3, 1] (returns 0); single element [5] (returns 0)."
+    },
+    {
+      "title": "Best Time to Buy and Sell Stock II (LeetCode 122 - Medium)",
+      "difficulty": "Medium",
+      "importance": "Classic Greedy Peak-Valley Strategy",
+      "problem_statement": "You are given an integer array prices. On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. However, you can buy it and immediately sell it on the same day. Find and return the maximum profit you can achieve.",
+      "solution_approach": "Greedy Peak-Valley Theorem:\nSince you can make unlimited transactions, the overall maximum profit is the sum of every upward price segment:\nIf prices[i] > prices[i-1], immediately capture the profit (prices[i] - prices[i-1]).\nAccumulating all positive differences guarantees capturing every upward trajectory.",
+      "code": "def maxProfitII(prices: list[int]) -> int:\n    total_profit = 0\n    \n    for i in range(1, len(prices)):\n        if prices[i] > prices[i - 1]:\n            total_profit += prices[i] - prices[i - 1]\n            \n    return total_profit",
+      "line_by_line": [
+        [
+          "for i in range(1, len(prices)):",
+          "Iterate from day 1 comparing against yesterday."
+        ],
+        [
+          "if prices[i] > prices[i - 1]:",
+          "Capture every ascending price movement."
+        ],
+        [
+          "total_profit += prices[i] - prices[i - 1]",
+          "Add incremental gain to accumulated profit."
+        ]
+      ],
+      "time_complexity": "O(N) single linear pass.",
+      "space_complexity": "O(1) constant space.",
+      "edge_cases": "Prices sorted ascending [1, 2, 3, 4, 5] (returns 4); sorted descending (returns 0)."
+    }
+  ],
+  "cs_core": {
+    "subject": "Database Management Systems (DBMS)",
+    "topic": "Advanced SQL: Analytic & Window Functions (ROW_NUMBER, RANK, DENSE_RANK, LEAD, LAG)",
+    "detailed_notes": [
+      "Window Functions compute an aggregate or ranking value over a specified subset of rows (the 'window') WITHOUT collapsing the rows into a single summary output (unlike standard `GROUP BY`).",
+      "Core Ranking Functions:\n\u2022 `ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC)`: Assigns a strictly unique, consecutive integer (1, 2, 3, 4) to every row regardless of ties.\n\u2022 `RANK() OVER (PARTITION BY dept ORDER BY salary DESC)`: Assigns identical rank to ties, but SKIPS subsequent ranks (e.g. 1, 2, 2, 4).\n\u2022 `DENSE_RANK() OVER (PARTITION BY dept ORDER BY salary DESC)`: Assigns identical rank to ties WITHOUT skipping subsequent ranks (e.g. 1, 2, 2, 3).\n\u2022 `LEAD(column, offset)`: Fetches data from following rows without an expensive self-join.\n\u2022 `LAG(column, offset)`: Fetches data from preceding rows (used for MoM revenue growth calculations)."
+    ],
+    "interview_qa": [
+      {
+        "q": "Write a SQL query to find the 2nd highest salary in each department.",
+        "a": "WITH RankedSalaries AS (\n    SELECT employee_id, department_id, salary,\n           DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as rank_num\n    FROM employees\n)\nSELECT department_id, employee_id, salary\nFROM RankedSalaries\nWHERE rank_num = 2;"
+      },
+      {
+        "q": "What is the key execution difference between `GROUP BY` and a Window Function with `PARTITION BY`?",
+        "a": "`GROUP BY` collapses multiple individual table rows into a single aggregated group row, destroying row-level granular details. A window function with `PARTITION BY` calculates aggregates (like running totals or averages) over the partitioned group while PRESERVING every original individual row and its distinct columns in the final result set."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "Full Portfolio Multi-Tier Review",
+    "feature_focus": "Architectural Audit & Cross-Comparison: CSMS vs BulkBeat TV vs TerraStract vs BEVM",
+    "architecture_deep_dive": "Technical Cross-Comparison across Sarthak's 4 Flagship Projects:\n\n1. Framework & Concurrency Paradigms:\n\u2022 CSMS & TerraStract: Built on FastAPI (Python ASGI) utilizing Python's `asyncio` event loop for non-blocking I/O operations and automatic OpenAPI/Swagger documentation generation.\n\u2022 BulkBeat TV: Built on `aiohttp` and native asyncio queues for high-throughput WebSocket/Telegram bot event dispatching.\n\n2. Database & Data Consistency Models:\n\u2022 CSMS: Relational PostgreSQL schema with ACID compliance, relational integrity (Foreign Keys, CASCADE), and Alembic migration version control.\n\u2022 BulkBeat TV: Embedded SQLite configured with Write-Ahead Logging (WAL) mode for low-latency concurrent reads during heavy streaming ingestion.\n\u2022 BEVM: Immutable chained SHA-256 hash log simulating blockchain ledger integrity for biometric voter audits.",
+    "interview_qa": [
+      {
+        "q": "How do you decide between FastAPI and Django for a new backend project?",
+        "a": "I choose FastAPI when building lightweight, high-performance microservices or APIs requiring async I/O (like real-time websockets or AI model integration in TerraStract). I choose Django when building comprehensive monolithic web applications requiring built-in administrative portals, user session management, and complex ORM migrations out of the box."
+      },
+      {
+        "q": "How did you maintain database consistency during concurrent transactions across your projects?",
+        "a": "In CSMS with PostgreSQL, I utilized transactional ACID blocks (`BEGIN ... COMMIT`) with appropriate isolation levels to prevent dirty and non-repeatable reads. In BulkBeat TV with SQLite, I activated Write-Ahead Logging (`PRAGMA journal_mode=WAL;`), allowing concurrent readers to access recent snapshots without blocking the active background writer thread."
+      }
+    ]
+  },
+  "daily_test": {
+    "day": 21,
+    "questions": [
+      {
+        "q": "What are the 4 session tracking mechanisms supported in Java Servlets?",
+        "a": "1. Cookies, 2. Hidden Form Fields, 3. URL Rewriting, 4. HttpSession API."
+      },
+      {
+        "q": "Why is URL rewriting essential when client browsers have disabled cookies?",
+        "a": "Because URL rewriting embeds the session token (`jsessionid`) directly inside hyperlinks, allowing the server to track session identity without reading client cookie headers."
+      },
+      {
+        "q": "What is the difference between `RANK()` and `DENSE_RANK()` in SQL window functions?",
+        "a": "`RANK()` skips ranks after ties (1, 2, 2, 4), whereas `DENSE_RANK()` does not skip ranks after ties (1, 2, 2, 3)."
+      },
+      {
+        "q": "What is the time complexity of the greedy solution for Best Time to Buy and Sell Stock II?",
+        "a": "O(N) single linear pass accumulating all positive daily price increments."
+      },
+      {
+        "q": "How does `request.getSession(true)` differ from `request.getSession(false)`?",
+        "a": "`getSession(true)` creates a new session if one does not exist. `getSession(false)` returns `null` if no active session is found."
+      },
+      {
+        "q": "In a circular arrangement of 6 people facing inward, who sits to the immediate right of the person at position 1?",
+        "a": "Anti-clockwise neighbor (Position 6 if numbering clockwise)."
+      },
+      {
+        "q": "Why is Write-Ahead Logging (WAL) mode beneficial for SQLite in BulkBeat TV?",
+        "a": "WAL mode allows concurrent read operations to proceed simultaneously without being blocked by background write transactions."
+      },
+      {
+        "q": "Explain the difference between `GROUP BY` and `PARTITION BY` in SQL.",
+        "a": "`GROUP BY` collapses multiple rows into a single aggregated row. `PARTITION BY` computes window aggregations while retaining all individual rows."
+      }
+    ]
+  }
+}

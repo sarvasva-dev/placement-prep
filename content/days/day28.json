@@ -1,0 +1,209 @@
+{
+  "day": 28,
+  "title": "KM Expert Systems, Full Placement Mock Simulation & LRU Cache Design",
+  "sem_data": {
+    "subject": "BCA-5001 Knowledge Management",
+    "topic": "Unit V \u2014 Expert Systems Architecture: Inference Engine, Forward vs Backward Chaining & Knowledge Engineering",
+    "detailed_notes": [
+      "An Expert System (ES) is an artificial intelligence computer application that encapsulates human domain expertise to solve complex reasoning problems at the level of a human specialist (e.g. medical diagnosis, financial fraud detection).",
+      "The 5 Major Components of an Expert System Architecture:\n1. Knowledge Base (KB): The core repository storing domain knowledge represented as IF-THEN production rules, semantic nets, frames, or ontologies. Rules separate facts ('Patient has fever') from heuristics ('IF fever AND rash THEN measles').\n2. Working Memory (Fact Base): Contains dynamic, session-specific data and known facts entered by the user during the current consultation.\n3. Inference Engine: The 'brain' of the expert system. Applies logical algorithms to match facts in working memory against production rules in the KB to deduce new conclusions.\n4. Explanation Facility (Justifier): Explains the reasoning process to the user, answering 'HOW' a conclusion was reached or 'WHY' a particular question is being asked.\n5. Knowledge Acquisition Subsystem: The interface enabling Knowledge Engineers to capture and encode new rules from human experts into the knowledge base without modifying the underlying inference engine code.",
+      "Inference Engine Reasoning Paradigms:\n\u2022 Forward Chaining (Data-Driven / Bottom-Up):\n  - Starts with known facts in working memory and fires matching rules whose conditions (antecedents) are satisfied, adding new facts to memory until a goal is reached.\n  - Best for: Planning, monitoring, synthesis, and systems with many equally valid solutions.\n\u2022 Backward Chaining (Goal-Driven / Top-Down):\n  - Starts with a hypothetical goal/conclusion and works backwards to see if available facts support the goal. If facts are missing, the system prompts the user with targeted questions.\n  - Best for: Diagnostic systems (medical, automotive troubleshooting) and auditing."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                     EXPERT SYSTEM FIVE-TIER ARCHITECTURE                |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|      +---------------------+          +---------------------------+     |\n|      |  KNOWLEDGE BASE     |<-------->| KNOWLEDGE ACQUISITION     |<--- Expert\n|      |  (Production Rules) |          | SUBSYSTEM                 |     |\n|      +---------------------+          +---------------------------+     |\n|                 ^                                                       |\n|                 | (Pattern Match)                                       |\n|                 v                                                       |\n|      +---------------------+          +---------------------------+     |\n|      |  INFERENCE ENGINE   |<-------->| WORKING MEMORY (Facts)    |     |\n|      | (Forward / Backward)|          |                           |     |\n|      +---------------------+          +---------------------------+     |\n|                 ^                                                       |\n|                 | (Deduction Trace)                                     |\n|                 v                                                       |\n|      +---------------------+          +---------------------------+     |\n|      | EXPLANATION         |<-------->| USER INTERFACE            |<--- User\n|      | FACILITY (How/Why)  |          | (Consultation)            |     |\n|      +---------------------+          +---------------------------+     |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Comparison Aspect",
+        "Forward Chaining (Data-Driven)",
+        "Backward Chaining (Goal-Driven)"
+      ],
+      "rows": [
+        [
+          "Starting Point",
+          "Starts with initial known facts",
+          "Starts with a hypothesis or target goal"
+        ],
+        [
+          "Reasoning Direction",
+          "Bottom-Up (Antecedent -> Consequent)",
+          "Top-Down (Consequent -> Antecedent)"
+        ],
+        [
+          "Search Strategy",
+          "Breadth-First Search (finds all reachable facts)",
+          "Depth-First Search (proves specific hypothesis)"
+        ],
+        [
+          "User Interaction",
+          "User enters all data upfront",
+          "System prompts user only for required missing facts"
+        ],
+        [
+          "Best Suited For",
+          "Forecasting, planning, scheduling",
+          "Diagnosis, debugging, medical assessment"
+        ]
+      ]
+    },
+    "memorize": "5 Components: Knowledge Base, Working Memory, Inference Engine, Explanation Facility, Knowledge Acquisition. Forward Chaining = Data-driven; Backward Chaining = Goal-driven.",
+    "understand": "Why separate Knowledge Base from the Inference Engine? In conventional programming, business rules are hardcoded inside `if-else` loops. If a rule changes, the entire code must be recompiled and re-tested. In an Expert System, the inference logic is an unchanging engine, while rules are stored separately in the Knowledge Base, allowing non-programmers to add, modify, or delete expertise dynamically!",
+    "common_mistakes": "1. Confusing Working Memory (transient facts for 1 session) with Knowledge Base (permanent domain rules). 2. Omitting the Explanation Facility.",
+    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "High-Frequency 15-Mark Core Question (Appeared in 2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_question": "What is an Expert System? Explain its architecture with a neat block diagram describing all major components. Differentiate between Forward Chaining and Backward Chaining with suitable examples. (15 Marks)",
+    "pyq_rubric": "Definition & Characteristics of Expert Systems (3 marks) + 5-Component Architecture block diagram (5 marks) + Forward vs Backward Chaining detailed comparison (5 marks) + Role of Knowledge Engineer (2 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Definition and Characteristics of Expert Systems:",
+        "An Expert System (ES) is a knowledge-intensive artificial intelligence system designed to emulate the decision-making ability of human experts within a specific narrow domain. Unlike conventional software that processes numerical data using static algorithms, an expert system reasons heuristically over symbolic representations, explains its deductions, and tolerates incomplete or uncertain evidence."
+      ],
+      [
+        "2. Architectural Breakdown of Major Components:",
+        "\u2022 1. Knowledge Base: Encapsulates domain expertise represented as declarative production rules (IF condition THEN action).\n\u2022 2. Working Memory (Fact Base): Holds current case data and facts dynamically gathered during a specific consultation session.\n\u2022 3. Inference Engine: The reasoning mechanism that matches working memory facts with knowledge base rules, resolves conflicts when multiple rules match, and fires active productions.\n\u2022 4. Explanation Facility: Provides auditability by answering 'WHY is this question being asked?' and 'HOW was this conclusion derived?'.\n\u2022 5. Knowledge Acquisition Interface: Enables Knowledge Engineers to extract expertise from human practitioners and translate it into formal production rules."
+      ],
+      [
+        "3. Forward Chaining vs Backward Chaining Comparative Analysis:",
+        "\u2022 Forward Chaining begins with established input facts and fires rules whose conditions evaluate to true, deriving intermediate conclusions until a terminal state is reached. Ideal for configuration systems and financial market forecasting.\n\u2022 Backward Chaining starts with a prospective goal (e.g. 'Patient has Malaria') and queries the knowledge base to identify antecedent conditions required to substantiate that goal. If conditions are unknown, the system asks the user targeted questions. Ideal for diagnostic applications."
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Expert Systems Architecture & Forward/Backward Chaining",
+    "milestone": "Full 15/15 on KM Unit V Exam Question"
+  },
+  "apt_data": {
+    "topic": "Comprehensive Placement Aptitude Mock Simulation (50 High-Yield Questions)",
+    "tutorial": [
+      "Full-Length Assessment Test Strategy for Placement Day:\n\u2022 Time Allocation Rule: Never spend more than 90 seconds on any single quantitative question. If stuck, flag it and move on.\n\u2022 Sectional Ordering: Complete Verbal first (high speed, 30s/q), then Logical Reasoning (pattern recognition, 60s/q), then Quantitative Aptitude (calculation intensive, 75s/q).\n\u2022 Elimination Mindset: Use unit digit checking, digital sums, and sanity limits to eliminate at least 2 options before calculating."
+    ],
+    "formulas": "Cutoff Target: >= 75% raw accuracy. P/C: nCr = n! / (r!(n-r)!). Speed = Distance / Time.",
+    "shortcut": "The 2-Pass Method: In Pass 1, solve all 30-second low-hanging fruit questions (percentages, blood relations, syllogisms). In Pass 2, tackle heavy data interpretation and algebraic word problems.",
+    "recognition": "Comprehensive mock simulating TCS NQT, Wipro, Infosys, and Cognizant assessment patterns.",
+    "tier1_problem": "A car travels from A to B at 60 km/h and returns at 40 km/h. What is the average speed of the entire journey?",
+    "tier1_solution": "Average Speed (Harmonic Mean for equal distance) = 2*S1*S2 / (S1 + S2) = 2*60*40 / (60 + 40) = 4800 / 100 = 48 km/h. Answer: 48 km/h.",
+    "tier2_problem": "Find the next number in the series: 3, 7, 15, 31, 63, ?",
+    "tier2_solution": "Pattern: Each number is 2 * previous + 1 (or 2^(n+1) - 1).\n3*2+1 = 7; 7*2+1 = 15; 15*2+1 = 31; 31*2+1 = 63.\nNext = 63 * 2 + 1 = 126 + 1 = 127. Answer: 127.",
+    "tier3_problem": "[Placement Probability Drill] Two dice are rolled simultaneously. What is the probability that the sum of the numbers is greater than 9?",
+    "tier3_solution": "Total outcomes = 6 * 6 = 36.\nFavorable outcomes where sum > 9 (Sum = 10, 11, or 12):\nSum 10: (4,6), (5,5), (6,4) ==> 3 outcomes.\nSum 11: (5,6), (6,5) ==> 2 outcomes.\nSum 12: (6,6) ==> 1 outcome.\nTotal favorable = 3 + 2 + 1 = 6.\nProbability = 6 / 36 = 1/6. Answer: 1/6.",
+    "tier4_problem": "In how many ways can 5 boys and 4 girls be seated in a row such that no two girls are seated together?",
+    "tier4_solution": "First seat the 5 boys: _ B1 _ B2 _ B3 _ B4 _ B5 _.\nNumber of ways to arrange 5 boys = 5! = 120 ways.\nThis creates 6 available gaps for girls (marked by underscores).\nNumber of ways to choose 4 gaps from 6 and arrange 4 girls = ^6 P_4 = 6 * 5 * 4 * 3 = 360 ways.\nTotal seating arrangements = 120 * 360 = 43,200 ways. Answer: 43,200 ways.",
+    "speed_drills": [
+      {
+        "q": "A sum at 5% SI amounts to Rs 600 in 4 years. Find principal.",
+        "a": "P + P*0.2 = 1.2P = 600 ==> P = Rs 500."
+      },
+      {
+        "q": "LCM of two prime numbers X and Y (X > Y) is 161. Value of 3Y - X?",
+        "a": "161 = 23 * 7. X=23, Y=7. 3(7) - 23 = 21 - 23 = -2."
+      },
+      {
+        "q": "Find odd one out: 27, 64, 125, 144, 216.",
+        "a": "144. All others are perfect cubes."
+      },
+      {
+        "q": "If 20% of A = 30% of B, find A : B.",
+        "a": "A/B = 30/20 = 3 : 2."
+      },
+      {
+        "q": "Probability of getting at least one head in 3 coin tosses?",
+        "a": "1 - P(No heads) = 1 - 1/8 = 7/8."
+      }
+    ]
+  },
+  "dsa_problems": [
+    {
+      "title": "LRU Cache (LeetCode 146 - Medium)",
+      "difficulty": "Medium",
+      "importance": "The Single Most Famous System Design & Data Structure Placement Problem",
+      "problem_statement": "Design a data structure that follows the constraints of a Least Recently Used (LRU) cache. Implement LRUCache class with get(key) and put(key, value) operations running in O(1) average time complexity.",
+      "solution_approach": "Doubly Linked List + Hash Map Architecture:\n1. Hash Map (`self.cache`): Maps `key -> Node` providing O(1) key lookups.\n2. Doubly Linked List with dummy `head` and `tail`:\n   \u2022 Head points to Least Recently Used (LRU) node.\n   \u2022 Tail points to Most Recently Used (MRU) node.\n3. `get(key)`: If key exists, move node to tail (MRU) and return value.\n4. `put(key, value)`: If key exists, update value and move to tail. If new, insert at tail. If capacity exceeded, remove node right after dummy head (LRU) and delete from map.",
+      "code": "class Node:\n    def __init__(self, key=0, val=0):\n        self.key = key\n        self.val = val\n        self.prev = None\n        self.next = None\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.cap = capacity\n        self.cache = {} # key -> Node\n        self.head, self.tail = Node(), Node()\n        self.head.next = self.tail\n        self.tail.prev = self.head\n        \n    def _remove(self, node: Node):\n        prev, nxt = node.prev, node.next\n        prev.next = nxt\n        nxt.prev = prev\n        \n    def _insert(self, node: Node):\n        prev = self.tail.prev\n        prev.next = node\n        node.prev = prev\n        node.next = self.tail\n        self.tail.prev = node\n        \n    def get(self, key: int) -> int:\n        if key in self.cache:\n            node = self.cache[key]\n            self._remove(node)\n            self._insert(node)\n            return node.val\n        return -1\n        \n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            self._remove(self.cache[key])\n        node = Node(key, value)\n        self.cache[key] = node\n        self._insert(node)\n        if len(self.cache) > self.cap:\n            lru = self.head.next\n            self._remove(lru)\n            del self.cache[lru.key]",
+      "line_by_line": [
+        [
+          "self.head, self.tail = Node(), Node()",
+          "Dummy sentinel nodes eliminate edge-case checks for empty lists."
+        ],
+        [
+          "self._remove(node); self._insert(node)",
+          "Promote accessed node to Most Recently Used position at tail."
+        ],
+        [
+          "lru = self.head.next; self._remove(lru)",
+          "Evict Least Recently Used node adjacent to head when exceeding capacity."
+        ]
+      ],
+      "time_complexity": "O(1) strictly for both get() and put() operations.",
+      "space_complexity": "O(capacity) space for hash map and doubly linked list nodes.",
+      "edge_cases": "Capacity = 1; overwriting existing key; accessing non-existent key."
+    }
+  ],
+  "cs_core": {
+    "subject": "Placement Strategy",
+    "topic": "The STAR Behavioral Framework & Placement HR Interview Mastery",
+    "detailed_notes": [
+      "The STAR Framework for Answering Behavioral Interview Questions:\n\u2022 S \u2014 Situation: Set the context (Where? When? What project?). Keep concise (20 seconds).\n\u2022 T \u2014 Task: Define the explicit challenge or objective you were responsible for.\n\u2022 A \u2014 Action: Describe the SPECIFIC technical actions YOU took (use 'I', not 'we'). Highlight design choices and code implementations.\n\u2022 R \u2014 Result: Quantify the outcome (e.g. 'reduced latency by 40%', 'served 6,000 users', 'zero data corruption').",
+      "High-Frequency Placement HR Questions:\n1. 'Tell me about yourself': 90-second elevator pitch covering: BCA background, passion for Python backend systems, flagship achievements (BulkBeat TV & TerraStract), and why this company.\n2. 'Why should we hire a BCA graduate when B.Tech graduates are available?': Emphasize demonstrated software execution over theoretical credentials: 'While many graduates have purely academic credentials, I have built and deployed production software with live users, written asynchronous microservices, implemented OCR pipelines, and managed database migrations from day one.'"
+    ],
+    "interview_qa": [
+      {
+        "q": "How do you answer: 'Tell me about a time you made a technical mistake and how you resolved it'?",
+        "a": "Use STAR: 'In BulkBeat TV, concurrent SQLite write transactions initially threw `database is locked` errors during heavy streaming alerts. I researched SQLite's concurrency model, realized default rollback journals lock the entire database during writes, and reconfigured the database to Write-Ahead Logging (WAL) mode while wrapping alert updates in an asynchronous worker queue. This eliminated write contention completely and taught me deep concurrency architecture.'"
+      },
+      {
+        "q": "Where do you see yourself in 3 years as a software engineer?",
+        "a": "In 3 years, I see myself as a core backend contributor who has mastered distributed systems architecture, owns end-to-end service delivery, mentors junior team members, and consistently drives measurable reliability and performance improvements across enterprise software pipelines."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "Full Portfolio Final Defense",
+    "feature_focus": "The 90-Second Technical Pitch for BulkBeat TV & TerraStract",
+    "architecture_deep_dive": "End-to-End Executive Pitch Structure:\n\n1. BulkBeat TV Pitch:\n'BulkBeat TV is a real-time news streaming and notification system that ingests live media streams and delivers automated market alerts. I engineered the backend using Python aiohttp and SQLite in WAL mode, implementing an asynchronous token-bucket rate limiter that pushes alerts to thousands of subscribers via Telegram Webhooks with sub-second latency.'\n\n2. TerraStract Pitch:\n'TerraStract is an intelligent document processing pipeline designed to extract structured tabular data from complex, multi-lingual scanned PDFs. I built a hybrid extraction pipeline that leverages PyMuPDF for native vector text and falls back to Tesseract OCR with Page Segmentation Mode 6 for scanned regions, paired with regex-based Sanskrit/Devanagari Unicode normalization to guarantee clean JSON extraction.'",
+    "interview_qa": [
+      {
+        "q": "What was the most challenging technical bug you resolved across your projects?",
+        "a": "In TerraStract, scanned Hindi legal documents frequently suffered from OCR segmentation errors when complex conjunct characters were misinterpreted. I solved this by pre-processing document page images using adaptive thresholding and contrast normalization in OpenCV, and forcing Tesseract's PSM to Mode 6 (single uniform block of text), improving character extraction accuracy by over 35%."
+      },
+      {
+        "q": "If you had 1 more month to improve your projects, what would you implement next?",
+        "a": "I would introduce automated integration test suites with Testcontainers for PostgreSQL, deploy OpenTelemetry distributed tracing to identify latency bottlenecks across microservices, and configure Prometheus/Grafana dashboards for real-time memory and error rate monitoring."
+      }
+    ]
+  },
+  "daily_test": {
+    "day": 28,
+    "questions": [
+      {
+        "q": "What are the 5 major components of an Expert System?",
+        "a": "1. Knowledge Base, 2. Working Memory, 3. Inference Engine, 4. Explanation Facility, 5. Knowledge Acquisition Subsystem."
+      },
+      {
+        "q": "Why is an LRU Cache implemented using a Doubly Linked List alongside a Hash Map?",
+        "a": "The Hash Map provides O(1) key lookups, while the Doubly Linked List enables O(1) removal and insertion to maintain the recency ordering of elements."
+      },
+      {
+        "q": "What does each letter in the STAR interview framework stand for?",
+        "a": "Situation, Task, Action, Result."
+      },
+      {
+        "q": "How does Forward Chaining differ from Backward Chaining in Expert Systems?",
+        "a": "Forward Chaining starts with known data facts and moves forward to infer new conclusions (data-driven); Backward Chaining starts with a target hypothesis and works backward to check supporting facts (goal-driven)."
+      },
+      {
+        "q": "What is the average time complexity of get() and put() in an LRU Cache?",
+        "a": "O(1) strictly for both operations."
+      },
+      {
+        "q": "What is the average speed of a round trip with speeds 60 km/h and 40 km/h over the same distance?",
+        "a": "48 km/h (Harmonic mean: 2*60*40 / 100)."
+      },
+      {
+        "q": "What is the role of the Explanation Facility in an Expert System?",
+        "a": "It explains the reasoning trace to the user, answering 'HOW' a conclusion was derived and 'WHY' specific information is being requested."
+      },
+      {
+        "q": "How do you defend being a BCA student in a campus placement interview against engineering peers?",
+        "a": "By emphasizing hands-on, production-grade software delivery: live asynchronous APIs, production database migrations, and real document pipelines."
+      }
+    ]
+  }
+}

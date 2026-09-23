@@ -1,0 +1,232 @@
+{
+  "day": 25,
+  "title": "JSP Architecture & Implicit Objects, Critical Reasoning & Word Break DP",
+  "sem_data": {
+    "subject": "BCA-5002 Java Programming",
+    "topic": "Unit V \u2014 Java Server Pages (JSP): Architecture, 9 Implicit Objects & Lifecycle",
+    "detailed_notes": [
+      "Java Server Pages (JSP) is a server-side presentation technology that allows developers to write standard HTML markup with embedded dynamic Java code snippets, simplifying the creation of dynamic web views compared to Servlets.",
+      "JSP Architecture & Translation Process:\nWhen a client requests a `.jsp` page for the first time:\n1. Translation Phase: The JSP Engine (e.g. Jasper in Apache Tomcat) reads the `.jsp` source and translates it into an equivalent `.java` Servlet source file (e.g. `index_jsp.java`).\n2. Compilation Phase: The Java compiler (`javac`) compiles the generated servlet source into bytecode (`index_jsp.class`).\n3. Loading & Instantiation: The Web Container loads the class file into memory and creates an instance.\n4. Life Cycle Invocation: The container calls `jspInit()` once, then handles every incoming client request by calling `_jspService(HttpServletRequest, HttpServletResponse)`, and finally calls `jspDestroy()` on shutdown.",
+      "The 3 JSP Directive Tags:\n\u2022 `<%@ page ... %>`: Defines page-dependent attributes: `import`, `contentType`, `session`, `isErrorPage`, `errorPage`.\n\u2022 `<%@ include file=\"header.jsp\" %>`: Static compile-time inclusion of external files.\n\u2022 `<%@ taglib uri=\"...\" prefix=\"c\" %>`: Declares custom JSP Standard Tag Libraries (JSTL).",
+      "The 9 JSP Implicit Objects (Available automatically without instantiation):\n1. `request`: Instance of `HttpServletRequest` (HTTP headers, form parameters).\n2. `response`: Instance of `HttpServletResponse` (cookies, redirection).\n3. `out`: Instance of `JspWriter` (streams HTML output to client).\n4. `session`: Instance of `HttpSession` (tracks conversational state across requests).\n5. `application`: Instance of `ServletContext` (global application-wide context shared across all servlets/JSPs).\n6. `config`: Instance of `ServletConfig` (page-specific initialization parameters).\n7. `pageContext`: Instance of `PageContext` (encapsulates entire page execution environment, provides access to all scopes).\n8. `page`: Instance of `Object` (reference to current servlet instance, equivalent to `this`).\n9. `exception`: Instance of `Throwable` (available strictly inside pages marked with `<%@ page isErrorPage=\"true\" %>`)."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                         JSP TRANSLATION & EXECUTION                     |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|  Client Request: GET /index.jsp                                         |\n|         |                                                               |\n|         v                                                               |\n|  [ JSP Engine (Jasper) ]                                                |\n|         |                                                               |\n|         |-- (First Request Only) --> [ 1. Translation: index_jsp.java ] |\n|         |                                          |                    |\n|         |                                          v                    |\n|         |                            [ 2. Compilation: index_jsp.class] |\n|         |                                          |                    |\n|         |                                          v                    |\n|         |                            [ 3. jspInit() (Once) ]            |\n|         |                                          |                    |\n|         v                                          v                    |\n|  [ Container Thread Pool ] --------> [ 4. _jspService(req, res) ]       |\n|                                      (Executed for every request)       |\n|                                                    |                    |\n|                                                    v                    |\n|                                         HTML Stream sent to Browser     |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Implicit Object",
+        "Underlying Java Type",
+        "Functional Scope",
+        "Typical Usage"
+      ],
+      "rows": [
+        [
+          "request",
+          "javax.servlet.http.HttpServletRequest",
+          "Request Scope",
+          "Reading form inputs via req.getParameter()"
+        ],
+        [
+          "response",
+          "javax.servlet.http.HttpServletResponse",
+          "Page Scope",
+          "Setting cookies, HTTP headers, redirection"
+        ],
+        [
+          "session",
+          "javax.servlet.http.HttpSession",
+          "Session Scope",
+          "User authentication state, shopping cart"
+        ],
+        [
+          "application",
+          "javax.servlet.ServletContext",
+          "Application Scope",
+          "Global counter, shared DB connection pool"
+        ],
+        [
+          "out",
+          "javax.servlet.jsp.JspWriter",
+          "Page Scope",
+          "Printing dynamic HTML content to response buffer"
+        ],
+        [
+          "pageContext",
+          "javax.servlet.jsp.PageContext",
+          "Page Scope",
+          "Accessing attributes across page, request, session, app"
+        ],
+        [
+          "exception",
+          "java.lang.Throwable",
+          "Page Scope",
+          "Displaying stack trace on dedicated error pages"
+        ]
+      ]
+    },
+    "memorize": "JSP compiles to a Servlet. 3 Directives: page, include, taglib. 9 Implicit objects: request, response, out, session, application, config, pageContext, page, exception. exception only exists when isErrorPage='true'.",
+    "understand": "Why was JSP introduced if it compiles to a Servlet? Separation of concerns. Servlets mix heavy Java business logic with tedious `out.println('<html>')` string concatenations, which is unmaintainable for UI designers. JSP flips this: HTML is the default canvas, and Java is embedded only where dynamic data is required.",
+    "common_mistakes": "1. Trying to access the `exception` object on a regular JSP page without setting `<%@ page isErrorPage=\"true\" %>`. 2. Writing database queries directly inside JSP scriptlets instead of delegating to backend DAO/Service classes.",
+    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "High-Frequency 15-Mark Core Question (Appeared in 2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_question": "Explain the architecture and life cycle of JSP in detail. List and explain all the 9 implicit objects available in JSP with their underlying Java classes and scopes. Differentiate clearly between Servlets and JSP. (15 Marks)",
+    "pyq_rubric": "JSP Architecture & Translation phases (4 marks) + 9 Implicit objects breakdown with table (6 marks) + JSP vs Servlet comparison (3 marks) + Life cycle methods: jspInit, _jspService, jspDestroy (2 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Architecture and Life Cycle of JSP:",
+        "JavaServer Pages (JSP) is an extension of Servlet technology designed for presentation rendering. When a client requests a `.jsp` page, the Web Container executes a two-phase lifecycle:\n\u2022 Translation & Compilation: The JSP parser converts the JSP markup into a standard Java servlet source file (`_jsp.java`) and compiles it into executable bytecode (`_jsp.class`). This occurs strictly once unless the JSP source file is modified.\n\u2022 Life Cycle Methods: The container calls `jspInit()` for one-time initialization, then dispatches each client request to `_jspService(HttpServletRequest, HttpServletResponse)`, and executes `jspDestroy()` when unloading the page."
+      ],
+      [
+        "2. The 9 Implicit Objects in JSP:",
+        "JSP provides 9 pre-instantiated implicit objects available automatically in scriptlets and expressions:\n1. `request` (`HttpServletRequest`): Accesses client request headers, parameters, and cookies.\n2. `response` (`HttpServletResponse`): Configures response MIME types, cookies, and HTTP redirects.\n3. `out` (`JspWriter`): Buffered character stream writing dynamic HTML to the client browser.\n4. `session` (`HttpSession`): Maintains conversational user state between requests.\n5. `application` (`ServletContext`): Global application context shared by all users.\n6. `config` (`ServletConfig`): Page-specific initialization parameters from web.xml.\n7. `pageContext` (`PageContext`): Unified interface accessing all four variable scopes (page, request, session, application).\n8. `page` (`Object`): Refers to the generated servlet instance itself (`this`).\n9. `exception` (`Throwable`): Captures unhandled runtime errors, available only when `<%@ page isErrorPage=\"true\" %>` is declared."
+      ],
+      [
+        "3. Servlets vs JSP Comparative Analysis:",
+        "Servlets excel at handling controller logic, request routing, and business processing, but writing HTML via `out.println()` is clumsy. JSP excels at presentation and view templates because HTML is native, but embedding heavy business logic in JSPs leads to 'Spaghetti Code'. In modern enterprise architecture (MVC Pattern), Servlets act as Controllers while JSPs act as Views."
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master JSP Translation Cycle & All 9 Implicit Objects",
+    "milestone": "Full 15/15 on Java Web Technologies Exam Question"
+  },
+  "apt_data": {
+    "topic": "Verbal Reasoning \u2014 Critical Reasoning: Statement & Assumptions / Arguments",
+    "tutorial": [
+      "Critical Reasoning tests deductive logic in verbal communication:\n1. Statement & Assumptions:\n\u2022 An assumption is something taken for granted or accepted as true without explicit proof before making the statement.\n\u2022 Validity Rule: An assumption is valid if the statement makes no sense without assuming it to be true.\n\u2022 Negation Test: If negating the assumption makes the statement fall apart or become completely pointless, the assumption is 100% IMPLICIT!\n2. Statement & Arguments (Strong vs Weak Arguments):\n\u2022 Strong Argument: Based on established facts, logical consequences, constitutional law, or universal truth. Directly addresses the core issue.\n\u2022 Weak Argument: Based on emotional appeals, vague opinions, comparisons with unrelated nations, or trivial reasons."
+    ],
+    "formulas": "Negation Test: If ~Assumption invalidates Statement ==> Assumption is Implicit. Strong arguments must be realistic and consequential.",
+    "shortcut": "Reject Extreme Words: Assumptions containing words like 'only', 'best', 'always', 'never', 'all' are usually NOT implicit unless explicitly mandated by the statement.",
+    "recognition": "Look for 'Statement: The government has decided to... Assumptions: I. People may... II. Other countries...' in TCS NQT and Infosys verbal rounds.",
+    "tier1_problem": "Statement: 'Please do not lean out of the window while the train is in motion.' \u2014 A notice in a railway coach.\nAssumptions:\nI. Leaning out of the window while moving is dangerous.\nII. Passengers are expected to read and follow railway notices.",
+    "tier1_solution": "Apply Negation Test:\n\u2022 Negate Assumption I: 'Leaning out is completely safe.' If it is safe, posting a warning makes no sense! Therefore, Assumption I is IMPLICIT.\n\u2022 Negate Assumption II: 'Passengers will never read notices.' If nobody reads them, putting up a sign is futile! Therefore, Assumption II is IMPLICIT.\nAnswer: Both Assumptions I and II are implicit.",
+    "tier2_problem": "Statement: 'Switch to our high-speed fiber internet for uninterrupted video calling and streaming.' \u2014 An advertisement.\nAssumptions:\nI. People desire uninterrupted video calling and streaming.\nII. No other company provides high-speed internet.",
+    "tier2_solution": "\u2022 Assumption I directly addresses consumer demand that makes advertising appealing ==> Implicit.\n\u2022 Assumption II uses extreme claim ('No other company') which is not implied by promoting one's own service ==> Not implicit.\nAnswer: Only Assumption I is implicit.",
+    "tier3_problem": "[TCS Digital Verbal Pattern]\nStatement: Should all examinations in colleges be conducted with open books?\nArguments:\nI. Yes, because open-book exams test conceptual understanding and application rather than rote memorization.\nII. No, because students will stop studying and will simply copy directly from textbooks during the exam.",
+    "tier3_solution": "\u2022 Argument I is strong because open-book exams are specifically designed to require higher-order analysis, problem-solving, and synthesis rather than textbook reproduction.\n\u2022 Argument II is weak because it assumes open-book questions are verbatim copies of text, misunderstanding the design of analytical open-book testing.\nAnswer: Only Argument I is strong.",
+    "tier4_problem": "Statement: 'In order to reduce traffic congestion, the municipal corporation will impose a congestion tax on private cars entering the central commercial district during peak hours.'\nAssumptions:\nI. The congestion tax will deter at least some private car owners from driving into the city center during peak hours.\nII. The public transport system has enough capacity to handle commuters who switch from cars.",
+    "tier4_solution": "\u2022 Assumption I: If nobody is deterred by the fee, the policy will fail to reduce congestion. Hence, the administration must assume at least some behavioral shift ==> Implicit.\n\u2022 Assumption II: If the municipality implements this policy without assuming viable transit alternatives exist, the city would experience economic gridlock. Imposing disincentives presupposes alternative feasibility ==> Implicit.\nAnswer: Both Assumptions I and II are implicit.",
+    "speed_drills": [
+      {
+        "q": "Statement: 'Buy pure ghee of brand X.' Assumption: People want pure ghee.",
+        "a": "Implicit. Advertisements assume consumer demand for product qualities."
+      },
+      {
+        "q": "Statement: 'Warning: Smoking causes cancer.' Assumption: Smokers want to read warnings.",
+        "a": "Implicit. Public warnings assume visibility and public awareness."
+      },
+      {
+        "q": "Statement: 'Enroll in our coding bootcamp to become a software engineer.' Assumption: Only our bootcamp makes engineers.",
+        "a": "Not implicit. Word 'Only' makes it extreme."
+      },
+      {
+        "q": "Argument: 'Should children use smartphones?' Arg: 'No, radiation destroys brains.'",
+        "a": "Weak. Unsubstantiated sensational claim."
+      },
+      {
+        "q": "Statement: 'Fly Airline A for lowest fares.' Assumption: Passengers prefer lower fares.",
+        "a": "Implicit. Rationale for pricing-based marketing."
+      }
+    ]
+  },
+  "dsa_problems": [
+    {
+      "title": "Word Break (LeetCode 139 - Medium)",
+      "difficulty": "Medium",
+      "importance": "High-Frequency Placement String DP Problem (Amazon, Google, TCS Digital)",
+      "problem_statement": "Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words. You may assume the same word in the dictionary may be reused multiple times.",
+      "solution_approach": "Bottom-Up 1D Dynamic Programming:\n1. Define `dp[i]` as boolean: can substring `s[0..i-1]` be segmented using dictionary words?\n2. Base case: `dp[0] = True` (empty string is always valid).\n3. Convert `wordDict` into a hash set for O(1) lookups.\n4. For `i` from 1 to `len(s)`:\n   For `j` from 0 to `i`:\n     If `dp[j] is True` and `s[j..i]` is in word set:\n       `dp[i] = True`, break inner loop.\n5. Return `dp[len(s)]`.",
+      "code": "def wordBreak(s: str, wordDict: list[str]) -> bool:\n    words = set(wordDict)\n    dp = [False] * (len(s) + 1)\n    dp[0] = True\n    \n    for i in range(1, len(s) + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in words:\n                dp[i] = True\n                break\n                \n    return dp[len(s)]",
+      "line_by_line": [
+        [
+          "words = set(wordDict)",
+          "Hash set conversion enables O(1) word membership checks."
+        ],
+        [
+          "dp = [False] * (len(s) + 1); dp[0] = True",
+          "Initialize DP array where dp[i] denotes validity of prefix length i."
+        ],
+        [
+          "if dp[j] and s[j:i] in words:",
+          "Prefix up to j is valid AND remaining chunk s[j:i] is a dictionary word."
+        ],
+        [
+          "dp[i] = True; break",
+          "Mark prefix length i as valid and prune remaining inner searches."
+        ]
+      ],
+      "time_complexity": "O(N^2) where N is length of string s.",
+      "space_complexity": "O(N) for DP array + O(W) for word set.",
+      "edge_cases": "Single character string; word not found (returns False); all single-letter words."
+    }
+  ],
+  "cs_core": {
+    "subject": "Operating Systems",
+    "topic": "Disk Scheduling Algorithms: FCFS, SSTF, SCAN (Elevator) & C-SCAN",
+    "detailed_notes": [
+      "Disk scheduling manages I/O request queues to minimize total disk head seek time (the time required to move the read/write head to the desired cylinder/track).",
+      "Primary Algorithms Analyzed:\n1. FCFS (First-Come, First-Served): Services requests in arrival order. Simple and fair, but produces wild head swings and high average seek time.\n2. SSTF (Shortest Seek Time First): Services the request closest to current head position. Minimizes average seek time, but causes STARVATION for requests located far away from dense request clusters.\n3. SCAN (Elevator Algorithm): Head moves continuously in one direction servicing requests until it reaches the physical end of the disk, then reverses direction. Eliminates starvation.\n4. C-SCAN (Circular SCAN): Head moves in one direction servicing requests until the end, then immediately returns to the beginning of the disk WITHOUT servicing requests on the return trip. Provides uniform wait times across tracks."
+    ],
+    "interview_qa": [
+      {
+        "q": "Why is SSTF disk scheduling rarely used in production operating systems despite lower average seek times?",
+        "a": "Because SSTF causes starvation. If a continuous stream of I/O requests arrives near the current head position, the disk head will remain hovering around that locality, and requests on distant cylinders will wait indefinitely. Production systems prefer SCAN or C-LOOK (Elevator algorithms) which guarantee bounded waiting times."
+      },
+      {
+        "q": "What is the difference between SCAN and C-SCAN?",
+        "a": "SCAN travels back and forth, servicing requests in both directions. In contrast, C-SCAN treats the cylinders as a circular list: it services requests in one direction only, and when it reaches the outer boundary, it rapidly sweeps back to the beginning without servicing requests on the return journey, providing uniform waiting times for all cylinders."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "Deployment & CI/CD Engineering",
+    "feature_focus": "Docker Containerization & GitHub Actions CI/CD for FastAPI Backends",
+    "architecture_deep_dive": "Standardizing Production Deployment across Sarthak's FastAPI Services:\n\n1. Multi-Stage Dockerfile Optimization:\n\u2022 Stage 1 (Builder): Uses `python:3.11-slim`, installs build tools (gcc, libpq-dev), and installs dependencies into a virtual environment.\n\u2022 Stage 2 (Runner): Copies only the virtual environment into a minimal base image, stripping compilers and build headers. Reduces container image size from 850MB to under 140MB!\n\n2. Automated CI/CD Workflow (`.github/workflows/deploy.yml`):\n\u2022 Triggers automatically on push to `main` branch.\n\u2022 Runs automated tests via `pytest` and linter checks (`ruff`/`black`).\n\u2022 On test pass, builds Docker image, pushes to GitHub Packages (GHCR), and triggers SSH webhook to restart container on the production VPS with zero downtime.",
+    "interview_qa": [
+      {
+        "q": "Why do you use Multi-Stage builds in your Dockerfiles?",
+        "a": "Multi-stage builds allow me to separate the compilation environment from the final execution environment. Heavy build utilities, compilers, and development headers are isolated in the builder stage. Only the compiled wheels and runtime binaries are copied to the production image, drastically reducing the image footprint from 800MB+ to 140MB and minimizing attack surface vulnerabilities."
+      },
+      {
+        "q": "How do you ensure environment variables and API keys remain secure in CI/CD pipelines?",
+        "a": "I never commit `.env` files to Git. Secrets are stored in GitHub Repository Secrets and injected at runtime as environment variables. In Docker containers, secrets are passed via `docker run --env-file` or Docker Compose environment variables, running under a non-root user."
+      }
+    ]
+  },
+  "daily_test": {
+    "day": 25,
+    "questions": [
+      {
+        "q": "What happens during the Translation phase of a JSP file?",
+        "a": "The JSP Engine translates the `.jsp` markup into a Java Servlet source file (`.java`)."
+      },
+      {
+        "q": "Name 4 of the 9 implicit objects in JSP.",
+        "a": "request, response, session, out, application, config, pageContext, page, exception."
+      },
+      {
+        "q": "Under what condition is the `exception` implicit object accessible in a JSP?",
+        "a": "Strictly when the page directive includes `<%@ page isErrorPage=\"true\" %>`."
+      },
+      {
+        "q": "What is the primary drawback of the SSTF disk scheduling algorithm?",
+        "a": "Starvation of distant track requests under heavy localized I/O traffic."
+      },
+      {
+        "q": "How does C-SCAN differ from standard SCAN disk scheduling?",
+        "a": "C-SCAN services requests in one direction only and returns directly to the start track without servicing requests on the return journey, ensuring uniform wait times."
+      },
+      {
+        "q": "What is the time complexity of the DP solution for Word Break (LeetCode 139)?",
+        "a": "O(N^2) where N is the length of the string."
+      },
+      {
+        "q": "Why are extreme words ('all', 'never', 'only') usually red flags in Critical Reasoning assumptions?",
+        "a": "Because real-world statements rarely warrant absolute, sweeping generalizations unless explicitly stated."
+      },
+      {
+        "q": "What is the benefit of multi-stage Docker builds?",
+        "a": "Separates the build environment from runtime, producing lightweight, secure container images without compiler dependencies."
+      }
+    ]
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "day": 8,
+  "title": "Java Exception Handling, Reverse Linked List & Interest Formulas",
+  "sem_data": {
+    "subject": "BCA-5002 Java Programming",
+    "topic": "Unit I \u2014 Exception Handling Hierarchy, Keywords & Checked vs Unchecked",
+    "detailed_notes": [
+      "An Exception in Java is an abnormal condition or event that disrupts the normal sequential execution flow of a program. Java's object-oriented exception handling mechanism intercepts runtime errors, encapsulating error state within an Exception Object, thereby preventing abrupt application termination and ensuring reliable resource deallocation.",
+      "Java Exception Class Hierarchy:\nAll exception and error types inherit from the single root class 'java.lang.Throwable'. Throwable immediately splits into two major structural branches:\n1. Error: Represents severe, catastrophic system-level failures arising from the underlying JVM or hardware environment (e.g., OutOfMemoryError, StackOverflowError, VirtualMachineError). Application code should never attempt to catch or recover from an Error.\n2. Exception: Represents exceptional conditions that a reasonable application design can anticipate and recover from. Exception branches into:\n   - Checked Exceptions (Compile-Time): Direct subclasses of Exception (excluding RuntimeException). The Java compiler ('javac') enforces that checked exceptions MUST be either caught via try-catch or declared in the method signature using 'throws'. Examples: IOException, SQLException, ClassNotFoundException.\n   - Unchecked Exceptions (Runtime): Subclasses of 'java.lang.RuntimeException'. Arise predominantly from software defects and logic flaws. The compiler does not enforce handling. Examples: NullPointerException, ArithmeticException, ArrayIndexOutOfBoundsException.",
+      "The 5 Exception Keywords:\n\u2022 try: Encloses code blocks that may trigger exceptional conditions. Must be followed by at least one catch block or a finally block.\n\u2022 catch: Intercepts and handles a specific exception thrown from the preceding try block.\n\u2022 finally: Encloses cleanup logic that is GUARANTEED to execute regardless of whether an exception occurred, was caught, or if return was executed (only System.exit() halts finally).\n\u2022 throw: Explicitly instantiates and propagates an exception object: 'throw new IllegalArgumentException(\"Invalid input\");'.\n\u2022 throws: Appended to method signatures to declare checked exceptions propagated to calling methods."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                   JAVA THROWABLE CLASS HIERARCHY TREE                   |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|                           java.lang.Object                              |\n|                                  |                                      |\n|                         java.lang.Throwable                             |\n|                               /       \\                                 |\n|                              /         \\                                |\n|                    java.lang.Error   java.lang.Exception                |\n|                       (Fatal)                 |                         |\n|                      /       \\                +-------------------+     |\n|         StackOverflowError   OutOfMemoryError |                   |     |\n|                                               v                   v     |\n|                                    RuntimeException       Checked Excep |\n|                                      (Unchecked)          (Compile-Time)|\n|                                     /     |     \\          /     |    \\ |\n|                          NullPointer  Arith  IndexOut   IOEx  SQL Class |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Dimension",
+        "Checked Exceptions (Compile-Time)",
+        "Unchecked Exceptions (Runtime)"
+      ],
+      "rows": [
+        [
+          "Inheritance",
+          "Direct subclasses of java.lang.Exception (not RuntimeException)",
+          "Direct subclasses of java.lang.RuntimeException"
+        ],
+        [
+          "Compiler Enforcement",
+          "Enforced by javac at compile-time; code will not compile without handling",
+          "Ignored by javac at compile-time; occurs dynamically at runtime"
+        ],
+        [
+          "Handling Mechanism",
+          "Must be handled using try-catch OR declared using throws",
+          "Handling is optional; can be prevented by writing defensive logic"
+        ],
+        [
+          "Underlying Cause",
+          "External operational conditions (file missing, network loss, SQL error)",
+          "Internal programming logic bugs (null dereference, divide by zero)"
+        ],
+        [
+          "Key Examples",
+          "IOException, SQLException, ClassNotFoundException, FileNotFoundException",
+          "NullPointerException, ArithmeticException, ArrayIndexOutOfBoundsException"
+        ]
+      ]
+    },
+    "memorize": "Root: java.lang.Throwable. Branches: Error (Fatal) & Exception (Recoverable). 5 Keywords: try, catch, finally, throw, throws. Checked = Compile-time; Unchecked = RuntimeException.",
+    "understand": "The finally block executes under virtually all conditions, even if a return statement is present inside try or catch. The only scenarios where finally is bypassed are: System.exit(0), fatal JVM crash, or physical power loss.",
+    "common_mistakes": "1. Placing a broader catch block (e.g. catch(Exception e)) before a specific catch block (e.g. catch(IOException e)), which causes a compile-time 'unreachable code' error. 2. Leaving resource streams open inside try; always close streams in finally or use Java 7 Try-With-Resources.",
+    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2024-25, 2025-26)",
+    "pyq_freq": "4 University Sessions: 2021 (Q2 - 15m), 2022-23 (Q3a - 15m), 2024-25 (Q2 - 15m), 2025-26 (Q1 - 15m)",
+    "pyq_question": "Explain the exception handling mechanism in Java with try, catch, finally, throw, and throws. Differentiate between checked and unchecked exceptions with code examples. (15 Marks)",
+    "pyq_rubric": "Throwable hierarchy diagram (4 marks) + 5 Keywords explanation with syntax (5 marks) + Checked vs Unchecked comparison table (4 marks) + Try-Catch-Finally code (2 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Exception Architecture & Philosophy:",
+        "In Java, exception handling separates error-handling code from regular business logic. When an exceptional condition occurs, an Exception object is constructed on the heap containing the exception type, error message, and execution call stack. This object is thrown to the runtime, which unwinds the call stack searching for a matching catch handler."
+      ],
+      [
+        "2. Detailed 5 Keywords Functionality:",
+        "\u2022 try: Declares a guarded region. Any exception thrown within this block terminates try execution and jumps to the matching catch.\n\u2022 catch: Matches the thrown exception type. Java supports multi-catch blocks: catch(IOException | SQLException e).\n\u2022 finally: Guarantees resource deallocation (closing file handles, database connections, socket streams).\n\u2022 throw: Programmatically triggers an exception: if (age < 18) throw new InvalidAgeException('Not eligible');\n\u2022 throws: Listed in method signatures: public void readFile() throws IOException, SQLException { ... }"
+      ],
+      [
+        "3. Checked vs Unchecked Exceptions:",
+        "Checked exceptions represent conditions outside the program's immediate control (e.g., a file being read by an application is suddenly deleted from disk by an external process). Java forces the developer to handle this contingency at compile time. Unchecked exceptions represent bugs in the application's internal code logic (e.g., attempting to access index 10 of a 5-element array). These indicate developer oversight and should be corrected through proper boundary checks rather than cluttering code with try-catch blocks."
+      ],
+      [
+        "4. Code Example (Try-Catch-Finally & Custom Exception):",
+        "class InvalidBalanceException extends Exception {\n    public InvalidBalanceException(String msg) { super(msg); }\n}\npublic class BankAccount {\n    private double balance = 1000;\n    public void withdraw(double amount) throws InvalidBalanceException {\n        if (amount > balance) throw new InvalidBalanceException('Insufficient funds');\n        balance -= amount;\n    }\n    public static void main(String[] args) {\n        BankAccount acc = new BankAccount();\n        try {\n            acc.withdraw(1500);\n        } catch (InvalidBalanceException e) {\n            System.err.println('Caught Exception: ' + e.getMessage());\n        } finally {\n            System.out.println('Audit log updated; connection closed.');\n        }\n    }\n}"
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Explain Java 7 Try-With-Resources and the AutoCloseable interface with a code example. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "What is the difference between throw and throws keywords in Java? (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Java Exception Hierarchy, 5 Keywords, and Checked vs Unchecked distinction.",
+    "milestone": "Full 15/15 marks on University Question 2 (BCA-5002 Java Exceptions)."
+  },
+  "apt_data": {
+    "topic": "Simple & Compound Interest \u2014 Difference Shortcuts & Compounding Periods",
+    "tutorial": [
+      "Simple Interest (SI): Interest calculated exclusively on the original principal sum for the entire duration:\nSI = (P * R * T) / 100     ==> Amount A = P + SI = P * [1 + (R*T)/100]",
+      "Compound Interest (CI): 'Interest on interest'. The interest accrued during each compounding period is added to the principal to form the new principal for the subsequent period:\nAmount A = P * [1 + (R / 100)]^T    ==> CI = Amount - Principal = P * [(1 + R/100)^T - 1]",
+      "Compounding Frequency Variations:\n\u2022 Compounded Half-Yearly (Semi-Annually): Rate becomes (R / 2)%, Time becomes (2 * T) periods.\n\u2022 Compounded Quarterly: Rate becomes (R / 4)%, Time becomes (4 * T) periods.",
+      "The Placement Difference Formulas (Essential Speed Weapon):\n\u2022 Difference between CI and SI for 2 Years: D_2 = P * (R / 100)^2\n\u2022 Difference between CI and SI for 3 Years: D_3 = P * (R / 100)^2 * [(300 + R) / 100]"
+    ],
+    "formulas": "1. Difference for 2 Years: D_2 = P * (R / 100)^2\n2. Difference for 3 Years: D_3 = P * (R / 100)^2 * [(300 + R) / 100]\n3. Sum Doubling Rule of 72 (Approximation): Money doubles in approx (72 / R) years at CI.\n4. Sum Doubling at SI: At SI, sum doubles when SI = P ==> T = 100 / R years.",
+    "shortcut": "Effective Percentage Rate Method (2 Years):\nFor rate R = 10%:\n\u2022 SI for 2 years = 2 * 10% = 20%\n\u2022 CI for 2 years = 10 + 10 + (10*10)/100 = 21%\n\u2022 Difference = 21% - 20% = 1% of Principal P. If D = Rs. 50, then 1% of P = 50 ==> P = Rs. 5,000 instantly!",
+    "recognition": "Look for 'the difference between compound interest and simple interest on a certain sum for 2 years at R% is Rs. D', or 'a sum of money becomes 3 times in 5 years at CI'.",
+    "p1_q": "[Foundation] Find the simple interest on Rs. 8,000 at 7.5% per annum for 3 years.",
+    "p1_s": "Step 1: P = 8000, R = 7.5%, T = 3 years.\nStep 2: SI = (P * R * T) / 100 = (8000 * 7.5 * 3) / 100.\nStep 3: Fast calculation: 80 * 7.5 * 3 = 600 * 3 = Rs. 1,800.\nTotal Amount = 8000 + 1800 = Rs. 9,800.\nAnswer: Simple Interest is Rs. 1,800.",
+    "p2_q": "[Standard Placement] The difference between compound interest and simple interest on a certain sum of money for 2 years at 4% per annum is Rs. 20. Find the principal sum.",
+    "p2_s": "Step 1: Use the 2-Year Difference Shortcut:\nD_2 = P * (R / 100)^2.\nHere D_2 = Rs. 20, R = 4%.\nStep 2: Substitute values:\n20 = P * (4 / 100)^2 = P * (1 / 25)^2 = P / 625.\nStep 3: Solve for P:\nP = 20 * 625 = Rs. 12,500.\nVerification: SI for 2 years at 4% on 12500 = 12500 * 0.08 = Rs. 1000.\nCI = 12500 * (1.04)^2 - 12500 = 12500 * 1.0816 - 12500 = 13520 - 12500 = Rs. 1020.\nDifference = 1020 - 1000 = Rs. 20. Exact match!\nAnswer: Principal sum is Rs. 12,500.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Wipro Elite NTH / Infosys Test]",
+    "p3_q": "A sum of money invested at compound interest doubles itself in 5 years. In how many years will it become 8 times itself at the same rate of interest?",
+    "p3_s": "Step 1: Placement Exponential Rule for CI:\nIf a sum becomes 'k' times in 'T' years, it will become (k^m) times in (m * T) years.\nStep 2: Given: Sum becomes 2 times (k = 2) in T = 5 years.\nStep 3: Target: We want the sum to become 8 times.\nExpress 8 as a power of 2: 8 = 2^3 ==> Power m = 3.\nStep 4: Required Time = m * T = 3 * 5 = 15 years.\nContrast with SI: At SI, doubling in 5 years means gaining 1P interest in 5 years. To become 8 times, it must gain 7P interest, taking 7 * 5 = 35 years! CI multiplies exponentially.\nAnswer: 15 years.",
+    "p4_q": "[Hard / Time-Pressure] The difference between compound interest and simple interest on a certain sum for 3 years at 10% per annum is Rs. 93. Find the principal sum.",
+    "p4_s": "Step 1: Use the 3-Year Difference Shortcut:\nD_3 = P * (R / 100)^2 * [(300 + R) / 100].\nHere D_3 = 93, R = 10%.\nStep 2: Substitute values:\n93 = P * (10 / 100)^2 * [(300 + 10) / 100]\n93 = P * (1 / 100) * (310 / 100) = P * (31 / 1000).\nStep 3: Solve for P:\nP = (93 * 1000) / 31 = 3 * 1000 = Rs. 3,000.\nVerification: SI for 3 yrs at 10% on 3000 = 3000 * 0.30 = Rs. 900.\nCI = 3000 * (1.1)^3 - 3000 = 3000 * 1.331 - 3000 = 3993 - 3000 = Rs. 993.\nDifference = 993 - 900 = Rs. 93. Perfect match!\nAnswer: Principal sum is Rs. 3,000.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "Find the compound interest on Rs. 10,000 for 2 years at 10% per annum compounded annually."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "A sum of money at SI doubles itself in 8 years. What is the rate of interest per annum?"
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "Find the difference between CI and SI on Rs. 5,000 for 2 years at 6% per annum."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "At what rate percent per annum will Rs. 1,000 become Rs. 1,331 in 3 years compounded annually?"
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "A sum of money amounts to Rs. 6,690 after 3 years and to Rs. 10,035 after 6 years on compound interest. Find the sum."
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "A = 10000 * (1.1)^2 = 12100. CI = 12100 - 10000 = Rs. 2,100. Answer: Rs. 2,100."
+      ],
+      [
+        "Solution Q2:",
+        "Doubles ==> SI = P. R = (100 * P) / (P * 8) = 100 / 8 = 12.5% per annum. Answer: 12.5%."
+      ],
+      [
+        "Solution Q3:",
+        "D = P * (R/100)^2 = 5000 * (6/100)^2 = 5000 * (36 / 10000) = 5 * 3.6 = Rs. 18. Answer: Rs. 18."
+      ],
+      [
+        "Solution Q4:",
+        "1331 / 1000 = (1 + R/100)^3 ==> (11/10)^3 = (1 + R/100)^3 ==> R/100 = 0.1 ==> R = 10%. Answer: 10%."
+      ],
+      [
+        "Solution Q5:",
+        "In 3 years, amount scales by factor F = 10035 / 6690 = 1.5. Therefore, Principal P * 1.5 = 6690 ==> P = 6690 / 1.5 = Rs. 4,460. Answer: Rs. 4,460."
+      ]
+    ],
+    "trap": "Do not confuse doubling at SI vs doubling at CI! At SI, doubling takes T = 100/R years. At CI, doubling depends on the exponential power (k^m taking m*T years)."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

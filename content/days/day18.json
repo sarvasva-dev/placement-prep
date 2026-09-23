@@ -1,0 +1,274 @@
+{
+  "day": 18,
+  "title": "Sliding Window Protocols (GBN & SR), Syllogisms & Number of Islands",
+  "sem_data": {
+    "subject": "BCA-5003 Computer Network",
+    "topic": "Unit III \u2014 Sliding Window Protocols: Stop-and-Wait, Go-Back-N (GBN) & Selective Repeat (SR)",
+    "detailed_notes": [
+      "Sliding window protocols are data link layer and transport layer flow control and error control protocols that allow the sender to transmit multiple frames before receiving an acknowledgment (ACK), dramatically improving channel utilization over high-latency links.",
+      "1. Stop-and-Wait ARQ:\n\u2022 Sender transmits a single frame (sequence number 0 or 1), starts a retransmission timer, and stops. It waits until an ACK arrives before sending the next frame.\n\u2022 If ACK is lost or frame is corrupted, timer expires and sender retransmits the frame.\n\u2022 Efficiency: eta = 1 / (1 + 2a), where a = Propagation Delay (Tp) / Transmission Delay (Tt). For satellite or high bandwidth-delay product links (large a), channel efficiency collapses below 10%.",
+      "2. Go-Back-N (GBN) ARQ:\n\u2022 Sender window size is N = 2^m - 1 (where m is sequence number bits). Receiver window size is strictly 1.\n\u2022 Sender can transmit up to N frames consecutively without waiting for individual ACKs.\n\u2022 Cumulative ACKs: Receiver sends ACK(n) indicating all frames up to n-1 were correctly received, expecting frame n.\n\u2022 Error Handling (Go-Back-N): Receiver accepts frames strictly IN ORDER. If frame i is corrupted or lost, receiver discards frame i AND all subsequent out-of-order frames (i+1, i+2, ...). When sender's timer for frame i expires, sender must retransmit ALL frames from i to the current send window edge. This causes wasteful retransmissions on noisy channels.\n\u2022 Window Size Constraint: Sender window cannot exceed 2^m - 1. If N = 2^m, and all ACKs are lost, sender cannot distinguish whether an ACK is for the current window or previous window.",
+      "3. Selective Repeat (SR) ARQ:\n\u2022 Sender window size = Receiver window size = 2^(m-1).\n\u2022 Receiver maintains a buffer and accepts frames OUT OF ORDER as long as they fall within its window. Corrupted frames are ignored or explicitly rejected via Negative ACK (NAK).\n\u2022 Independent Retransmission: Sender retransmits ONLY the specific unacknowledged frame when its individual timer expires. Frames already buffered at receiver are not retransmitted.\n\u2022 Window Size Constraint: To avoid window overlap ambiguity between new sequence numbers and old sequence numbers, Sender Window + Receiver Window <= 2^m. Since Ws = Wr, Ws <= 2^(m-1).",
+      "Mathematical Derivations of Channel Efficiency (eta):\n\u2022 Let Tt = Frame Transmission Time = Frame Size / Bandwidth.\n\u2022 Let Tp = Propagation Time = Distance / Propagation Speed.\n\u2022 Parameter a = Tp / Tt.\n\u2022 Total Round Trip Time = Tt + 2*Tp (ignoring negligible ACK transmission time and processing time).\n\u2022 Stop-and-Wait Efficiency: eta = Tt / (Tt + 2*Tp) = 1 / (1 + 2a).\n\u2022 Go-Back-N Efficiency: eta = (N * Tt) / (Tt + 2*Tp) = N / (1 + 2a) (capped at 100% when N >= 1 + 2a).\n\u2022 Selective Repeat Efficiency: eta = N / (1 + 2a), but maintains this efficiency without the retransmission penalty of discarding good frames."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                   SLIDING WINDOW PROTOCOLS COMPARISON                   |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|  1. GO-BACK-N ARQ (Receiver Window = 1, Discards Out-of-Order Frames)    |\n|     Sender:   [0]  [1]  [2]  [3]  [4]  [5]                              |\n|                |    |    |    |                                         |\n|                v    X (Frame 1 Lost)                                    |\n|     Receiver: [0]       [2 discarded] [3 discarded]                     |\n|     Timeout: Sender retransmits: [1], [2], [3], [4] (Wasteful)          |\n|                                                                         |\n|  2. SELECTIVE REPEAT ARQ (Receiver Window = 2^(m-1), Buffers Valid)     |\n|     Sender:   [0]  [1]  [2]  [3]  [4]  [5]                              |\n|                |    |    |    |                                         |\n|                v    X (Frame 1 Lost)                                    |\n|     Receiver: [0]       [2 buffered]  [3 buffered]                      |\n|     Timeout: Sender retransmits ONLY: [1] (Optimal)                     |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Parameter",
+        "Stop-and-Wait",
+        "Go-Back-N (GBN)",
+        "Selective Repeat (SR)"
+      ],
+      "rows": [
+        [
+          "Sender Window Size (Ws)",
+          "1",
+          "2^m - 1",
+          "2^(m - 1)"
+        ],
+        [
+          "Receiver Window Size (Wr)",
+          "1",
+          "1 (No buffering)",
+          "2^(m - 1) (Requires buffer)"
+        ],
+        [
+          "Acknowledgment Type",
+          "Individual ACK for each frame",
+          "Cumulative ACK (ACK n acknowledges all < n)",
+          "Individual / Selective ACK"
+        ],
+        [
+          "Out-of-Order Frames",
+          "Cannot occur",
+          "Discarded immediately by receiver",
+          "Buffered in receiver window"
+        ],
+        [
+          "Retransmission Scope",
+          "Single frame",
+          "Entire window starting from lost frame",
+          "Only the specific lost/damaged frame"
+        ],
+        [
+          "Receiver Complexity",
+          "Minimal (no memory buffer)",
+          "Low (only 1 frame buffer needed)",
+          "High (sorting buffer, timers, logic)"
+        ],
+        [
+          "Channel Utilization",
+          "Very Poor: 1 / (1 + 2a)",
+          "Good: N / (1 + 2a)",
+          "Highest on noisy channels"
+        ]
+      ]
+    },
+    "memorize": "Window sizes: GBN: Ws = 2^m - 1, Wr = 1. Selective Repeat: Ws = 2^(m-1), Wr = 2^(m-1). GBN uses cumulative ACKs; SR uses individual ACKs. Channel efficiency parameter a = Tp / Tt. Optimal window size for 100% efficiency: N >= 1 + 2a.",
+    "understand": "Why must Ws + Wr <= 2^m in Selective Repeat? If Ws = Wr = 2^(m-1) + 1, the sequence numbers wrap around. If all ACKs are lost, the sender retransmits old frames, but the receiver's advanced window sees the same sequence numbers and misinterprets the duplicates as brand-new frames, corrupting user data!",
+    "common_mistakes": "1. Stating GBN sender window size is 2^m (it must be 2^m - 1 to prevent sequence number wrap ambiguity). 2. Confusing propagation delay (Tp = distance / speed) with transmission delay (Tt = length / bandwidth).",
+    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "High-Frequency 15-Mark Core Question: 2021 (Q6 - 15m), 2022-23 (Q5 - 15m), 2023-24 (Q6 - 15m), 2024-25 (Q5 - 15m)",
+    "pyq_question": "Explain Sliding Window Protocols in detail. Compare Stop-and-Wait, Go-Back-N, and Selective Repeat ARQ protocols with neat diagrams. Derive the channel efficiency for Go-Back-N and explain why the sender window size in GBN cannot exceed 2^m - 1. (15 Marks)",
+    "pyq_rubric": "Concept of Sliding Window & Window sliding mechanics (4 marks) + GBN vs SR architecture & window size proofs (5 marks) + Channel efficiency derivation (3 marks) + Comparison table (3 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Principle of Sliding Window Protocols:",
+        "Sliding window protocols are point-to-point flow and error control mechanisms operating at the Data Link Layer (OSI Layer 2) and Transport Layer (TCP). In contrast to naive Stop-and-Wait protocols where the sender idles waiting for an acknowledgment after every frame, a sliding window protocol allows the sender to transmit up to W frames (the 'window') without waiting for an acknowledgment, keeping high-latency pipes full."
+      ],
+      [
+        "2. Go-Back-N ARQ Architecture & Window Proof:",
+        "In Go-Back-N, the sender maintains a window of size Ws = 2^m - 1, while the receiver has a window size Wr = 1.\n\u2022 Mathematical Proof of Ws <= 2^m - 1: Suppose sequence numbers are represented by m bits (range 0 to 2^m - 1). If Ws = 2^m, the sender could transmit frames 0, 1, ..., 2^m - 1 in one burst. Suppose all frames arrive safely at the receiver, and the receiver sends an ACK acknowledging all frames up to 0 (next expected frame 0 of the next cycle). If all ACKs are lost in transit, the sender's timer expires and it retransmits frame 0. The receiver, expecting frame 0 of the next batch, cannot determine whether this frame 0 is a duplicate of the old batch or the new frame 0! By restricting Ws <= 2^m - 1, the new window and old window cannot overlap, completely resolving ambiguity."
+      ],
+      [
+        "3. Selective Repeat ARQ Architecture:",
+        "Selective Repeat solves the wasteful retransmissions of GBN on lossy channels by setting Wr = Ws = 2^(m-1). The receiver maintains an individual buffer for out-of-order frames that fall within its window. When frame i is lost, receiver buffers frames i+1, i+2... and sends a NAK(i). The sender retransmits ONLY frame i. Once received, the receiver delivers all buffered frames in order to the network layer."
+      ],
+      [
+        "4. Mathematical Derivation of Efficiency (eta):",
+        "Let Tt be frame transmission time and Tp be one-way propagation delay.\nTime to send 1 frame and receive ACK = Tt + 2*Tp.\nIn Go-Back-N with window size N, the sender transmits N frames in one round trip time.\nTotal Useful Transmission Time = N * Tt.\nTotal Elapsed Time = Tt + 2*Tp.\nEfficiency eta = (N * Tt) / (Tt + 2*Tp) = N / (1 + 2*(Tp/Tt)) = N / (1 + 2a), where a = Tp / Tt.\nMaximum channel utilization (eta = 1.0 or 100%) is achieved when N >= 1 + 2a."
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Sliding Window Mathematical Proofs & Efficiency Derivation",
+    "milestone": "Full 15/15 on Networks Unit III Exam Question"
+  },
+  "apt_data": {
+    "topic": "Logical Reasoning \u2014 Syllogisms & Venn Deduction",
+    "tutorial": [
+      "Syllogisms test deductive reasoning through statements and conclusions that must be accepted as 100% true regardless of real-world facts.",
+      "Standard Categorical Propositions:\n1. Universal Positive (A): 'All A are B' (Venn: Circle A is completely inside Circle B).\n2. Universal Negative (E): 'No A is B' (Venn: Circle A and Circle B are completely disjoint with cross line).\n3. Particular Positive (I): 'Some A are B' (Venn: Circles A and B overlap; at least one common element).\n4. Particular Negative (O): 'Some A are not B' (Venn: At least one part of Circle A is strictly outside Circle B).",
+      "Definite Conclusion vs Possibility Rules:\n\u2022 A definite conclusion must be TRUE in ALL possible Venn diagram representations.\n\u2022 A possibility conclusion is TRUE if it is valid in AT LEAST ONE valid Venn diagram representation.",
+      "Either-Or Complementary Pairs (Must satisfy ALL 3 conditions):\n1. Both individual conclusions must be independently doubtful (false as definite conclusions).\n2. Both conclusions must have the EXACT SAME subject and predicate.\n3. The statements must form a complementary pair: (Some + No) OR (All + Some Not)."
+    ],
+    "formulas": "A + A = A (All A are B + All B are C ==> All A are C).\nA + E = E (All A are B + No B are C ==> No A are C).\nI + A = I (Some A are B + All B are C ==> Some A are C).\nI + E = O (Some A are B + No B are C ==> Some A are not C).",
+    "shortcut": "Golden Rule of Negatives: If all statements are positive, NO definite negative conclusion can follow. If any conclusion contains 'possibility', draw the maximal overlapping Venn diagram.",
+    "recognition": "Look for 'Statements: All pens are books... Conclusions: I. Some books are pens...' in TCS NQT, Wipro, and Infosys reasoning rounds.",
+    "tier1_problem": "Statements:\n1. All lions are predators.\n2. All predators are hunters.\nConclusions:\nI. All lions are hunters.\nII. Some hunters are lions.",
+    "tier1_solution": "Venn analysis: Lions circle is inside Predators circle, which is inside Hunters circle.\nConclusion I: All lions are inside Hunters circle ==> Definite TRUE.\nConclusion II: The region occupied by Lions is part of Hunters ==> Some hunters are lions is Definite TRUE.\nAnswer: Both Conclusion I and II follow.",
+    "tier2_problem": "Statements:\n1. Some doctors are surgeons.\n2. All surgeons are specialists.\n3. No specialist is an intern.\nConclusions:\nI. No surgeon is an intern.\nII. Some doctors are specialists.\nIII. Some doctors are not interns.",
+    "tier2_solution": "1. Since All surgeons are specialists and No specialist is an intern, Surgeons and Interns are completely disjoint ==> Conclusion I follows.\n2. Surgeons overlap with Doctors, and all Surgeons are Specialists, so that overlapping portion represents Doctors who are Specialists ==> Conclusion II follows.\n3. The doctors who are surgeons are specialists, and no specialist can be an intern. Therefore, those specific doctors can never be interns ==> Conclusion III follows.\nAnswer: All Conclusions I, II, and III follow.",
+    "tier3_problem": "[Infosys Reasoning Round Pattern]\nStatements:\n1. Some laptops are tablets.\n2. All tablets are phones.\n3. No phone is a desktop.\nConclusions:\nI. Some laptops are not desktops.\nII. All tablets being desktops is a possibility.\nIII. Some phones are laptops.",
+    "tier3_solution": "Step-by-step evaluation:\n\u2022 Laptops overlap with Tablets. All Tablets are within Phones. Hence, some Laptops are inside Phones (Conclusion III follows).\n\u2022 The laptops that are inside Phones cannot be Desktops because No Phone is a Desktop. Thus, there exists a definite portion of Laptops that cannot be Desktops ==> Conclusion I follows.\n\u2022 All Tablets are strictly inside Phones, and No Phone can ever touch Desktops. Therefore, Tablets can NEVER touch Desktops under any possibility ==> Conclusion II is definitively FALSE.\nAnswer: Only Conclusions I and III follow.",
+    "tier4_problem": "[Either-Or Complementary Case \u2014 TCS Digital / Cognizant GenC Next]\nStatements:\n1. Some clouds are rains.\n2. Some rains are storms.\n3. No storm is snow.\nConclusions:\nI. Some clouds are snow.\nII. No cloud is snow.",
+    "tier4_solution": "Check 3 conditions for Either-Or:\n1. Definite validity: Clouds and Snow have no direct negative or positive constraint. Thus, Conclusion I ('Some clouds are snow') is doubtful. Conclusion II ('No cloud is snow') is also doubtful.\n2. Same elements: Both conclusions have Subject = Cloud, Predicate = Snow.\n3. Complementary pair: Statement I is 'Some' (I) and Statement II is 'No' (E). This forms a valid complementary pair.\nHence, either clouds will share an element with snow, or they will be disjoint.\nAnswer: Either Conclusion I or Conclusion II follows.",
+    "speed_drills": [
+      {
+        "q": "Statements: All cars are vehicles. No vehicle is an airplane. Conclusions: I. No car is an airplane. II. No airplane is a car.",
+        "a": "Both follow. Since Car is inside Vehicle and Vehicle is disjoint from Airplane, Car is disjoint from Airplane. Symmetric relation holds."
+      },
+      {
+        "q": "Statements: Some cups are mugs. Some mugs are glasses. Conclusions: I. Some cups are glasses. II. No cup is a glass.",
+        "a": "Either I or II follows. Cups and Glasses have no link (both doubtful), same terms, Some + No pair."
+      },
+      {
+        "q": "Statements: All stars are moons. All moons are planets. Conclusions: I. Some planets are stars. II. All planets are stars.",
+        "a": "Only I follows. Stars is inside Planets, so Some planets are stars is true. But All planets are stars is false."
+      },
+      {
+        "q": "Statements: No cat is a dog. No dog is a horse. Conclusions: I. No cat is a horse. II. Some cats being horses is a possibility.",
+        "a": "Only II follows. Negative statements with disjoint intermediate terms permit any possibility between extreme terms."
+      },
+      {
+        "q": "Statements: Only a few books are papers (Means: Some books are papers AND Some books are NOT papers). All papers are files. Conclusions: I. All books being files is a possibility.",
+        "a": "False. Since 'Only a few books are papers', some books can never be papers, but they COULD all potentially be files as long as files is larger than papers."
+      }
+    ]
+  },
+  "dsa_problems": [
+    {
+      "title": "Number of Islands (LeetCode 200 - Medium)",
+      "difficulty": "Medium",
+      "importance": "Top 5 Most Asked Placement Graph Problem (Amazon, Microsoft, TCS Digital)",
+      "problem_statement": "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.",
+      "solution_approach": "Algorithm (Connected Components via In-Place Grid DFS/BFS):\n1. Iterate through every cell (r, c) in the grid.\n2. When we encounter a '1', we increment our island count by 1 and trigger a traversal (DFS or BFS).\n3. The DFS visits all 4 adjacent neighbors (up, down, left, right). To avoid infinite loops and extra O(M*N) memory for a visited set, we sink the island in-place by flipping visited '1's to '0's (or '2').\n4. Base cases for DFS: If row or col is out of bounds, or grid[r][c] == '0', return immediately.",
+      "code": "def numIslands(grid: list[list[str]]) -> int:\n    if not grid or not grid[0]:\n        return 0\n    \n    rows, cols = len(grid), len(grid[0])\n    island_count = 0\n    \n    def dfs(r: int, c: int):\n        # Boundary check and water check\n        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != '1':\n            return\n        \n        # Sink land cell to avoid re-visiting\n        grid[r][c] = '0'\n        \n        # Visit all 4 cardinal directions\n        dfs(r + 1, c) # Down\n        dfs(r - 1, c) # Up\n        dfs(r, c + 1) # Right\n        dfs(r, c - 1) # Left\n    \n    for r in range(rows):\n        for c in range(cols):\n            if grid[r][c] == '1':\n                island_count += 1\n                dfs(r, c)\n                \n    return island_count",
+      "line_by_line": [
+        [
+          "rows, cols = len(grid), len(grid[0])",
+          "Extract grid dimensions for constant-time boundary checking."
+        ],
+        [
+          "if grid[r][c] == '1':",
+          "Discovered unvisited land cell, signaling a new connected component."
+        ],
+        [
+          "island_count += 1",
+          "Increment global island tally."
+        ],
+        [
+          "grid[r][c] = '0'",
+          "Mutate cell in-place to '0' ('sink the island'), preventing duplicate visits without O(M*N) auxiliary visited hash set."
+        ],
+        [
+          "dfs(r + dr, c + dc)",
+          "Recursively flood-fill all 4 orthogonal neighbors."
+        ]
+      ],
+      "time_complexity": "O(M * N) where M is rows and N is columns. Every cell is visited at most a constant number of times.",
+      "space_complexity": "O(M * N) in the worst case (grid full of land) for recursion call stack.",
+      "edge_cases": "All '0's (returns 0); all '1's (returns 1); 1x1 grid; empty grid."
+    },
+    {
+      "title": "Clone Graph (LeetCode 133 - Medium)",
+      "difficulty": "Medium",
+      "importance": "High-Frequency System & Object Graph Deep-Copy Placement Problem",
+      "problem_statement": "Given a reference of a node in a connected undirected graph, return a deep copy (clone) of the graph. Each node in the graph contains a value (int) and a list of its neighbors (List[Node]).",
+      "solution_approach": "Deep copying a graph requires handling cycles to prevent infinite recursion.\n1. Use a Hash Map `clones = {}` mapping `original_node -> cloned_node`.\n2. Perform DFS/BFS. For the current node, if it is already in `clones`, return its cloned instance.\n3. Otherwise, create a new Node with `node.val` and record it in `clones[node]`.\n4. Iterate through all neighbors of `node`, recursively cloning each neighbor and appending it to `copy.neighbors`.",
+      "code": "class Node:\n    def __init__(self, val = 0, neighbors = None):\n        self.val = val\n        self.neighbors = neighbors if neighbors is not None else []\n\ndef cloneGraph(node: 'Node') -> 'Node':\n    if not node:\n        return None\n    \n    cloned_map = {}\n    \n    def dfs(curr: 'Node') -> 'Node':\n        if curr in cloned_map:\n            return cloned_map[curr]\n        \n        # Create clone\n        copy = Node(curr.val)\n        cloned_map[curr] = copy\n        \n        # Recursively clone all neighbors\n        for neighbor in curr.neighbors:\n            copy.neighbors.append(dfs(neighbor))\n            \n        return copy\n    \n    return dfs(node)",
+      "line_by_line": [
+        [
+          "cloned_map = {}",
+          "Hash table storing mapping from original Node pointers to newly cloned Node instances to handle cycles."
+        ],
+        [
+          "if curr in cloned_map: return cloned_map[curr]",
+          "Cycle-breaking base case: if node is already copied, return existing clone immediately."
+        ],
+        [
+          "copy = Node(curr.val); cloned_map[curr] = copy",
+          "Instantiate new Node and register in hash map BEFORE traversing neighbors to prevent cycle recursion traps."
+        ],
+        [
+          "for neighbor in curr.neighbors: copy.neighbors.append(dfs(neighbor))",
+          "Deep-copy and attach all incident edges."
+        ]
+      ],
+      "time_complexity": "O(V + E) where V is number of vertices (nodes) and E is number of edges in the graph.",
+      "space_complexity": "O(V) to store the clone map and recursion stack frames.",
+      "edge_cases": "node is None (returns None); single node with no neighbors; fully cyclic graph."
+    }
+  ],
+  "cs_core": {
+    "subject": "Database Management Systems (DBMS)",
+    "topic": "Query Optimization & Index Scans vs Sequential Scans",
+    "detailed_notes": [
+      "The Query Execution Engine transforms a declarative SQL query into an optimized physical execution plan:\n1. Parser: Converts raw SQL text into an Abstract Syntax Tree (AST), checking syntax and semantic validity (tables/columns exist).\n2. Query Rewriter: Applies relational algebra equivalences (pushing selections down, eliminating subqueries via joins).\n3. Cost-Based Optimizer (CBO): Estimates the cost (disk I/O + CPU cycles) of various candidate execution plans using table statistics stored in catalog tables (pg_statistic / sqlite_stat1).",
+      "Scan Types Analyzed:\n\u2022 Sequential Scan (Table Scan): Reads every block from disk sequentially from start to end. Fast for small tables (<1000 rows) or when returning >20% of table rows due to sequential read caching.\n\u2022 Index Scan: Traverses B+ tree from root to leaf to locate matching row pointers (TIDs/RIDs), then fetches individual heap pages. High random I/O overhead if selectivity is poor.\n\u2022 Bitmap Index Scan: Gathers all matching tuple pointers from B+ tree into a bitmap in memory, sorts pointers by physical block order, and performs sequential I/O on heap pages. Combines efficiency of indexes with sequential disk reads.",
+      "EXPLAIN & EXPLAIN ANALYZE:\n\u2022 EXPLAIN shows the optimizer's estimated cost (cost=0.00..45.12 rows=100 width=16).\n\u2022 EXPLAIN ANALYZE actually executes the query on the database engine, returning exact execution times (in ms) and buffer hit counts."
+    ],
+    "interview_qa": [
+      {
+        "q": "Why does a database optimizer sometimes choose a Sequential Scan over an Index Scan even when an index exists on the searched column?",
+        "a": "Because the Cost-Based Optimizer estimates that sequential scanning will consume fewer total I/O cycles. When a query has low selectivity (e.g., retrieving 30% or more of table rows), an index scan requires numerous random I/O disk seeks to hop between index leaf nodes and scattered physical table heap blocks. Sequential scans read contiguous multi-block chunks using operating system read-ahead buffers, making sequential reads orders of magnitude faster than thousands of scattered random lookups."
+      },
+      {
+        "q": "What is the difference between a Filter condition and an Index Condition in an EXPLAIN output?",
+        "a": "An 'Index Cond' represents predicates evaluated directly inside the B+ Tree during traversal (e.g., `user_id = 42`), preventing non-matching table blocks from ever being fetched from disk. A 'Filter' condition represents predicates evaluated in memory AFTER table rows have already been read from disk blocks. High filter counts with low output rows indicate missing composite indexes or non-sargable expressions (like `WHERE YEAR(created_at) = 2024`)."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "CSMS \u2014 Car Showroom Management System",
+    "feature_focus": "Database Migrations with Alembic & Zero-Downtime Schema Evolution",
+    "architecture_deep_dive": "In CSMS, database evolution across development and production environments is strictly automated using Alembic integrated with SQLAlchemy ORM.\n\n1. Migration Lifecycle & Revision Generation:\nInstead of executing ad-hoc DDL `ALTER TABLE` statements directly on PostgreSQL, developers modify declarative models in Python (`models/car.py`, `models/order.py`). Alembic detects schema diffs via `alembic revision --autogenerate -m 'add_vin_index'` by comparing SQLAlchemy `target_metadata` against live database catalog tables.\n\n2. Two-Way Reversible Operations:\nEvery migration file provides explicit `upgrade()` and `downgrade()` functions. For instance, creating a nullable column `vin_number = Column(String(17), unique=True, index=True)` in upgrade() is paired with `drop_index` and `drop_column` in downgrade(), guaranteeing fast rollbacks during deployment failures.\n\n3. Safe Production Migrations:\nTo prevent table locking under traffic: 1. Columns are always added with NULL defaults first. 2. Data backfills run in micro-batches. 3. NOT NULL constraints are applied only after backfill completion.",
+    "interview_qa": [
+      {
+        "q": "How did you manage database schema changes in CSMS when deploying new features?",
+        "a": "I used Alembic for database version control. Every schema change is tracked as an immutable Python revision script with an explicit upgrade() and downgrade() path. When CI/CD runs, `alembic upgrade head` applies pending migrations atomically inside a database transaction before the FastAPI web server processes new requests. This eliminated manual DDL scripts and enabled instant rollbacks."
+      },
+      {
+        "q": "What happens if a database migration fails halfway through execution in production?",
+        "a": "Because PostgreSQL supports Transactional DDL, Alembic wraps migration steps inside `BEGIN ... COMMIT`. If any DDL statement fails (e.g., a unique constraint violation during backfill), PostgreSQL automatically rolls back the entire transaction, leaving the database in its original clean state and keeping `alembic_version` at the previous revision hash, preventing schema corruption."
+      }
+    ]
+  },
+  "daily_test": {
+    "day": 18,
+    "questions": [
+      {
+        "q": "Why is the receiver window size in Go-Back-N protocol equal to 1?",
+        "a": "Because the GBN receiver is designed to accept frames strictly in sequential order. It does not buffer out-of-order frames; any frame with a sequence number other than the next expected frame is discarded immediately, requiring only a single frame buffer."
+      },
+      {
+        "q": "What is the maximum sender window size in Selective Repeat protocol if 4 bits are used for sequence numbers?",
+        "a": "With m = 4 bits, the sequence number space is 2^4 = 16. The maximum sender window size in Selective Repeat is 2^(m-1) = 2^(4-1) = 2^3 = 8."
+      },
+      {
+        "q": "Statements: All routers are switches. No switch is a hub. Conclusion: Can any router be a hub? Explain.",
+        "a": "No. Since all routers are inside switches, and switches are completely disjoint from hubs, routers are also completely disjoint from hubs. Definite conclusion: No router is a hub."
+      },
+      {
+        "q": "In LeetCode 200 (Number of Islands), why do we mutate visited land cells '1' to '0' during DFS?",
+        "a": "To 'sink' the visited land in-place. This marks the cell as visited without requiring an auxiliary O(M*N) hash set, saving memory while preventing infinite recursive cycles."
+      },
+      {
+        "q": "What is the primary difference between Stop-and-Wait ARQ efficiency and Go-Back-N efficiency?",
+        "a": "Stop-and-Wait efficiency is eta = 1 / (1 + 2a). Go-Back-N transmits N frames per round trip, achieving efficiency eta = N / (1 + 2a). GBN improves channel throughput by up to N times."
+      },
+      {
+        "q": "Why does LeetCode 133 (Clone Graph) require registering a newly created cloned node into a hash map before copying its neighbors?",
+        "a": "Because undirected graphs contain cycles. If the node is not registered in the lookup map first, traversing a cyclic neighbor will attempt to clone the original node again, creating an infinite recursive loop that overflows the call stack."
+      },
+      {
+        "q": "What is a 'Bitmap Index Scan' in PostgreSQL / DBMS query execution?",
+        "a": "It is a hybrid scanning method that scans a B+ tree to construct an in-memory bitmap of matching heap page block numbers, sorts them sequentially, and then performs sequential physical I/O to retrieve table rows, eliminating random disk thrashing."
+      },
+      {
+        "q": "In Alembic migrations, why must schema additions on high-traffic production databases avoid adding columns with non-null defaults directly?",
+        "a": "Because older database engines lock the entire table exclusively while rewriting all existing physical table rows with the default value, causing request timeouts. Best practice is to add nullable columns first, backfill data asynchronously, and then add constraints."
+      }
+    ]
+  }
+}

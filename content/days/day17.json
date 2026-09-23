@@ -1,0 +1,164 @@
+{
+  "day": 17,
+  "title": "Java Servlet Life Cycle, Topological Sort & Bayes' Theorem",
+  "sem_data": {
+    "subject": "BCA-5002 Java Programming",
+    "topic": "Unit IV \u2014 Servlet Architecture, 3-Stage Life Cycle & forward() vs sendRedirect()",
+    "detailed_notes": [
+      "A Servlet is a server-side Java software component managed by a Web Container (Servlet Engine, such as Apache Tomcat) that dynamically extends the capabilities of a web server to generate dynamic HTML responses and handle HTTP requests.",
+      "Servlet Interface Inheritance Hierarchy:\n\u2022 java.servlet.Servlet: The core root interface defining basic life cycle methods.\n\u2022 java.servlet.GenericServlet: An abstract protocol-independent servlet implementation implementing Servlet and ServletConfig interfaces.\n\u2022 java.servlet.http.HttpServlet: An abstract protocol-specific subclass designed exclusively for HTTP communication. It overrides service() to dispatch incoming requests to HTTP verb handlers: doGet(), doPost(), doPut(), doDelete().",
+      "The 3-Stage Servlet Life Cycle:\n1. Initialization Stage (Loading & init()): The Web Container loads the servlet class, instantiates it via reflection, and calls 'init(ServletConfig config)'. Executed EXACTLY ONCE during the servlet's lifetime. Used for initializing database connections and reading configuration parameters.\n2. Request Handling Stage (service()): For EVERY incoming client HTTP request, the container spawns a new lightweight thread and invokes 'service(HttpServletRequest, HttpServletResponse)'. The service() method inspects the HTTP request method and delegates to doGet() or doPost(). This multi-threaded execution model provides exceptional concurrency over CGI scripts.\n3. Destruction Stage (destroy()): When the container shuts down or reloads the application, it invokes 'destroy()'. Executed EXACTLY ONCE to release database connections, close open file streams, and flush caches. The garbage collector reclaims the servlet instance.",
+      "Servlet Communication & Navigation:\n\u2022 RequestDispatcher.forward(req, res): Server-side internal dispatch. The request and response objects are passed to another servlet/JSP on the same server. Invisible to the client browser (URL does not change). Extremely fast.\n\u2022 HttpServletResponse.sendRedirect(url): Client-side redirection. The server sends an HTTP 302 response instructing the browser to issue a completely new GET request to the new URL. The URL changes in the browser address bar, creating a brand-new request lifecycle."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    SERVLET LIFE CYCLE & CONTAINER FLOW                  |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|       Client Request                                                    |\n|             |                                                           |\n|             v                                                           |\n|   +-----------------------------------------------------------------+   |\n|   |                  WEB CONTAINER (APACHE TOMCAT)                  |   |\n|   |                                                                 |   |\n|   |   1. Is Servlet Loaded? --(No)--> [ Load Class & Instantiate ]  |   |\n|   |                                               |                 |   |\n|   |                                               v                 |   |\n|   |                                     [ init(ServletConfig) ]     |   |\n|   |                                     (Executed Once in Lifetime) |\n|   |                                               |                 |   |\n|   |                                               v                 |   |\n|   |   2. For Every Incoming Request:                                |\n|   |      [ Spawn New Thread ] ----> [ service(request, response) ]  |   |\n|   |                                               |                 |   |\n|   |                            +------------------+-----------------+\n|   |                            |                                    |\n|   |                            v                                    v\n|   |                        doGet()                                doPost()|\n|   |                                                                 |   |\n|   |   3. Container Shutdown:                                        |   |\n|   |      [ destroy() ] ----> [ Reclaimed by Garbage Collector ]     |   |\n|   +-----------------------------------------------------------------+   |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Comparison Parameter",
+        "RequestDispatcher.forward()",
+        "HttpServletResponse.sendRedirect()"
+      ],
+      "rows": [
+        [
+          "Execution Location",
+          "Server-side internal routing",
+          "Client-side browser redirection"
+        ],
+        [
+          "HTTP Requests Count",
+          "Single request/response lifecycle",
+          "Two distinct requests (Client issues new GET)"
+        ],
+        [
+          "Browser Address Bar",
+          "URL remains unchanged (hidden from user)",
+          "URL changes to target redirection address"
+        ],
+        [
+          "Scope of Targets",
+          "Can only route within the same web application",
+          "Can redirect to any external domain (e.g. google.com)"
+        ],
+        [
+          "Attribute Retention",
+          "Request attributes (req.setAttribute) preserved",
+          "Request attributes lost (new request object created)"
+        ],
+        [
+          "Performance Speed",
+          "Faster (internal server handoff)",
+          "Slower (extra round-trip network latency)"
+        ]
+      ]
+    },
+    "memorize": "3 Life Cycle Methods: init() [Once], service() [Every Request], destroy() [Once]. forward() is server-side (URL unchanged, 1 request); sendRedirect() is client-side (URL changes, 2 requests). HttpServlet overrides service() to dispatch to doGet() and doPost().",
+    "understand": "In traditional CGI, the web server spawned a heavy OS process for every user, exhausting server RAM. Java Servlets revolutionized web architecture because the Web Container loads the servlet class ONCE, and handles 10,000 concurrent user requests by spawning 10,000 lightweight Java threads executing the service() method.",
+    "common_mistakes": "1. Calling super.doGet(req, res) inside overridden doGet() (causes HTTP 405 Method Not Allowed error). 2. Trying to read request attributes after sendRedirect() (attributes are wiped because it creates a new request).",
+    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q5 - 15m), 2022-23 (Q4 - 15m), 2023-24 (Q5 - 15m), 2024-25 (Q4 - 15m)",
+    "pyq_question": "Explain the life cycle of a Servlet with a neat diagram. Differentiate clearly between RequestDispatcher.forward() and HttpServletResponse.sendRedirect(). Write a complete Servlet to handle user login authentication. (15 Marks)",
+    "pyq_rubric": "Servlet Life Cycle Diagram & Explanation (5 marks) + forward vs sendRedirect comparison table (4 marks) + Complete Login Servlet code with doGet/doPost (6 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Servlet Architecture & The Web Container:",
+        "A Servlet is a server-side Java class running inside a Web Container (e.g., Apache Tomcat) that implements the Request-Response computing model. The container manages class loading, network socket allocation, concurrency via thread pooling, and the entire servlet life cycle."
+      ],
+      [
+        "2. The 3 Core Life Cycle Methods:",
+        "\u2022 init(ServletConfig config): Executed strictly once when the servlet is first loaded into memory. Used for one-time initialization (establishing database connection pools, loading properties). If initialization fails, an UnavailableException is raised.\n\u2022 service(ServletRequest req, ServletResponse res): Executed for every single client request. The container spawns a new thread from its thread pool and passes the HTTP request and response objects. In HttpServlet, service() automatically routes requests based on HTTP verb to doGet(), doPost(), doPut(), or doDelete().\n\u2022 destroy(): Executed strictly once before the container unloads the servlet. It allows cleanup of long-lived resources (closing database sockets, flushing disk buffers)."
+      ],
+      [
+        "3. Comparative Analysis: forward() vs sendRedirect():",
+        "\u2022 RequestDispatcher.forward() operates entirely on the server side. The original request and response objects are forwarded internally to another resource. The client is completely unaware of the redirection, meaning the browser URL remains unchanged and all request attributes set via req.setAttribute() are preserved.\n\u2022 HttpServletResponse.sendRedirect() issues an HTTP 302 Found response back to the client browser containing the target URL. The browser automatically generates a brand-new HTTP GET request to that URL. The browser URL updates to the new destination, creating a new request object and discarding previous request-scoped attributes. It allows redirecting to external domains (e.g. res.sendRedirect(\"https://google.com\"))."
+      ],
+      [
+        "4. Complete Login Authentication Servlet Program:",
+        "import java.io.*;\nimport javax.servlet.*;\nimport javax.servlet.http.*;\nimport javax.servlet.annotation.WebServlet;\n\n@WebServlet(\"/login\")\npublic class LoginServlet extends HttpServlet {\n    protected void doPost(HttpServletRequest request, HttpServletResponse response) \n            throws ServletException, IOException {\n        response.setContentType(\"text/html;charset=UTF-8\");\n        String email = request.getParameter(\"email\");\n        String pass = request.getParameter(\"password\");\n        PrintWriter out = response.getWriter();\n        if (\"admin@college.edu\".equals(email) && \"secret123\".equals(pass)) {\n            // Valid: Forward to dashboard internally\n            RequestDispatcher rd = request.getRequestDispatcher(\"dashboard.jsp\");\n            request.setAttribute(\"user\", email);\n            rd.forward(request, response);\n        } else {\n            // Invalid: Redirect back with error query parameter\n            response.sendRedirect(\"login.html?error=invalid_credentials\");\n        }\n    }\n}"
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Explain ServletConfig vs ServletContext with examples of initialization parameters. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "What is the difference between doGet() and doPost() methods in HttpServlet? (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Servlet Life Cycle (init, service, destroy), forward vs sendRedirect, and Login Servlet.",
+    "milestone": "Full 15/15 marks on University Question 4 (BCA-5002 Java Servlets)."
+  },
+  "apt_data": {
+    "topic": "Conditional Probability & Bayes' Theorem \u2014 Diagnostics & Machine Defect Models",
+    "tutorial": [
+      "Conditional Probability: The probability of an event A occurring given that another event B has ALREADY occurred:\nP(A | B) = P(A cap B) / P(B), provided P(B) > 0.",
+      "The Multiplication Theorem of Probability:\nP(A cap B) = P(B) * P(A | B) = P(A) * P(B | A).",
+      "Theorem of Total Probability:\nIf events B1, B2, ..., Bn form a partition of the sample space S (mutually exclusive and exhaustive):\nP(A) = Sum_{i=1 to n} [P(B_i) * P(A | B_i)].",
+      "Bayes' Theorem (Inverse / Posterior Probability):\nUsed to calculate the probability of a specific cause B_k given that the final effect A has already been observed:\nP(B_k | A) = [P(B_k) * P(A | B_k)] / [Sum_{i=1 to n} (P(B_i) * P(A | B_i))].",
+      "Classical Placement Scenarios:\n1. Factory Machines: Machines X, Y, Z produce 50%, 30%, 20% of items with 2%, 3%, 4% defective rates. Given a chosen item is defective, find probability it was produced by Machine X.\n2. Disease Diagnostics: A test is 99% accurate on sick patients, but has a 1% false positive rate on healthy people. If 0.1% of the population has the disease, what is the probability a positive patient actually has the disease?"
+    ],
+    "formulas": "1. Conditional Probability: P(A | B) = P(A cap B) / P(B)\n2. Total Probability: P(A) = P(B1)*P(A|B1) + P(B2)*P(A|B2) + ...\n3. Bayes' Theorem: P(Bi | A) = [P(Bi) * P(A|Bi)] / P(A)\n4. Independent Events: P(A | B) = P(A)",
+    "shortcut": "The Absolute Number Assumption Shortcut (The 10,000 Population Method):\nInstead of manipulating nested fractions in Bayes' Theorem, assume a total population of 10,000 or 1,000 items!\nDistribute items into simple integer counts across causes and calculate: Desired Count / Total Observed Count.",
+    "recognition": "Keywords: 'given that the selected item is defective, what is the probability that it was produced by machine A', 'a person is tested positive, what is the probability he actually has the disease'.",
+    "p1_q": "[Foundation] A die is thrown. Let A be the event that the number is prime, and B be the event that the number is odd. Find P(A | B).",
+    "p1_s": "Step 1: Sample space S = {1, 2, 3, 4, 5, 6} (6 outcomes).\nStep 2: Event B (number is odd) = {1, 3, 5} ==> n(B) = 3 ==> P(B) = 3 / 6 = 1/2.\nStep 3: Event A (number is prime) = {2, 3, 5}.\nIntersection (A cap B) = Prime AND Odd = {3, 5} ==> n(A cap B) = 2 ==> P(A cap B) = 2 / 6 = 1/3.\nStep 4: Conditional Probability P(A | B) = P(A cap B) / P(B) = (2 / 6) / (3 / 6) = 2 / 3.\nIntuition: Given that the number is odd (out of 1, 3, 5), exactly two of them (3, 5) are prime. Thus 2/3!\nAnswer: 2 / 3.",
+    "p2_q": "[Standard Placement] In a factory, Machine A produces 60% of the total output and Machine B produces 40%. 2% of the units produced by Machine A and 1% of the units produced by Machine B are defective. A unit is selected at random and found to be defective. What is the probability that it was manufactured by Machine A?",
+    "p2_s": "Method: The 10,000 Items Shortcut Method:\nAssume total factory production = 10,000 units.\nStep 1: Units manufactured by each machine:\n- Machine A produces 60% = 6,000 units.\n- Machine B produces 40% = 4,000 units.\nStep 2: Defective units from each machine:\n- Machine A defectives = 2% of 6,000 = 120 units.\n- Machine B defectives = 1% of 4,000 = 40 units.\nStep 3: Total defective units in factory = 120 + 40 = 160 units.\nStep 4: Given that the chosen item is defective, probability it came from Machine A:\nP(Machine A | Defective) = (Defectives from A) / (Total Defectives) = 120 / 160 = 3 / 4 = 0.75.\nBayes' Formula Verification: [0.60 * 0.02] / [0.60 * 0.02 + 0.40 * 0.01] = 0.012 / [0.012 + 0.004] = 0.012 / 0.016 = 3/4. Exact match!\nAnswer: 3 / 4 (or 75%).",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys / Cognizant Analytical Round]",
+    "p3_q": "Three urns contain colored balls:\nUrn I has 1 white, 2 black, and 3 red balls.\nUrn II has 2 white, 1 black, and 1 red ball.\nUrn III has 4 white, 5 black, and 3 red balls.\nOne urn is chosen at random and two balls are drawn. They happen to be white and red. What is the probability that they come from Urn I?",
+    "p3_s": "Step 1: Probability of choosing any urn: P(U1) = P(U2) = P(U3) = 1/3.\nStep 2: Probability of drawing 1 White and 1 Red ball from each urn:\n- Urn I (Total 6 balls: 1W, 2B, 3R):\n  P(WR | U1) = (^1 C_1 * ^3 C_1) / (^6 C_2) = (1 * 3) / 15 = 3 / 15 = 1 / 5.\n- Urn II (Total 4 balls: 2W, 1B, 1R):\n  P(WR | U2) = (^2 C_1 * ^1 C_1) / (^4 C_2) = (2 * 1) / 6 = 2 / 6 = 1 / 3.\n- Urn III (Total 12 balls: 4W, 5B, 3R):\n  P(WR | U3) = (^4 C_1 * ^3 C_1) / (^12 C_2) = (4 * 3) / 66 = 12 / 66 = 2 / 11.\nStep 3: Apply Bayes' Theorem:\nP(U1 | WR) = [P(U1) * P(WR | U1)] / [P(U1)*P(WR|U1) + P(U2)*P(WR|U2) + P(U3)*P(WR|U3)].\nSince P(U) = 1/3 cancels out:\nNumerator = 1/5.\nDenominator = 1/5 + 1/3 + 2/11 = (33 + 55 + 30) / 165 = 118 / 165.\nP(U1 | WR) = (1 / 5) / (118 / 165) = (1 / 5) * (165 / 118) = 33 / 118.\nAnswer: 33 / 118.",
+    "p4_q": "[Hard / Time-Pressure] A doctor is called to see a sick patient. From past records, the probability that the doctor comes by train, bus, scooter, or taxi are 3/10, 1/5, 1/10, and 2/5 respectively. The probabilities that he will be late are 1/4, 1/3, 1/12, and 0 (taxi is never late). If he arrives late, what is the probability that he came by train?",
+    "p4_s": "Step 1: Prior probabilities of transport modes:\nP(T) = 3/10, P(B) = 1/5 = 2/10, P(S) = 1/10, P(Tx) = 2/5 = 4/10.\nStep 2: Conditional probability of being late given mode:\nP(Late | T) = 1/4, P(Late | B) = 1/3, P(Late | S) = 1/12, P(Late | Tx) = 0.\nStep 3: Total Probability of being late P(Late):\nP(Late) = (3/10 * 1/4) + (2/10 * 1/3) + (1/10 * 1/12) + (4/10 * 0)\n= 3/40 + 2/30 + 1/120 + 0 = 9/120 + 8/120 + 1/120 = 18 / 120 = 3 / 20.\nStep 4: Probability he came by train given that he is late:\nP(Train | Late) = [P(T) * P(Late | T)] / P(Late) = (3 / 40) / (3 / 20) = (3 / 40) * (20 / 3) = 1 / 2.\nAnswer: 1 / 2 (or 50%).",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "If P(A) = 0.8, P(B) = 0.5, and P(B | A) = 0.4, find P(A cap B) and P(A | B)."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "A box has 5 red and 3 black balls. Two drawn without replacement. Find probability second is black given first was red."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "Machine A makes 70% bolts, Machine B 30%. 3% of A and 5% of B defective. Found defective; find prob from B."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "Two independent events A and B have P(A) = 0.3, P(B) = 0.6. Find P(A and B) and P(A or B)."
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "An urn contains 6 red and 4 blue balls. Two balls are drawn. Find prob that both are of the same color."
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "P(A cap B) = P(A)*P(B|A) = 0.8 * 0.4 = 0.32. P(A | B) = 0.32 / 0.5 = 0.64. Answer: 0.32 and 0.64."
+      ],
+      [
+        "Solution Q2:",
+        "After 1 red removed, 7 balls remain (4 red, 3 black). P(2nd Black | 1st Red) = 3 / 7. Answer: 3 / 7."
+      ],
+      [
+        "Solution Q3:",
+        "A def = 70 * 0.03 = 2.1. B def = 30 * 0.05 = 1.5. Total def = 3.6. P(B | def) = 1.5 / 3.6 = 15 / 36 = 5 / 12. Answer: 5 / 12."
+      ],
+      [
+        "Solution Q4:",
+        "P(A and B) = 0.3 * 0.6 = 0.18. P(A or B) = 0.3 + 0.6 - 0.18 = 0.72. Answer: 0.18 and 0.72."
+      ],
+      [
+        "Solution Q5:",
+        "(^6 C_2 + ^4 C_2) / (^10 C_2) = (15 + 6) / 45 = 21 / 45 = 7 / 15. Answer: 7 / 15."
+      ]
+    ],
+    "trap": "In Bayes' theorem problems, always check that the prior probabilities of the causes sum to exactly 1 (e.g. 60% + 40% = 100%). If not, you missed an event partition!"
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

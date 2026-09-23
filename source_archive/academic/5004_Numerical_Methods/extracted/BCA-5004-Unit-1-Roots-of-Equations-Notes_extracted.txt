@@ -1,0 +1,400 @@
+SOURCE PROVENANCE: D:\Projects\Placement_Master_Handbook_Web\source_archive\academic\5004_Numerical_Methods\notes\BCA-5004-Unit-1-Roots-of-Equations-Notes.pdf
+PAGES EXTRACTED: 9 / 9
+
+--- PAGE 1 ---
+Course: BCA-5004 Numerical Methods (Semester V)
+Source used: 5004-unit-1.pdf. The source PDF is scanned/OCR-extracted; a few mathematical
+expressions are visibly distorted. This document standardizes the methods, notation, and
+solutions. Questions whose complete equation is not reliably readable are marked [VERIFY
+FROM SCAN] rather than guessed.
+Topic
+What to prepare
+Roots of equations
+Root, bracketing interval, sign change test
+Bisection method
+Algorithm, convergence proof, numerical iterations, error bound
+Regula-Falsi / False Position
+Formula, algorithm, numerical solution
+Newton–Raphson method
+Derivation by Taylor series, algorithm, quadratic convergence, numerical solution
+Descartes’ rule of signs
+Number of possible positive and negative real roots
+Elementary equation properties
+Equality properties, quadratic formula, zero-product law
+Finite differences
+First difference; inverse difference question
+A number α is a root (or zero) of f(x)=0 if
+f(α)=0.
+If f is continuous on [a,b] and
+f(a) f(b) < 0,
+then at least one real root lies in (a,b). Bisection and Regula-Falsi require such a bracketing
+interval.
+BCA-5004 Numerical Methods — Unit I
+Roots of Equations: Topic-wise Notes, PYQ Mapping and Corrected Solutions
+1. Unit I coverage identified from the question bank
+2. Foundations: roots of an equation
+Bracketing principle
+
+
+--- PAGE 2 ---
+Situation
+Best method
+Need guaranteed convergence and have a sign-changing interval
+Bisection
+Have a sign-changing interval and want faster practical progress
+Regula-Falsi
+Derivative is easy; a good initial guess is available
+Newton–Raphson
+The Bisection Method repeatedly halves an interval [a,b] that contains a root. At every step
+choose
+c = (a+b)/2.
+Then retain the half interval for which the endpoint function values have opposite signs.
+1. Write the equation as f(x)=0.
+2. Find a and b such that f(a)f(b)<0.
+3. Calculate midpoint c=(a+b)/2.
+4. Calculate f(c).
+5. If f(c)=0, then c is the root.
+6. If f(a)f(c)<0, put b=c; otherwise put a=c.
+7. Repeat Steps 3–6 until the required decimal accuracy is achieved.
+For a starting interval [a,b], after n bisections the interval length is
+(b-a)/2^n.
+The midpoint approximation has maximum error at most
+(b-a)/2^(n+1).
+To ensure error no more than ε, take
+n ≥ log2((b-a)/ε) - 1.
+Choosing the method
+Topic A — Bisection Method
+Definition
+Algorithm / steps (exam answer)
+Stopping rule
+
+
+--- PAGE 3 ---
+Let [a_n,b_n] be the interval after the nth step. It always contains a root and
+b_n-a_n=(b-a)/2^n → 0.
+The lower endpoints form a bounded non-decreasing sequence and the upper endpoints form a
+bounded non-increasing sequence. Both approach the same limit α. Since every interval
+brackets a root and f is continuous, f(α)=0. Hence the method converges.
+Solve x^3 - x - 11 = 0 using bisection.
+Take a=2, b=3:
+f(2)=8-2-11=-5
+f(3)=27-3-11=13
+Hence a root lies in (2,3).
+Iteration
+a
+b
+c=(a+b)/2
+f(c)
+Next interval
+1
+2.0000
+3.0000
+2.5000
+2.1250
+[2, 2.5]
+2
+2.0000
+2.5000
+2.2500
+-1.8594
+[2.25, 2.5]
+3
+2.2500
+2.5000
+2.3750
+0.0215
+[2.25, 2.375]
+Continuing produces x ≈ 2.374 correct to three decimal places.
+Year
+Corrected/standardized question
+What examiner expects
+2025–
+26
+Write the steps of Bisection Method.
+Seven-step algorithm and sign test
+2024–
+25
+Explain Bisection Method. Find a root of x^3-x-11=0.
+Definition + iteration table
+2023–
+24
+Explain Bisection Method for finding a root.
+Procedure and formula
+2018
+Prove that Bisection Method always converges.
+Nested intervals/convergence
+proof
+2021
+Find the root of xe^x-1=0 between 0 and 1 by Bisection Method.
+Bracket and midpoint iterations
+2019
+Find a real root of an equation by Bisection Method. [Equation unclear in
+scan]
+Standard table
+2016
+Find the real root of x^3-4x-9=0 correct to four significant digits by
+Bisection Method.
+Accurate iterations/significant
+figures
+Why it converges (proof outline)
+Corrected solved example
+PYQs: Bisection Method
+
+
+--- PAGE 4 ---
+Regula-Falsi is a bracketing method. Instead of using the midpoint, it joins (a,f(a)) and
+(b,f(b)) by a chord and uses the x-intercept of that chord as the next estimate.
+For f(a)f(b)<0, the approximation is
+x = (a f(b) - b f(a)) / (f(b)-f(a)).
+Equivalent form:
+x = a - f(a)(b-a)/(f(b)-f(a)).
+1. Put the equation in the form f(x)=0.
+2. Select a,b with f(a)f(b)<0.
+3. Compute x=(a f(b)-b f(a))/(f(b)-f(a)).
+4. Evaluate f(x).
+5. If f(a)f(x)<0, replace b by x; otherwise replace a by x.
+6. Repeat until successive estimates give the requested accuracy.
+Solve x^2-9x+10=0 between 2 and 4.
+f(2)=-4, f(4)=-10; therefore these two endpoints do not bracket a root. The PDF’s printed
+question/expression appears OCR-corrupted because Regula-Falsi needs opposite signs. Always
+check f(a)f(b)<0 before applying the method.
+A valid illustration is f(x)=x^2-5, with [2,3]:
+f(2)=-1, f(3)=4
+x1=(2×4 - 3×(-1))/(4-(-1))=11/5=2.2
+f(2.2)=-0.16, so the next bracket is [2.2,3].
+Year
+Corrected/standardized question
+Topic
+2025–26
+Explain Regula-Falsi Method. Solve a specified equation between 2 and 4. [Printed
+polynomial needs scan verification]
+Method +
+numerical
+2024–25
+Solve the given equation between 2 and 4 by Regula-Falsi Method. [Equation OCR unclear]
+Numerical
+Topic B — Regula-Falsi (False Position) Method
+Definition
+Formula
+Algorithm
+Corrected solved example
+PYQs: Regula-Falsi
+
+
+--- PAGE 5 ---
+Year
+Corrected/standardized question
+Topic
+2021
+Find √30 by Regula-Falsi Method.
+Root extraction
+2017
+Find a real root by False Position Method correct to three decimals. [Equation OCR unclear]
+Numerical
+2015
+Find a real root by Regula-Falsi Method correct to three decimal places. [Equation OCR
+unclear]
+Numerical
+Dec.
+2013
+Find the real root of 3x-cos x-1=0 by False Position Method.
+Numerical
+Suppose x_n is an approximation to a root α of f(x)=0. Write
+α=x_n+h.
+By Taylor expansion around x_n:
+f(x_n+h)=f(x_n)+h f'(x_n)+h^2 f''(x_n)/2!+...
+Since f(α)=0, and neglecting second and higher powers of the small quantity h,
+0 ≈ f(x_n)+h f'(x_n).
+Therefore,
+h ≈ -f(x_n)/f'(x_n)
+and
+x_(n+1)=x_n - f(x_n)/f'(x_n).
+This is Newton–Raphson iteration.
+1. Write f(x)=0 and calculate f'(x).
+2. Choose an initial approximation x0 near the root.
+3. Calculate x_(n+1)=x_n-f(x_n)/f'(x_n).
+4. Continue until |x_(n+1)-x_n| is less than the desired tolerance.
+5. Do not use an iterate where f'(x_n)=0 or very close to zero.
+Topic C — Newton–Raphson Method
+Derivation from Taylor series
+Algorithm
+
+
+--- PAGE 6 ---
+For a simple root α, if f'(α)≠0, f'' is continuous nearby, and the starting value is sufficiently
+close, Newton–Raphson converges quadratically:
+e_(n+1) ≈ [f''(α)/(2f'(α))] e_n^2, where e_n=x_n-α.
+Meaning: once near the root, the approximate number of correct digits roughly doubles per
+iteration. It can fail or move away if the initial guess is poor, the derivative is zero/small, or the
+root is multiple.
+Find the root of x^3-x-1=0, starting with x0=1.5.
+f(x)=x^3-x-1, f'(x)=3x^2-1.
+n
+x_n
+f(x_n)
+f'(x_n)
+x_(n+1)
+0
+1.5000
+0.8750
+5.7500
+1.3478
+1
+1.3478
+0.1007
+4.4499
+1.3252
+2
+1.3252
+0.0021
+4.2685
+1.3247
+Hence the root is approximately 1.325 (three decimal places).
+Year
+Corrected/standardized question
+What to write
+2025–
+26
+Derive Newton–Raphson Method from Taylor series. Use it to solve
+x^3-x-1=0, starting at x=1.5, correct to three decimals.
+Full derivation + table
+2024–
+25
+Derive Newton–Raphson equation and discuss convergence.
+Formula + quadratic-convergence
+conditions
+2023–
+24
+Write Newton–Raphson algorithm. Find the real root of 3x-cos x-
+1=0 correct to four decimals.
+Algorithm + numerical
+2021
+Discuss/obtain rate of convergence of Newton–Raphson Method.
+Quadratic proof/result
+2021
+Evaluate √12 to five decimal places by Newton’s iterative method.
+Take f(x)=x^2-12
+2019
+Find a root of x log10(x)-1.2=0 by Newton–Raphson Method,
+correct to three decimals.
+f'(x)=log10(x)+0.434294...
+2018
+Find x for x^3-6x+4=0 by Newton–Raphson Method.
+Choose a close initial root
+2017
+Find the root of x^3-5x^2+2=0 by Newton–Raphson Method.
+Numerical
+2016
+Find the root of x^2-3x+2=0 by Newton–Raphson Method.
+Numerical
+2015
+Find the real root of x^3-9=0 correct to three decimal places.
+Numerical
+Dec.
+2013
+Evaluate the root of e^x-3x=0 lying between 0 and 1 by Newton–
+Raphson Method.
+Numerical
+Convergence / rate
+Corrected solved example
+PYQs: Newton–Raphson
+
+
+--- PAGE 7 ---
+For a polynomial f(x) with real coefficients:
+The number of positive real roots is equal to the number of sign changes in f(x), or less
+than it by an even integer.
+The number of negative real roots is obtained by applying the same rule to f(-x).
+1. Arrange the polynomial in descending powers of x.
+2. Count sign changes in f(x) for possible positive roots.
+3. Substitute -x for x to get f(-x).
+4. Count sign changes in f(-x) for possible negative roots.
+For f(x)=x^3-x^2-x-1, signs are +,-,-,-; there is one sign change. Thus it has exactly one
+positive real root.
+For negative roots:
+f(-x)=-x^3-x^2+x-1, signs are -,-,+,-; there are two sign changes. Hence negative real roots
+may be 2 or 0.
+Year
+Question
+2016, 2017, 2018
+Define/Explain Descartes’ Rule of Signs.
+Addition property: If A=B, then A+C=B+C.
+Multiplication property: If A=B, then AC=BC.
+Division property: If A=B and C≠0, then A/C=B/C.
+Zero-product law: If XY=0, then X=0 or Y=0.
+Quadratic formula: For ax^2+bx+c=0, a≠0,
+x=(-b ± √(b^2-4ac))/(2a).
+Topic D — Descartes’ Rule of Signs
+Statement
+Procedure
+Example
+PYQs
+Topic E — Properties of Equations
+Core properties for short answers
+
+
+--- PAGE 8 ---
+Radical/rational-exponent equations: Raising both sides to a power can introduce
+extraneous roots; always verify final answers in the original equation.
+Year
+Question
+2016
+What are the properties of equations?
+For interval h, the first forward difference is
+Δf(x)=f(x+h)-f(x).
+For f(x)=e^x:
+Δe^x=e^(x+h)-e^x=e^x(e^h-1).
+Thus, if the first difference is specified as e^x, then the inverse-difference problem must be
+handled using the corresponding finite-difference operator and interval. The question in the
+scan is incomplete/OCR-damaged; verify its exact wording before writing a final numerical
+answer.
+Question
+Status
+Find the function whose first difference is e^x (or related
+expression).
+[VERIFY exact expression and interval h from
+scan]
+1. Bisection Method: steps, numerical problem, and convergence proof.
+2. Newton–Raphson: Taylor-series derivation, algorithm, rate of convergence, and numerical
+problem.
+3. Regula-Falsi: formula and numerical problem.
+4. Descartes’ Rule of Signs.
+PYQ
+Topic F — Finite Difference
+First difference
+PYQ
+3. Repeated-question priority
+Highest priority
+
+
+--- PAGE 9 ---
+First write f(x) and, for Newton–Raphson, also write f'(x).
+For Bisection/Regula-Falsi, explicitly show f(a)f(b)<0.
+Make a labelled iteration table.
+Round only in the final answer as far as possible.
+State the requested accuracy: e.g., “Therefore, the required root correct to three decimal
+places is …”.
+Method
+Formula
+Bisection
+x_n=(a_n+b_n)/2
+Bisection error
+|α-x_n|≤(b-a)/2^(n+1)
+Regula-Falsi
+x=(a f(b)-b f(a))/(f(b)-f(a))
+Newton–Raphson
+x_(n+1)=x_n-f(x_n)/f'(x_n)
+Newton local error
+e_(n+1)≈[f''(α)/(2f'(α))]e_n^2
+Sign-change test
+f(a)f(b)<0
+Quadratic formula
+x=(-b±√(b²-4ac))/(2a)
+The source PDF is a low-quality scanned question bank. In several places, superscripts, minus
+signs, trigonometric notation and equations have been merged or dropped by OCR. Method
+names, years and the majority of question topics are readable; exact expressions labelled
+[VERIFY] should be checked against the page image before submission/exam preparation. No
+equation has been invented where its source text is unreliable.
+Exam writing checklist for numerical questions
+4. One-page formula revision
+5. Important scan-correction note

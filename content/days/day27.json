@@ -1,0 +1,207 @@
+{
+  "day": 27,
+  "title": "Ordinary Differential Equations (RK4), Speed Math Marathon & Backtracking",
+  "sem_data": {
+    "subject": "BCA-5004 Numerical Methods",
+    "topic": "Unit V \u2014 Numerical Solution of Ordinary Differential Equations (ODEs): Euler's Method & Runge-Kutta 4th Order (RK4)",
+    "detailed_notes": [
+      "An Initial Value Problem (IVP) for a first-order Ordinary Differential Equation is defined as: dy/dx = f(x, y), with initial condition y(x0) = y0. Numerical methods generate discrete approximations y1, y2, ..., yn at points x1, x2, ..., xn separated by uniform step size h.",
+      "1. Euler's Method (First-Order):\n\u2022 Approximates curve by tangent line at initial point: y_{n+1} = y_n + h * f(x_n, y_n).\n\u2022 Truncation Error: Local error = O(h^2); Global error = O(h). Computationally crude; requires very small h to prevent runaway error accumulation.",
+      "2. Modified Euler's Method (Predictor-Corrector / Heun's Method):\n\u2022 Predictor: y*_{n+1} = y_n + h * f(x_n, y_n).\n\u2022 Corrector: y_{n+1} = y_n + (h/2) * [ f(x_n, y_n) + f(x_{n+1}, y*_{n+1}) ].\n\u2022 Global Error = O(h^2). Averages slopes at beginning and predicted end of interval.",
+      "3. Runge-Kutta 4th Order Method (RK4):\n\u2022 The industry-standard gold standard for solving initial value problems numerically without needing higher-order analytical derivatives!\n\u2022 Computes a weighted average of 4 sample slopes across the step interval [x_n, x_n + h]:\n  k1 = h * f(x_n, y_n)                     [Slope at beginning of interval]\n  k2 = h * f(x_n + h/2, y_n + k1/2)         [Slope at midpoint using slope k1]\n  k3 = h * f(x_n + h/2, y_n + k2/2)         [Slope at midpoint using slope k2]\n  k4 = h * f(x_n + h, y_n + k3)             [Slope at end of interval using slope k3]\n\u2022 Step Update Formula: y_{n+1} = y_n + (1/6) * [ k1 + 2*k2 + 2*k3 + k4 ].\n\u2022 Global Truncation Error = O(h^4). Fourth-order accuracy achieves precision with large step sizes."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                  RUNGE-KUTTA 4TH ORDER (RK4) SLOPE WEIGHTING            |\n+-------------------------------------------------------------------------+\n|  y ^                                                                    |\n|    |                               * (x+h, y + k4)                      |\n|    |               * k2, k3        /                                    |\n|    |              / (Midpoint)    /                                     |\n|    |       k1    /               /                                      |\n|    |  * --------*---------------*                                       |\n|    | (x0, y0)                                                           |\n|    +----+---------------+-------+-----> x                               |\n|        x0             x0+h/2   x0+h                                     |\n|  Weighted Slope = (k1 + 2*k2 + 2*k3 + k4) / 6  ==> O(h^4) Precision!   |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Method",
+        "Formula Order",
+        "Function Evaluations per Step",
+        "Global Error",
+        "Computational Stability"
+      ],
+      "rows": [
+        [
+          "Euler's Method",
+          "1st Order",
+          "1 evaluation: f(xn, yn)",
+          "O(h) \u2014 Poor",
+          "Unstable for large h"
+        ],
+        [
+          "Modified Euler",
+          "2nd Order",
+          "2 evaluations: f(xn, yn) & f(x*, y*)",
+          "O(h^2) \u2014 Moderate",
+          "Fair stability"
+        ],
+        [
+          "Runge-Kutta 4th Order",
+          "4th Order",
+          "4 evaluations: k1, k2, k3, k4",
+          "O(h^4) \u2014 Exceptional",
+          "Highly stable and accurate"
+        ]
+      ]
+    },
+    "memorize": "RK4 Formulas: k1 = h*f(x, y); k2 = h*f(x + h/2, y + k1/2); k3 = h*f(x + h/2, y + k2/2); k4 = h*f(x + h, y + k3). y(next) = y + (k1 + 2*k2 + 2*k3 + k4)/6. Global Error = O(h^4).",
+    "understand": "Why is RK4 favored over Taylor Series expansion? Both achieve O(h^4) accuracy. However, Taylor Series requires calculating high-order analytical partial derivatives (f', f'', f'''), which are mathematically horrific or impossible for complex empirical functions. RK4 achieves the identical 4th-order accuracy purely through function evaluations without evaluating a single derivative!",
+    "common_mistakes": "1. Forgetting to divide k1 and k2 by 2 inside the arguments for k2 and k3: `y + k1/2`. 2. Forgetting the leading (1/6) factor in the final increment sum.",
+    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "4 Consecutive University Sessions (Q8/Q9 - 15 Marks Core Final Question)",
+    "pyq_question": "Apply Runge-Kutta 4th order method to find an approximate value of y when x = 0.1, given that dy/dx = x + y, with initial condition y(0) = 1. Take step size h = 0.1. (15 Marks)",
+    "pyq_rubric": "Formula statement for k1, k2, k3, k4 (3 marks) + Accurate hand evaluation of k1, k2, k3, k4 (8 marks) + Final y(0.1) value (3 marks) + Comparison with analytical solution (1 mark) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Statement of Initial Value Problem and RK4 Formulas:",
+        "Given ODE: dy/dx = f(x, y) = x + y.\nInitial conditions: x0 = 0, y0 = 1, step size h = 0.1. Goal: find y(0.1).\nRK4 Step Formulas:\nk1 = h * f(x0, y0)\nk2 = h * f(x0 + h/2, y0 + k1/2)\nk3 = h * f(x0 + h/2, y0 + k2/2)\nk4 = h * f(x0 + h, y0 + k3)\ny1 = y0 + (1/6) * (k1 + 2*k2 + 2*k3 + k4)"
+      ],
+      [
+        "2. Hand Calculation of Slopes (k1, k2, k3, k4):",
+        "\u2022 Calculation of k1:\nk1 = 0.1 * f(0, 1) = 0.1 * (0 + 1) = 0.100000.\n\n\u2022 Calculation of k2:\nx0 + h/2 = 0 + 0.05 = 0.05\ny0 + k1/2 = 1 + 0.100000 / 2 = 1.050000\nk2 = 0.1 * f(0.05, 1.05) = 0.1 * (0.05 + 1.050000) = 0.1 * 1.100000 = 0.110000.\n\n\u2022 Calculation of k3:\nx0 + h/2 = 0.05\ny0 + k2/2 = 1 + 0.110000 / 2 = 1.055000\nk3 = 0.1 * f(0.05, 1.055) = 0.1 * (0.05 + 1.055000) = 0.1 * 1.105000 = 0.110500.\n\n\u2022 Calculation of k4:\nx0 + h = 0 + 0.1 = 0.1\ny0 + k3 = 1 + 0.110500 = 1.110500\nk4 = 0.1 * f(0.1, 1.1105) = 0.1 * (0.1 + 1.110500) = 0.1 * 1.210500 = 0.121050."
+      ],
+      [
+        "3. Final Step Update:",
+        "y(0.1) = y0 + (1/6) * [ k1 + 2*k2 + 2*k3 + k4 ]\nSum of weighted slopes:\nk1 + 2*k2 + 2*k3 + k4 = 0.100000 + 2*(0.110000) + 2*(0.110500) + 0.121050\n= 0.100000 + 0.220000 + 0.221000 + 0.121050 = 0.662050.\ny(0.1) = 1 + (0.662050 / 6) = 1 + 0.1103417 = 1.110342.\n\nAnalytical Verification:\nThe exact analytical solution of dy/dx - y = x with y(0)=1 is y(x) = 2*e^x - x - 1.\nAt x = 0.1: y(0.1) = 2*e^0.1 - 0.1 - 1 = 2*(1.1051709) - 1.1 = 2.2103418 - 1.1 = 1.110342!\nRK4 solution matches the exact analytical answer to SIX decimal places in a single step!"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master RK4 Step-by-Step Hand Evaluation",
+    "milestone": "Full 15/15 on Numerical ODE Exam Question"
+  },
+  "apt_data": {
+    "topic": "Quantitative Aptitude \u2014 Rapid Speed Math Marathon (25 High-Frequency Placement Drills)",
+    "tutorial": [
+      "Final Quantitative Crunch \u2014 Solving questions under extreme time limits:\n\u2022 Percentage to Fraction Conversions: 16.66% = 1/6 | 14.28% = 1/7 | 12.5% = 1/8 | 11.11% = 1/9 | 9.09% = 1/11.\n\u2022 Compound Interest 2-Year Difference: D = P * (R / 100)^2.\n\u2022 Time and Work Efficiency: Efficiency is inversely proportional to time taken. Total Work = LCM of individual times.\n\u2022 Relative Speed: Same direction = S1 - S2; Opposite direction = S1 + S2."
+    ],
+    "formulas": "CI-SI 2-Yr Diff: D = P(R/100)^2. Harm. Mean: 2ab/(a+b). Work = Rate * Time.",
+    "shortcut": "Unit Digit & Option Elimination: Before doing full multiplication, compute only the last digit (e.g. 7 * 3 = 1) to eliminate 3 out of 4 options immediately.",
+    "recognition": "Mixed rapid-fire sections appearing in round 1 online placement assessments across recruiters.",
+    "tier1_problem": "A sum of money doubles itself at simple interest in 5 years. What is the rate of interest per annum?",
+    "tier1_solution": "Simple Interest SI = Principal P. SI = (P * R * T) / 100 ==> P = (P * R * 5) / 100 ==> R = 100 / 5 = 20% p.a. Answer: 20%.",
+    "tier2_problem": "The difference between CI and SI on a sum of Rs 5,000 for 2 years at 10% per annum is?",
+    "tier2_solution": "D = P * (R / 100)^2 = 5000 * (10 / 100)^2 = 5000 * (1/100) = Rs 50. Answer: Rs 50.",
+    "tier3_problem": "A can do a piece of work in 12 days and B in 18 days. They worked together for 4 days, then A left. How many days will B take to finish the remaining work?",
+    "tier3_solution": "Total Work = LCM(12, 18) = 36 units.\nA's efficiency = 36 / 12 = 3 units/day.\nB's efficiency = 36 / 18 = 2 units/day.\nCombined efficiency = 3 + 2 = 5 units/day.\nWork done in 4 days = 4 * 5 = 20 units.\nRemaining work = 36 - 20 = 16 units.\nTime taken by B = 16 / 2 = 8 days. Answer: 8 days.",
+    "tier4_problem": "A train traveling at 72 km/h crosses a 200m long platform in 22 seconds. What is the length of the train?",
+    "tier4_solution": "Speed in m/s = 72 * (5 / 18) = 20 m/s.\nTotal distance covered = Speed * Time = 20 * 22 = 440 m.\nTotal distance = Length of train + Length of platform.\n440 = Length of train + 200 ==> Length of train = 240 m. Answer: 240 m.",
+    "speed_drills": [
+      {
+        "q": "What is 12.5% of 640?",
+        "a": "1/8 of 640 = 80."
+      },
+      {
+        "q": "A car covers 180 km in 3 hours. Speed in m/s?",
+        "a": "60 km/h * (5/18) = 16.67 m/s."
+      },
+      {
+        "q": "Cost Price = Rs 400, Selling Price = Rs 500. Profit %?",
+        "a": "(100 / 400) * 100 = 25%."
+      },
+      {
+        "q": "Ratio of ages of A and B is 3:4. Sum is 35 years. Age of A?",
+        "a": "3/7 * 35 = 15 years."
+      },
+      {
+        "q": "If 15 workers build a wall in 48 hours, how many hours for 30 workers?",
+        "a": "15 * 48 / 30 = 24 hours."
+      }
+    ]
+  },
+  "dsa_problems": [
+    {
+      "title": "Combination Sum (LeetCode 39 - Medium)",
+      "difficulty": "Medium",
+      "importance": "The Fundamental Backtracking Placement Problem (Amazon, Microsoft, Google)",
+      "problem_statement": "Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order. The same number may be chosen from candidates an unlimited number of times.",
+      "solution_approach": "Decision Tree Backtracking:\nAt each recursive step, we decide whether to INCLUDE the candidate at index `i` or SKIP it:\n1. Include `candidates[i]`: append to current path, recursively call with `target - candidates[i]` and same index `i` (unlimited reuse).\n2. Skip `candidates[i]`: pop from path, recursively call with same target and index `i + 1`.\nBase Cases: if `target == 0`, record path; if `target < 0` or `i >= len`, backtrack.",
+      "code": "def combinationSum(candidates: list[int], target: int) -> list[list[int]]:\n    res = []\n    \n    def dfs(i: int, cur: list[int], total: int):\n        if total == target:\n            res.append(cur[:])\n            return\n        if i >= len(candidates) or total > target:\n            return\n            \n        # Choice 1: Include candidates[i]\n        cur.append(candidates[i])\n        dfs(i, cur, total + candidates[i])\n        cur.pop() # Backtrack\n        \n        # Choice 2: Skip candidates[i]\n        dfs(i + 1, cur, total)\n        \n    dfs(0, [], 0)\n    return res",
+      "line_by_line": [
+        [
+          "if total == target: res.append(cur[:])",
+          "Base case success: deep-copy valid combination path."
+        ],
+        [
+          "cur.append(candidates[i]); dfs(i, cur, total + candidates[i])",
+          "Recurse retaining same index i to permit unlimited element reuse."
+        ],
+        [
+          "cur.pop()",
+          "Backtrack: undo choice to explore skipping branch."
+        ]
+      ],
+      "time_complexity": "O(2^T) where T is target / min(candidates).",
+      "space_complexity": "O(T) recursion depth.",
+      "edge_cases": "Target smaller than minimum candidate (returns []); single element matching target."
+    }
+  ],
+  "cs_core": {
+    "subject": "Core Computer Science",
+    "topic": "Rapid-Fire Placement Technical Drill (Top High-Frequency Questions)",
+    "detailed_notes": [
+      "Comprehensive Placement Technical Flashcards:\n\u2022 1. DBMS: What is a BCNF violation? When a functional dependency X -> Y exists where X is not a superkey.\n\u2022 2. Networks: What is the difference between TCP and UDP? TCP is connection-oriented, reliable, with congestion control; UDP is connectionless, lightweight, and unordered.\n\u2022 3. Operating Systems: What is a Deadlock? A situation where two or more processes are unable to proceed because each is holding a resource and waiting for another resource held by the other. Requires 4 Coffman conditions: Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.\n\u2022 4. Python: What is the difference between `is` and `==`? `==` checks value equality (`a.__eq__(b)`); `is` checks memory address identity (`id(a) == id(b)`).\n\u2022 5. System Design: What is Database Indexing? A data structure (B+ tree) that improves data retrieval speed at the cost of slower writes and additional disk storage."
+    ],
+    "interview_qa": [
+      {
+        "q": "What is the difference between a Process and a Thread in modern operating systems?",
+        "a": "A Process is an executing instance of a program with its own dedicated, isolated virtual address space, file descriptor table, and security context. A Thread is the smallest unit of CPU execution within a process; multiple threads inside the same process share identical memory (heap, code, global data), having only private registers and call stacks. Creating a thread consumes ~10x fewer CPU cycles than spawning a process."
+      },
+      {
+        "q": "Explain the concept of Database Normalization and why BCNF is preferred over 3NF.",
+        "a": "Normalization organizes database tables to minimize redundancy and eliminate insertion, update, and deletion anomalies. While 3NF permits non-superkey determinants if the dependent attribute is part of a candidate key (prime attribute), BCNF strictly mandates that for every functional dependency X -> Y, X MUST be a superkey, eliminating subtle redundancies in tables with multiple overlapping candidate keys."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "Portfolio Curation & Git Readiness",
+    "feature_focus": "GitHub Portfolio Optimization & Live Recruiter Screen-Sharing Strategy",
+    "architecture_deep_dive": "Preparing Sarthak's GitHub Repositories for Placement Technical Screeners:\n\n1. Repository Cleanliness & Presentation:\n\u2022 Pin the top 4 flagship repositories: `BulkBeat TV` (FastAPI/Telegram), `TerraStract` (Document AI/OCR), `CSMS` (Enterprise Backend), `BEVM` (Cryptographic Voting).\n\u2022 Add descriptive badges (FastAPI, Python 3.11, Docker, PostgreSQL, MIT License).\n\u2022 Include architecture diagrams (Mermaid or ASCII flowcharts) directly in the root `README.md`.\n\n2. Live Screen-Sharing Script:\n\u2022 Have Docker Compose pre-warmed so typing `docker compose up` starts the service in 3 seconds.\n\u2022 Open Swagger interactive UI (`/docs`) to demonstrate live API execution.\n\u2022 Walk through a complex code block (e.g. SQLite WAL pragma in BulkBeat or Tesseract fallback in TerraStract) with confidence.",
+    "interview_qa": [
+      {
+        "q": "How do you present your personal projects to an interviewer when asked 'Walk me through your code'?",
+        "a": "I follow a 3-minute executive narrative: 1. The Problem (why the project was built), 2. Architecture & Data Flow (frontend to backend to database), 3. The Hardest Technical Hurdle (e.g., resolving SQLite write contention in BulkBeat TV using WAL mode), and 4. The Measurable Result (handling concurrent streams with sub-50ms latency)."
+      },
+      {
+        "q": "Why is an interactive OpenAPI/Swagger page valuable in placement interviews?",
+        "a": "It proves that the API was designed professionally with strict schema validation (Pydantic), clear endpoint documentation, and immediate interactive testability, demonstrating production-grade engineering standards."
+      }
+    ]
+  },
+  "daily_test": {
+    "day": 27,
+    "questions": [
+      {
+        "q": "What is the global truncation error order of the Runge-Kutta 4th Order method?",
+        "a": "O(h^4)."
+      },
+      {
+        "q": "Why is RK4 practically superior to Taylor Series expansions for numerical ODEs?",
+        "a": "Because RK4 achieves 4th-order accuracy purely through algebraic function evaluations without calculating complex higher-order analytical derivatives."
+      },
+      {
+        "q": "What is the formula for the 2-year difference between CI and SI?",
+        "a": "D = P * (R / 100)^2."
+      },
+      {
+        "q": "In Combination Sum (LeetCode 39), why do we pass the same index i during recursion when including a candidate?",
+        "a": "To permit unlimited reuse of the same candidate integer in building the target sum."
+      },
+      {
+        "q": "What are the 4 Coffman conditions required for a Deadlock to occur?",
+        "a": "1. Mutual Exclusion, 2. Hold and Wait, 3. No Preemption, 4. Circular Wait."
+      },
+      {
+        "q": "What is the difference between `==` and `is` in Python?",
+        "a": "`==` checks value equality; `is` checks memory reference identity."
+      },
+      {
+        "q": "In Euler's method, what is the geometric interpretation of the step formula?",
+        "a": "Approximating the curve of the solution by the tangent line at the starting point of the interval."
+      },
+      {
+        "q": "Why should high-value GitHub repositories contain a clear architecture diagram?",
+        "a": "To provide technical interviewers with immediate clarity on data flow, component decoupling, and system design maturity."
+      }
+    ]
+  }
+}

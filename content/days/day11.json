@@ -1,0 +1,162 @@
+{
+  "day": 11,
+  "title": "KM Data Warehousing, Binary Trees & Boats/Streams",
+  "sem_data": {
+    "subject": "BCA-5001 Knowledge Management",
+    "topic": "Unit II \u2014 Data Warehousing: 3-Tier Architecture & Star vs Snowflake Schemas",
+    "detailed_notes": [
+      "A Data Warehouse (DW) is a subject-oriented, integrated, time-variant, and non-volatile collection of data organized in support of management's decision-making process (W.H. Inmon definition).",
+      "The 3-Tier Data Warehouse Architecture:\n1. Bottom Tier (Warehouse Database Server): Almost always a relational database system (RDBMS) or specialized columnar store. Raw operational transaction data is extracted from heterogeneous production sources (OLTP databases, flat files, external feeds), cleansed, transformed, and loaded via ETL (Extract, Transform, Load) pipelines into the core warehouse repository or dependent Data Marts.\n2. Middle Tier (OLAP Server): An analytical processing engine that provides a multidimensional view of data to analytical applications. Implemented as either ROLAP (Relational OLAP - maps multidimensional operations directly onto relational tables), MOLAP (Multidimensional OLAP - stores data in dedicated high-performance array storage cubes), or HOLAP (Hybrid OLAP).\n3. Top Tier (Front-End Client Tools): The presentation layer accessed by corporate executives, financial analysts, and data scientists. Includes business intelligence dashboards, query reporting tools, statistical analysis packages, and data mining algorithms.",
+      "Multidimensional Data Models: Schemas for Decision Support:\n\u2022 Fact Table: The central table containing numerical quantitative measurements (metrics/facts, e.g., units sold, revenue, tax) and foreign keys referencing dimension tables.\n\u2022 Dimension Tables: Peripheral tables containing textual descriptive attributes that give business context to facts (e.g., Time dimension: day, month, year; Store dimension: city, state; Product dimension: category, brand).\n\u2022 Star Schema: The fact table resides at the center connected directly to non-normalized (denormalized) dimension tables, resembling a star. Highly optimized for fast query performance due to fewer table joins.\n\u2022 Snowflake Schema: A normalized variation of the star schema where dimension tables are broken down into further normalized sub-dimension tables (e.g. Product -> Subcategory -> Category), reducing data redundancy at the cost of requiring more complex SQL joins."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                   3-TIER DATA WAREHOUSE ARCHITECTURE                    |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|   +-----------------------------------------------------------------+   |\n|   | TOP TIER: Front-End Tools (Reporting, Analysis, BI Dashboards)  |   |\n|   +-----------------------------------------------------------------+   |\n|                                    ^                                    |\n|                                    | (Multidimensional Queries)         |\n|   +-----------------------------------------------------------------+   |\n|   | MIDDLE TIER: OLAP Server (ROLAP / MOLAP / HOLAP Engine)         |   |\n|   +-----------------------------------------------------------------+   |\n|                                    ^                                    |\n|                                    | (Relational / Cube Feeds)          |\n|   +-----------------------------------------------------------------+   |\n|   | BOTTOM TIER: Data Warehouse Database Server (RDBMS / Data Marts)|   |\n|   +-----------------------------------------------------------------+   |\n|                                    ^                                    |\n|                                    | (ETL Pipelines)                    |\n|   [OLTP Databases]      [Legacy Files]      [External Market Feeds]     |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Comparison Criterion",
+        "Star Schema",
+        "Snowflake Schema"
+      ],
+      "rows": [
+        [
+          "Normalization Level",
+          "Completely Denormalized dimensions (1NF/2NF)",
+          "Completely Normalized dimensions (3NF/BCNF)"
+        ],
+        [
+          "Data Redundancy",
+          "Higher data redundancy in dimension tables",
+          "Zero or minimal data redundancy"
+        ],
+        [
+          "Query Performance",
+          "Significantly faster; requires very few SQL joins",
+          "Slower; requires numerous multi-table joins"
+        ],
+        [
+          "Design Complexity",
+          "Simple, intuitive schema structure",
+          "Complex, nested hierarchical structure"
+        ],
+        [
+          "Disk Storage",
+          "Consumes slightly more storage space",
+          "Consumes less disk storage due to normalization"
+        ],
+        [
+          "Maintenance Overhead",
+          "Dimension updates may require updating multiple rows",
+          "Single-point updates in normalized lookup tables"
+        ]
+      ]
+    },
+    "memorize": "W.H. Inmon 4 Characteristics: Subject-Oriented, Integrated, Time-Variant, Non-Volatile. 3 Tiers: Bottom (Warehouse DB), Middle (OLAP Server), Top (Front-End BI Tools). Star = Denormalized (Fast queries); Snowflake = Normalized (Reduced storage).",
+    "understand": "Why denormalize in a data warehouse when OLTP databases strictly normalize? In transactional OLTP, write anomalies are the greatest danger, so 3NF is mandatory. In analytical OLAP warehouses, data is read-only (non-volatile); optimizing query execution speed by eliminating table joins is vastly more important than saving disk space.",
+    "common_mistakes": "1. Calling a Data Mart the entire Data Warehouse (a Data Mart is a departmental subset of a DW). 2. Confusing Fact tables (contain numbers/metrics) with Dimension tables (contain categories/context).",
+    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q3 - 15m), 2022-23 (Q2a - 15m), 2023-24 (Q2 - 15m), 2024-25 (Q3 - 15m)",
+    "pyq_question": "Explain the 3-tier architecture of a Data Warehouse with a neat block diagram. Differentiate between Star Schema and Snowflake Schema with illustrative examples. (15 Marks)",
+    "pyq_rubric": "Definition & 4 Inmon characteristics (2 marks) + 3-Tier Architecture Diagram (4 marks) + Detailed explanation of 3 Tiers (4 marks) + Star vs Snowflake comparison and diagrams (5 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Data Warehouse Definition & Core Characteristics:",
+        "According to W.H. Inmon, a Data Warehouse is a subject-oriented, integrated, time-variant, and non-volatile collection of data designed to support managerial decision analysis:\n\u2022 Subject-Oriented: Organized around major business subjects (Sales, Customers, Inventory) rather than daily operational transactions.\n\u2022 Integrated: Aggregates disparate data sources, resolving naming conflicts, differing measurement units, and encoding differences into a unified schema.\n\u2022 Time-Variant: Every data point is timestamped, preserving historical records across 5 to 10 years for trend forecasting.\n\u2022 Non-Volatile: Historical records are read-only; they are never updated or deleted in place, but loaded periodically via ETL."
+      ],
+      [
+        "2. Detailed 3-Tier Data Warehouse Architecture:",
+        "\u2022 Bottom Tier (Database Server): Consists of the central relational database engine holding the operational enterprise data warehouse. An ETL subsystem periodically extracts operational data from OLTP databases and external APIs, transforms and cleanses records, and loads them into warehouse tables and localized departmental Data Marts.\n\u2022 Middle Tier (OLAP Server): An analytical processing engine presenting multidimensional data views. It executes high-speed multidimensional operations (slice, dice, roll-up, drill-down). Implemented as ROLAP (relational mapping), MOLAP (pre-computed arrays), or HOLAP.\n\u2022 Top Tier (Client Presentation): The user layer providing interactive graphical interfaces. Analysts execute ad-hoc SQL queries, generate automated regulatory reports, explore data visually via BI dashboards (Tableau, PowerBI), and run predictive data mining algorithms."
+      ],
+      [
+        "3. Multidimensional Schemas: Star vs Snowflake:",
+        "\u2022 Star Schema: Contains a single central Fact Table connected directly to multiple Dimension Tables. Each dimension is represented by a single denormalized table. Example: Fact_Sales is connected directly to Dim_Time, Dim_Store, Dim_Product, and Dim_Customer. Because all dimensions are 1-hop away from the fact table, SQL queries require minimal joins and execute with maximum speed.\n\u2022 Snowflake Schema: An architectural refinement of the star schema where dimension tables are completely normalized into third normal form (3NF). For example, Dim_Product is split into Dim_Product, Dim_Subcategory, and Dim_Category tables. While this eliminates redundant categorical strings and reduces disk consumption, analytical queries require complex multi-hop joins that degrade query response times."
+      ],
+      [
+        "4. Summary & Examination Verdict:",
+        "Modern cloud data warehouses (BigQuery, Snowflake, Redshift) prioritize query execution speed and developer simplicity over raw disk savings. Consequently, Star Schemas remain the industry standard design pattern for corporate business intelligence."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "What is ETL? Explain the Extract, Transform, and Load processes involved in data warehousing. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "Differentiate between an Enterprise Data Warehouse (EDW) and a Data Mart. (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master 3-Tier Data Warehouse Architecture and Star vs Snowflake Schemas.",
+    "milestone": "Full 15/15 marks on University Question 3 (BCA-5001 Data Warehousing)."
+  },
+  "apt_data": {
+    "topic": "Boats & Streams \u2014 Upstream, Downstream & Round-Trip Equations",
+    "tutorial": [
+      "Problems on boats and streams involve relative motion where the movement of a water stream directly influences the ground speed of a boat.",
+      "Fundamental Definitions & Variables:\n\u2022 Let Speed of Boat in Still Water = u km/h\n\u2022 Let Speed of the Stream (Current) = v km/h",
+      "Relative Directional Speeds:\n1. Downstream: The boat moves IN THE SAME DIRECTION as the stream flow. The stream pushes the boat forward:\n   Downstream Speed (D) = u + v\n2. Upstream: The boat moves AGAINST THE OPPOSITE DIRECTION of the stream flow. The stream resists the boat:\n   Upstream Speed (U) = u - v  (Notice that u must be > v for the boat to move forward)",
+      "The Master Inversion Formulas (Instant Equation Solvers):\nAdding both equations: D + U = (u + v) + (u - v) = 2u  ==>  Speed in Still Water u = (D + U) / 2\nSubtracting equations: D - U = (u + v) - (u - v) = 2v  ==>  Speed of Stream v = (D - U) / 2"
+    ],
+    "formulas": "1. Downstream Speed: D = u + v\n2. Upstream Speed: U = u - v\n3. Speed in Still Water: u = (D + U) / 2\n4. Speed of Stream: v = (D - U) / 2\n5. Round-Trip Time for Distance d: Total Time T = [d / (u + v)] + [d / (u - v)] = [2 * d * u] / (u^2 - v^2)",
+    "shortcut": "The Ratio Shortcut (Upstream vs Downstream Times):\nIf a boat takes 'n' times as long to row upstream as to row downstream for the same distance:\n(u + v) / (u - v) = n  ==>  u / v = (n + 1) / (n - 1) by Componendo-Dividendo!\nExample: Takes twice as long upstream (n = 2) ==> u / v = (2 + 1) / (2 - 1) = 3 / 1 instantly!",
+    "recognition": "Look for 'a boat goes 12 km downstream in 1 hour and returns upstream in 2 hours', 'takes twice as long to row upstream as downstream', or 'find the speed of the current'.",
+    "p1_q": "[Foundation] A boat can travel with a speed of 13 km/h in still water. If the speed of the stream is 4 km/h, find the time taken by the boat to go 68 km downstream.",
+    "p1_s": "Step 1: Given: Speed in still water u = 13 km/h, Speed of stream v = 4 km/h.\nStep 2: Downstream Speed D = u + v = 13 + 4 = 17 km/h.\nStep 3: Distance = 68 km.\nTime taken = Distance / Downstream Speed = 68 / 17 = 4 hours.\nAnswer: 4 hours.",
+    "p2_q": "[Standard Placement] A man can row upstream at 8 km/h and downstream at 14 km/h. Find his rowing speed in still water and the speed of the water current.",
+    "p2_s": "Step 1: Given: Downstream speed D = 14 km/h, Upstream speed U = 8 km/h.\nStep 2: Calculate Speed in Still Water (u):\nu = (D + U) / 2 = (14 + 8) / 2 = 22 / 2 = 11 km/h.\nStep 3: Calculate Speed of Stream (v):\nv = (D - U) / 2 = (14 - 8) / 2 = 6 / 2 = 3 km/h.\nVerification: Downstream = 11 + 3 = 14; Upstream = 11 - 3 = 8. Exact match!\nAnswer: Speed in still water = 11 km/h, Speed of stream = 3 km/h.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys Reasoning & Numerical Test]",
+    "p3_q": "A man can row at 9 km/h in still water. If it takes him twice as long to row up as to row down the river for the same distance, find the speed of the stream.",
+    "p3_s": "Step 1: Use the Componendo-Dividendo Ratio Shortcut:\nGiven: Time upstream is twice time downstream ==> n = 2.\nu / v = (n + 1) / (n - 1) = (2 + 1) / (2 - 1) = 3 / 1.\nStep 2: We are given Speed in still water u = 9 km/h.\n9 / v = 3 / 1 ==> 3v = 9 ==> v = 3 km/h.\nStep 3: Analytical Verification: Let distance = 18 km.\nDownstream Speed = 9 + 3 = 12 km/h ==> Time = 18 / 12 = 1.5 hours.\nUpstream Speed = 9 - 3 = 6 km/h ==> Time = 18 / 6 = 3.0 hours.\nNotice 3.0 hours is exactly twice 1.5 hours! Matches perfectly.\nAnswer: Speed of the stream is 3 km/h.",
+    "p4_q": "[Hard / Time-Pressure] A boat covers 24 km upstream and 36 km downstream in 6 hours. Also, it covers 36 km upstream and 24 km downstream in 6.5 hours. Find the speed of the boat in still water and the speed of the stream.",
+    "p4_s": "Step 1: Let Upstream speed = U, Downstream speed = D.\nEquation 1: (24 / U) + (36 / D) = 6\nEquation 2: (36 / U) + (24 / D) = 6.5\nStep 2: Eliminate variables. Multiply Eq 1 by 3 and Eq 2 by 2:\n3 * Eq 1: (72 / U) + (108 / D) = 18\n2 * Eq 2: (72 / U) + (48 / D) = 13\nSubtracting the two equations:\n(108 - 48) / D = 18 - 13 ==> 60 / D = 5 ==> D = 60 / 5 = 12 km/h.\nStep 3: Substitute D = 12 into Eq 1:\n(24 / U) + (36 / 12) = 6 ==> (24 / U) + 3 = 6 ==> 24 / U = 3 ==> U = 8 km/h.\nStep 4: Solve for u and v:\nSpeed in still water u = (D + U) / 2 = (12 + 8) / 2 = 20 / 2 = 10 km/h.\nSpeed of stream v = (D - U) / 2 = (12 - 8) / 2 = 4 / 2 = 2 km/h.\nAnswer: Boat speed in still water = 10 km/h, Stream speed = 2 km/h.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "A boat goes 15 km/h downstream and 9 km/h upstream. Find the speed of the stream."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "A boat travels 32 km downstream in 4 hours and 14 km upstream in 2 hours. Find speed in still water."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "A man can row 6 km/h in still water. If the river runs at 2 km/h, it takes him 3 hours to row to a place and back. Find distance."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "A boat takes 3 times as long to row upstream as to row downstream. If stream speed is 4 km/h, find boat speed in still water."
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "A swimmer covers 1 km against current in 10 minutes and 1 km with current in 6 minutes. Find the speed of the current."
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "Stream speed v = (15 - 9) / 2 = 6 / 2 = 3 km/h. Answer: 3 km/h."
+      ],
+      [
+        "Solution Q2:",
+        "D = 32/4 = 8 km/h. U = 14/2 = 7 km/h. Still water u = (8 + 7)/2 = 7.5 km/h. Answer: 7.5 km/h."
+      ],
+      [
+        "Solution Q3:",
+        "D = 6+2 = 8, U = 6-2 = 4. Total Time = d/8 + d/4 = 3 ==> 3d/8 = 3 ==> d = 8 km. Answer: 8 km."
+      ],
+      [
+        "Solution Q4:",
+        "u / v = (3+1)/(3-1) = 4/2 = 2/1. u = 2 * v = 2 * 4 = 8 km/h. Answer: 8 km/h."
+      ],
+      [
+        "Solution Q5:",
+        "U = 1 km in (1/6) hr = 6 km/h. D = 1 km in (1/10) hr = 10 km/h. Stream v = (10 - 6)/2 = 2 km/h. Answer: 2 km/h."
+      ]
+    ],
+    "trap": "Always ensure units are consistent! If time is given in minutes, divide by 60 to convert to hours before calculating speed in km/h."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

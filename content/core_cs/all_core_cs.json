@@ -1,0 +1,245 @@
+[
+  {
+    "day": 18,
+    "subject": "Database Management Systems (DBMS)",
+    "topic": "Query Optimization & Index Scans vs Sequential Scans",
+    "detailed_notes": [
+      "The Query Execution Engine transforms a declarative SQL query into an optimized physical execution plan:\n1. Parser: Converts raw SQL text into an Abstract Syntax Tree (AST), checking syntax and semantic validity (tables/columns exist).\n2. Query Rewriter: Applies relational algebra equivalences (pushing selections down, eliminating subqueries via joins).\n3. Cost-Based Optimizer (CBO): Estimates the cost (disk I/O + CPU cycles) of various candidate execution plans using table statistics stored in catalog tables (pg_statistic / sqlite_stat1).",
+      "Scan Types Analyzed:\n\u2022 Sequential Scan (Table Scan): Reads every block from disk sequentially from start to end. Fast for small tables (<1000 rows) or when returning >20% of table rows due to sequential read caching.\n\u2022 Index Scan: Traverses B+ tree from root to leaf to locate matching row pointers (TIDs/RIDs), then fetches individual heap pages. High random I/O overhead if selectivity is poor.\n\u2022 Bitmap Index Scan: Gathers all matching tuple pointers from B+ tree into a bitmap in memory, sorts pointers by physical block order, and performs sequential I/O on heap pages. Combines efficiency of indexes with sequential disk reads.",
+      "EXPLAIN & EXPLAIN ANALYZE:\n\u2022 EXPLAIN shows the optimizer's estimated cost (cost=0.00..45.12 rows=100 width=16).\n\u2022 EXPLAIN ANALYZE actually executes the query on the database engine, returning exact execution times (in ms) and buffer hit counts."
+    ],
+    "interview_qa": [
+      {
+        "q": "Why does a database optimizer sometimes choose a Sequential Scan over an Index Scan even when an index exists on the searched column?",
+        "a": "Because the Cost-Based Optimizer estimates that sequential scanning will consume fewer total I/O cycles. When a query has low selectivity (e.g., retrieving 30% or more of table rows), an index scan requires numerous random I/O disk seeks to hop between index leaf nodes and scattered physical table heap blocks. Sequential scans read contiguous multi-block chunks using operating system read-ahead buffers, making sequential reads orders of magnitude faster than thousands of scattered random lookups."
+      },
+      {
+        "q": "What is the difference between a Filter condition and an Index Condition in an EXPLAIN output?",
+        "a": "An 'Index Cond' represents predicates evaluated directly inside the B+ Tree during traversal (e.g., `user_id = 42`), preventing non-matching table blocks from ever being fetched from disk. A 'Filter' condition represents predicates evaluated in memory AFTER table rows have already been read from disk blocks. High filter counts with low output rows indicate missing composite indexes or non-sargable expressions (like `WHERE YEAR(created_at) = 2024`)."
+      }
+    ]
+  },
+  {
+    "day": 19,
+    "subject": "Operating Systems",
+    "topic": "File Systems Architecture: Inodes, Superblocks & Hard vs Soft Links",
+    "detailed_notes": [
+      "Unix/Linux File System Architecture:\n1. Boot Block: First sector of storage used by BIOS/UEFI to bootstrap the OS kernel.\n2. Superblock: Stores metadata about the file system itself: total block count, free block count, inode table size, block size (typically 4KB), and file system status flags.\n3. Inode Table (Index Nodes): Every file or directory has an Inode storing: file type, permissions, owner UID/GID, size, timestamps (atime, mtime, ctime), and pointers to physical disk data blocks.\n\u2022 Crucial Fact: An Inode does NOT store the filename! Filenames are stored in directory data blocks mapping `filename -> inode_number`.",
+      "Hard Links vs Symbolic (Soft) Links:\n\u2022 Hard Link: An additional directory entry pointing directly to the SAME Inode number. Both links share identical permissions, size, and data blocks. Deleting one hard link decrements the Inode's link count; file data is freed only when link count reaches 0 and no open file descriptors exist. Hard links cannot span across different file systems/partitions and cannot link directories.\n\u2022 Soft/Symbolic Link (Symlink): A distinct file with its OWN unique Inode that contains a text string representing the pathname of the target file. If the target file is deleted or renamed, the symlink breaks ('dangling link'). Symlinks can cross file system boundaries and can link directories."
+    ],
+    "interview_qa": [
+      {
+        "q": "What happens on disk when you run the command `rm file.txt` in Linux?",
+        "a": "The `rm` command invokes the `unlink()` system call. It removes the filename entry mapping from the directory block and decrements the `st_nlink` counter in the file's Inode. If the link count drops to 0 AND no active process currently holds an open file descriptor to that Inode, the OS frees the Inode and marks the allocated data blocks as free in the allocation bitmap for future overwriting. The raw magnetic/SSD bits are not immediately zeroed out."
+      },
+      {
+        "q": "Why can Hard Links not cross filesystem boundaries while Soft Links can?",
+        "a": "Because an Inode number is only unique within its local filesystem partition. If a hard link pointed to Inode 1042 on a different partition, Inode 1042 there might represent a completely different file or directory. In contrast, a Soft Link simply stores an absolute or relative filesystem path string (`/mnt/data/doc.pdf`), which the virtual filesystem (VFS) resolves dynamically across mount points."
+      }
+    ]
+  },
+  {
+    "day": 20,
+    "subject": "Computer Networks",
+    "topic": "DNS Hierarchy & The HTTPS TLS 1.3 Cryptographic Handshake",
+    "detailed_notes": [
+      "Domain Name System (DNS) Architecture:\n\u2022 Distributed hierarchical database resolving human hostnames (`api.example.com`) to 32-bit IPv4 / 128-bit IPv6 addresses.\n\u2022 4 Resolution Layers: 1. Local DNS Cache (Browser/OS), 2. Recursive Resolver (ISP / 8.8.8.8), 3. Root Name Servers (13 logical root server authorities), 4. TLD Servers (.com, .org), 5. Authoritative Name Server (holds master DNS zone file).\n\u2022 Recursive Query (Client to Resolver: 'Find this for me') vs Iterative Query (Resolver to Roots/TLD: 'Refer me to next server').",
+      "The HTTPS TLS 1.3 Handshake (1-RTT Optimization):\nIn TLS 1.2, handshakes took 2 Round Trips (2-RTT). TLS 1.3 reduces latency to a single round trip (1-RTT):\n1. ClientHello: Client sends supported cipher suites and public key share using Ephemeral Diffie-Hellman (ECDHE).\n2. ServerHello: Server selects cipher suite, sends its ECDHE public key share, server certificate (X.509), and digital signature. Both compute the symmetric master key independently!\n3. Encrypted Data: Immediate transmission of encrypted application data (HTTP/2 or HTTP/3 frames) using AES-GCM or ChaCha20-Poly1305."
+    ],
+    "interview_qa": [
+      {
+        "q": "What happens when you type 'https://www.google.com' into your browser address bar?",
+        "a": "1. DNS Resolution: Browser checks local cache -> OS hosts file -> Recursive resolver queries Root -> TLD (.com) -> Authoritative server to obtain IP address.\n2. TCP 3-Way Handshake: SYN -> SYN-ACK -> ACK establishes reliable transport socket on port 443.\n3. TLS 1.3 Handshake: ClientHello with key share -> ServerHello with certificate and server key share -> Symmetric session keys derived -> Certificate verified against root CAs.\n4. HTTP Request: Browser sends encrypted GET / HTTP/2 frame.\n5. Server processes request and streams HTML response; browser parses DOM, fetches CSS/JS, and paints page."
+      },
+      {
+        "q": "Why is TLS 1.3 significantly faster and more secure than TLS 1.2?",
+        "a": "Speed: TLS 1.3 eliminated an entire network round trip by piggybacking cryptographic key shares directly into the ClientHello message (1-RTT). Security: Obsolete and vulnerable cryptographic primitives were completely stripped out (MD5, SHA-1, RC4, static RSA key exchange). TLS 1.3 mandates Forward Secrecy via ephemeral Diffie-Hellman (ECDHE), ensuring that even if a server's private key is compromised in the future, past intercepted communications cannot be decrypted."
+      }
+    ]
+  },
+  {
+    "day": 21,
+    "subject": "Database Management Systems (DBMS)",
+    "topic": "Advanced SQL: Analytic & Window Functions (ROW_NUMBER, RANK, DENSE_RANK, LEAD, LAG)",
+    "detailed_notes": [
+      "Window Functions compute an aggregate or ranking value over a specified subset of rows (the 'window') WITHOUT collapsing the rows into a single summary output (unlike standard `GROUP BY`).",
+      "Core Ranking Functions:\n\u2022 `ROW_NUMBER() OVER (PARTITION BY dept ORDER BY salary DESC)`: Assigns a strictly unique, consecutive integer (1, 2, 3, 4) to every row regardless of ties.\n\u2022 `RANK() OVER (PARTITION BY dept ORDER BY salary DESC)`: Assigns identical rank to ties, but SKIPS subsequent ranks (e.g. 1, 2, 2, 4).\n\u2022 `DENSE_RANK() OVER (PARTITION BY dept ORDER BY salary DESC)`: Assigns identical rank to ties WITHOUT skipping subsequent ranks (e.g. 1, 2, 2, 3).\n\u2022 `LEAD(column, offset)`: Fetches data from following rows without an expensive self-join.\n\u2022 `LAG(column, offset)`: Fetches data from preceding rows (used for MoM revenue growth calculations)."
+    ],
+    "interview_qa": [
+      {
+        "q": "Write a SQL query to find the 2nd highest salary in each department.",
+        "a": "WITH RankedSalaries AS (\n    SELECT employee_id, department_id, salary,\n           DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) as rank_num\n    FROM employees\n)\nSELECT department_id, employee_id, salary\nFROM RankedSalaries\nWHERE rank_num = 2;"
+      },
+      {
+        "q": "What is the key execution difference between `GROUP BY` and a Window Function with `PARTITION BY`?",
+        "a": "`GROUP BY` collapses multiple individual table rows into a single aggregated group row, destroying row-level granular details. A window function with `PARTITION BY` calculates aggregates (like running totals or averages) over the partitioned group while PRESERVING every original individual row and its distinct columns in the final result set."
+      }
+    ]
+  },
+  {
+    "day": 22,
+    "subject": "Operating Systems",
+    "topic": "Process Synchronization Primitives: Semaphores, Mutexes & Condition Variables",
+    "detailed_notes": [
+      "Critical Section Problem:\nA section of code accessing shared resources that must not be concurrently accessed by more than one process. Must satisfy 3 criteria: 1. Mutual Exclusion, 2. Progress, 3. Bounded Waiting.",
+      "Synchronization Primitives Compared:\n\u2022 Mutex (Mutual Exclusion Lock): A locking mechanism with ownership. Only the thread that locked the mutex is permitted to unlock it. Binary state (locked/unlocked).\n\u2022 Semaphore (Dijkstra): A signaling integer counter variable accessed only via atomic operations `wait()` (P) and `signal()` (V).\n  - Counting Semaphore: Counter value N represents available units of a shared resource.\n  - Binary Semaphore: Value restricted to 0 or 1. Unlike a mutex, a semaphore has NO ownership: Thread A can wait() and Thread B can signal() to release it!\n\u2022 Spinlock: Thread busy-waits in a loop checking lock state. Useful on multi-core systems when lock duration is shorter than OS context-switch overhead.",
+      "Priority Inversion Problem:\nOccurs when a low-priority thread holds a shared lock needed by a high-priority thread, and a medium-priority thread preempts the low-priority thread, starving the high-priority thread! Solved by Priority Inheritance Protocol (low-priority thread temporarily inherits high priority while holding lock)."
+    ],
+    "interview_qa": [
+      {
+        "q": "What is the technical difference between a Mutex and a Binary Semaphore?",
+        "a": "The fundamental difference is 'ownership' and purpose. A Mutex is a locking mechanism with ownership: the exact same thread that acquired the mutex MUST release it. A Binary Semaphore is a signaling mechanism without ownership: one thread can wait for an event, and a completely different thread or interrupt service routine can signal the semaphore to unblock it."
+      },
+      {
+        "q": "What is Priority Inversion and how does Priority Inheritance solve it?",
+        "a": "Priority inversion happens when a low-priority process holds a lock required by a high-priority process, but is preempted by an unrelated medium-priority process, indefinitely delaying the high-priority process. Priority Inheritance solves this by temporarily elevating the priority of the low-priority lock-holder to match the waiting high-priority process until the lock is released."
+      }
+    ]
+  },
+  {
+    "day": 23,
+    "subject": "Computer Networks",
+    "topic": "Application Protocols Evolution: HTTP/1.1 vs HTTP/2 vs HTTP/3 (QUIC)",
+    "detailed_notes": [
+      "The Evolution of Web Transport:\n1. HTTP/1.1 (1997):\n\u2022 Plaintext protocol using TCP sockets.\n\u2022 Keep-Alive allows persistent TCP connections, but suffers from Head-of-Line (HoL) Blocking at the application layer: subsequent HTTP requests must wait for the preceding response to finish.\n\u2022 Browsers worked around this by opening up to 6 parallel TCP connections per host.\n2. HTTP/2 (2015):\n\u2022 Binary Framing Layer replacing textual headers.\n\u2022 Multiplexing: Multiple bidirectional request/response streams over a single shared TCP socket, eliminating application-layer HoL blocking.\n\u2022 HPACK Header Compression: Eliminates repetitive header overhead.\n\u2022 Remaining Flaw: TCP-level HoL blocking! If a single TCP packet drops on a lossy Wi-Fi network, the OS kernel stalls all streams until the missing segment is retransmitted.\n3. HTTP/3 (2022):\n\u2022 Completely replaces TCP with QUIC over UDP!\n\u2022 Stream Independence: Streams are independent at the transport layer; a dropped packet in Stream 1 never blocks Stream 2.\n\u2022 0-RTT Connection Establishment: Combines transport handshake and TLS 1.3 encryption in 1 round trip.\n\u2022 Connection Migration: Uses Connection IDs instead of IP/Port tuples, allowing smooth roaming from Wi-Fi to 5G without socket teardown."
+    ],
+    "interview_qa": [
+      {
+        "q": "Why did HTTP/3 replace TCP with UDP?",
+        "a": "Because TCP suffers from transport-layer Head-of-Line (HoL) blocking: if one packet is lost, the operating system holds back all subsequent data in its buffer until the lost segment is retransmitted, stalling all multiplexed HTTP/2 streams. HTTP/3 uses QUIC over UDP, implementing independent stream reliability, zero-RTT connection establishment, and connection migration across networks."
+      },
+      {
+        "q": "What is HPACK compression in HTTP/2?",
+        "a": "HPACK is a specialized header compression algorithm that eliminates redundant HTTP headers. It maintains static and dynamic lookup tables between client and server: headers like `User-Agent` or `Cookie` sent in the first request are indexed, allowing subsequent requests to transmit only a 1-byte integer reference instead of repeating the entire header string."
+      }
+    ]
+  },
+  {
+    "day": 24,
+    "subject": "Database Management Systems (DBMS)",
+    "topic": "SQL vs NoSQL Architectural Trade-offs: PostgreSQL vs MongoDB",
+    "detailed_notes": [
+      "Database Paradigms Compared:\n1. Relational DBMS (PostgreSQL, MySQL):\n\u2022 Structured tabular schema (Rows & Columns) with predefined column types.\n\u2022 ACID Transactions: Strong consistency, atomic commits, referential integrity via Foreign Keys.\n\u2022 Complex relational queries with SQL JOINS, indexing (B+ Tree), and normalization to eliminate redundancy.\n\u2022 Scaling: Primarily vertical scaling (larger CPU/RAM); horizontal sharding is complex.\n2. NoSQL Document Stores (MongoDB):\n\u2022 Schema-flexible JSON/BSON document model.\n\u2022 Denormalized data embedding: Nested arrays and sub-documents eliminate expensive joins.\n\u2022 BASE Consistency (Basically Available, Soft-state, Eventual consistency).\n\u2022 Scaling: Seamless horizontal scaling across distributed clusters via native automatic sharding."
+    ],
+    "interview_qa": [
+      {
+        "q": "When would you choose PostgreSQL over MongoDB for a software project?",
+        "a": "I would choose PostgreSQL when the data model is highly relational with strict integrity requirements (such as financial transactions or e-commerce orders in CSMS where data corruption cannot be tolerated), when complex analytical aggregations and ACID transactions across multiple entities are essential, and when the schema is relatively stable."
+      },
+      {
+        "q": "What is the CAP Theorem and how does it relate to distributed databases?",
+        "a": "The CAP Theorem states that a distributed data store can guarantee at most TWO of the following three properties simultaneously: Consistency (all nodes see identical data at the same time), Availability (every non-failing node returns a response), and Partition Tolerance (system functions despite network communication partitions). Because network partitions are inevitable in distributed systems, databases must trade off between CP (e.g. MongoDB/HBase prioritizing consistency) and AP (e.g. Cassandra/DynamoDB prioritizing availability)."
+      }
+    ]
+  },
+  {
+    "day": 25,
+    "subject": "Operating Systems",
+    "topic": "Disk Scheduling Algorithms: FCFS, SSTF, SCAN (Elevator) & C-SCAN",
+    "detailed_notes": [
+      "Disk scheduling manages I/O request queues to minimize total disk head seek time (the time required to move the read/write head to the desired cylinder/track).",
+      "Primary Algorithms Analyzed:\n1. FCFS (First-Come, First-Served): Services requests in arrival order. Simple and fair, but produces wild head swings and high average seek time.\n2. SSTF (Shortest Seek Time First): Services the request closest to current head position. Minimizes average seek time, but causes STARVATION for requests located far away from dense request clusters.\n3. SCAN (Elevator Algorithm): Head moves continuously in one direction servicing requests until it reaches the physical end of the disk, then reverses direction. Eliminates starvation.\n4. C-SCAN (Circular SCAN): Head moves in one direction servicing requests until the end, then immediately returns to the beginning of the disk WITHOUT servicing requests on the return trip. Provides uniform wait times across tracks."
+    ],
+    "interview_qa": [
+      {
+        "q": "Why is SSTF disk scheduling rarely used in production operating systems despite lower average seek times?",
+        "a": "Because SSTF causes starvation. If a continuous stream of I/O requests arrives near the current head position, the disk head will remain hovering around that locality, and requests on distant cylinders will wait indefinitely. Production systems prefer SCAN or C-LOOK (Elevator algorithms) which guarantee bounded waiting times."
+      },
+      {
+        "q": "What is the difference between SCAN and C-SCAN?",
+        "a": "SCAN travels back and forth, servicing requests in both directions. In contrast, C-SCAN treats the cylinders as a circular list: it services requests in one direction only, and when it reaches the outer boundary, it rapidly sweeps back to the beginning without servicing requests on the return journey, providing uniform waiting times for all cylinders."
+      }
+    ]
+  },
+  {
+    "day": 26,
+    "subject": "Python Programming",
+    "topic": "Python Concurrency Models: Threading vs Multiprocessing vs AsyncIO",
+    "detailed_notes": [
+      "CPython Concurrency Paradigms Explained:\n1. Global Interpreter Lock (GIL):\nA mutual-exclusion lock protecting CPython internal memory structures, ensuring only ONE native thread executes Python bytecode at any given moment. Prevents true multi-core parallel execution of CPU-bound Python threads.\n2. Threading (`threading.Thread`):\n\u2022 OS-level threads sharing the same process memory space.\n\u2022 Best for: I/O-bound tasks (file I/O, network requests). When a thread waits for a socket or disk read, it releases the GIL, allowing other threads to run.\n3. Multiprocessing (`multiprocessing.Process`):\n\u2022 Spawns completely independent OS processes, each with its OWN Python interpreter, memory space, and GIL.\n\u2022 Best for: CPU-bound tasks (machine learning inference, OCR image processing, heavy matrix math). Achieves true 100% multi-core utilization.\n\u2022 Trade-off: Higher memory footprint and requires Inter-Process Communication (IPC: Pipes/Queues) to share data.\n4. Asynchronous I/O (`asyncio`):\n\u2022 Single-threaded, cooperative multitasking using an Event Loop and Coroutines (`async`/`await`).\n\u2022 Extremely lightweight: can handle 100,000 concurrent network sockets with minimal RAM (used in FastAPI and aiohttp)."
+    ],
+    "interview_qa": [
+      {
+        "q": "If Python has a GIL, why would you ever use `threading`?",
+        "a": "Because `threading` is highly effective for I/O-bound operations (such as making HTTP requests, querying a database, or reading disk files). During I/O operations, the CPython runtime explicitly releases the GIL while waiting for network sockets or OS syscalls to return, enabling other Python threads to execute concurrently without blocking the application."
+      },
+      {
+        "q": "When should you choose `multiprocessing` over `asyncio`?",
+        "a": "Choose `multiprocessing` for CPU-intensive operations (such as Tesseract OCR image transformations in TerraStract or numerical simulations in BCA-5004) where multiple CPU cores must be saturated simultaneously. Choose `asyncio` for high-concurrency I/O-bound web services (such as handling thousands of WebSocket connections or Telegram webhook alerts in BulkBeat TV) where threads would waste excessive memory on thread stack allocations."
+      }
+    ]
+  },
+  {
+    "day": 27,
+    "subject": "Core Computer Science",
+    "topic": "Rapid-Fire Placement Technical Drill (Top High-Frequency Questions)",
+    "detailed_notes": [
+      "Comprehensive Placement Technical Flashcards:\n\u2022 1. DBMS: What is a BCNF violation? When a functional dependency X -> Y exists where X is not a superkey.\n\u2022 2. Networks: What is the difference between TCP and UDP? TCP is connection-oriented, reliable, with congestion control; UDP is connectionless, lightweight, and unordered.\n\u2022 3. Operating Systems: What is a Deadlock? A situation where two or more processes are unable to proceed because each is holding a resource and waiting for another resource held by the other. Requires 4 Coffman conditions: Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait.\n\u2022 4. Python: What is the difference between `is` and `==`? `==` checks value equality (`a.__eq__(b)`); `is` checks memory address identity (`id(a) == id(b)`).\n\u2022 5. System Design: What is Database Indexing? A data structure (B+ tree) that improves data retrieval speed at the cost of slower writes and additional disk storage."
+    ],
+    "interview_qa": [
+      {
+        "q": "What is the difference between a Process and a Thread in modern operating systems?",
+        "a": "A Process is an executing instance of a program with its own dedicated, isolated virtual address space, file descriptor table, and security context. A Thread is the smallest unit of CPU execution within a process; multiple threads inside the same process share identical memory (heap, code, global data), having only private registers and call stacks. Creating a thread consumes ~10x fewer CPU cycles than spawning a process."
+      },
+      {
+        "q": "Explain the concept of Database Normalization and why BCNF is preferred over 3NF.",
+        "a": "Normalization organizes database tables to minimize redundancy and eliminate insertion, update, and deletion anomalies. While 3NF permits non-superkey determinants if the dependent attribute is part of a candidate key (prime attribute), BCNF strictly mandates that for every functional dependency X -> Y, X MUST be a superkey, eliminating subtle redundancies in tables with multiple overlapping candidate keys."
+      }
+    ]
+  },
+  {
+    "day": 28,
+    "subject": "Placement Strategy",
+    "topic": "The STAR Behavioral Framework & Placement HR Interview Mastery",
+    "detailed_notes": [
+      "The STAR Framework for Answering Behavioral Interview Questions:\n\u2022 S \u2014 Situation: Set the context (Where? When? What project?). Keep concise (20 seconds).\n\u2022 T \u2014 Task: Define the explicit challenge or objective you were responsible for.\n\u2022 A \u2014 Action: Describe the SPECIFIC technical actions YOU took (use 'I', not 'we'). Highlight design choices and code implementations.\n\u2022 R \u2014 Result: Quantify the outcome (e.g. 'reduced latency by 40%', 'served 6,000 users', 'zero data corruption').",
+      "High-Frequency Placement HR Questions:\n1. 'Tell me about yourself': 90-second elevator pitch covering: BCA background, passion for Python backend systems, flagship achievements (BulkBeat TV & TerraStract), and why this company.\n2. 'Why should we hire a BCA graduate when B.Tech graduates are available?': Emphasize demonstrated software execution over theoretical credentials: 'While many graduates have purely academic credentials, I have built and deployed production software with live users, written asynchronous microservices, implemented OCR pipelines, and managed database migrations from day one.'"
+    ],
+    "interview_qa": [
+      {
+        "q": "How do you answer: 'Tell me about a time you made a technical mistake and how you resolved it'?",
+        "a": "Use STAR: 'In BulkBeat TV, concurrent SQLite write transactions initially threw `database is locked` errors during heavy streaming alerts. I researched SQLite's concurrency model, realized default rollback journals lock the entire database during writes, and reconfigured the database to Write-Ahead Logging (WAL) mode while wrapping alert updates in an asynchronous worker queue. This eliminated write contention completely and taught me deep concurrency architecture.'"
+      },
+      {
+        "q": "Where do you see yourself in 3 years as a software engineer?",
+        "a": "In 3 years, I see myself as a core backend contributor who has mastered distributed systems architecture, owns end-to-end service delivery, mentors junior team members, and consistently drives measurable reliability and performance improvements across enterprise software pipelines."
+      }
+    ]
+  },
+  {
+    "day": 29,
+    "subject": "Core Computer Science",
+    "topic": "Final Placement Interview Rapid-Fire Simulation",
+    "detailed_notes": [
+      "The 10 Non-Negotiable Technical Interview Truths:\n1. ACID Properties: Atomicity (all-or-nothing), Consistency (integrity constraints), Isolation (concurrent safety), Durability (persisted on disk).\n2. Indexing: B+ Tree stores data pointers in leaves with sequential horizontal links, optimizing range queries.\n3. TCP Handshake: 3-way handshake (SYN, SYN-ACK, ACK) establishes reliable socket sequence numbers.\n4. HTTP Verbs: GET/HEAD/PUT/DELETE are idempotent; POST and PATCH are non-idempotent.\n5. Virtual Memory: Paging translates virtual addresses to physical frames using page tables; Page Fault triggers OS to load block from disk."
+    ],
+    "interview_qa": [
+      {
+        "q": "What makes an HTTP method idempotent?",
+        "a": "An HTTP method is idempotent if executing it multiple times consecutively produces the exact same side-effects on the server as executing it once. GET, HEAD, PUT, and DELETE are idempotent. POST is non-idempotent because submitting 5 identical POST requests creates 5 separate database records."
+      },
+      {
+        "q": "What is the difference between a Clustered and a Non-Clustered index?",
+        "a": "A Clustered index dictates the physical storage order of the actual table rows on disk; therefore, a table can possess only ONE clustered index (typically the Primary Key). A Non-Clustered index creates a separate B+ tree structure containing sorted index columns along with row pointers (TIDs) back to the table heap, allowing multiple non-clustered indexes per table."
+      }
+    ]
+  },
+  {
+    "day": 30,
+    "subject": "Final Interview Readiness",
+    "topic": "The Day-Zero Technical Interview Demeanor & Presentation",
+    "detailed_notes": [
+      "Interview Day Mental Architecture:\n\u2022 Professional Presence: Clean background, good lighting, clear audio, camera at eye level.\n\u2022 When You Do Not Know an Answer: Never guess wildly or pretend. Say: 'I have not worked directly with that specific framework, but based on my understanding of networking and operating systems, here is how I would reason through it...'\n\u2022 Asking Questions at the End: Never say 'No, I have no questions'. Ask insightful technical questions:\n  1. 'What is the primary architecture challenge your engineering team is tackling this quarter?'\n  2. 'How does your team handle continuous deployment and code reviews for junior developers?'"
+    ],
+    "interview_qa": [
+      {
+        "q": "Do you have any questions for us?",
+        "a": "Yes! I saw that your team handles high-throughput user transactions. I would love to know: what message queuing and caching architectures do you currently rely on in production, and what is the biggest technical challenge your backend engineers are solving right now?"
+      },
+      {
+        "q": "Why should we select you today?",
+        "a": "Because I combine solid computer science fundamentals with proven hands-on development experience. In my projects, I haven't just followed tutorials\u2014I have built and deployed live systems, resolved real concurrency bottlenecks, implemented complex OCR pipelines, and designed clean relational schemas. I am eager to bring this same discipline and work ethic to your engineering team."
+      }
+    ]
+  }
+]

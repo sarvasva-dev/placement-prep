@@ -1,0 +1,998 @@
+SOURCE PROVENANCE: D:\Projects\Placement_Master_Handbook_Web\source_archive\academic\5003_Computer_Networks\notes\BCA-5003_Computer_Network_Unit_1_Study_Guide.pdf
+PAGES EXTRACTED: 25 / 32
+
+--- PAGE 1 ---
+Scope: This guide is restricted to Unit I: Basic Concepts, OSI Model and TCP/IP Model. It
+consolidates the supplied Unit-I material and previous-year question patterns. The
+source text contains several OCR/technical inaccuracies; this guide uses corrected
+terminology and exam-appropriate explanations.
+1. Basics of computer networks and data communication.
+2. Components and characteristics of data communication.
+3. Communication modes and line configurations.
+4. Network services and distributed processing.
+5. Network topology: star, bus, ring, tree, mesh, and hybrid.
+6. Error concepts, error detection, error correction, parity, CRC, and Hamming code basics.
+7. OSI reference model and responsibilities of all seven layers.
+8. TCP/IP reference model, comparison with OSI, and functions of TCP/IP.
+9. MAC address versus IP address.
+10. IPv4 and IPv6 fundamentals.
+11. Network-layer responsibilities.
+12. Virtual-circuit and datagram networks.
+13. DTE–DCE interface and parallel transmission.
+Topic
+Appeared in supplied PYQs
+CRC and CRC numerical
+2021, 2023–24, 2025–26
+OSI layers and functions
+2015, 2016, 2018, 2019, 2021
+Network topology
+2019, 2023–24
+Data communication characteristics/components
+2017, 2018, 2021, 2024–25
+MAC vs IP address
+2024–25
+BCA-5003: Computer Network
+Unit I — Detailed Study Guide, Corrected Notes and
+PYQ Focus
+1. Unit I at a Glance
+What you must prepare
+High-priority PYQ areas
+
+
+--- PAGE 2 ---
+Topic
+Appeared in supplied PYQs
+IPv4/IPv6 and network-layer responsibilities
+2024–25
+TCP/IP functions
+2025–26
+Error detection/correction/Hamming code
+2016–2021
+Virtual circuit vs datagram
+2023–24
+DTE–DCE, line configuration, parallel transmission
+2021–22
+A computer network is a collection of interconnected autonomous devices—such as computers,
+servers, phones, printers, switches, and routers—that communicate and share resources using
+agreed rules called protocols.
+A network can use:
+Wired media: twisted-pair cable, coaxial cable, optical fibre.
+Wireless media: radio waves, Wi-Fi, microwave, cellular, satellite.
+Share hardware such as printers and storage.
+Share files, databases, applications, and Internet access.
+Support email, messaging, web browsing, cloud platforms, video calls, and remote access.
+Allow centralized administration, backup, authentication, and security policies.
+Reduce cost by allowing common resources to be used by many users.
+Support scalability: new devices and services can be added as requirements grow.
+A computer network is an interconnection of two or more autonomous computing
+devices through communication links for the purpose of sharing data, resources, and
+services.
+Data communication is the exchange of data between two or more devices through a
+transmission medium. The information may be text, numbers, images, audio, video, or
+program data.
+Data communication is successful only when the sender and receiver follow compatible rules
+for formatting, addressing, timing, transmission, and error handling.
+2. Computer Networks and Data Communication
+2.1 Computer Network
+Why networks are used
+Exam definition
+2.2 Data Communication
+
+
+--- PAGE 3 ---
+Component
+Meaning
+Example
+Message
+Information to be communicated
+File, email, image, audio, video
+Sender / transmitter
+Device that originates and sends the message
+Laptop sending a file
+Receiver
+Device that accepts the message
+Server receiving the file
+Transmission medium
+Physical or wireless path taken by signals
+Fibre cable, Wi-Fi, radio link
+Protocol
+Set of rules governing communication
+TCP/IP, HTTP, Ethernet
+A protocol is not merely an optional software feature. Communication between different
+devices is reliable only when they agree on protocol rules, including data format, timing,
+addressing, sequencing, and error control.
+A good data-communication system is evaluated using four principal characteristics.
+Data must reach the correct destination, intended device, process, or user. A packet delivered
+to the wrong host is not a successful delivery.
+Data must arrive without unwanted alteration. Bit errors, missing bytes, duplication, or
+corrupted frames reduce accuracy. Error-detection and correction mechanisms help maintain
+accuracy.
+Data must arrive when it is needed. For stored files, a small delay may be acceptable. For live
+audio, online gaming, remote control, and video conferencing, late data can be useless.
+Jitter is the variation in packet delay or packet-arrival time. It is especially harmful to real-time
+audio and video.
+Example: if voice packets should arrive every 20 ms but some arrive after 20 ms and others after
+70 ms, the sound may become choppy even if no packet is lost.
+Basic components of a data-communication system
+Important correction
+2.3 Characteristics of Effective Data Communication
+1. Delivery
+2. Accuracy
+3. Timeliness
+4. Jitter
+
+
+--- PAGE 4 ---
+Common approaches include:
+Jitter buffers at the receiver to temporarily store early packets.
+QoS mechanisms to prioritize time-sensitive traffic.
+Sufficient bandwidth and congestion control.
+Stable routes and low-delay network paths.
+Exam line: Jitter is the variation in delay between the arrivals of consecutive packets in
+a packet-switched network.
+Mode
+Description
+Example
+Simplex
+Data travels in only one direction
+Keyboard to computer; broadcast TV
+Half-duplex
+Both directions are possible, but only one direction at a time
+Walkie-talkie
+Full-duplex
+Both sides can send and receive simultaneously
+Telephone call; switched Ethernet
+A line configuration describes how devices are connected to a communication link.
+A dedicated link connects exactly two devices. The complete capacity of the link is available to
+those two endpoints.
+Examples: a direct router-to-router leased line, a serial cable between two devices, a point-to-
+point microwave link.
+Advantages: simple communication, dedicated bandwidth, easier fault isolation.
+Limitation: more links may be required when many devices must connect.
+More than two devices share a common physical link. Link capacity is shared among attached
+devices.
+Sharing may be:
+Spatial sharing: multiple devices use separate portions of the medium at the same time.
+Time sharing: devices take turns using the channel.
+Jitter control
+3. Communication Modes and Configurations
+3.1 Direction of Data Flow
+3.2 Line Configuration
+Point-to-point configuration
+Multipoint configuration
+
+
+--- PAGE 5 ---
+Example: a shared bus network.
+One sender distributes information to many receivers. Examples include television
+broadcasting, a teacher streaming a lecture, a multicast update, and a public web server
+serving many clients.
+Do not confuse one-to-many with point-to-point. One-to-many describes the communication
+relationship; point-to-point describes a dedicated physical/logical link between two endpoints.
+Bits are transmitted one after another over a single communication line or logical channel.
+Economical for long distances.
+Less affected by clock skew across wires.
+Used in modern high-speed interfaces and networking links.
+Multiple bits are sent simultaneously over multiple separate lines. For an n-bit parallel transfer,
+n data lines are generally required, plus control/clock lines.
+Can transfer a group of bits simultaneously over short distances.
+Needs more wires, connectors, and synchronization.
+Becomes unreliable or costly over long distances because bits may arrive at slightly
+different times; this is called skew.
+Exam point: Parallel transmission is usually suitable for short distances; serial
+transmission is generally preferred for long-distance communication.
+Network services are facilities made available to users and applications through a network.
+A directory service stores and organizes information about users, devices, groups, and
+resources.
+Functions include:
+User-account and password information.
+3.3 One-to-Many Communication
+3.4 Serial and Parallel Transmission
+Serial transmission
+Parallel transmission
+4. Network Services and Distributed Processing
+4.1 Major Network Services
+Directory services
+
+
+--- PAGE 6 ---
+Authentication: verifying identity.
+Authorization: deciding which resources a verified user may access.
+Mapping names to information, such as a user name to an account record.
+DNS translates human-readable domain names, such as www.example.com, into IP addresses
+used for network delivery.
+File sharing: making files available to authorized users.
+File transfer: copying or moving files between systems.
+Email.
+Instant messaging and chat.
+Voice/video conferencing.
+Discussion forums and collaboration platforms.
+Remote desktop and remote access.
+Web services.
+Database services.
+Print services.
+Storage services.
+Shared server applications.
+Distributed processing is an arrangement in which processing work is divided among multiple
+computers or processors connected by a network. Each system performs part of the work and
+coordinates with the others.
+Examples: cloud services, distributed databases, microservices, and MapReduce-style data
+processing.
+Better performance through parallel work.
+Resource sharing.
+Improved reliability; one node’s failure may not stop all work.
+Domain Name System (DNS)
+File services
+Communication services
+Application services
+4.2 Distributed Processing
+Benefits
+
+
+--- PAGE 7 ---
+Scalability by adding machines.
+Work can be placed near users or data.
+Coordination and synchronization.
+Network delay and failures.
+Security across multiple systems.
+More difficult debugging and data consistency.
+Network topology is the physical or logical arrangement of network devices and the links
+between them. It determines how devices are connected and how data moves through the
+network.
+Physical topology: actual layout of cables, devices, ports, and links.
+Logical topology: path followed by data, which may differ from physical arrangement.
+In a star topology, every node has an individual link to a central device, normally a switch.
+Communication between two nodes passes through the central device.
+            PC1
+             |
+PC2 ---- [Switch] ---- PC3
+             |
+            PC4
+Failure of one node cable normally affects only that node.
+Easy installation, expansion, and fault isolation.
+Centralized management.
+Good performance with an Ethernet switch because each link can be dedicated and full-
+duplex.
+Challenges
+5. Network Topology
+5.1 Meaning of Topology
+5.2 Star Topology
+Advantages
+
+
+--- PAGE 8 ---
+Failure of the central switch/hub can disrupt the whole network.
+Requires more cable than bus topology.
+Central device adds equipment cost.
+All nodes share a single backbone cable. A signal sent on the bus is available along the shared
+medium; only the intended receiver accepts the frame.
+[T] ---- PC1 ---- PC2 ---- PC3 ---- [T]
+[T] represents a terminator, required in traditional coaxial bus networks to prevent signal
+reflection.
+Uses less cable for small installations.
+Low initial cost.
+No central networking device is necessary in its basic form.
+Break or fault in the backbone can affect the complete network.
+Difficult troubleshooting.
+Shared medium can suffer collisions and performance degradation.
+Limited cable length and number of nodes.
+In a ring topology, each node connects to two neighboring nodes, creating a closed loop. Data
+passes from node to node around the ring. Traditional token-ring designs use a token to control
+transmission.
+PC1 ---- PC2
+ |        |
+PC4 ---- PC3
+Orderly access when token passing is used.
+Predictable performance under controlled conditions.
+Each node can receive an equal opportunity to transmit.
+Disadvantages
+5.3 Bus Topology
+Advantages
+Disadvantages
+5.4 Ring Topology
+Advantages
+
+
+--- PAGE 9 ---
+A cable or node failure can disrupt a simple ring.
+Adding/removing a device can interrupt the network.
+Delay may rise as more nodes are added.
+A tree topology has a hierarchical structure with a root or backbone and multiple branches. It
+can be viewed as interconnected star networks arranged in levels.
+Highly scalable.
+Supports hierarchical administration.
+A local branch failure may be isolated from other branches.
+Backbone/root device failure can affect large portions of the network.
+More cabling and active devices increase cost and complexity.
+Upper-level devices can become bottlenecks.
+A mesh topology connects nodes with multiple point-to-point links.
+Full mesh: every node has a direct link to every other node.
+Partial mesh: only important nodes have multiple redundant links.
+For a full mesh containing n devices, the number of links is:
+High reliability and fault tolerance due to alternative paths.
+High privacy because direct links can be used.
+A single link failure usually does not stop communication.
+Very expensive for many devices.
+Difficult installation and management.
+Requires many ports, cables, and interfaces.
+Disadvantages
+5.5 Tree Topology
+Advantages
+Disadvantages
+5.6 Mesh Topology
+Advantages
+Disadvantages
+
+
+--- PAGE 10 ---
+A hybrid topology combines two or more basic topologies, such as star-bus or star-ring.
+Modern enterprise networks often use hybrid/hierarchical designs.
+Topology
+Central device
+Main strength
+Main weakness
+Typical use
+Star
+Yes
+Easy management and fault
+isolation
+Central device is a single
+critical point
+Modern LANs
+Bus
+No
+Low cable cost for small
+legacy networks
+Backbone failure affects all
+Legacy coaxial Ethernet
+Ring
+No, in basic
+form
+Controlled access
+Break can interrupt ring
+Legacy Token Ring/FDDI
+concepts
+Tree
+Yes, at multiple
+levels
+Scalable hierarchy
+Root/backbone
+dependency
+Campus/enterprise LAN
+Mesh
+Not required
+Very high reliability
+Expensive and complex
+WAN backbones, wireless
+mesh
+An error occurs when the data received is different from the data sent. In binary
+communication, noise, interference, attenuation, synchronization problems, or equipment
+faults may change a 0 to 1 or a 1 to 0.
+Only one bit of a data unit changes.
+Example:
+Sent:     1001001
+Received: 1000001
+                 ^ one bit changed
+More than one bit changes, but the changed bits need not be adjacent.
+5.7 Hybrid Topology
+5.8 Topology Comparison
+6. Errors in Data Communication
+6.1 Meaning of Error
+6.2 Types of Bit Errors
+Single-bit error
+Multiple-bit error
+
+
+--- PAGE 11 ---
+Two or more bits within a span are affected. The first and last bits of the span are erroneous;
+bits in between may or may not be erroneous. Burst errors are common in real communication
+channels.
+Aspect
+Error detection
+Error correction
+Purpose
+Determines whether an error is present
+Locates and fixes an error, or recovers correct data
+Common
+techniques
+Parity, checksum, CRC
+Hamming code, forward error correction; retransmission-
+based ARQ
+Extra data required
+Redundant bits
+Usually more redundancy
+Receiver action
+Reject/request retransmission if error
+found
+Correct data directly if possible, or request retransmission
+A parity bit is an additional bit added to a data unit to make the total number of 1s either even
+or odd.
+Set the parity bit so that the total number of 1s, including the parity bit, is even.
+Example: Data = 1011001 has four 1s. For even parity, parity bit = 0.
+Set the parity bit so that the total number of 1s, including parity, is odd.
+Example: Data = 1011001 has four 1s. For odd parity, parity bit = 1.
+Simple parity detects any odd number of changed bits, but it cannot detect an even number of
+changed bits. It also cannot identify the erroneous bit.
+In a checksum method, the sender divides data into fixed-size words, adds them using one’s-
+complement arithmetic, and sends the complement of the sum as the checksum. The receiver
+repeats the calculation and checks whether the result is valid.
+Checksum is used by several Internet protocols, but it is generally weaker than a well-designed
+CRC for detecting burst errors.
+Burst error
+6.3 Error Detection versus Error Correction
+6.4 Parity Check
+Even parity
+Odd parity
+Limitation of simple parity
+6.5 Checksum
+
+
+--- PAGE 12 ---
+Cyclic Redundancy Check (CRC) is an error-detection technique based on modulo-2 binary
+division. The sender appends a calculated remainder, called the CRC or Frame Check Sequence
+(FCS), to the data. The receiver divides the received codeword by the same generator; a non-
+zero remainder indicates that an error has been detected.
+CRC does not prove that received data is absolutely error-free when the remainder is zero. It
+means that no error detectable by that CRC generator has been found. In exams, write: “The
+frame is accepted if the remainder is zero; otherwise it is considered erroneous.”
+Term
+Meaning
+Dataword
+Original data bits supplied by upper layer
+Generator / divisor
+Predetermined bit pattern used for division
+Degree of generator
+Highest exponent of the generator polynomial; if generator length is r+1, degree is r
+CRC remainder
+r-bit remainder resulting from modulo-2 division
+Codeword
+Dataword followed by CRC bits
+Suppose the generator has length 
+. Then the CRC has  bits.
+1. Choose a generator bit pattern G whose first and last bits are 1.
+2. Append r zeros to the dataword.
+3. Divide the augmented dataword by G using modulo-2 division, where subtraction is XOR.
+4. Obtain an r-bit remainder R.
+5. Replace the appended zeros with R.
+6. Send dataword || R, called the codeword.
+1. Receive the complete codeword.
+2. Divide it by the same generator using modulo-2 division.
+3. If the remainder is all zeros, accept the frame.
+4. If the remainder is non-zero, reject the frame and normally request retransmission at an
+appropriate protocol layer.
+7. Cyclic Redundancy Check (CRC)
+7.1 Definition
+Important correction
+7.2 Terms used in CRC
+7.3 CRC Procedure at Sender
+7.4 CRC Procedure at Receiver
+
+
+--- PAGE 13 ---
+Question: Given dataword 1001 and divisor 1011, generate the CRC codeword.
+Divisor 1011 has 4 bits. Therefore:
+Append three zeros to the dataword:
+Dataword:            1001
+Augmented dataword:  1001000
+Divisor:                1011
+Modulo-2 subtraction is XOR:
+1001 XOR 1011 = 0010
+Continuing the XOR division of 1001000 by 1011 produces the 3-bit remainder:
+R = 110
+Replace the three appended zeros with the remainder:
+Codeword = dataword + CRC
+         = 1001 110
+         = 1001110
+1001110 ÷ 1011  → remainder 000
+Therefore, the transmitted CRC codeword is:
+1001110
+7.5 CRC Numerical Example
+Step 1: Find number of appended zeros
+Step 2: Perform modulo-2 division
+Step 3: Form codeword
+Verification
+
+
+--- PAGE 14 ---
+Very effective at detecting common burst errors.
+Efficient hardware implementation using shift registers and XOR logic.
+Used in many data-link technologies, including Ethernet frame checking.
+Stronger error-detection capability than simple parity.
+A Hamming code is an error-correcting code that adds multiple parity bits at positions that are
+powers of two: 1, 2, 4, 8, and so on. In its basic form, it can correct a single-bit error.
+If there are 
+ data bits and  parity bits, choose  so that:
+The extra +1 represents the no-error condition.
+A seven-bit Hamming code uses parity bits at positions 1, 2, and 4:
+Position
+1
+2
+3
+4
+5
+6
+7
+Role
+P1
+P2
+D1
+P4
+D2
+D3
+D4
+For even parity:
+P1 checks positions 1, 3, 5, 7.
+P2 checks positions 2, 3, 6, 7.
+P4 checks positions 4, 5, 6, 7.
+At the receiver, failed parity checks form a binary number called the syndrome. Its decimal
+value identifies the error position.
+Number bit positions from left to right as 1 to 7:
+Position:  1 2 3 4 5 6 7
+Received:  1 0 1 1 0 1 1
+Check P1 positions 1, 3, 5, 7: 1, 1, 0, 1 → three 1s → odd → P1 check fails.
+Check P2 positions 2, 3, 6, 7: 0, 1, 1, 1 → three 1s → odd → P2 check fails.
+7.6 Why CRC is Preferred
+8. Hamming Code Basics
+8.1 Purpose
+8.2 Number of Redundant Bits
+8.3 Hamming (7,4) Positions
+PYQ method: received word 1011011 with even parity
+
+
+--- PAGE 15 ---
+Check P4 positions 4, 5, 6, 7: 1, 0, 1, 1 → three 1s → odd → P4 check fails.
+Syndrome = 111₂ = 7. Therefore, bit position 7 is erroneous.
+Correct the received word by flipping bit 7:
+Received word:  1011011
+Correct word:   1011010
+Note: Always state the bit-positioning convention used in a numerical answer. Some
+books number positions right-to-left; follow the convention specified in the question or
+clearly declare your convention.
+The data-link layer provides node-to-node delivery. It detects and manages lost, damaged, or
+duplicate frames over a single link.
+Error-detection code: parity, checksum, CRC.
+Sequence numbers: identify frames and detect duplicates.
+Acknowledgement (ACK): confirms successful receipt.
+Negative acknowledgement (NAK): asks for retransmission, where used.
+Timers: detect a missing acknowledgement.
+Retransmission: sender sends the frame again.
+ARQ: Automatic Repeat reQuest protocols.
+1. Sender transmits one frame.
+2. Sender waits for an ACK.
+3. If ACK arrives correctly, sender transmits the next frame.
+4. If the timer expires or a NAK is received, sender retransmits the frame.
+Advantage: simple.
+Disadvantage: inefficient on long-delay or high-bandwidth links because the sender remains
+idle while waiting.
+9. Error Control in Data-Link Layer
+9.1 Major error-control tools
+9.2 Stop-and-Wait ARQ
+
+
+--- PAGE 16 ---
+The sender can send multiple frames up to a window size before waiting. If frame k is
+lost/damaged, the receiver discards that frame and normally subsequent out-of-order frames.
+The sender retransmits frame k and all following frames in the window.
+Advantage: better link utilization than stop-and-wait.
+Disadvantage: may retransmit correctly received frames.
+The receiver can accept and buffer correctly received out-of-order frames. The sender
+retransmits only the missing/damaged frame.
+Advantage: more efficient retransmission.
+Disadvantage: more complex sender/receiver logic and buffering.
+The Open Systems Interconnection (OSI) reference model is a seven-layer conceptual
+framework developed by ISO to standardize the functions of network communication. It
+explains what each layer does, allowing systems with different internal designs to
+communicate through standard interfaces and protocols.
+7  Application
+6  Presentation
+5  Session
+4  Transport
+3  Network
+2  Data Link
+1  Physical
+Mnemonic from Layer 7 to Layer 1:
+All People Seem To Need Data Processing.
+As data moves down the sender’s stack, each layer adds control information. This process is
+called encapsulation. At the receiver, the added information is removed upward through
+decapsulation.
+9.3 Go-Back-N ARQ
+9.4 Selective Repeat ARQ
+10. OSI Reference Model
+10.1 Introduction
+Layer order
+10.2 Encapsulation and PDUs
+
+
+--- PAGE 17 ---
+OSI layer
+Common Protocol Data Unit (PDU)
+Application, Presentation, Session
+Data
+Transport
+Segment (TCP) / Datagram (UDP)
+Network
+Packet
+Data Link
+Frame
+Physical
+Bits
+The physical layer transmits raw bits over a physical medium.
+Defines electrical, optical, mechanical, and radio characteristics of interfaces and media.
+Represents bits as signals.
+Defines bit rate/data rate.
+Defines connectors, pin layouts, voltages, frequencies, modulation, and line coding.
+Defines physical topology.
+Defines transmission modes: simplex, half-duplex, and full-duplex.
+Examples: cables, fibre, radio signals, repeaters, hubs, Ethernet physical standards.
+The data-link layer provides node-to-node delivery over a single network link. It transforms
+raw bits into manageable units called frames.
+Framing: groups bits into frames.
+Physical/MAC addressing: uses local hardware addresses such as Ethernet MAC addresses.
+Error control: detects damaged/lost frames and may request retransmission.
+Flow control: prevents a fast sender from overwhelming a slower receiver on the link.
+Media access control: decides which device may use a shared medium.
+Examples: Ethernet, Wi-Fi MAC, switches, bridges, PPP.
+The network layer provides source-to-destination delivery across multiple interconnected
+networks.
+10.3 Physical Layer — Layer 1
+Functions
+10.4 Data-Link Layer — Layer 2
+Functions
+10.5 Network Layer — Layer 3
+
+
+--- PAGE 18 ---
+Logical addressing: uses IP addresses.
+Routing/path determination: selects a suitable path from source network to destination
+network.
+Forwarding: moves packets to the next hop.
+Internetworking: enables communication across separate networks.
+Fragmentation and reassembly: may occur when packet size requirements differ,
+depending on protocol/version.
+May support congestion-related functions.
+Examples: IPv4, IPv6, ICMP, routers.
+The transport layer provides process-to-process delivery. It ensures data reaches the
+appropriate application process, not merely the correct machine.
+Segmentation of application data and reassembly at destination.
+Port addressing and multiplexing/demultiplexing.
+Connection control: connection-oriented or connectionless communication.
+End-to-end flow control.
+End-to-end error control, acknowledgements, sequencing, and retransmission where
+supported.
+Congestion control in TCP.
+Examples: TCP and UDP.
+The session layer manages dialogs or sessions between applications.
+Establishes, maintains, and terminates sessions.
+Dialog control: coordinates who can transmit and when.
+Supports half-duplex or full-duplex dialogue management.
+Synchronization/checkpoints in long transfers so recovery can resume from a known
+point.
+In real Internet protocol stacks, these functions are often implemented by applications or
+transport/session-related libraries rather than as a distinct layer.
+Functions
+10.6 Transport Layer — Layer 4
+Functions
+10.7 Session Layer — Layer 5
+Functions
+
+
+--- PAGE 19 ---
+The presentation layer handles the syntax and representation of data so unlike systems can
+interpret it consistently.
+Translation and format conversion.
+Character-code conversion, such as ASCII/Unicode handling.
+Encryption and decryption.
+Compression and decompression.
+Data serialization and representation.
+Examples: JPEG/PNG format handling, TLS encryption-related representation functions, UTF-8
+encoding.
+The application layer provides network services directly to end-user applications.
+Web access.
+Email services.
+File transfer and remote file access.
+Name/directory services.
+Remote login and network management.
+Shared database and cloud application access.
+Examples: HTTP/HTTPS, SMTP, IMAP/POP3, FTP/SFTP, DNS, SSH.
+Layer
+Name
+Main responsibility
+Address / identifier
+Typical device/protocol
+7
+Application
+Services to user applications
+Application-specific
+names
+HTTP, DNS, SMTP
+6
+Presentation
+Translation, encryption, compression
+Data format
+UTF-8, JPEG, TLS-related
+functions
+5
+Session
+Dialog/session management,
+synchronization
+Session ID
+Session services
+4
+Transport
+Process-to-process delivery,
+reliability, ports
+Port number
+TCP, UDP
+3
+Network
+Logical addressing, routing, packet
+forwarding
+IP address
+IP, router
+10.8 Presentation Layer — Layer 6
+Functions
+10.9 Application Layer — Layer 7
+Functions
+10.10 OSI Layer Summary Table
+
+
+--- PAGE 20 ---
+Layer
+Name
+Main responsibility
+Address / identifier
+Typical device/protocol
+2
+Data Link
+Framing, local delivery, MAC, link
+error control
+MAC address
+Ethernet, switch
+1
+Physical
+Signals and bit transmission
+None
+Cable, fibre, hub/repeater
+The TCP/IP protocol suite is the practical family of protocols used by the Internet and most
+modern networks. Unlike the OSI model, which is a seven-layer reference framework, TCP/IP is
+commonly presented as a four-layer model.
+TCP/IP Model                 Approximate OSI Mapping
+-------------------------------------------------------
+Application                  Application + Presentation + Session
+Transport                    Transport
+Internet                     Network
+Network Access / Link        Data Link + Physical
+Some books show a five-layer Internet model by separating Data Link and Physical layers. In
+BCA answers, write the four-layer model unless the question specifically follows a five-layer
+version.
+Provides services used by applications, including web browsing, email, file transfer, remote
+access, and name resolution.
+Protocols: HTTP/HTTPS, DNS, SMTP, FTP, SSH, DHCP.
+Provides end-to-end, process-to-process data transfer.
+TCP: connection-oriented, reliable byte-stream delivery; sequencing, acknowledgements,
+retransmission, flow and congestion control.
+UDP: connectionless, low-overhead datagram service; no built-in guarantee of delivery,
+order, or duplicate protection.
+11. TCP/IP Reference Model
+11.1 Introduction
+11.2 TCP/IP Layers
+1. Application layer
+2. Transport layer
+
+
+--- PAGE 21 ---
+Provides logical addressing and routing across networks.
+Protocols: IPv4, IPv6, ICMP, IGMP-related functions.
+Handles local-network access and sending frames over the actual medium.
+Technologies: Ethernet, Wi-Fi, PPP, ARP/Neighbor Discovery-related local functions.
+A correct exam answer should distinguish the suite as a whole from TCP and IP individually.
+1. Interconnects heterogeneous networks: allows devices on different local and wide-area
+networks to communicate.
+2. Provides logical addressing: IP identifies source and destination interfaces using IPv4 or
+IPv6 addresses.
+3. Supports routing: routers forward IP packets toward destination networks.
+4. Provides process delivery: TCP/UDP port numbers direct data to the correct application
+process.
+5. Supports reliable transfer when TCP is used: TCP sequences data, acknowledges receipt,
+retransmits losses, and delivers data in order.
+6. Supports fast best-effort transfer when UDP is used: UDP is useful where low overhead and
+timeliness matter more than guaranteed delivery.
+7. Performs segmentation and reassembly: upper-layer messages can be divided into
+transport segments and reconstructed at the destination.
+8. Provides flow and congestion control through TCP: TCP controls sender rate to protect the
+receiver and respond to network congestion.
+9. Supports applications through application protocols: HTTP/HTTPS, DNS, SMTP, and many
+other protocols operate over TCP/IP.
+10. Supports extensibility and interoperability: common standards allow diverse hardware,
+operating systems, and networks to communicate.
+TCP performs error detection, ordered reliable delivery, and retransmission; it does not
+generally “correct” a corrupted packet in place.
+IP offers best-effort delivery. It does not guarantee delivery, order, or reliability.
+Security is not automatically provided by TCP/IP alone. Protocols such as TLS, IPsec, SSH,
+and VPN technologies may add security services.
+3. Internet layer
+4. Network-access / Link layer
+11.3 Functions of TCP/IP
+Important correction
+
+
+--- PAGE 22 ---
+Basis
+OSI model
+TCP/IP model
+Nature
+Reference model
+Implemented protocol suite and model
+Origin
+ISO
+U.S. DoD/DARPA Internet work
+Number of layers
+7
+Usually 4
+Upper layers
+Separate Application, Presentation, Session
+Combined Application layer
+Lower layers
+Separate Data Link and Physical
+Combined Network Access/Link layer
+Network layer
+service
+Can describe connection-oriented or connectionless
+services
+Internet layer is primarily connectionless IP
+Real-world use
+Teaching, standardization, conceptual design
+Foundation of Internet and practical
+networking
+OSI                          TCP/IP
+-------------------------------------------
+Application (7)  ┐
+Presentation (6) ├── Application
+Session (5)      ┘
+Transport (4)    ─── Transport
+Network (3)      ─── Internet
+Data Link (2)    ┐
+Physical (1)     ┘── Network Access / Link
+A MAC (Media Access Control) address is a link-layer hardware identifier used for delivery
+within a local network segment. In common Ethernet and Wi-Fi use, it is a 48-bit identifier
+written as six hexadecimal octets.
+Example:
+00:1A:2B:3C:4D:5E
+A MAC address is typically assigned to a network interface by its manufacturer, but it can often
+be changed or spoofed in software. Therefore, do not write that MAC addresses “can never be
+changed.”
+12. OSI Model versus TCP/IP Model
+Mapping diagram
+13. MAC Address and IP Address
+13.1 MAC Address
+
+
+--- PAGE 23 ---
+An IP address is a logical network-layer address used to identify an interface and route packets
+between networks.
+Examples:
+IPv4: 192.168.1.10
+IPv6: 2001:db8:1::10
+IP addresses may be manually configured or dynamically assigned, usually by DHCP in IPv4
+networks or by SLAAC/DHCPv6 in IPv6 networks.
+Feature
+MAC address
+IP address
+Full form
+Media Access Control address
+Internet Protocol address
+OSI layer
+Data Link layer (Layer 2)
+Network layer (Layer 3)
+Purpose
+Local delivery on a link/LAN
+End-to-end routing across networks
+Nature
+Interface/hardware identifier
+Logical, network-location-related identifier
+Common
+length
+Usually 48 bits (EUI-48)
+IPv4: 32 bits; IPv6: 128 bits
+Notation
+Hexadecimal, e.g. 00:1A:2B:3C:4D:5E
+IPv4 decimal dotted notation; IPv6 hexadecimal
+colon notation
+Assignment
+Usually vendor-assigned; can be locally
+administered/spoofed
+Static/manual or dynamically assigned
+Used by
+Switches/bridges for local forwarding
+Routers for packet forwarding
+Scope
+Local broadcast domain/link
+Internetwork/global routing scope
+When a device wants to send data to another device on the same IPv4 LAN, it knows the target
+IP address but needs the target MAC address for the Ethernet frame. It uses ARP (Address
+Resolution Protocol) to map IPv4 address to MAC address.
+For IPv6, Neighbor Discovery Protocol performs a similar role; classic ARP is not used.
+For a remote destination, the source normally sends the Ethernet frame to the MAC address of
+its default gateway, while the IP packet retains the remote destination’s IP address. At each
+router hop, the Layer-2 frame/MAC addresses change, but the source and destination IP
+addresses normally remain end-to-end.
+13.2 IP Address
+13.3 Comparison
+13.4 How IP and MAC Work Together
+
+
+--- PAGE 24 ---
+IPv4 (Internet Protocol version 4) uses a 32-bit logical address. It is commonly written in
+dotted-decimal notation as four octets.
+Example:
+192.168.1.1
+The theoretical address space is:
+Not all addresses are available for ordinary public host assignment because some ranges are
+reserved for private use, multicast, loopback, documentation, and other special purposes.
+192.168.1.10
+ |   |   |  |
+8 bits each octet
+An address has a network prefix and a host/interface part. Modern allocation uses CIDR
+(Classless Inter-Domain Routing) prefix notation.
+Example:
+192.168.1.0/24
+Here /24 means the first 24 bits identify the network prefix.
+Classful addressing is historically important and may appear in university exams, but real
+networks now primarily use CIDR.
+Class
+First octet range
+Default mask
+Main historical use
+A
+1–126
+/8
+Very large networks
+B
+128–191
+/16
+Medium networks
+C
+192–223
+/24
+Small networks
+D
+224–239
+Not applicable
+Multicast
+E
+240–255
+Not applicable
+Experimental/reserved
+14. IPv4 Addressing
+14.1 Definition
+14.2 IPv4 Address Structure
+14.3 Historical Classful Addressing
+
+
+--- PAGE 25 ---
+Special notes:
+127.0.0.0/8 is loopback.
+Private IPv4 ranges include 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16.
+Limited 32-bit address space.
+Address exhaustion in public IPv4 space.
+NAT is widely used to share public IPv4 addresses.
+Header is comparatively more complex than IPv6 header.
+Security is not inherent; IPsec support exists but deployment is optional.
+IPv6 (Internet Protocol version 6) uses 128-bit addresses. It was designed to solve IPv4 address
+exhaustion and improve Internet-layer functionality.
+The number of possible IPv6 addresses is:
+This is an extremely large address space.
+Example:
+2001:0db8:0000:0000:0000:0000:0000:0001
+Compressed form:
+2001:db8::1
+An IPv6 address consists of eight groups of four hexadecimal digits.
+Leading zeros inside a group may be omitted.
+One consecutive run of all-zero groups may be compressed using ::.
+:: may be used only once in one IPv6 address to avoid ambiguity.
+Example:
+2001:0db8:0000:0000:0000:ff00:0042:8329
+14.4 IPv4 Limitations
+15. IPv6 Addressing
+15.1 Definition
+15.2 IPv6 Notation Rules

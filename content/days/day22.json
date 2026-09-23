@@ -1,0 +1,217 @@
+{
+  "day": 22,
+  "title": "TCP Congestion Control (AIMD & Tahoe/Reno), Data Interpretation & LIS Dynamic Programming",
+  "sem_data": {
+    "subject": "BCA-5003 Computer Network",
+    "topic": "Unit IV \u2014 Transport Layer: TCP Congestion Control Mechanisms (Slow Start, AIMD, Fast Retransmit & Reno)",
+    "detailed_notes": [
+      "Network congestion occurs when the aggregate traffic injected into a network exceeds the capacity of intermediate routers and links, causing buffer overflow, queuing delays, and packet drops (Congestion Collapse). TCP incorporates end-to-end congestion control to dynamically modulate transmission rates without explicit router feedback.",
+      "Key State Variables:\n\u2022 Congestion Window (`cwnd`): The maximum number of bytes the sender is permitted to transmit before receiving an ACK, dynamically calculated by the sender.\n\u2022 Advertised Window (`rwnd`): The buffer capacity advertised by the receiver in the TCP header for flow control.\n\u2022 Effective Sending Window = `min(cwnd, rwnd)`.\n\u2022 Slow Start Threshold (`ssthresh`): The window size threshold determining the transition between Slow Start and Congestion Avoidance.",
+      "The 4 Core Phases of TCP Congestion Control:\n1. Slow Start Phase:\n\u2022 Initially `cwnd = 1 MSS` (Maximum Segment Size). `ssthresh` is typically set to 64KB.\n\u2022 For EVERY ACK received, `cwnd` increases by 1 MSS: `cwnd = cwnd + 1 MSS`.\n\u2022 This causes `cwnd` to DOUBLE every Round Trip Time (RTT): 1 -> 2 -> 4 -> 8 -> 16 MSS (Exponential Growth!).\n\u2022 Continues until `cwnd >= ssthresh` or a packet drop occurs.",
+      "2. Congestion Avoidance Phase (Additive Increase):\n\u2022 Once `cwnd >= ssthresh`, exponential growth stops to prevent abrupt network saturation.\n\u2022 For every RTT, `cwnd` increases by strictly 1 MSS (Additive Increase): `cwnd = cwnd + (1 / cwnd)` per ACK.\n\u2022 Graphically represents a linear staircase ascent.",
+      "3. Multiplicative Decrease (Handling Packet Loss):\n\u2022 Case A (Timeout): Severe congestion indicator. `ssthresh = cwnd / 2`, `cwnd` is collapsed to 1 MSS, and Slow Start restarts.\n\u2022 Case B (3 Duplicate ACKs): Mild packet loss. Router dropped 1 segment, but subsequent segments arrived at receiver.\n4. Fast Retransmit & Fast Recovery (TCP Reno):\n\u2022 Fast Retransmit: Sender retransmits the missing segment immediately upon receiving the 3rd duplicate ACK WITHOUT waiting for retransmission timer expiration!\n\u2022 Fast Recovery (TCP Reno): Instead of dropping `cwnd` to 1 MSS (as in TCP Tahoe), Reno sets `ssthresh = cwnd / 2` and `cwnd = ssthresh + 3 MSS`, continuing Congestion Avoidance without restarting Slow Start."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    TCP CWND EVOLUTION CURVE OVER TIME                   |\n+-------------------------------------------------------------------------+\n|  CWND                                                                   |\n|   ^                                                                     |\n|   |                 (Timeout Loss)                                      |\n| 32|                       *                                             |\n|   |                      / \\                                            |\n| 16|          *          /   \\ (ssthresh = 16)                           |\n|   |         / \\        /                                                |\n|  8|        /   *------* (Congestion Avoidance: Linear +1 MSS/RTT)        |\n|   |       /    (Fast Recovery - Reno)                                   |\n|  4|      *                                                              |\n|  2|     / (Slow Start: Exponential x2/RTT)                              |\n|  1|    *                                                                |\n|   +----------------------------------------------------> Time (RTT)     |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Algorithm Phase",
+        "Window Growth Behavior",
+        "Update Rule per RTT",
+        "Trigger for Transition"
+      ],
+      "rows": [
+        [
+          "Slow Start",
+          "Exponential growth",
+          "cwnd = cwnd * 2 per RTT",
+          "Starts at 1 MSS, ends when cwnd >= ssthresh"
+        ],
+        [
+          "Congestion Avoidance",
+          "Linear additive growth",
+          "cwnd = cwnd + 1 MSS per RTT",
+          "Occurs while cwnd < loss threshold"
+        ],
+        [
+          "Fast Retransmit",
+          "Immediate retransmission",
+          "Retransmit lost frame",
+          "Triggered by receipt of 3 Duplicate ACKs"
+        ],
+        [
+          "Fast Recovery (Reno)",
+          "Halves window without restart",
+          "ssthresh = cwnd/2; cwnd = ssthresh",
+          "Maintains high pipeline throughput"
+        ]
+      ]
+    },
+    "memorize": "AIMD: Additive Increase (+1 MSS/RTT), Multiplicative Decrease (halve ssthresh on loss). Tahoe resets cwnd to 1; Reno halves cwnd to ssthresh on 3 dup ACKs.",
+    "understand": "Why does Slow Start double exponentially? To rapidly discover the available network link capacity without wasting dozens of RTTs crawling upwards linearly from 1 MSS.",
+    "common_mistakes": "1. Assuming Slow Start increases by 1 segment per RTT (it doubles every RTT!). 2. Confusing flow control (protects receiver buffer via rwnd) with congestion control (protects network routers via cwnd).",
+    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "High-Frequency 15-Mark Core Question (Appeared in 2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_question": "Explain TCP Congestion Control in detail. Describe Slow Start, Congestion Avoidance, Fast Retransmit, and Fast Recovery with a neat cwnd graph. Differentiate between TCP Tahoe and TCP Reno. (15 Marks)",
+    "pyq_rubric": "Concept of Congestion & cwnd vs rwnd (3 marks) + 4 Phases explained with formulas (6 marks) + CWND graph (3 marks) + Tahoe vs Reno comparison (3 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Congestion Control vs Flow Control:",
+        "Flow control is an end-to-end mechanism between sender and receiver preventing receiver buffer overflow (regulated via `rwnd`). Congestion control is a global network mechanism preventing intermediate router buffer exhaustion and link saturation (regulated via `cwnd`). Effective transmission window = min(cwnd, rwnd)."
+      ],
+      [
+        "2. Detailed Breakdown of TCP Congestion Control Mechanisms:",
+        "\u2022 Slow Start: Starts with cwnd = 1 MSS. Each received ACK increments cwnd by 1 MSS, doubling cwnd every RTT (1, 2, 4, 8...). Once cwnd reaches `ssthresh`, mode switches to Congestion Avoidance.\n\u2022 Congestion Avoidance: Employs Additive Increase: cwnd increases by 1 MSS per RTT regardless of the number of ACKs received. Represents linear probe of bandwidth.\n\u2022 Fast Retransmit: When a single segment is lost, receiver sends duplicate ACKs for subsequent out-of-order packets. Upon receiving 3 Duplicate ACKs, sender retransmits the missing segment immediately without waiting for timeout.\n\u2022 Fast Recovery: Avoids dropping to cwnd = 1 MSS. Halves ssthresh and sets cwnd = ssthresh, resuming linear congestion avoidance."
+      ],
+      [
+        "3. TCP Tahoe vs TCP Reno:",
+        "In TCP Tahoe, ANY packet loss (timeout or 3 duplicate ACKs) forces cwnd back down to 1 MSS, re-entering slow start. In TCP Reno, 3 duplicate ACKs trigger Fast Recovery: cwnd is halved to `ssthresh` and continues linear growth, avoiding severe throughput collapse."
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master AIMD, Slow Start, and Tahoe vs Reno Graph",
+    "milestone": "Full 15/15 Marks on Computer Networks Transport Layer Question"
+  },
+  "apt_data": {
+    "topic": "Data Interpretation (DI) \u2014 Tables, Bar Charts & Missing Data",
+    "tutorial": [
+      "Data Interpretation (DI) tests rapid quantitative extraction and mental percentage calculation from complex datasets.",
+      "Core Mathematical Operations in DI:\n1. Percentage Growth: % Increase/Decrease = [(Final Value - Initial Value) / Initial Value] * 100.\n2. Ratio Comparison: To compare A/B vs C/D, cross-multiply A*D vs B*C.\n3. Average: Sum of items / Total item count.\n4. Approximations: Round numbers to 2 significant digits (e.g., 4,821 / 15,920 \u2248 48 / 160 = 30%)."
+    ],
+    "formulas": "Growth % = (Change / Base) * 100. Ratio cross-multiplication: A/B > C/D if A*D > B*C.",
+    "shortcut": "Splitting the Base for Percentages: To find 17% of 420: 10% = 42, 5% = 21, 1% = 4.2. Total = 42 + 21 + (2 * 4.2) = 71.4.",
+    "recognition": "Look for multi-column tables showing year-over-year production, sales, or expenditures in TCS NQT, Wipro, and Cognizant.",
+    "tier1_problem": "A table shows sales (in lakhs) of 3 products (A, B, C) over 2 years: Year 1: A=40, B=60, C=80. Year 2: A=50, B=75, C=100. Find the overall percentage increase in total sales.",
+    "tier1_solution": "Total Sales Year 1 = 40 + 60 + 80 = 180 lakhs.\nTotal Sales Year 2 = 50 + 75 + 100 = 225 lakhs.\nAbsolute Increase = 225 - 180 = 45 lakhs.\nPercentage Increase = (45 / 180) * 100 = (1 / 4) * 100 = 25%. Answer: 25%.",
+    "tier2_problem": "A company has 5 departments with employees: IT: 120, HR: 40, Sales: 80, Finance: 60, Ops: 100. What percentage of the total workforce is in Sales?",
+    "tier2_solution": "Total Workforce = 120 + 40 + 80 + 60 + 100 = 400.\nSales employees = 80.\nPercentage = (80 / 400) * 100 = 20%. Answer: 20%.",
+    "tier3_problem": "[TCS NQT DI Pattern] Table shows Revenue and Expenditure (in Crores) of a firm across 4 years:\n2021: Rev=200, Exp=160\n2022: Rev=250, Exp=190\n2023: Rev=300, Exp=210\n2024: Rev=360, Exp=240\nIn which year was the Profit Percentage [(Rev - Exp) / Exp * 100] the highest?",
+    "tier3_solution": "Calculate Profit % for each year:\n2021: (40 / 160) * 100 = 25.0%\n2022: (60 / 190) * 100 \u2248 31.58%\n2023: (90 / 210) * 100 = (3 / 7) * 100 \u2248 42.86%\n2024: (120 / 240) * 100 = 50.0%\nHighest profit percentage occurred in 2024 (50%). Answer: 2024.",
+    "tier4_problem": "A table has missing data for student marks. Total students = 200. Passed in Math = 140. Passed in Science = 120. If 30 students failed both subjects, how many students passed in BOTH subjects?",
+    "tier4_solution": "Total Students = 200.\nStudents failing both = 30 ==> Students passing at least one subject = 200 - 30 = 170.\nUsing Set Theory: n(M union S) = n(M) + n(S) - n(M intersection S).\n170 = 140 + 120 - n(Both)\n170 = 260 - n(Both)\nn(Both) = 260 - 170 = 90 students. Answer: 90 students.",
+    "speed_drills": [
+      {
+        "q": "Production increases from 500 to 650 units. Find percentage increase.",
+        "a": "(150 / 500) * 100 = 30%."
+      },
+      {
+        "q": "Ratio of males to females is 3:2. If total is 450, find number of females.",
+        "a": "2/5 * 450 = 180 females."
+      },
+      {
+        "q": "What is 15% of 680?",
+        "a": "10% = 68, 5% = 34. Total = 102."
+      },
+      {
+        "q": "Expenditure is 80% of Income. If Income is Rs 50,000, find savings.",
+        "a": "20% of 50,000 = Rs 10,000."
+      },
+      {
+        "q": "Which ratio is greater: 5/8 or 7/11?",
+        "a": "5*11=55 vs 7*8=56 ==> 7/11 is greater."
+      }
+    ]
+  },
+  "dsa_problems": [
+    {
+      "title": "Longest Increasing Subsequence (LeetCode 300 - Medium)",
+      "difficulty": "Medium",
+      "importance": "Top-tier Placement Dynamic Programming Problem (Google, Amazon, TCS Digital)",
+      "problem_statement": "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
+      "solution_approach": "Approach 1: Classic DP in O(N^2):\nLet dp[i] represent the length of the LIS ending at index i.\nFor every j < i: if nums[j] < nums[i], dp[i] = max(dp[i], dp[j] + 1).\n\nApproach 2: Patience Sorting with Binary Search in O(N log N):\nMaintain an array `tails` where tails[k] stores the smallest tail of all increasing subsequences of length k+1.\nFor each x in nums, use binary search (`bisect_left`) to find its insertion position in `tails`. If x is greater than all elements, append it; otherwise replace the existing element.",
+      "code": "import bisect\n\ndef lengthOfLIS(nums: list[int]) -> int:\n    if not nums:\n        return 0\n        \n    tails = []\n    for x in nums:\n        idx = bisect.bisect_left(tails, x)\n        if idx == len(tails):\n            tails.append(x)\n        else:\n            tails[idx] = x\n            \n    return len(tails)",
+      "line_by_line": [
+        [
+          "tails = []",
+          "Dynamic array maintaining the smallest active tail for every subsequence length."
+        ],
+        [
+          "idx = bisect.bisect_left(tails, x)",
+          "Binary search in O(log N) to find insertion or replacement index."
+        ],
+        [
+          "if idx == len(tails): tails.append(x)",
+          "Extends the maximum subsequence length found so far."
+        ],
+        [
+          "else: tails[idx] = x",
+          "Greedily lowers the tail value of an existing length, increasing chances for future expansions."
+        ]
+      ],
+      "time_complexity": "O(N log N) using binary search (or O(N^2) using basic DP).",
+      "space_complexity": "O(N) to store tails array.",
+      "edge_cases": "Strictly decreasing array [7, 7, 7] (returns 1); sorted array [1, 2, 3] (returns len)."
+    }
+  ],
+  "cs_core": {
+    "subject": "Operating Systems",
+    "topic": "Process Synchronization Primitives: Semaphores, Mutexes & Condition Variables",
+    "detailed_notes": [
+      "Critical Section Problem:\nA section of code accessing shared resources that must not be concurrently accessed by more than one process. Must satisfy 3 criteria: 1. Mutual Exclusion, 2. Progress, 3. Bounded Waiting.",
+      "Synchronization Primitives Compared:\n\u2022 Mutex (Mutual Exclusion Lock): A locking mechanism with ownership. Only the thread that locked the mutex is permitted to unlock it. Binary state (locked/unlocked).\n\u2022 Semaphore (Dijkstra): A signaling integer counter variable accessed only via atomic operations `wait()` (P) and `signal()` (V).\n  - Counting Semaphore: Counter value N represents available units of a shared resource.\n  - Binary Semaphore: Value restricted to 0 or 1. Unlike a mutex, a semaphore has NO ownership: Thread A can wait() and Thread B can signal() to release it!\n\u2022 Spinlock: Thread busy-waits in a loop checking lock state. Useful on multi-core systems when lock duration is shorter than OS context-switch overhead.",
+      "Priority Inversion Problem:\nOccurs when a low-priority thread holds a shared lock needed by a high-priority thread, and a medium-priority thread preempts the low-priority thread, starving the high-priority thread! Solved by Priority Inheritance Protocol (low-priority thread temporarily inherits high priority while holding lock)."
+    ],
+    "interview_qa": [
+      {
+        "q": "What is the technical difference between a Mutex and a Binary Semaphore?",
+        "a": "The fundamental difference is 'ownership' and purpose. A Mutex is a locking mechanism with ownership: the exact same thread that acquired the mutex MUST release it. A Binary Semaphore is a signaling mechanism without ownership: one thread can wait for an event, and a completely different thread or interrupt service routine can signal the semaphore to unblock it."
+      },
+      {
+        "q": "What is Priority Inversion and how does Priority Inheritance solve it?",
+        "a": "Priority inversion happens when a low-priority process holds a lock required by a high-priority process, but is preempted by an unrelated medium-priority process, indefinitely delaying the high-priority process. Priority Inheritance solves this by temporarily elevating the priority of the low-priority lock-holder to match the waiting high-priority process until the lock is released."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "Portfolio Systems Architecture",
+    "feature_focus": "System Design: Scaling BulkBeat TV to 50k Concurrent Users",
+    "architecture_deep_dive": "Scaling BulkBeat TV from a single VPS to 50,000 concurrent streaming users:\n\n1. Decoupled Architecture:\nSeparate media stream ingestion from user notification distribution. The ingestion pipeline runs as an isolated worker service, writing stream events to an Apache Kafka / RabbitMQ message broker.\n\n2. Distributed Caching & Database Tier:\n\u2022 Migrate embedded SQLite to a PostgreSQL cluster with 1 Primary (Writes) and 3 Read Replicas.\n\u2022 Place a Redis cluster in front of PostgreSQL to cache active subscription tokens and channel metadata with a 60-second TTL, reducing database load by 95%.\n\n3. Horizontal API Gateway Scaling:\nDeploy FastAPI stateless containers behind Nginx / AWS ALB using round-robin load balancing. WebSocket connections are terminated at the load balancer with Redis Pub/Sub syncing broadcast messages across server instances.",
+    "interview_qa": [
+      {
+        "q": "How would you handle sudden traffic spikes during breaking news events on BulkBeat TV?",
+        "a": "I would implement aggressive edge caching via a CDN (Cloudflare) for static assets and public stream playlists. For dynamic user notifications, I would decouple alert publishing from delivery using an asynchronous Redis Pub/Sub message broker, buffering outgoing traffic and protecting backend workers from connection spikes."
+      },
+      {
+        "q": "Why is Redis Pub/Sub suitable for multi-instance WebSocket synchronization?",
+        "a": "When multiple FastAPI server instances run behind a load balancer, client WebSockets are scattered across different physical machines. Redis Pub/Sub acts as a lightweight central event bus: when an alert occurs, the producer publishes to a Redis channel, and all server instances receive the event simultaneously and push it down their local active WebSocket connections."
+      }
+    ]
+  },
+  "daily_test": {
+    "day": 22,
+    "questions": [
+      {
+        "q": "What is the update rule for TCP Slow Start for each received ACK?",
+        "a": "cwnd = cwnd + 1 MSS. The congestion window doubles every round trip time."
+      },
+      {
+        "q": "How does TCP Reno handle packet loss signaled by 3 Duplicate ACKs?",
+        "a": "It triggers Fast Retransmit and Fast Recovery: ssthresh is set to cwnd / 2, and cwnd is set to ssthresh, continuing linear congestion avoidance without restarting slow start."
+      },
+      {
+        "q": "If revenue increases from 200 Cr to 260 Cr, what is the percentage increase?",
+        "a": "(60 / 200) * 100 = 30% increase."
+      },
+      {
+        "q": "What is the time complexity of the optimized Patience Sorting solution for LIS?",
+        "a": "O(N log N) using binary search (bisect_left) on the tails array."
+      },
+      {
+        "q": "What are the 3 criteria that any valid solution to the Critical Section problem must satisfy?",
+        "a": "1. Mutual Exclusion, 2. Progress, 3. Bounded Waiting."
+      },
+      {
+        "q": "Can a Binary Semaphore be unlocked by a thread other than the one that locked it?",
+        "a": "Yes. Semaphores are signaling mechanisms and have no ownership, unlike Mutexes."
+      },
+      {
+        "q": "What is the difference between TCP Tahoe and TCP Reno on 3 Duplicate ACKs?",
+        "a": "Tahoe drops cwnd back to 1 MSS and restarts Slow Start. Reno halves cwnd to ssthresh and enters Fast Recovery."
+      },
+      {
+        "q": "How does Priority Inheritance resolve Priority Inversion in OS synchronization?",
+        "a": "The low-priority thread holding the lock temporarily inherits the higher priority of the waiting thread until it releases the shared lock."
+      }
+    ]
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "day": 12,
+  "title": "Java Collections, Tree Traversals & Time and Work LCM Method",
+  "sem_data": {
+    "subject": "BCA-5002 Java Programming",
+    "topic": "Unit II \u2014 Java Collections Framework: Hierarchy, List, Set, Map & Iterators",
+    "detailed_notes": [
+      "The Java Collections Framework (JCF) provides a unified architecture for representing, manipulating, and storing groups of objects. Situated in the 'java.util' package, it reduces programming effort, increases performance, and establishes high-level interoperability between unrelated APIs.",
+      "Core Collection Hierarchy Structure:\nThe framework is organized into two distinct interface root hierarchies:\n1. java.util.Collection: The root interface for collections of individual elements. It branches into:\n   - List: An ordered, index-based collection that permits duplicate elements. Implementations: ArrayList (dynamic resizable array, fast random access O(1), slow insertion/deletion O(N)), LinkedList (doubly linked list, fast insertion/deletion O(1), slow sequential access O(N)), Vector (thread-safe, synchronized equivalent of ArrayList, slower due to lock contention), and Stack (LIFO subclass of Vector).\n   - Set: An unordered collection that contains NO duplicate elements. Implementations: HashSet (backed by HashMap, O(1) average lookup, no order guarantee), LinkedHashSet (maintains insertion order via doubly linked list), and TreeSet (implements NavigableSet/SortedSet, backed by Red-Black tree, elements sorted naturally or via Comparator, O(log N) operations).\n   - Queue / Deque: Collections designed for holding elements prior to processing. Implementations: PriorityQueue (min-heap ordering), ArrayDeque (resizable array double-ended queue, faster than Stack/LinkedList).\n2. java.util.Map: A completely separate root interface (does NOT inherit from Collection) mapping unique keys to values. Implementations: HashMap (hash table, O(1) average, permits one null key), LinkedHashMap (maintains insertion order), TreeMap (Red-Black tree, keys sorted, O(log N)), and Hashtable (legacy, synchronized, null keys/values strictly prohibited).",
+      "Cursors / Iterators in Java:\n\u2022 Iterator: Universal forward-only cursor for any Collection (hasNext(), next(), remove()).\n\u2022 ListIterator: Bidirectional cursor exclusive to List implementations (hasPrevious(), previous(), add(), set())."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                   JAVA COLLECTIONS FRAMEWORK HIERARCHY                  |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|                           java.util.Collection                          |\n|                          /         |          \\                         |\n|                         /          |           \\                        |\n|                    java.util.List  |      java.util.Set                 |\n|                    /    |     \\    |       /     |     \\                |\n|           ArrayList LinkedList Vector Queue  HashSet LinkedHashSet TreeSet|\n|                                  |   |                                  |\n|                                Stack PriorityQueue                      |\n|                                                                         |\n|   [SEPARATE HIERARCHY]                    java.util.Map                 |\n|                                            /     |     \\                |\n|                                      HashMap LinkedHashMap TreeMap      |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Dimension",
+        "ArrayList",
+        "LinkedList",
+        "Vector"
+      ],
+      "rows": [
+        [
+          "Internal Structure",
+          "Dynamic resizable array",
+          "Doubly linked list",
+          "Synchronized dynamic array"
+        ],
+        [
+          "Random Access (get/set)",
+          "O(1) instant index access",
+          "O(N) sequential traversal",
+          "O(1) index access (synchronized)"
+        ],
+        [
+          "Insertion / Deletion",
+          "O(N) due to element shifting",
+          "O(1) pointer updates once node found",
+          "O(N) due to element shifting"
+        ],
+        [
+          "Thread Safety",
+          "Non-synchronized (Not thread-safe)",
+          "Non-synchronized (Not thread-safe)",
+          "Synchronized (Thread-safe)"
+        ],
+        [
+          "Performance Speed",
+          "High speed; standard default",
+          "High for frequent insertions",
+          "Low speed due to synchronization lock overhead"
+        ],
+        [
+          "Growth Factor",
+          "Increases size by 50% (new = old * 1.5)",
+          "Grows node-by-node dynamically",
+          "Doubles size by 100% (new = old * 2)"
+        ]
+      ]
+    },
+    "memorize": "Root interfaces: Collection (List, Set, Queue) and Map (Key-Value, separate tree). ArrayList = Resizable Array O(1) access; LinkedList = Doubly Linked List O(1) insert; HashSet = O(1) no order; TreeSet = O(log N) sorted; HashMap = O(1) hash table.",
+    "understand": "Why is Map not a Collection? A Collection is a collection of individual elements (values), whereas a Map is a collection of key-value pairs (entries). Treating keys and values as a single element breaks standard Collection operations like add(Object) and contains(Object).",
+    "common_mistakes": "1. Stating that Map implements the Collection interface (Map is a separate root interface). 2. Modifying a Collection directly while iterating over it with a for-each loop (throws ConcurrentModificationException; use Iterator.remove() instead).",
+    "pyq_year": "CSJMU BCA-5002 (2021, 2022-23, 2024-25)",
+    "pyq_freq": "3 University Sessions: 2021 (Q4 - 15m), 2022-23 (Q1b - 15m), 2024-25 (Q4 - 15m)",
+    "pyq_question": "Explain the Java Collections Framework hierarchy with a neat diagram. Differentiate between ArrayList and Vector, and between Iterator and ListIterator with code examples. (15 Marks)",
+    "pyq_rubric": "JCF Architecture tree diagram (4 marks) + List, Set, Map breakdown (4 marks) + ArrayList vs Vector comparison (4 marks) + Iterator vs ListIterator distinction & code (3 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. JCF Architectural Design & Roots:",
+        "The Java Collections Framework (JCF), introduced in JDK 1.2, provides a standardized, high-performance architecture for data structures. It decouples core interfaces from concrete implementations, allowing developers to write flexible algorithms that operate on abstract collections rather than specific implementations. The framework is divided into two primary root hierarchies: java.util.Collection and java.util.Map."
+      ],
+      [
+        "2. Primary Interfaces & Implementations:",
+        "\u2022 List Interface: Preserves insertion order, accessible via zero-based integer index. Permits duplicates. Key classes: ArrayList (ideal for frequent reads via contiguous memory), LinkedList (ideal for frequent insertions at arbitrary positions via pointers), and Vector (legacy synchronized thread-safe array).\n\u2022 Set Interface: Unordered collection prohibiting duplicate elements. HashSet uses hash codes for O(1) lookups; LinkedHashSet maintains insertion order via a linked list; TreeSet guarantees sorted ascending order via Red-Black trees.\n\u2022 Map Interface: Maps unique keys to values. HashMap provides O(1) lookups using bucket hashing and treeification of collided buckets; TreeMap maintains sorted keys in O(log N) time."
+      ],
+      [
+        "3. Comparative Analysis: ArrayList vs Vector:",
+        "While both ArrayList and Vector implement List using internal arrays, their concurrency and memory growth models diverge fundamentally. Vector's methods are declared 'synchronized', acquiring intrinsic object locks on every call, making it thread-safe but introducing severe performance penalties in single-threaded programs. ArrayList is unsynchronized and fast. Furthermore, when capacity is exhausted, Vector doubles its size (100% expansion), whereas ArrayList grows by 50% (newCapacity = oldCapacity + (oldCapacity >> 1)), consuming memory more conservatively."
+      ],
+      [
+        "4. Cursors: Iterator vs ListIterator:",
+        "\u2022 Iterator: Can traverse any Collection in the forward direction only using hasNext() and next(). It supports safe in-place element removal via remove().\n\u2022 ListIterator: Exclusive to List implementations. It supports bidirectional traversal using previous() and hasPrevious(), allows element modification via set(obj), element insertion via add(obj), and index inspection via nextIndex() and previousIndex()."
+      ],
+      [
+        "5. Summary & Code Walkthrough:",
+        "List<String> list = new ArrayList<>();\nlist.add(\"Java\"); list.add(\"Python\");\nListIterator<String> lit = list.listIterator();\nwhile (lit.hasNext()) {\n    String val = lit.next();\n    if (val.equals(\"Java\")) lit.set(\"Core Java\");\n}\nThis demonstrates safe bidirectional element replacement using ListIterator."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Explain how HashMap works internally in Java 8, including buckets, hashing, and Red-Black tree conversion. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "Differentiate between Comparable and Comparator interfaces in Java with an example. (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Java Collections Framework Tree, ArrayList vs Vector, and ListIterator.",
+    "milestone": "Full 15/15 marks on University Question 4 (BCA-5002 Java Collections)."
+  },
+  "apt_data": {
+    "topic": "Time & Work \u2014 Foundations, One-Day Work Concept & The LCM Efficiency Method",
+    "tutorial": [
+      "Time and Work problems are based on the principle of inverse proportionality: if a person can complete a total work in 'n' days, then in 1 day they complete exactly (1 / n)th part of the work.",
+      "The Two Classical Problem-Solving Methods:\n1. The Traditional Unitary / Fractional Method: Work is taken as 1 whole unit. If A takes 10 days and B takes 15 days, 1-day combined work = (1/10) + (1/15) = (3 + 2)/30 = 5/30 = 1/6. Total days = 6 days.\n2. The Professional LCM Efficiency Method (The Preferred Placement Strategy):\nInstead of working with cumbersome fractions, assume Total Work = LCM of individual days.\nEfficiency = (Total Units of Work) / (Days Taken).\nExample: A takes 10 days, B takes 15 days. Total Work = LCM(10, 15) = 30 units.\n\u2022 A's daily efficiency = 30 / 10 = 3 units/day.\n\u2022 B's daily efficiency = 30 / 15 = 2 units/day.\nCombined daily efficiency = 3 + 2 = 5 units/day.\nTotal time taken together = Total Work / Combined Efficiency = 30 / 5 = 6 days instantly!",
+      "Man-Days Equivalence Formula (Chain Rule):\n(M1 * D1 * H1) / W1 = (M2 * D2 * H2) / W2, where M = workers, D = days, H = hours/day, W = work done."
+    ],
+    "formulas": "1. LCM Efficiency: Total Work = LCM(days); Efficiency = Work / Time\n2. Combined Work of Two Persons: Time = (A * B) / (A + B)\n3. Combined Work of Three Persons: Time = (A * B * C) / (AB + BC + CA)\n4. Chain Rule: (M1 * D1 * H1 * E1) / W1 = (M2 * D2 * H2 * E2) / W2",
+    "shortcut": "The Product-over-Sum Shortcut for Two Workers:\nIf A takes 12 days and B takes 24 days:\nCombined Time = (A * B) / (A + B) = (12 * 24) / (12 + 24) = 288 / 36 = 8 days instantly!",
+    "recognition": "Look for 'A can do a piece of work in X days and B in Y days', 'A and B working together can do a piece of work in...', or 'A is twice as efficient as B'.",
+    "p1_q": "[Foundation] A can complete a work in 12 days, and B can complete the same work in 24 days. In how many days can both of them together complete the work?",
+    "p1_s": "Method 1: Product-over-Sum Shortcut:\nTime = (A * B) / (A + B) = (12 * 24) / (12 + 24) = 288 / 36 = 8 days.\nMethod 2: LCM Efficiency Verification:\nTotal Work = LCM(12, 24) = 24 units.\n- A's efficiency = 24 / 12 = 2 units/day.\n- B's efficiency = 24 / 24 = 1 unit/day.\nCombined efficiency = 2 + 1 = 3 units/day.\nDays needed = 24 / 3 = 8 days.\nAnswer: 8 days.",
+    "p2_q": "[Standard Placement] A and B together can do a piece of work in 10 days. A alone can do it in 15 days. In how many days can B alone complete the work?",
+    "p2_s": "Step 1: Total Work = LCM(10, 15) = 30 units.\nStep 2: Calculate daily efficiencies:\n- (A + B)'s combined efficiency = 30 / 10 = 3 units/day.\n- A's individual efficiency = 30 / 15 = 2 units/day.\nStep 3: B's individual efficiency = Combined - A = 3 - 2 = 1 unit/day.\nStep 4: Time taken by B alone = Total Work / B's efficiency = 30 / 1 = 30 days.\nAlternative Shortcut: Time_B = (Combined * A) / (A - Combined) = (10 * 15) / (15 - 10) = 150 / 5 = 30 days.\nAnswer: 30 days.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS NQT / Cognizant GenC Quantitative]",
+    "p3_q": "A can do a piece of work in 20 days and B in 30 days. They work together for 5 days, and then A leaves. In how many more days will B finish the remaining work?",
+    "p3_s": "Step 1: Determine Total Work via LCM:\nTotal Work = LCM(20, 30) = 60 units.\nStep 2: Calculate individual efficiencies:\n- A's efficiency = 60 / 20 = 3 units/day.\n- B's efficiency = 60 / 30 = 2 units/day.\nCombined efficiency = 3 + 2 = 5 units/day.\nStep 3: Work completed in first 5 days together:\nWork done = 5 days * 5 units/day = 25 units.\nStep 4: Calculate remaining work after A leaves:\nRemaining Work = 60 - 25 = 35 units.\nStep 5: Time taken by B alone to finish remaining work:\nTime = Remaining Work / B's efficiency = 35 / 2 = 17.5 days (or 17 1/2 days).\nAnswer: 17.5 days.",
+    "p4_q": "[Hard / Time-Pressure] A is twice as good a workman as B, and together they finish a piece of work in 18 days. In how many days will A alone finish the work?",
+    "p4_s": "Step 1: Ratio of efficiencies:\nA is twice as good as B ==> Efficiency A : Efficiency B = 2 : 1.\nLet B's efficiency = 1 unit/day, then A's efficiency = 2 units/day.\nStep 2: Combined efficiency = 2 + 1 = 3 units/day.\nStep 3: Calculate Total Work:\nThey finish the work together in 18 days:\nTotal Work = Combined Efficiency * Days = 3 units/day * 18 days = 54 units.\nStep 4: Time taken by A alone:\nTime_A = Total Work / A's efficiency = 54 / 2 = 27 days.\nTime taken by B alone = 54 / 1 = 54 days.\nAnswer: 27 days.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "A can do a work in 15 days, B in 20 days, and C in 30 days. In how many days will all three finish it together?"
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "12 men can complete a project in 16 days. In how many days can 8 men complete the same project?"
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "A is thrice as efficient as B and is able to finish a job in 60 days less than B. Find time taken together."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "A can finish a work in 18 days and B in 15 days. B worked for 10 days and left. In how many days can A finish remaining work?"
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "If 3 men or 6 women can do a piece of work in 16 days, in how many days will 12 men and 8 women do it?"
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "LCM(15, 20, 30) = 60. Efficiencies: A=4, B=3, C=2. Total = 9. Days = 60 / 9 = 20 / 3 = 6.67 days. Answer: 6.67 days."
+      ],
+      [
+        "Solution Q2:",
+        "M1 * D1 = M2 * D2 ==> 12 * 16 = 8 * D2 ==> D2 = (12 * 16) / 8 = 24 days. Answer: 24 days."
+      ],
+      [
+        "Solution Q3:",
+        "Efficiency 3:1 ==> Time 1:3. Difference = 2 units = 60 days ==> 1 unit = 30 days (A=30, B=90). Together = (30 * 90) / 120 = 2700 / 120 = 22.5 days. Answer: 22.5 days."
+      ],
+      [
+        "Solution Q4:",
+        "Work = 90. A=5, B=6. B does 10 * 6 = 60 units. Remaining = 30 units. A takes 30 / 5 = 6 days. Answer: 6 days."
+      ],
+      [
+        "Solution Q5:",
+        "3 Men = 6 Women ==> 1 Man = 2 Women. 12 Men + 8 Women = 24 + 8 = 32 Women. W1 * D1 = W2 * D2 ==> 6 * 16 = 32 * D2 ==> D2 = 96 / 32 = 3 days. Answer: 3 days."
+      ]
+    ],
+    "trap": "Do not confuse efficiency ratio with time ratio! Efficiency is INVERSELY proportional to time: if Efficiency is 2 : 1, then Time is 1 : 2."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

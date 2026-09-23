@@ -1,0 +1,590 @@
+SOURCE PROVENANCE: D:\Projects\Placement_Master_Handbook_Web\source_archive\academic\5003_Computer_Networks\notes\BCA_5003_Unit_IV.pdf
+PAGES EXTRACTED: 12 / 12
+
+--- PAGE 1 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 1
+BCA-5003: COMPUTER NETWORK
+UNIT IV — COMPLETE DETAILED NOTES + TOPIC-WISE PYQ ANSWER BOOK
+Network Devices • Bridges • Switching Devices • NIC • Firewall • UDP/TCP • Framing
+Unit-I format: Index → detailed concepts → labelled diagrams/tables → topic-wise PYQs with years
+→ long answers → revision plan
+Prepared from the supplied Unit-IV notes. Raw-text inaccuracies have been corrected for accurate,
+exam-safe answers.
+
+
+--- PAGE 2 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 2
+Index
+No.
+Topic
+PYQ years found in supplied Unit-IV material
+1
+Unit-IV roadmap and answer-writing strategy
+—
+2
+Network components and connecting devices
+2017, 2018, 2023–24, 2025–26
+3
+Hub, switch, bridge, router, repeater, gateway, modem and access point
+2019, 2021, 2022–23, 2023–24, 2025–26
+4
+Bridge: learning, filtering, forwarding and STP
+2025–26
+5
+Hub versus switch; router versus bridge
+2024–25
+6
+Modem, gateway, repeater, firewall and NIC
+2019, 2022–23
+7
+UDP and TCP: headers, fields, reliability and sizes
+2015, 2019
+8
+Character stuffing and bit stuffing
+2017
+9
+Final PYQ bank, diagrams and revision plan
+—
+How to prepare this Unit
+1. Memorize each network device by OSI layer, address type used, main job, and a real example.
+2. Use the comparison tables for Hub vs Switch, Router vs Bridge, and TCP vs UDP.
+3. Practise the bridge-learning and forwarding diagram, plus bit/character stuffing examples.
+4. For header questions, draw neat field diagrams and write the exact minimum/maximum size.
+
+
+--- PAGE 3 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 3
+1. Unit-IV Roadmap
+Unit IV covers the devices that connect networks and the protocols/functions that support local delivery and transport. It is
+highly scoring because questions are often direct: “Explain bridge”, “Compare hub and switch”, “Write short note on
+firewall/NIC”, “TCP vs UDP”, and “Explain bit stuffing.”
+Best answer format
+For a network-device answer, follow this order: definition → OSI layer → working diagram → key functions →
+advantages/limitations → example. For a comparison, use a table instead of long paragraphs. For TCP/UDP headers,
+draw fields and state their sizes exactly.
+2. Network Components and Connecting Devices
+Network components are hardware and software elements used to connect devices, transfer data, direct traffic, provide network
+access, and deliver services. Important hardware components include network interface cards, cables, hubs, switches, bridges,
+routers, repeaters, modems, gateways, wireless access points, firewalls, and servers.
+Typical small network diagram
+Internet
+I
+[ISP modem / ONT] II [Router + Firewall] II [Switch] II PC 1
+I III PC 2
+I III Server / Printer
+III [Wi-Fi Access Point] ))) Laptop / Phone
+Device
+Primary job
+Common OSI layer(s)
+NIC
+Gives a host a network interface; sends/receives frames/signals.
+Physical + Data Link
+Repeater
+Regenerates/re-times a signal to extend a physical link.
+Physical
+Hub
+Multiport repeater; copies incoming bits to other ports.
+Physical
+Bridge
+Filters/forwards frames between LAN segments using MAC table.
+Data Link
+Switch
+Multiport bridge; forwards Ethernet frames using MAC addresses.
+Data Link
+Router
+Forwards IP packets between separate networks.
+Network
+Gateway
+Connects systems/protocols with different architectures; meaning depends on context.
+Often higher layers; may be multi-layer
+Modem
+Modulates/demodulates where required by an access technology.
+Physical
+Firewall
+Enforces security policy by permitting/denying traffic.
+Can operate at multiple layers
+3. Important Network Devices
+3.1 Network Interface Card (NIC)
+A Network Interface Card, also called a network adapter or network interface controller, is the hardware that enables a
+computer or other host to connect to a network. It may be an Ethernet adapter, Wi-Fi adapter, built-in motherboard interface, or
+USB adapter. The NIC performs Physical-Layer signal functions and Data-Link-Layer operations such as MAC addressing and
+frame handling.
+NIC diagram
+[Computer / OS] I [NIC: MAC address + Ethernet/Wi-Fi hardware] I Cable / Radio medium I Network
+3.2 Repeater
+A repeater is a Physical-Layer device that receives a weakened or distorted signal, regenerates/re-times it, and transmits a
+clean version onward to extend distance. A digital repeater is not merely an amplifier: it interprets/regenerates bits and signals
+rather than just increasing power. It does not read MAC/IP addresses and does not make forwarding decisions.
+Repeater diagram
+Long cable segment II weak/distorted signal III [REPEATER] II regenerated signal III next segment
+
+
+--- PAGE 4 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 4
+3.3 Hub
+A hub is essentially a multiport repeater. When a signal arrives on one port, the hub repeats it to all other ports. It does not learn
+MAC addresses or selectively forward frames. All attached devices share the same collision domain in traditional half-duplex
+Ethernet, which reduces performance as traffic grows. Hubs are now largely obsolete.
+Hub behaviour
+PC A II
+PC B IIII [HUB] II Incoming bits from A copied to B, C, D ...
+PC C II
+PC D II
+3.4 Switch
+An Ethernet switch is a multiport Layer-2 bridge. It learns source MAC addresses and stores them in a MAC/CAM table. When a
+frame arrives, it checks the destination MAC and forwards the frame only to the correct port if known. If destination is unknown
+or broadcast, it floods the frame within the VLAN except the incoming port. Each switch port is a separate collision domain;
+modern switched Ethernet generally uses full-duplex operation.
+Switch MAC learning / forwarding diagram
+PC A (MAC A) I Port 1 I
+PC B (MAC B) I Port 2 III [SWITCH: MAC table A→1, B→2, C→3] II Port 3 I PC C (MAC C)
+PC A → PC C: switch receives on Port 1, finds C→3, forwards only Port 3.
+3.5 Router
+A router is a Layer-3 device that connects different IP networks and forwards packets based on destination IP address and a
+routing table. Routers separate broadcast domains. A home Wi-Fi router often combines router, switch, wireless access point,
+NAT, DHCP server, and firewall functions in one box.
+Router diagram
+LAN 192.168.1.0/24 II [ROUTER: routing table] II WAN / Internet II Remote network 10.0.0.0/24
+3.6 Gateway
+A gateway connects networks or systems that may use different protocols, data formats, or architectures. In everyday IP
+networking, “default gateway” usually means the router that sends a host’s off-subnet traffic to other networks. In broader
+networking, an application gateway may translate between dissimilar protocols or services.
+3.7 Modem
+Modem means modulator-demodulator. Historically, it converted a computer’s digital data to analog signals for telephone lines
+and converted received analog signals back to digital form. In modern broadband, the exact physical conversion depends on
+technology: DSL modem, cable modem, cellular modem, or fibre ONT. A modem is distinct from a router, although consumer
+devices often combine both.
+3.8 Server
+A server is a computer or program that receives requests and provides services/resources to clients over a network. Examples
+include web servers, file servers, database servers, DNS servers, mail servers, proxy servers, and game servers.
+4. Bridge: Detailed Study
+A bridge is a Data-Link-Layer device that connects two or more LAN segments and selectively forwards or filters Ethernet
+frames according to MAC addresses. A switch is essentially a high-port-density, hardware-accelerated bridge. Bridges reduce
+unnecessary traffic crossing between segments, but they do not normally separate broadcast domains unless VLAN/routing
+functions are involved.
+Bridge diagram
+LAN Segment 1 LAN Segment 2
+PC A II PC B II [ BRIDGE ] II PC C II PC D
+I reads source/destination MAC addresses I
+
+
+--- PAGE 5 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 5
+How a transparent bridge works
+1. Learning: on receipt of a frame, it learns the source MAC address and associates it with the incoming port.
+2. Lookup: it checks the destination MAC address in its forwarding/bridge table.
+3. Filtering: if destination is known on the same incoming port/segment, it does not forward the frame.
+4. Forwarding: if destination is known on another port, it forwards only to that port.
+5. Flooding: if destination is unknown, or the frame is broadcast, it forwards/floods it to relevant other ports.
+Bridge forwarding example
+Bridge table: A → left port, B → left port, C → right port, D → right port.
+Frame A → C arrives from left. Bridge learns A on left, finds C on right, forwards only right.
+Frame A → B arrives from left. Bridge learns A on left, finds B also left, filters it—does not cross bridge.
+Frame A → unknown E. Bridge floods right because destination is not known.
+Bridge functions
+Function
+Explanation
+Segmentation
+Divides a larger LAN into separate collision domains, reducing local collisions/traffic.
+Learning
+Builds MAC table dynamically from source addresses of arriving frames.
+Filtering
+Keeps local traffic in its local segment when destination is also local.
+Forwarding
+Sends frame to the appropriate segment when destination is on another segment.
+Loop avoidance
+Uses Spanning Tree Protocol (STP) in bridged Ethernet to block redundant paths and prevent loops/broadcast storms.
+Interconnection
+Can connect compatible LAN segments; special translation/encapsulation bridges historically connected differing link technologies.
+Important correction
+A bridge does not normally “forward packets despite faulty nodes” and does not route using IP addresses. It forwards
+frames based on MAC addresses. It also does not eliminate broadcasts; unknown-unicast and broadcast frames are
+typically flooded within the bridged broadcast domain.
+5. Device Comparisons
+Hub versus Switch
+Basis
+Hub
+Switch
+OSI layer
+Physical Layer (Layer 1).
+Data-Link Layer (Layer 2) in a normal Ethernet switch.
+Forwarding method
+Repeats incoming bits to all ports.
+Learns MAC addresses and selectively forwards frames.
+Collision domain
+One shared collision domain for all ports.
+One collision domain per port.
+Duplex
+Typically half-duplex.
+Usually full-duplex on modern Ethernet links.
+Bandwidth
+Shared among connected devices.
+Dedicated link bandwidth per switched port.
+Security/performance
+Low; all traffic copied to all ports.
+Better; unicast goes to selected port when MAC known.
+Modern use
+Mostly obsolete.
+Standard LAN device.
+Router versus Bridge
+Basis
+Router
+Bridge
+OSI layer
+Network Layer (Layer 3).
+Data-Link Layer (Layer 2).
+Address used
+IP address.
+MAC address.
+Unit forwarded
+Packet.
+Frame.
+Purpose
+Connects separate IP networks.
+Connects/segments LANs at Layer 2.
+Table used
+Routing table.
+MAC/forwarding/bridge table.
+Broadcast domains
+Separates broadcast domains.
+Normally remains within same broadcast domain.
+Decision
+Chooses next hop/path based on IP routes.
+Forwards/filters based on destination MAC location.
+
+
+--- PAGE 6 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 6
+6. Security and Interface Devices
+Firewall
+A firewall is a hardware, software, or cloud security control that monitors and filters incoming and outgoing traffic according to a
+defined security policy. It forms a controlled boundary between trusted and untrusted networks, such as a private LAN and the
+Internet. It allows authorised traffic and blocks/discourages unauthorised or suspicious traffic.
+Firewall placement diagram
+Internet / untrusted network III [ FIREWALL: allow/deny policy ] III Internal LAN / servers
+logs, state tracking, rules, inspection
+Common firewall functions
+• Packet filtering based on source/destination IP, port, protocol, and interface.
+• Stateful inspection: tracks allowed connection state and blocks unsolicited packets that do not belong to a permitted session.
+• Application/proxy inspection in next-generation/application firewalls.
+• Network segmentation, logging, alerting, and policy enforcement.
+Network Interface Card (NIC)
+A NIC is the interface that allows a computer, phone, server, or IoT device to attach to Ethernet or Wi-Fi. It contains a MAC
+address and performs physical signalling and frame-level operations. NICs can be onboard, PCIe cards, USB adapters, or
+wireless modules.
+Modem, Gateway and Repeater: rapid distinction
+Device
+Key role
+Does it use MAC/IP forwarding decision?
+Repeater
+Regenerates Physical-Layer signal to extend link distance.
+No.
+Modem
+Converts/modulates signals for a given access medium/technology.
+Not primarily.
+Gateway
+Connects/possibly translates across networks or protocol systems; default gateway is normally a router.
+Depends on gateway type.
+Firewall
+Applies security policy to traffic.
+May inspect L3/L4/L7 information.
+NIC
+Host interface for sending/receiving signals and frames.
+Uses MAC at Layer 2.
+7. UDP and TCP
+UDP and TCP are Transport-Layer protocols. Both use port numbers to deliver data to the correct process/application on a
+host. Their design goals differ: UDP is small and connectionless; TCP is connection-oriented and provides reliable ordered
+byte-stream delivery.
+UDP header
+0 15 16 31
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+I Source Port (16) I Destination Port(16)I
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+I Length (16) I Checksum (16) I
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+Fixed header size = 8 bytes
+TCP header (minimum 20 bytes)
+I Source Port (16) IIIIIIII Destination Port (16) IIIII
+I Sequence Number (32) IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+I Acknowledgement Number (32) IIIIIIIIIIIIIIIIIIIIIIIIIIII
+I Data Offset | Flags IIIIII Window Size (16) IIIIIIIIIII
+I Checksum (16) IIIIIIIIIIII Urgent Pointer (16) IIIIIIII
+I Options + Padding (0 to 40 bytes) IIIIIIIIIIIIIIIIIIIIII
+I Payload / Data IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+Minimum header = 20 bytes; maximum header = 60 bytes.
+TCP versus UDP
+
+
+--- PAGE 7 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 7
+Basis
+TCP
+UDP
+Connection
+Connection-oriented.
+Connectionless.
+Service
+Reliable ordered byte stream.
+Best-effort datagrams; no built-in reliability/order.
+Reliability tools
+Sequence numbers, ACKs, retransmission, checksum, timers.
+Checksum for corruption detection; no ACK/retransmission/order mechanism in UD
+Flow/congestion control
+Yes, provided by TCP.
+No built-in transport flow/congestion control.
+Header
+20–60 bytes.
+Fixed 8 bytes.
+Overhead
+Higher.
+Lower.
+Examples
+HTTP(S), SSH, SMTP, IMAP, file transfers.
+DNS queries, DHCP, voice/video, gaming, streaming protocols where app may ha
+TCP fields absent from UDP and why
+UDP does not contain TCP’s sequence number, acknowledgement number, data offset/options, control flags, window size, and
+urgent pointer. These are absent because UDP does not establish a connection and does not itself provide ordered delivery,
+acknowledgement/retransmission, flow control, congestion control, or advanced connection state.
+Datagram sizes
+UDP length field is 16 bits and includes header plus data. Therefore the theoretical maximum UDP datagram length is
+65,535 bytes, including the 8-byte header; maximum UDP payload is 65,527 bytes. In practice, IP path MTU and
+fragmentation constraints often limit useful UDP payloads to much smaller values. TCP has no equivalent single
+“maximum application message” dictated by a 16-bit UDP-style length field; individual TCP segments are constrained
+by MSS/path MTU, while TCP presents a byte stream to applications.
+8. Character Stuffing and Bit Stuffing
+Framing requires a receiver to recognize the beginning and end of each frame. If a special delimiter appears inside user data,
+the receiver might mistake it for a frame boundary. Stuffing methods solve this ambiguity.
+Character / byte stuffing
+Character stuffing is used in byte-oriented protocols. A special flag byte marks frame boundaries. If the flag byte—or escape
+byte—appears in the payload, the sender inserts an escape byte before it. The receiver removes the escape byte during
+destuffing.
+Example: let FLAG = F and ESC = E
+Original data: A F B E C
+Stuffed payload: A E F B E E C
+Transmitted frame: F A E F B E E C F
+Receiver removes added E values and restores A F B E C.
+Bit stuffing
+Bit stuffing is used in bit-oriented protocols such as HDLC. A flag pattern, commonly `01111110`, marks the start and end of a
+frame. To prevent this exact flag pattern from appearing inside data, the sender inserts a `0` after every sequence of five
+consecutive `1` bits in the data. The receiver removes each such inserted 0 after five consecutive 1s.
+Bit-stuffing example
+Data bits: 01111110 111110 001
+After stuffing: 01111100 1111100 001
+Frame transmitted: 01111110 | stuffed data bits | 01111110
+Receiver destuffs by removing the 0 that follows every five consecutive 1s in payload.
+Character stuffing versus bit stuffing
+Basis
+Character stuffing
+Bit stuffing
+Unit handled
+Bytes/characters.
+Bits.
+Frame delimiter
+Special flag byte/character.
+Special bit flag, commonly 01111110.
+Escape action
+Insert escape byte before reserved byte.
+Insert 0 after five consecutive 1s in data.
+Used by
+Byte-oriented framing methods.
+Bit-oriented protocols such as HDLC.
+
+
+--- PAGE 8 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 8
+9. Topic-Wise PYQ Answer Bank
+Each answer is written in long, exam-ready form. Use the diagrams/tables from the relevant concept section while practising in
+your notebook.
+Q1. Explain the use/functions of bridges.
+Asked: 2025–26
+Answer
+A bridge is a Data-Link-Layer device used to connect two or more LAN segments. It examines Ethernet frame MAC addresses
+and decides whether to forward the frame to another segment or filter it locally. It is more intelligent than a repeater because it
+makes forwarding decisions at Layer 2.
+1. Segmentation: A bridge divides a large LAN into smaller collision domains. This reduces collisions and unnecessary local
+traffic, improving performance.
+2. Learning: A bridge learns MAC addresses dynamically. It records the source MAC address of each incoming frame together
+with the port on which that frame arrived. This creates a bridge/MAC forwarding table.
+3. Filtering: If the destination MAC address is on the same segment as the sender, the bridge filters the frame and does not
+transmit it to the other segment. This prevents unnecessary traffic crossing the bridge.
+4. Selective forwarding: If the destination is on another segment, the bridge forwards the frame only to that segment instead of
+sending it everywhere.
+5. Flooding when destination is unknown: If the destination MAC is not in the bridge table, the bridge floods the frame to
+relevant other ports. Broadcast frames are also normally flooded within the same broadcast domain.
+6. Loop avoidance: In networks with redundant bridge paths, Spanning Tree Protocol prevents Layer-2 loops and broadcast
+storms by blocking redundant paths.
+Conclusion: Bridges improve LAN efficiency through MAC learning, filtering, forwarding, and segmentation. They forward
+frames, not IP-routed packets.
+Q2. What are network components? Explain.
+Asked: 2023–24, 2025–26
+Answer
+Network components are the hardware and software elements used to establish communication, connect devices, transfer
+data, control traffic, provide access to networks, and deliver network services.
+NIC: connects an individual host to wired Ethernet or Wi-Fi and provides MAC/frame-level capabilities.
+Cables/connectors: carry signals in wired networks, such as twisted pair, coaxial, and fibre; connectors terminate/attach
+cables to devices.
+Hub: a multiport Physical-Layer repeater that copies bits to all ports; mostly obsolete.
+Switch: a Layer-2 multiport bridge that learns MAC addresses and forwards frames selectively.
+Bridge: connects LAN segments and filters/forwards frames using MAC addresses.
+Router: connects distinct IP networks and forwards packets using destination IP address and routing table.
+Modem/ONT: adapts signals for a provider access technology, for example DSL, cable, cellular, or fibre access.
+Gateway: provides an exit/translation point between networks or protocols; default gateway usually refers to the local router.
+Firewall: protects the network using traffic filtering rules and security inspection.
+Servers: provide services such as web, file, database, DNS, email, authentication, and applications to clients.
+Conclusion: Together, these components provide connectivity, local delivery, routing, security, and services in a functioning
+network.
+Q3. Compare hub and switch; compare router and bridge.
+Asked: 2024–25
+
+
+--- PAGE 9 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 9
+Answer
+Hub vs Switch: A hub works at the Physical Layer and repeats incoming bits to all ports. It does not examine MAC addresses,
+all ports share one collision domain, and it normally uses half-duplex communication. A switch works mainly at the Data-Link
+Layer, learns MAC addresses, forwards unicast frames only to the selected destination port, creates a separate collision
+domain per port, and normally supports full-duplex communication. Switches provide much better performance and security
+than hubs.
+Router vs Bridge: A router works at the Network Layer and forwards IP packets between separate IP networks using routing
+tables. It separates broadcast domains. A bridge works at the Data-Link Layer and forwards/filters MAC frames between LAN
+segments using a bridge table. It normally does not break the Layer-2 broadcast domain. Therefore, a router uses IP addresses
+and routing decisions; a bridge uses MAC addresses and local forwarding decisions.
+Q4. Write a short note on modem, gateway, repeater, firewall, or NIC.
+Asked: 2019, 2022–23
+Answer
+Modem: A modulator-demodulator adapts digital data to signals suitable for an access medium and recovers digital data at the
+receiving side. Traditional modems converted digital data to analog telephone-line signals; modern variants include
+DSL/cable/cellular modems and fibre ONTs.
+Gateway: A gateway connects a local network to another network or translates between systems/protocols. In normal IP
+terminology, the default gateway is the router used to send traffic outside a local subnet.
+Repeater: A Physical-Layer device that regenerates/re-times weakened signals to extend link distance. It does not examine
+MAC or IP addresses and does not make routing decisions.
+Firewall: A security device/software that allows, blocks, logs, and inspects traffic according to security rules. It protects internal
+systems from unauthorised network traffic.
+NIC: A hardware network adapter that allows a host to connect to Ethernet/Wi-Fi. It performs physical signalling and Layer-2
+frame/MAC functions.
+Q5. What is the maximum size of a UDP datagram? Compare TCP and UDP headers. List TCP fields absent
+from UDP, with reason.
+Asked: 2015, 2019
+Answer
+UDP has a fixed 8-byte header containing source port, destination port, length, and checksum. Its 16-bit length field represents
+the complete UDP datagram including header and payload. Therefore maximum UDP datagram size is 65,535 bytes. The
+maximum UDP payload is 65,535 − 8 = 65,527 bytes. Actual useful payload may be smaller because of IP MTU and
+fragmentation limits.
+TCP has a minimum 20-byte header and maximum 60-byte header. TCP header includes source/destination ports, sequence
+number, acknowledgement number, data offset, flags, window size, checksum, urgent pointer, and optional options/padding.
+UDP has no sequence number, acknowledgement number, data offset/options, flags, window field, or urgent pointer.
+These TCP fields are absent from UDP because UDP is connectionless and intentionally lightweight. UDP does not provide a
+connection state, ordered byte stream, acknowledgement/retransmission, flow control, congestion control, or urgent-data
+mechanism. TCP provides these features and therefore needs the extra header fields.
+Conclusion: UDP is selected for low overhead and time-sensitive applications where loss can be tolerated or handled by the
+application; TCP is selected where reliable, ordered delivery is required.
+Q6. Explain character stuffing and bit stuffing.
+Asked: 2017
+Answer
+Character stuffing and bit stuffing are framing methods used to ensure that reserved frame-boundary delimiters are not
+mistaken for normal data.
+Character stuffing: A byte-oriented protocol uses a special flag character/byte to mark start and end of a frame. If the flag itself
+appears in payload data, the sender inserts an escape character before it. If the escape character appears in payload, it is also
+
+
+--- PAGE 10 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 10
+escaped. The receiver removes inserted escape characters before delivering data to upper layer.
+Example: If FLAG = F and ESC = E, payload `A F B E C` becomes `A E F B E E C` inside the frame. The transmitted data is `F
+| A E F B E E C | F`.
+Bit stuffing: A bit-oriented protocol such as HDLC uses flag pattern `01111110`. To prevent this pattern from appearing in
+payload, sender inserts a 0 after every occurrence of five consecutive 1s in data. Receiver removes that 0 during destuffing.
+Example: Whenever payload contains `11111`, sender transmits `111110`. This prevents six consecutive 1s from creating the
+flag pattern in normal data.
+Conclusion: Character stuffing works with bytes and escape characters; bit stuffing works with bits and inserts zeros after five
+1s. Both preserve unambiguous frame boundaries.
+
+
+--- PAGE 11 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 11
+10. Final Revision Sheet
+Most important diagrams to practise
+• Complete home/office network: modem/ONT → router/firewall → switch → PCs/server/Wi-Fi.
+• Hub broadcasting to all ports versus switch selective forwarding using MAC table.
+• Bridge connecting two LAN segments with MAC learning/filtering/forwarding.
+• Router connecting two IP networks.
+• Firewall between Internet and internal LAN.
+• UDP 8-byte header and TCP 20–60 byte header.
+• Character-stuffing and bit-stuffing examples.
+One-line revision table
+Term
+Remember this
+Hub
+Layer 1 multiport repeater; repeats bits to all ports.
+Switch
+Layer 2 multiport bridge; MAC-based forwarding; one collision domain per port.
+Bridge
+Layer 2 device that learns MACs and filters/forwards frames between segments.
+Router
+Layer 3 device that forwards IP packets between networks and separates broadcast domains.
+Repeater
+Layer 1 signal regeneration; no MAC/IP decision.
+Firewall
+Security policy enforcement for traffic; may work at L3/L4/L7.
+NIC
+Host interface with physical and data-link functions.
+UDP
+Connectionless 8-byte header; max datagram 65,535 bytes.
+TCP
+Reliable ordered transport; 20–60 byte header.
+Byte stuffing
+Escape reserved delimiter bytes in byte-oriented framing.
+Bit stuffing
+Insert 0 after five 1s in bit-oriented framing.
+7-day Unit-IV plan
+Day
+Target
+Output
+1
+All device definitions + OSI layers
+Make flashcards for NIC/repeater/hub/switch/bridge/router/gateway/modem.
+2
+Bridge and switch working
+Draw bridge MAC learning and switch forwarding diagrams; write Q1.
+3
+Comparison practice
+Write Hub vs Switch and Router vs Bridge tables from memory.
+4
+Firewall, NIC, modem/gateway/repeater
+Write Q4 in your notebook; practise firewall diagram.
+5
+TCP and UDP
+Draw headers; learn exact sizes and missing TCP fields; write Q5.
+6
+Stuffing/framing
+Practise character and bit stuffing; write Q6.
+7
+PYQ mock test
+Write Q1–Q6 under time limit; redraw all key diagrams.
+Accuracy reminders
+• A switch does flood unknown-unicast and broadcast frames when required; it does not always send every frame only to one
+port.
+• A bridge forwards Layer-2 frames based on MAC addresses; a router forwards Layer-3 packets based on IP addresses.
+• A repeater regenerates a signal rather than performing address-aware forwarding.
+• UDP maximum datagram is 65,535 bytes including its 8-byte header; its maximum payload is 65,527 bytes.
+• TCP minimum header is 20 bytes and maximum header is 60 bytes.
+• Bit stuffing inserts 0 after five consecutive 1s in payload; it is associated with bit-oriented protocols such as HDLC.
+
+
+--- PAGE 12 ---
+BCA-5003 Computer Network — Unit IV Detailed Notes + Topic-Wise PYQ Answers
+Page 12
+For 10-CGPA-level preparation: redraw diagrams without seeing the PDF, make the comparison tables from memory,
+and write all PYQs by hand at least twice.

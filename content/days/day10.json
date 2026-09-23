@@ -1,0 +1,170 @@
+{
+  "day": 10,
+  "title": "Numerical Newton-Raphson, Rotated Arrays & Problems on Trains",
+  "sem_data": {
+    "subject": "BCA-5004 Numerical Methods",
+    "topic": "Unit I \u2014 Newton-Raphson Method, Quadratic Convergence Proof & Hand Iteration",
+    "detailed_notes": [
+      "The Newton-Raphson Method (also known as Newton's Method of Tangents) is the most widely utilized and rapidly converging open iterative method for finding roots of algebraic and transcendental equations f(x) = 0.",
+      "Mathematical Derivation via Taylor Series:\nLet x0 be an initial approximation to the exact root alpha such that alpha = x0 + h, where h is a small correction factor. Expanding f(x0 + h) using Taylor's Theorem around x0:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second-order and higher terms (since h is small):\nf(x0) + h * f'(x0) approx 0  ==>  h = - f(x0) / f'(x0).\nThus, the improved approximation is: x1 = x0 + h = x0 - [f(x0) / f'(x0)].\nIn general, the Newton-Raphson recurrence relation is:\nx_{n+1} = x_n - [f(x_n) / f'(x_n)], provided f'(x_n) != 0.",
+      "Geometric Interpretation:\nAt point (x_n, f(x_n)) on the curve y = f(x), draw the tangent line to the curve. The slope of this tangent is f'(x_n). The equation of the tangent line is: y - f(x_n) = f'(x_n) * (x - x_n). Setting y = 0 gives the x-intercept of the tangent line: x = x_n - f(x_n) / f'(x_n), which represents the next approximation x_{n+1}.",
+      "Proof of Quadratic Convergence (Order p = 2):\nLet alpha be the exact root: f(alpha) = 0. Let error in n-th step be epsilon_n = x_n - alpha  ==>  x_n = alpha + epsilon_n.\nSubstituting into recurrence: alpha + epsilon_{n+1} = alpha + epsilon_n - [f(alpha + epsilon_n) / f'(alpha + epsilon_n)].\nExpanding via Taylor series about alpha (using f(alpha) = 0):\nf(alpha + epsilon_n) = epsilon_n * f'(alpha) + (epsilon_n^2 / 2) * f''(alpha) + ...\nf'(alpha + epsilon_n) = f'(alpha) + epsilon_n * f''(alpha) + ...\nDividing the series yields: epsilon_{n+1} = [f''(alpha) / (2 * f'(alpha))] * epsilon_n^2.\nThus: epsilon_{n+1} approx K * (epsilon_n)^2. The error in each iteration is proportional to the SQUARE of the previous error. The number of correct decimal places approximately DOUBLES at every single iteration!"
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|             NEWTON-RAPHSON GEOMETRIC TANGENT CONSTRUCTION               |\n+-------------------------------------------------------------------------+\n|      y                                                                  |\n|      |                     * (x0, f(x0))                                |\n|      |                    /|                                            |\n|      |                   / | Tangent line slope = f'(x0)                |\n|      |                  /  |                                            |\n|      |                 /   |                                            |\n|   ---+----------------x1---x0----------------------------------> x      |\n|      |           alpha /                                                |\n|      |        (Exact  /                                                 |\n|      |         Root) /                                                  |\n|      |              * Curve y = f(x)                                    |\n|      x1 = x0 - [f(x0) / f'(x0)] is the x-intercept of the tangent line. |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Comparison Criterion",
+        "Bisection Method",
+        "Regula-Falsi Method",
+        "Newton-Raphson Method"
+      ],
+      "rows": [
+        [
+          "Method Category",
+          "Bracketing (requires f(a)*f(b) < 0)",
+          "Bracketing (requires f(a)*f(b) < 0)",
+          "Open Method (needs single initial guess)"
+        ],
+        [
+          "Order of Convergence",
+          "Linear (p = 1)",
+          "Linear (p = 1)",
+          "Quadratic (p = 2)"
+        ],
+        [
+          "Rate of Convergence",
+          "Very slow (halves interval)",
+          "Slow to moderate",
+          "Extremely fast (doubles precision each step)"
+        ],
+        [
+          "Derivative Needed",
+          "No derivative required",
+          "No derivative required",
+          "Requires analytical derivative f'(x)"
+        ],
+        [
+          "Convergence Guarantee",
+          "100% guaranteed convergence",
+          "100% guaranteed convergence",
+          "May diverge if f'(x) approx 0 or poor guess"
+        ],
+        [
+          "Evaluation Overhead",
+          "1 function evaluation / step",
+          "1 function evaluation / step",
+          "2 evaluations / step (f(x) and f'(x))"
+        ]
+      ]
+    },
+    "memorize": "Recurrence: x_{n+1} = x_n - [f(x_n) / f'(x_n)]. Order of Convergence: Quadratic (p = 2). Error relation: epsilon_{n+1} = K * epsilon_n^2. Failure condition: f'(x_n) = 0 (horizontal tangent leads to division by zero).",
+    "understand": "Why is quadratic convergence so powerful? If your error in step 1 is 0.1, in step 2 it becomes ~0.01, in step 3 it becomes ~0.0001, and in step 4 it reaches ~0.00000001 (8 decimal places in 4 steps!).",
+    "common_mistakes": "1. Forgetting to divide by f'(x) or differentiating incorrectly. 2. Choosing an initial guess where f'(x0) is close to 0 (causes wild divergence). 3. In the convergence proof, forgetting that f(alpha) = 0.",
+    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25, 2025-26)",
+    "pyq_freq": "Verified in all 5 consecutive university sessions: 2021 (Q2 - 15m), 2022-23 (Q1 - 15m), 2023-24 (Q2 - 15m), 2024-25 (Q2 - 15m), 2025-26 (Q1 - 15m)",
+    "pyq_question": "Derive the Newton-Raphson formula for finding a real root of an equation f(x) = 0 and prove that it has quadratic convergence. Find a real root of the equation x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
+    "pyq_rubric": "Taylor Series Derivation (3 marks) + Proof of Quadratic Convergence (4 marks) + Initial bracketing & derivative setup (2 marks) + Step-by-step iteration table for 3-4 steps (5 marks) + Final root statement (1 mark) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Mathematical Derivation via Taylor Series:",
+        "Let f(x) = 0 be a continuous non-linear equation. Let x0 be an initial approximation to the root alpha, and let h be the correction such that alpha = x0 + h. Expanding f(x0 + h) by Taylor's series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nAssuming h is small, we truncate higher-order powers of h:\nf(x0) + h * f'(x0) = 0  ==>  h = - f(x0) / f'(x0).\nThe first approximation is x1 = x0 + h = x0 - [f(x0) / f'(x0)]. Iterating this yields the Newton-Raphson general formula:\nx_{n+1} = x_n - [f(x_n) / f'(x_n)]."
+      ],
+      [
+        "2. Rigorous Proof of Quadratic Convergence:",
+        "Let alpha be the true root: f(alpha) = 0. Let error in n-th step be epsilon_n = x_n - alpha ==> x_n = alpha + epsilon_n.\nSubstitute into recurrence: alpha + epsilon_{n+1} = alpha + epsilon_n - [f(alpha + epsilon_n) / f'(alpha + epsilon_n)].\nExpanding both numerator and denominator about alpha using Taylor series:\nf(alpha + epsilon_n) = f(alpha) + epsilon_n * f'(alpha) + (epsilon_n^2 / 2) * f''(alpha) + ...\nSince f(alpha) = 0: f(alpha + epsilon_n) = epsilon_n * f'(alpha) + (epsilon_n^2 / 2) * f''(alpha).\nSimilarly: f'(alpha + epsilon_n) = f'(alpha) + epsilon_n * f''(alpha).\nepsilon_{n+1} = epsilon_n - [epsilon_n * f'(alpha) + (epsilon_n^2 / 2) * f''(alpha)] / [f'(alpha) + epsilon_n * f''(alpha)].\nTaking f'(alpha) common and using binomial expansion (1 + z)^(-1) = 1 - z:\nepsilon_{n+1} = [f''(alpha) / (2 * f'(alpha))] * (epsilon_n)^2.\nHence: epsilon_{n+1} = K * (epsilon_n)^2. Since error exponent is 2, Newton-Raphson exhibits Quadratic Convergence (Order p = 2)."
+      ],
+      [
+        "3. Numerical Solution for x^3 - 2x - 5 = 0:",
+        "Let f(x) = x^3 - 2x - 5. Differentiating: f'(x) = 3x^2 - 2.\nLocate initial root bracket:\nf(2) = 2^3 - 2(2) - 5 = 8 - 4 - 5 = -1 < 0.\nf(3) = 3^3 - 2(3) - 5 = 27 - 6 - 5 = +16 > 0.\nSince |f(2)| = 1 is much closer to 0 than |f(3)| = 16, the root is near 2. Choose initial guess x0 = 2.000.\n\nIteration 1: x0 = 2\nf(x0) = f(2) = -1.000\nf'(x0) = 3(2)^2 - 2 = 12 - 2 = 10.000\nx1 = 2 - (-1 / 10) = 2 + 0.100 = 2.100.\n\nIteration 2: x1 = 2.100\nf(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = +0.061\nf'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.230\nx2 = 2.1 - (0.061 / 11.230) = 2.1 - 0.00543 = 2.09457.\n\nIteration 3: x2 = 2.09457\nf(2.09457) = (2.09457)^3 - 2(2.09457) - 5 = 0.000185\nf'(2.09457) = 3(2.09457)^2 - 2 = 11.1616\nx3 = 2.09457 - (0.000185 / 11.1616) = 2.09457 - 0.000016 = 2.09455.\n\nBoth x2 and x3 agree to three decimal places: 2.094."
+      ],
+      [
+        "4. Final Conclusion & Root Statement:",
+        "After 3 iterations, the real root of x^3 - 2x - 5 = 0 correct to three decimal places is x = 2.094 (or 2.095)."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Find the reciprocal of 18 using Newton-Raphson formula x_{n+1} = x_n * (2 - N * x_n). (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "State the geometrical interpretation and two conditions under which Newton-Raphson fails. (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Newton-Raphson Derivation, Quadratic Convergence Proof, and Hand Calculations.",
+    "milestone": "Full 15/15 marks on University Question 1/2 (BCA-5004 Numerical Methods)."
+  },
+  "apt_data": {
+    "topic": "Problems on Trains \u2014 Stationary Obstacles, Platforms & Relative Train Speeds",
+    "tutorial": [
+      "Problems on trains are specific geometric applications of Time, Speed, and Distance where the physical length of the train must be factored into distance calculations.",
+      "Case 1: Train Crossing a Point Object (Pole, Standing Person, Signal Post, Milestone):\nA point object has negligible physical length. The distance traversed by the train while passing it is exactly equal to the Length of the Train:\nDistance = Length of Train (L_T)    ==>    Time = L_T / Speed_Train",
+      "Case 2: Train Crossing an Extended Stationary Object (Platform, Bridge, Tunnel, Stationary Train):\nThe train must traverse both its own length AND the length of the platform before clearing it:\nDistance = Length of Train (L_T) + Length of Platform (L_P)\nTime = (L_T + L_P) / Speed_Train",
+      "Case 3: Two Moving Trains Crossing Each Other:\nTotal Distance is ALWAYS the sum of lengths: Distance = L_T1 + L_T2.\n\u2022 Crossing in Opposite Directions: Relative Speed = S1 + S2\n  Time = (L_T1 + L_T2) / (S1 + S2)\n\u2022 Crossing in Same Direction (Overtaking): Relative Speed = S1 - S2 (S1 > S2)\n  Time = (L_T1 + L_T2) / (S1 - S2)"
+    ],
+    "formulas": "1. Crossing a Pole: Time = L / S\n2. Crossing a Platform: Time = (L_train + L_platform) / S\n3. Two Trains Opposite: Time = (L1 + L2) / (S1 + S2)\n4. Two Trains Same Direction: Time = (L1 + L2) / (S1 - S2)\n5. km/h to m/s conversion: Speed (m/s) = Speed (km/h) * (5 / 18)",
+    "shortcut": "The Platform Subtraction Shortcut:\nIf a train crosses a pole in T1 seconds and a platform of length P in T2 seconds at the same speed S:\nIn (T2 - T1) seconds, the train covers exactly the platform length P!\nSpeed S = P / (T2 - T1) m/s instantly, with zero variable algebra!",
+    "recognition": "Look for 'a train 150m long passes a telegraph post in 12s', 'a train passes a platform 200m long in 20s and a pole in 10s', or 'two trains of length L1 and L2 running in opposite directions'.",
+    "p1_q": "[Foundation] A train 180 meters long is running at a speed of 72 km/h. How much time will it take to pass a telegraph post?",
+    "p1_s": "Step 1: Convert speed to m/s:\nSpeed = 72 * (5 / 18) = 4 * 5 = 20 m/s.\nStep 2: Distance covered when passing a post = Length of train = 180 m.\nStep 3: Time = Distance / Speed = 180 / 20 = 9 seconds.\nAnswer: 9 seconds.",
+    "p2_q": "[Standard Placement] A train 300 meters long passes a railway platform 200 meters long in 25 seconds. Find the speed of the train in km/h.",
+    "p2_s": "Step 1: Total Distance to clear platform = Length of train + Length of platform:\nTotal Distance = 300 + 200 = 500 meters.\nStep 2: Speed in m/s = Total Distance / Time = 500 / 25 = 20 m/s.\nStep 3: Convert speed from m/s to km/h:\nSpeed in km/h = 20 * (18 / 5) = 4 * 18 = 72 km/h.\nAnswer: 72 km/h.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS NQT / Wipro Quantitative Section]",
+    "p3_q": "A train passes a standing pole in 15 seconds and passes a platform 100 meters long in 25 seconds. Find the length of the train and its speed in km/h.",
+    "p3_s": "Step 1: Apply the Platform Subtraction Shortcut:\nTime difference = 25s - 15s = 10 seconds.\nIn these 10 extra seconds, the train covered the platform length of 100 meters.\nStep 2: Speed of train = 100 m / 10 s = 10 m/s.\nSpeed in km/h = 10 * (18 / 5) = 36 km/h.\nStep 3: Find Length of the train:\nSince it crosses a pole in 15 seconds at 10 m/s:\nLength of train = Speed * Time = 10 m/s * 15 s = 150 meters.\nAnswer: Length of train = 150 meters, Speed = 36 km/h.",
+    "p4_q": "[Hard / Time-Pressure] Two trains 140 meters and 160 meters long run at speeds of 60 km/h and 40 km/h respectively in opposite directions on parallel tracks. What is the time taken by them to clear each other from the moment they meet?",
+    "p4_s": "Step 1: Total Distance to clear = Sum of lengths of both trains:\nDistance = 140 + 160 = 300 meters.\nStep 2: Calculate Relative Speed (Opposite Directions ==> Add speeds):\nRelative Speed = 60 + 40 = 100 km/h.\nStep 3: Convert relative speed to m/s:\nSpeed = 100 * (5 / 18) = 500 / 18 = 250 / 9 m/s.\nStep 4: Time taken to clear:\nTime = Distance / Relative Speed = 300 / (250 / 9) = (300 * 9) / 250 = (6 * 9) / 5 = 54 / 5 = 10.8 seconds.\nAnswer: 10.8 seconds.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "A train 125 meters long passes a man running at 5 km/h in the same direction in 10 seconds. Find the speed of the train."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "A 240m long train crosses a platform of equal length in 27 seconds. Find the speed of the train in km/h."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "Two trains of equal length running in opposite directions pass a pole in 18s and 12s. How long will they take to cross each other?"
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "A train traveling at 48 km/h crosses another train of half its length traveling in opposite direction at 42 km/h in 12s. Find length of first train."
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "A train passes two bridges of lengths 800m and 400m in 100 seconds and 60 seconds respectively. Find the length of the train."
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "Relative speed = 125/10 = 12.5 m/s = 12.5 * (18/5) = 45 km/h. Same direction ==> S_train - 5 = 45 ==> S_train = 50 km/h. Answer: 50 km/h."
+      ],
+      [
+        "Solution Q2:",
+        "Distance = 240 + 240 = 480m. Speed = 480/27 m/s = (480/27)*(18/5) = (480*2)/(3*5) = 960/15 = 64 km/h. Answer: 64 km/h."
+      ],
+      [
+        "Solution Q3:",
+        "Harmonic time shortcut: Time = (2 * t1 * t2) / (t1 + t2) = (2 * 18 * 12) / (18 + 12) = 432 / 30 = 14.4 seconds. Answer: 14.4 seconds."
+      ],
+      [
+        "Solution Q4:",
+        "Relative speed = 48 + 42 = 90 km/h = 90*(5/18) = 25 m/s. Total distance = 25 * 12 = 300m. L + L/2 = 300 ==> 1.5 L = 300 ==> L = 200m. Answer: 200 meters."
+      ],
+      [
+        "Solution Q5:",
+        "Speed = (800 - 400) / (100 - 60) = 400 / 40 = 10 m/s. Length + 800 = 10 * 100 = 1000m ==> Length = 1000 - 800 = 200m. Answer: 200 meters."
+      ]
+    ],
+    "trap": "Always convert km/h to m/s BEFORE doing arithmetic with train lengths in meters! Multiplying km/h directly with seconds produces disastrous calculation errors."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

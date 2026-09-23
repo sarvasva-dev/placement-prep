@@ -1,0 +1,163 @@
+{
+  "day": 15,
+  "title": "Numerical Gauss Elimination, Intervals & Permutations/Combinations",
+  "sem_data": {
+    "subject": "BCA-5004 Numerical Methods",
+    "topic": "Unit II \u2014 System of Linear Equations: Gauss Elimination Method with Partial Pivoting",
+    "detailed_notes": [
+      "Solving systems of linear simultaneous equations Ax = B is a foundational mathematical problem in engineering, scientific computation, and data science.",
+      "The Gauss Elimination Method is a classical direct algorithmic method that transforms a dense linear system into an equivalent Upper Triangular Matrix using elementary row operations, followed by Back-Substitution to compute the exact unknown values.",
+      "Algorithm Execution Stages:\n1. Augmented Matrix Formation: Form the augmented matrix [A | B] of size n x (n+1) combining the coefficient matrix A and constants vector B.\n2. Forward Elimination (Triangularization):\n   Step 1: Use Row 1 (pivot row) to eliminate the variable x1 from rows 2, 3, ..., n. For each row i (i > 1), calculate multiplier m_{i1} = a_{i1} / a_{11}, and perform row operation: R_i -> R_i - m_{i1} * R_1.\n   Step 2: Use Row 2 (new pivot row) to eliminate variable x2 from rows 3, ..., n using multiplier m_{i2} = a_{i2} / a_{22}, performing: R_i -> R_i - m_{i2} * R_2.\n   Repeat until matrix [A | B] is converted into upper triangular form where all elements below the main diagonal are zero.\n3. Back-Substitution:\n   Solve for the last variable x_n from the n-th equation: x_n = b'_n / a'_{nn}.\n   Substitute x_n backwards into row (n-1) to find x_{n-1}, and proceed upwards until all unknowns x1, x2, ..., xn are computed.",
+      "Partial Pivoting Strategy:\nIf a pivot element a_{kk} is zero or near-zero, division by zero occurs or round-off errors explode. Partial Pivoting inspects all elements in column k at or below the diagonal, locates the element with the maximum absolute value |a_{ik}|, and swaps Row k with Row i before eliminating. This ensures numerical stability."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|               GAUSS ELIMINATION & BACK-SUBSTITUTION PIPELINE            |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|   [ Augmented Matrix [A | B] ]                                          |\n|   | a11  a12  a13 | b1 |                                                |\n|   | a21  a22  a23 | b2 |                                                |\n|   | a31  a32  a33 | b3 |                                                |\n|                 |                                                       |\n|                 | (Forward Elimination using Row Operations)            |\n|                 v                                                       |\n|   [ Upper Triangular Matrix [U | B'] ]                                  |\n|   | a11  a12  a13 | b1  |                                               |\n|   |  0   a'22 a'23| b'2 |                                               |\n|   |  0    0   a'33| b'3 |                                               |\n|                 |                                                       |\n|                 | (Back-Substitution: x3 -> x2 -> x1)                   |\n|                 v                                                       |\n|   x3 = b'3 / a'33  ==>  x2 = (b'2 - a'23*x3)/a'22  ==>  x1 solved!      |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Dimension",
+        "Direct Methods (Gauss Elimination, LU)",
+        "Iterative Methods (Gauss-Seidel, Jacobi)"
+      ],
+      "rows": [
+        [
+          "Solution Nature",
+          "Computes exact algebraic solution in finite steps",
+          "Computes successive approximations converging to root"
+        ],
+        [
+          "Round-off Accumulation",
+          "High vulnerability to round-off error in large systems",
+          "Self-correcting; round-off errors do not accumulate"
+        ],
+        [
+          "Matrix Sparsity",
+          "Fills in zero elements, destroying matrix sparsity",
+          "Preserves sparsity; ideal for large sparse matrices (10,000+ rows)"
+        ],
+        [
+          "Convergence Condition",
+          "No convergence condition required (except det(A) != 0)",
+          "Requires Diagonal Dominance (|a_ii| > sum of |a_ij|)"
+        ],
+        [
+          "Execution Operations",
+          "O(N^3 / 3) arithmetic operations",
+          "O(k * N^2) operations where k is iteration count"
+        ]
+      ]
+    },
+    "memorize": "Gauss Elimination: Forward Elimination (Upper Triangular) -> Back-Substitution. Operation count: ~ (2/3) * N^3 operations. Partial Pivoting: Swap rows to place largest absolute element on diagonal to prevent division by near-zero.",
+    "understand": "Gauss elimination works because elementary row operations do not alter the solution set of a linear system: multiplying an equation by a non-zero constant or subtracting one equation from another produces an identical intersection plane.",
+    "common_mistakes": "1. Forgetting to apply the row multiplier to the constants vector column B (a fatal mistake ruining the entire solution). 2. Arithmetic sign errors when subtracting rows with negative numbers: R_i - (-m) * R_1 becomes R_i + m * R_1.",
+    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25, 2025-26)",
+    "pyq_freq": "Verified in all 5 consecutive university sessions: 2021 (Q3 - 15m), 2022-23 (Q2 - 15m), 2023-24 (Q3 - 15m), 2024-25 (Q3 - 15m), 2025-26 (Q2 - 15m)",
+    "pyq_question": "Solve the following system of linear equations using the Gauss Elimination Method:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n(15 Marks)",
+    "pyq_rubric": "Augmented Matrix formation (2 marks) + Step 1 elimination of x (4 marks) + Step 2 elimination of y (4 marks) + Back-substitution steps (4 marks) + Final values statement (1 mark) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Augmented Matrix Formulation:",
+        "Given system of equations:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\nWe write the augmented matrix [A | B]:\n[ 2   1   1  |  10 ]  (R1)\n[ 3   2   3  |  18 ]  (R2)\n[ 1   4   9  |  16 ]  (R3)"
+      ],
+      [
+        "2. Forward Elimination (Step 1 \u2014 Eliminate x from R2 and R3):",
+        "Pivot element = a11 = 2.\nRow operation on R2: R2 -> R2 - (3/2) * R1 (or 2*R2 - 3*R1):\n2*R2 = [6, 4, 6 | 36]\n3*R1 = [6, 3, 3 | 30]\nNew R2 = [0, 1, 3 | 6]\n\nRow operation on R3: R3 -> R3 - (1/2) * R1 (or 2*R3 - R1):\n2*R3 = [2, 8, 18 | 32]\nR1   = [2, 1,  1 | 10]\nNew R3 = [0, 7, 17 | 22]\n\nAugmented matrix after Step 1:\n[ 2   1   1  |  10 ]\n[ 0   1   3  |   6 ]\n[ 0   7  17  |  22 ]"
+      ],
+      [
+        "3. Forward Elimination (Step 2 \u2014 Eliminate y from R3):",
+        "Pivot element = a22 = 1.\nRow operation on R3: R3 -> R3 - 7 * R2:\nR3   = [0, 7, 17 | 22]\n7*R2 = [0, 7, 21 | 42]\nNew R3 = [0, 0, (17 - 21) | (22 - 42)] = [0, 0, -4 | -20]\n\nUpper Triangular Matrix achieved:\n[ 2   1   1  |  10 ]\n[ 0   1   3  |   6 ]\n[ 0   0  -4  | -20 ]"
+      ],
+      [
+        "4. Back-Substitution Execution:",
+        "From Row 3:\n-4z = -20  ==>  z = -20 / -4  ==>  z = 5.\n\nFrom Row 2:\n1y + 3z = 6\ny + 3(5) = 6  ==>  y + 15 = 6  ==>  y = 6 - 15  ==>  y = -9.\n\nFrom Row 1:\n2x + y + z = 10\n2x + (-9) + 5 = 10\n2x - 4 = 10  ==>  2x = 14  ==>  x = 7."
+      ],
+      [
+        "5. Final Verification & Solution Statement:",
+        "Check in Equation 1: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. (Correct)\nCheck in Equation 2: 3(7) + 2(-9) + 3(5) = 21 - 18 + 15 = 18. (Correct)\nCheck in Equation 3: 7 + 4(-9) + 9(5) = 7 - 36 + 45 = 16. (Correct)\nThe unique exact solution is: x = 7, y = -9, z = 5."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Solve by Gauss Elimination: x + y + z = 6, 3x + 3y + 4z = 20, 2x + y + 3z = 13. (Answer: x=3, y=1, z=2). (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "What is Partial Pivoting and why is it necessary in Gauss Elimination? (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Gauss Elimination Augmented Matrix Operations and Back-Substitution.",
+    "milestone": "Full 15/15 marks on University Question 3 (BCA-5004 Numerical Systems)."
+  },
+  "apt_data": {
+    "topic": "Permutations & Combinations \u2014 Arrangements, Selections & Circular Permutations",
+    "tutorial": [
+      "Fundamental Principles of Counting:\n\u2022 Multiplication Rule (AND): If an event A can occur in 'm' ways, and following it event B can occur in 'n' ways, both events in succession can occur in (m * n) ways.\n\u2022 Addition Rule (OR): If event A can occur in 'm' ways and mutually exclusive event B can occur in 'n' ways, either event A OR event B can occur in (m + n) ways.",
+      "Factorial Function: n! = n * (n - 1) * ... * 2 * 1. Note: 0! = 1 by definition.\nMemorize factorials: 1! = 1, 2! = 2, 3! = 6, 4! = 24, 5! = 120, 6! = 720, 7! = 5040.",
+      "Permutation (Arrangement \u2014 ORDER MATTERS):\nNumber of ways to arrange 'r' items chosen from 'n' distinct items:\n^n P_r = n! / (n - r)!\nNotice: ^n P_n = n! (Arranging all n distinct items).",
+      "Combination (Selection \u2014 ORDER DOES NOT MATTER):\nNumber of ways to select 'r' items chosen from 'n' distinct items:\n^n C_r = n! / [r! * (n - r)!]\nKey Symmetry Property: ^n C_r = ^n C_{n-r}. For example: ^10 C_8 = ^10 C_2 = (10 * 9) / (2 * 1) = 45.",
+      "Specialized Arrangement Rules:\n\u2022 Repetition Permutations: Arranging n items where p items are of type 1, q items of type 2: Ways = n! / (p! * q!).\n\u2022 Circular Permutations: Arranging n distinct items in a circle: Ways = (n - 1)! (Since one seat must be fixed as reference)."
+    ],
+    "formulas": "1. Permutation: ^n P_r = n! / (n - r)!\n2. Combination: ^n C_r = n! / [r! * (n - r)!]\n3. Symmetry: ^n C_r = ^n C_{n - r}\n4. Permutation with Identical Items: Ways = n! / (p! * q! * r!)\n5. Circular Permutation: Ways = (n - 1)!",
+    "shortcut": "The Fast Falling Product for Combinations:\nTo compute ^8 C_3, never write factorials! Write 3 descending terms in numerator and denominator:\n^8 C_3 = (8 * 7 * 6) / (3 * 2 * 1) = 8 * 7 = 56 instantly!",
+    "recognition": "Keywords: 'how many 4-letter words can be formed' (Permutation - order matters), 'a committee of 5 persons is to be chosen' (Combination - order irrelevant).",
+    "p1_q": "[Foundation] In how many different ways can the letters of the word 'LEADING' be arranged so that the vowels always come together?",
+    "p1_s": "Step 1: Identify all letters and vowels in 'LEADING':\nTotal letters = 7 (L, E, A, D, I, N, G). All letters are distinct.\nVowels = E, A, I (3 vowels). Consonants = L, D, N, G (4 consonants).\nStep 2: String/Tie Method: Tie all 3 vowels into a single composite block [E, A, I].\nNow we have 4 consonants + 1 vowel block = 5 entities to arrange.\nNumber of ways to arrange 5 entities = 5! = 120 ways.\nStep 3: Internal arrangement of vowels inside the block:\nThe 3 distinct vowels can be arranged among themselves in 3! = 6 ways.\nStep 4: Total ways = 5! * 3! = 120 * 6 = 720 ways.\nAnswer: 720 ways.",
+    "p2_q": "[Standard Placement] From a group of 7 men and 6 women, five persons are to be selected to form a committee so that at least 3 men are on the committee. In how many ways can this be done?",
+    "p2_s": "Step 1: 'At least 3 men' in a 5-person committee means we have 3 mutually exclusive cases:\nCase 1: 3 Men AND 2 Women\nCase 2: 4 Men AND 1 Woman\nCase 3: 5 Men AND 0 Women\nStep 2: Evaluate combinations for each case:\n- Case 1: ^7 C_3 * ^6 C_2 = [(7 * 6 * 5)/(3 * 2 * 1)] * [(6 * 5)/(2 * 1)] = 35 * 15 = 525 ways.\n- Case 2: ^7 C_4 * ^6 C_1 = ^7 C_3 * 6 = 35 * 6 = 210 ways.\n- Case 3: ^7 C_5 * ^6 C_0 = ^7 C_2 * 1 = [(7 * 6)/(2 * 1)] * 1 = 21 * 1 = 21 ways.\nStep 3: Total ways = Case 1 + Case 2 + Case 3 = 525 + 210 + 21 = 756 ways.\nAnswer: 756 ways.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys / Accenture Reasoning Ability]",
+    "p3_q": "How many 3-digit numbers can be formed from the digits 2, 3, 5, 6, 7, and 9 which are divisible by 5 and none of the digits are repeated?",
+    "p3_s": "Step 1: Available digits = {2, 3, 5, 6, 7, 9} (Total 6 distinct digits).\nStep 2: Condition for divisibility by 5: The unit's digit MUST be either 0 or 5.\nAmong available digits, only '5' is present. Therefore, the unit's digit can be filled in ONLY 1 way (by the digit 5).\nStep 3: Remaining positions to fill: Hundred's and Ten's digits.\nSince repetition is NOT allowed, 5 is used up, leaving 6 - 1 = 5 available digits.\n- Hundred's digit can be filled in 5 ways.\n- Ten's digit can be filled in remaining 4 ways.\nStep 4: Total 3-digit numbers = 5 * 4 * 1 = 20 numbers.\nAnswer: 20 numbers.",
+    "p4_q": "[Hard / Time-Pressure] In how many ways can 6 boys and 5 girls be seated around a round table so that no two girls sit next to each other?",
+    "p4_s": "Step 1: Gap Method for circular seating:\nFirst seat the 6 boys around the circular table.\nWays to arrange 6 boys in a circle = (6 - 1)! = 5! = 120 ways.\nStep 2: When 6 boys are seated in a circle, they create exactly 6 distinct gaps between them.\nStep 3: To ensure no two girls sit together, the 5 girls must be seated in these 6 gaps.\nNumber of ways to seat 5 girls into 6 distinct gaps = ^6 P_5.\n^6 P_5 = 6! / (6 - 5)! = 720 / 1 = 720 ways.\nStep 4: Total seating arrangements = 5! * ^6 P_5 = 120 * 720 = 86,400 ways.\nAnswer: 86,400 ways.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "Find the value of ^8 C_3 and ^10 P_2."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "In how many ways can the letters of the word 'APPLE' be arranged?"
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "Out of 5 consonants and 4 vowels, how many words of 3 consonants and 2 vowels can be formed?"
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "In how many ways can 4 men and 4 women sit around a circular table if women sit alternately?"
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "How many diagonals can be drawn in a regular polygon with 10 sides (decagon)?"
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "^8 C_3 = (8*7*6)/(3*2*1) = 56. ^10 P_2 = 10 * 9 = 90. Answer: 56 and 90."
+      ],
+      [
+        "Solution Q2:",
+        "Letters = 5, with P repeating twice. Ways = 5! / 2! = 120 / 2 = 60 ways. Answer: 60 ways."
+      ],
+      [
+        "Solution Q3:",
+        "Selection = ^5 C_3 * ^4 C_2 = 10 * 6 = 60. Arrangement of 5 selected letters = 5! = 120. Total words = 60 * 120 = 7,200 words. Answer: 7,200 words."
+      ],
+      [
+        "Solution Q4:",
+        "Seat 4 men in circle = (4-1)! = 3! = 6. 4 gaps for 4 women = 4! = 24. Total = 6 * 24 = 144 ways. Answer: 144 ways."
+      ],
+      [
+        "Solution Q5:",
+        "Diagonals in n-gon = ^n C_2 - n = ^10 C_2 - 10 = 45 - 10 = 35 diagonals. Answer: 35 diagonals."
+      ]
+    ],
+    "trap": "In word formation questions, do not stop at SELECTION! If the question asks 'how many WORDS can be formed', you must first select the letters AND then multiply by factorial to arrange them."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

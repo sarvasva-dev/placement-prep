@@ -1,0 +1,156 @@
+{
+  "day": 4,
+  "title": "Computer Networks OSI 7-Layer Model, Sliding Window & Marked Price",
+  "sem_data": {
+    "subject": "BCA-5003 Computer Network",
+    "topic": "Unit I \u2014 OSI 7-Layer Reference Model vs TCP/IP Protocol Suite",
+    "detailed_notes": [
+      "The Open Systems Interconnection (OSI) Reference Model was established by the International Organization for Standardization (ISO) in 1984 as a conceptual framework for computer-to-computer network communications. It divides network communication into seven distinct hierarchical layers, each providing services to the layer above and consuming services from the layer below.",
+      "Layer-by-Layer Architectural Responsibilities:\n1. Physical Layer (Layer 1): Transmits raw, unstructured bitstreams over a physical transmission medium. Defines electrical, optical, and mechanical specifications (cables, voltages, pinouts, hubs, bit-rate).\n2. Data Link Layer (Layer 2): Responsible for node-to-node (hop-by-hop) reliable data transfer across a physical link. Packages bits into Frames, manages physical addressing (MAC addresses), handles flow control, and performs error detection (CRC).\n3. Network Layer (Layer 3): Responsible for host-to-host packet delivery across heterogeneous networks. Handles logical addressing (IPv4/IPv6), routing table maintenance, packet forwarding, and congestion control (Routers operate here).\n4. Transport Layer (Layer 4): Delivers end-to-end (process-to-process) communication between applications. Handles port addressing, segmentation and reassembly, connection control (TCP 3-way handshake), flow control (sliding window), and error recovery.\n5. Session Layer (Layer 5): Establishes, manages, synchronizes, and terminates communication dialogues and sessions between cooperating applications. Inserts synchronization checkpoints.\n6. Presentation Layer (Layer 6): Handles data syntax, representation, and semantics. Manages character encoding (ASCII, UTF-8), data compression, and cryptographic encryption/decryption (SSL/TLS).\n7. Application Layer (Layer 7): Provides network services directly to end-user software applications. Protocols: HTTP, HTTPS, FTP, DNS, SMTP, SSH."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|               OSI 7-LAYER MODEL & DATA ENCAPSULATION PDU                |\n+-------------------------------------------------------------------------+\n|  Layer Name            Protocol Data Unit (PDU)     Key Protocols       |\n|  --------------------------------------------------------------------   |\n|  7. Application  -->   Data / Message               HTTP, DNS, SMTP     |\n|  6. Presentation -->   Formatted Data               SSL/TLS, JPEG, ASCII|\n|  5. Session      -->   Synchronized Data            NetBIOS, RPC, Sockets|\n|  4. Transport    -->   Segment (TCP) / Datagram     TCP, UDP            |\n|  3. Network      -->   Packet                       IPv4, IPv6, ICMP, IPsec|\n|  2. Data Link    -->   Frame (Header + Data + CRC)  Ethernet, 802.11, ARP|\n|  1. Physical     -->   Bits (0s and 1s)             Cables, RJ45, Fiber |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Dimension",
+        "OSI 7-Layer Reference Model",
+        "TCP/IP Protocol Suite"
+      ],
+      "rows": [
+        [
+          "Origins",
+          "Theoretical standard developed by ISO",
+          "Practical protocol developed by ARPANET / DoD"
+        ],
+        [
+          "Number of Layers",
+          "7 distinct layers",
+          "4 layers (Network Access, Internet, Transport, Application)"
+        ],
+        [
+          "Design Approach",
+          "Clean conceptual separation before protocols existed",
+          "Protocols were implemented first, model followed"
+        ],
+        [
+          "Transport Support",
+          "Connection-oriented & connectionless in Network layer",
+          "Connectionless in Internet layer (IP); Transport provides TCP/UDP choice"
+        ],
+        [
+          "Adoption Status",
+          "Academic and conceptual benchmark reference",
+          "The de-facto operational protocol of the global Internet"
+        ]
+      ]
+    },
+    "memorize": "7 Layers in order from bottom to top: Physical, Data Link, Network, Transport, Session, Presentation, Application (Mnemonic: 'Please Do Not Throw Sausage Pizza Away'). PDUs: Bits -> Frames -> Packets -> Segments -> Data.",
+    "understand": "Data Encapsulation: As data descends from Layer 7 to Layer 1, each layer wraps the payload with its own protocol header. At the receiving host, decapsulation strips headers layer-by-layer.",
+    "common_mistakes": "1. Inverting layer numbering (Physical is Layer 1; Application is Layer 7). 2. Calling Transport Layer PDU a 'packet' (Transport is Segment; Network is Packet; Data Link is Frame).",
+    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2024-25, 2025-26)",
+    "pyq_freq": "4 University Sessions: 2021 (Q1 - 15m), 2022-23 (Q1b - 15m), 2024-25 (Q1 - 15m), 2025-26 (Q2 - 15m)",
+    "pyq_question": "Explain the 7 layers of the OSI reference model with their primary functions. Differentiate between OSI and TCP/IP models. (15 Marks)",
+    "pyq_rubric": "Layer diagram with PDUs (4 marks) + Functions of 7 layers (7 marks) + OSI vs TCP/IP comparison table (4 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Architectural Overview & ISO Philosophy:",
+        "The Open Systems Interconnection (OSI) reference model, published by ISO in 1984, provides a standardized abstract framework enabling disparate computing systems to communicate. It decomposes the immense complexity of network protocols into seven modular layers, enforcing clean boundaries where each layer relies exclusively on services provided by lower layers."
+      ],
+      [
+        "2. Detailed 7-Layer Functionality:",
+        "\u2022 Layer 1 \u2014 Physical: Transmits raw bits over physical media (copper twisted pair, coaxial cable, optical fiber, radio frequencies). Defines pin layouts, voltage levels, signaling rates, and physical topology.\n\u2022 Layer 2 \u2014 Data Link: Ensures hop-by-hop transmission between directly adjacent network nodes. Packages raw bits into Frames, arbitrates media access (MAC layer), detects transmission errors via Cyclic Redundancy Checks (CRC), and enforces frame-level flow control.\n\u2022 Layer 3 \u2014 Network: Handles end-to-end routing of Packets across multiple intermediate network hops. Assigns logical addresses (IPv4/IPv6), calculates optimal paths via routing algorithms (Dijkstra, Bellman-Ford), and manages packet fragmentation.\n\u2022 Layer 4 \u2014 Transport: Provides reliable or best-effort process-to-process communication. Manages port numbers (0-65535), segments byte streams, performs error recovery via sequence/acknowledgment numbers (TCP), and regulates transmission speed via sliding window flow control.\n\u2022 Layer 5 \u2014 Session: Manages application dialogue sessions, providing simplex, half-duplex, or full-duplex communication and embedding synchronization checkpoints to prevent re-transmitting entire files upon connection loss.\n\u2022 Layer 6 \u2014 Presentation: Translates network data formats. Performs character encoding (ASCII to UTF-8), cryptographic encryption/decryption (TLS/SSL), and compression/decompression algorithms.\n\u2022 Layer 7 \u2014 Application: The user interface layer providing network services to end-user applications. Implements protocols like HTTP/HTTPS (web), DNS (name resolution), SMTP (mail), and SSH (secure shell)."
+      ],
+      [
+        "3. Encapsulation and Protocol Data Units (PDUs):",
+        "At the sender, data travels downwards from Application to Physical. Each layer attaches its specific protocol header (and trailer at Data Link), transforming the PDU: Application Data --> Segments (Transport) --> Packets (Network) --> Frames (Data Link) --> Bits (Physical). At the receiver, decapsulation peels off headers in reverse."
+      ],
+      [
+        "4. Comparison: OSI Reference Model vs TCP/IP Protocol Suite:",
+        "While OSI is a conceptual model with 7 strict layers, TCP/IP is a practical 4-layer architecture that powers the global Internet. TCP/IP collapses Session, Presentation, and Application into a single Application layer, and merges Physical and Data Link into a Network Access layer. TCP/IP protocols were built first and standardized, whereas OSI standardized the model before creating commercial protocols."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Explain the concept of Data Encapsulation and Decapsulation in computer networks with a neat diagram. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "What is the role of the Data Link Layer? Differentiate between MAC address and IP address. (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master OSI 7-Layer Model, PDUs, and OSI vs TCP/IP Comparison.",
+    "milestone": "Secure full 15/15 marks on University Question 1 (BCA-5003 Networks)."
+  },
+  "apt_data": {
+    "topic": "Profit & Loss \u2014 Marked Price, Trade Discount, Cash Discount & Markup Formulas",
+    "tutorial": [
+      "Marked Price (MP) or List Price: The price printed on the label or catalog of an article.",
+      "Discount is ALWAYS calculated on the Marked Price (MP), never on Cost Price:\n\u2022 Discount = MP - SP    ==> Discount % = (Discount / MP) * 100\n\u2022 Selling Price SP = MP * [1 - (Discount% / 100)]",
+      "Markup %: The percentage by which the retailer increases the Cost Price to arrive at the Marked Price:\n\u2022 Markup = MP - CP      ==> Markup % = (Markup / CP) * 100\n\u2022 MP = CP * [1 + (Markup% / 100)]",
+      "The Master Golden Equation connecting CP, MP, Profit% and Discount%:\nSP = CP * [(100 + Profit%) / 100] = MP * [(100 - Discount%) / 100]\n==> CP / MP = (100 - Discount%) / (100 + Profit%)"
+    ],
+    "formulas": "1. CP / MP = (100 - D%) / (100 + P%)\n2. MP = CP * [(100 + Profit%) / (100 - Discount%)]\n3. Single Equivalent Discount of d1% and d2%: D_net = [d1 + d2 - (d1 * d2) / 100]%",
+    "shortcut": "The CP-MP Ratio Bridge (Instant Placement Solver):\nIf Discount = 10% and Profit = 20%, then:\nCP / MP = (100 - 10) / (100 + 20) = 90 / 120 = 3 / 4.\nIf CP is Rs. 300, MP is instantly Rs. 400 without setting up multi-step equations!",
+    "recognition": "Look for 'after allowing a discount of x%, the trader makes a profit of y%', 'by how much percent should he mark his goods above CP to gain z% after giving a discount'.",
+    "p1_q": "[Foundation] A shopkeeper marks an article at Rs. 800 and offers a discount of 15%. What is the selling price of the article?",
+    "p1_s": "Step 1: MP = Rs. 800, Discount = 15%.\nStep 2: SP = MP * (1 - 0.15) = 800 * 0.85.\nStep 3: Fast mental calculation: 800 * 0.85 = 8 * 85 = 8 * (80 + 5) = 640 + 40 = Rs. 680.\nAnswer: Selling Price is Rs. 680.",
+    "p2_q": "[Standard Placement] A trader marks his goods at such a price that after allowing a discount of 12.5% on the marked price, he still makes a profit of 20%. If the cost price of the article is Rs. 1,400, find its marked price.",
+    "p2_s": "Step 1: Use the CP-MP Ratio Bridge:\nCP / MP = (100 - D%) / (100 + P%).\nHere D = 12.5%, P = 20%, CP = Rs. 1400.\nStep 2: Substitute values:\n1400 / MP = (100 - 12.5) / (100 + 20) = 87.5 / 120 = 175 / 240 = 7 / (48 / 5) Wait: 87.5 / 120 = (7/8 * 100) / 120 = 7 / (120 / 12.5) = 7 / 9.6.\nNotice 1400 / 7 = 200!\n1400 / MP = 87.5 / 120 ==> MP = (1400 * 120) / 87.5.\nDivide 1400 by 87.5: 1400 / 87.5 = 16.\nMP = 16 * 120 = Rs. 1,920.\nVerification: SP = 1920 * 0.875 = Rs. 1680. Profit on 1400 = (1680 - 1400) / 1400 = 280 / 1400 = 20%. Matches!\nAnswer: Marked Price is Rs. 1,920.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS NQT 2024 Quantitative Section]",
+    "p3_q": "A merchant marks his goods 40% above the cost price. He sells half the stock at the marked price, one-quarter at a discount of 15% on the marked price, and the rest at a discount of 30% on the marked price. Find his overall gain percentage.",
+    "p3_s": "Step 1: Choose convenient numbers:\nLet total stock = 4 units, Cost Price of each unit = Rs. 100.\nTotal Cost Price (CP) = 4 * 100 = Rs. 400.\nMarked Price (MP) per unit = 100 + 40% = Rs. 140.\nStep 2: Calculate Selling Price for each portion:\n- Half the stock (2 units) sold at MP = 2 * 140 = Rs. 280.\n- One-quarter (1 unit) sold at 15% discount = 140 * (1 - 0.15) = 140 * 0.85 = Rs. 119.\n- Rest of stock (4 - 2 - 1 = 1 unit) sold at 30% discount = 140 * (1 - 0.30) = 140 * 0.70 = Rs. 98.\nStep 3: Total Selling Price (SP) = 280 + 119 + 98 = Rs. 497.\nStep 4: Overall Profit = Total SP - Total CP = 497 - 400 = Rs. 97.\nOverall Profit % = (97 / 400) * 100 = 97 / 4 = 24.25%.\nAnswer: Overall gain of 24.25%.",
+    "p4_q": "[Hard / Time-Pressure] A shopkeeper offers 'Buy 3 Get 1 Free' on branded t-shirts. In addition to this, he allows a further cash discount of 10% to customers paying in cash. What is the effective net percentage discount received by a cash-paying customer?",
+    "p4_s": "Step 1: Analyze the 'Buy 3 Get 1 Free' offer:\nTotal articles received = 3 + 1 = 4 articles.\nFree articles received = 1 article.\nInitial Discount % from offer = [Free / Total Received] * 100 = (1 / 4) * 100 = 25% discount.\nStep 2: Apply the additional 10% cash discount successively:\nNet Discount % = [d1 + d2 - (d1 * d2) / 100]%\n= [25 + 10 - (25 * 10) / 100]% = [35 - 250 / 100]% = 35 - 2.5 = 32.5%.\nAlternative Value Method: Let MP of each t-shirt = Rs. 100. For 4 t-shirts, total MP = Rs. 400.\nCustomer pays for 3 t-shirts = Rs. 300.\n10% cash discount on Rs. 300 = Rs. 30 discount ==> Customer pays 300 - 30 = Rs. 270.\nTotal Discount = 400 - 270 = Rs. 130 on Rs. 400.\nDiscount % = (130 / 400) * 100 = 32.5%.\nAnswer: Effective net discount is 32.5%.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "A watch is marked at Rs. 500 and sold for Rs. 425. Find the discount percentage."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "Find the single discount equivalent to two successive discounts of 15% and 10%."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "What is the discount % in a 'Buy 4 Get 1 Free' promotional scheme?"
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "By what percentage must the cost price be marked up so that even after allowing a 20% discount, a profit of 20% is earned?"
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "A dealer allows a 25% discount on MP and earns a 20% profit. If the profit is Rs. 90, find the marked price."
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "Discount = 500 - 425 = 75. % = (75/500)*100 = 15%. Answer: 15%."
+      ],
+      [
+        "Solution Q2:",
+        "Net % = 15 + 10 - (15*10)/100 = 25 - 1.5 = 23.5%. Answer: 23.5%."
+      ],
+      [
+        "Solution Q3:",
+        "Discount = 1 / (4 + 1) = 1/5 = 20%. Answer: 20%."
+      ],
+      [
+        "Solution Q4:",
+        "CP/MP = (100-20)/(100+20) = 80/120 = 2/3. Markup = (3-2)/2 = 1/2 = 50%. Answer: 50%."
+      ],
+      [
+        "Solution Q5:",
+        "Profit = 20% of CP = 90 ==> CP = 90 / 0.20 = Rs. 450. CP/MP = (100-25)/(100+20) = 75/120 = 5/8. MP = (450 * 8)/5 = Rs. 720. Answer: Rs. 720."
+      ]
+    ],
+    "trap": "In 'Buy X Get Y Free' schemes, NEVER calculate discount as (Y / X) * 100! The customer takes home (X + Y) items, so the true discount is always [Y / (X + Y)] * 100."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

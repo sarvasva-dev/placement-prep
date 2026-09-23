@@ -1,0 +1,169 @@
+{
+  "day": 13,
+  "title": "Networks CRC & Hamming Codes, BST LCA & Pipes and Cisterns",
+  "sem_data": {
+    "subject": "BCA-5003 Computer Network",
+    "topic": "Unit II \u2014 Error Detection & Correction: CRC Modulo-2 Division & Hamming Code",
+    "detailed_notes": [
+      "During transmission across physical media, electromagnetic noise, attenuation, and thermal distortion can flip binary bits (changing 0 to 1 or 1 to 0). Network Layer 2 (Data Link) implements error detection and error correction codes to ensure reliable communication.",
+      "Types of Transmission Errors:\n\u2022 Single-Bit Error: Only one bit in a data block is corrupted. Rare in serial communication because noise spikes typically outlast single-bit transmission durations.\n\u2022 Burst Error: Two or more contiguous or non-contiguous bits in the data block are inverted by a prolonged noise spike.",
+      "Error Detection Mechanisms:\n1. Parity Check: Appends a single parity bit to make total 1-bits even (Even Parity) or odd. Detects all odd-numbered bit errors; completely fails on double-bit errors.\n2. Internet Checksum: 16-bit 1's complement sum of data words. Simple in software, but cannot detect reordered words or symmetric bit additions/subtractions.\n3. Cyclic Redundancy Check (CRC): The dominant, mathematically rigorous hardware error detection code. Treats bitstreams as algebraic polynomials with binary coefficients (modulo-2 arithmetic). The sender appends 'r' zero bits (where r is the degree of generator polynomial G(x)) to the data bits, divides by G(x) using Modulo-2 XOR division, and appends the remainder (CRC) to the data. The receiver divides the received codeword by G(x); if remainder is 0, the frame is error-free.",
+      "Error Correction: Hamming Code:\nRichard Hamming (1950) developed error-correcting codes based on Hamming Distance (the number of bit positions in which two codewords differ). To detect 'd' single-bit errors, minimum distance d_min >= d + 1. To correct 't' errors, d_min >= 2t + 1.\nIn a 7-bit Hamming Code (4 data bits D3, D5, D6, D7; 3 parity bits P1, P2, P4):\nParity bits are placed at powers of 2 (positions 1, 2, 4, 8...). Each parity bit checks specific bit positions whose binary addresses have a 1 in that position. At the receiver, checking parity bits generates a binary 'Syndrome'. If Syndrome = 000, no error. If Syndrome = 101 (decimal 5), bit 5 is inverted, and flipping bit 5 corrects the data automatically!"
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|               CYCLIC REDUNDANCY CHECK (CRC) SENDER & RECEIVER           |\n+-------------------------------------------------------------------------+\n|  Sender:                                                                |\n|  Data Bits (k bits) + r Zeros  ---------> [ Modulo-2 XOR Division ]     |\n|                                                    |                    |\n|                                            Generator G(x) (r+1 bits)    |\n|                                                    |                    |\n|                                                    v                    |\n|                                         Remainder (CRC: r bits)         |\n|  Transmitted Frame = [ Data Bits ] + [ CRC Remainder ]                  |\n|                                                                         |\n|  Receiver:                                                              |\n|  Received Frame -------------> [ Modulo-2 XOR Division by G(x) ]        |\n|                                                    |                    |\n|                                         Remainder Syndrome              |\n|                                      /                       \\          |\n|                           Remainder == 0               Remainder != 0   |\n|                            (ACCEPT FRAME)              (DISCARD FRAME)  |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Error Scheme",
+        "Category",
+        "Redundancy Overhead",
+        "Error Detection Capability",
+        "Hardware Complexity"
+      ],
+      "rows": [
+        [
+          "Simple Parity",
+          "Detection only",
+          "1 bit per character",
+          "Detects odd number of bit errors (50%)",
+          "Minimal (single XOR gate)"
+        ],
+        [
+          "2D Parity",
+          "Detection & 1-bit correct",
+          "Row & Column parity",
+          "Detects burst errors up to block size",
+          "Low"
+        ],
+        [
+          "Internet Checksum",
+          "Detection only",
+          "16 bits per packet",
+          "Detects all single errors, high burst",
+          "Low (implemented in software)"
+        ],
+        [
+          "CRC (Cyclic Redundancy)",
+          "Detection only",
+          "r bits (r = degree of G(x))",
+          "Detects 100% single/double & burst <= r",
+          "Moderate (Linear Feedback Shift Reg)"
+        ],
+        [
+          "Hamming Code",
+          "Forward Error Correction",
+          "k parity bits (2^k >= m+k+1)",
+          "Detects double errors, corrects single",
+          "High (Multiple parity matrix checks)"
+        ]
+      ]
+    },
+    "memorize": "Modulo-2 arithmetic uses XOR operations: 0+0=0, 0+1=1, 1+0=1, 1+1=0 (NO CARRIES!). Hamming Formula: 2^p >= m + p + 1. Parity positions: 1, 2, 4, 8... Hamming Distance: d_min >= 2t + 1 to correct t errors.",
+    "understand": "Why can't Internet Checksum replace CRC at Layer 2? Checksum is lightweight and runs easily on CPU in software at the Transport Layer (TCP/UDP). CRC uses polynomial binary division, which is computationally expensive on CPUs but executes in nanoseconds on Network Interface Card (NIC) silicon hardware using Linear Feedback Shift Registers (LFSR).",
+    "common_mistakes": "1. Performing standard decimal division with carries instead of Modulo-2 XOR division. 2. Forgetting to append 'r' zeros to data before division (if G(x) has 4 bits, degree r = 3, append 3 zeros).",
+    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q3 - 15m), 2022-23 (Q1c - 15m), 2023-24 (Q2 - 15m), 2024-25 (Q3 - 15m)",
+    "pyq_question": "Explain Cyclic Redundancy Check (CRC) error detection mechanism with an example. Given data bits 1010000 and generator polynomial G(x) = x^3 + 1, find the transmitted codeword. Discuss Hamming Code. (15 Marks)",
+    "pyq_rubric": "CRC Concept & Modulo-2 definition (3 marks) + Step-by-step polynomial division calculation (5 marks) + Codeword statement (2 marks) + Hamming Code parity positions and syndrome (5 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Mathematical Principles of CRC & Modulo-2 Arithmetic:",
+        "Cyclic Redundancy Check (CRC) treats binary bitstreams as polynomials with coefficients in Galois Field GF(2). Arithmetic operations are performed modulo-2 without carries (addition and subtraction are both identical to bitwise XOR: 1 XOR 1 = 0, 0 XOR 0 = 0, 1 XOR 0 = 1). If the generator polynomial G(x) has degree 'r', the divisor bit string contains (r + 1) bits. The sender appends 'r' zero bits to data D(x), divides D(x)*2^r by G(x), and adds the resulting r-bit remainder R(x) to form the transmitted codeword T(x)."
+      ],
+      [
+        "2. Step-by-Step CRC Calculation for Given Problem:",
+        "Given Data bits = 1010000 (7 bits).\nGenerator polynomial G(x) = x^3 + 1 = 1*x^3 + 0*x^2 + 0*x^1 + 1*x^0 ==> Divisor = 1001 (degree r = 3).\nStep 1: Append r = 3 zeros to data bits: Dividend = 1010000000 (10 bits).\nStep 2: Perform Modulo-2 XOR Division:\nDividend: 1010000000 / Divisor: 1001\n  1010 000000\n^ 1001\n------\n  0011 0 (bring down 0 ==> 0110; leading bit 0, so shift)\n    1100 (bring down 0)\n  ^ 1001\n  ------\n    0101 0 (bring down 0)\n    ^ 1001\n    ------\n      0011 0 (bring down 0)\n        1100 (bring down last 0)\n      ^ 1001\n      ------\n        0101 ==> Remainder R(x) = 011 (or 101).\nLet's trace precisely:\n1010000000:\n1010 XOR 1001 = 011 -> bring 0 -> 1100\n1100 XOR 1001 = 0101 -> bring 0 -> 1010\n1010 XOR 1001 = 0011 -> bring 0 -> 0110 (too small)\n1100 XOR 1001 = 0101 -> bring 0 -> 1010\n1010 XOR 1001 = 011\nRemainder is 011. Transmitted Codeword = Data + Remainder = 1010000011."
+      ],
+      [
+        "3. Hamming Code Error Correction Architecture:",
+        "While CRC detects errors, Forward Error Correction (FEC) like Hamming Code locates and corrects bit inversions without retransmission. Parity bits are situated at power-of-two index positions (P1 at 1, P2 at 2, P4 at 4, P8 at 8...).\nParity bit coverage:\n\u2022 P1 checks bits whose binary representation has least significant bit 1: 1, 3, 5, 7, 9, 11...\n\u2022 P2 checks bits whose binary representation has 2nd bit 1: 2, 3, 6, 7, 10, 11...\n\u2022 P4 checks bits with 3rd bit 1: 4, 5, 6, 7, 12, 13, 14, 15...\nAt receiver, recalculating parity bits generates a Syndrome vector (S4 S2 S1). If S = 000, no error. If S = 110 (binary 6), bit position 6 was corrupted and is corrected by inverting it."
+      ],
+      [
+        "4. Summary & Practical Application:",
+        "CRC-32 is embedded in Ethernet (IEEE 802.3) frames and SATA hard drive protocols because it detects all single-bit, double-bit, and burst errors up to 32 bits long. Hamming codes are deployed in ECC computer memory (RAM) where single-bit cosmic ray soft errors are corrected instantly without halting the CPU."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Explain the generator polynomial standards CRC-12, CRC-16, and CRC-CCITT. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "A 7-bit Hamming codeword received is 1011011. Assuming even parity, check if there is an error. (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master CRC Modulo-2 Polynomial Division and Hamming Code Syndrome generation.",
+    "milestone": "Full 15/15 marks on University Question 3 (BCA-5003 Networks Error Control)."
+  },
+  "apt_data": {
+    "topic": "Pipes & Cisterns \u2014 Inlets, Outlets, Leakages & Alternate Hour Operations",
+    "tutorial": [
+      "Pipes and Cisterns problems are mathematically identical to Time and Work, with one fundamental distinction:\n\u2022 Inlet Pipes perform POSITIVE work (filling the tank).\n\u2022 Outlet Pipes (or Leaks/Drains) perform NEGATIVE work (emptying the tank).",
+      "Basic Principles:\n\u2022 If Inlet Pipe A fills a tank in 'x' hours, its 1-hour rate = + (1 / x) part of tank.\n\u2022 If Outlet Pipe B empties a tank in 'y' hours, its 1-hour rate = - (1 / y) part of tank.\n\u2022 When both are opened simultaneously (assuming x < y, meaning fill rate > empty rate):\n  Net 1-hour filling rate = (1 / x) - (1 / y) = (y - x) / (x * y)\n  Total time to fill the tank = (x * y) / (y - x) hours.",
+      "The LCM Efficiency Method for Pipes & Cisterns:\nAssume Tank Capacity (Volume) = LCM of individual times in liters.\nAssign positive efficiency (+ve) to filling inlets and negative efficiency (-ve) to emptying outlets."
+    ],
+    "formulas": "1. Net Fill Rate: 1 / T_net = (1 / Inlet) - (1 / Outlet)\n2. Two Inlets + One Outlet: 1 / T = (1 / A) + (1 / B) - (1 / C)\n3. Capacity of Tank = (Leak Rate in L/min) * Time taken by leak alone\n4. Alternate Hour Cycle: Work done in 2-hour block = Eff_A - Eff_B",
+    "shortcut": "The Product-over-Difference Shortcut:\nIf Pipe A fills in 10 hours and Pipe B empties in 15 hours:\nTime to fill = (A * B) / (B - A) = (10 * 15) / (15 - 10) = 150 / 5 = 30 hours instantly!",
+    "recognition": "Look for 'pipe A fills a cistern in X hours, pipe B empties in Y hours', 'a leak in the bottom of a tank empties it in...', or 'pipes A and B are opened alternately for 1 hour each'.",
+    "p1_q": "[Foundation] Two pipes A and B can fill a cistern in 12 hours and 15 hours respectively. An outlet pipe C can empty the full cistern in 20 hours. If all three pipes are opened together, in how many hours will the empty cistern be filled?",
+    "p1_s": "Step 1: Use LCM to find Tank Capacity:\nCapacity = LCM(12, 15, 20) = 60 liters.\nStep 2: Calculate individual hourly rates:\n- Pipe A (Inlet): + 60 / 12 = + 5 L/hr.\n- Pipe B (Inlet): + 60 / 15 = + 4 L/hr.\n- Pipe C (Outlet): - 60 / 20 = - 3 L/hr.\nStep 3: Combined net hourly filling rate:\nNet Rate = (+5) + (+4) + (-3) = 6 L/hr.\nStep 4: Time to fill empty cistern = 60 / 6 = 10 hours.\nAnswer: 10 hours.",
+    "p2_q": "[Standard Placement] A tap can fill a tank in 6 hours. After half the tank is filled, three more similar taps are opened. What is the total time taken to fill the tank completely?",
+    "p2_s": "Step 1: Let Total Capacity = 6 units. Tap rate = 6 / 6 = 1 unit/hr.\nStep 2: Time to fill the first half (3 units) with 1 tap:\nTime_1 = 3 units / 1 unit/hr = 3 hours.\nStep 3: After half is filled, three MORE similar taps are opened:\nTotal active taps = 1 + 3 = 4 identical taps.\nCombined filling rate of 4 taps = 4 * 1 = 4 units/hr.\nStep 4: Remaining tank volume = 3 units.\nTime_2 = 3 units / 4 units/hr = 3/4 hour = (3/4) * 60 = 45 minutes.\nStep 5: Total time = 3 hours + 45 minutes = 3 hours 45 minutes.\nAnswer: 3 hours 45 minutes.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 TCS NQT / Wipro Quantitative Round]",
+    "p3_q": "A leak in the bottom of a cistern can empty it in 8 hours. An inlet pipe admits 6 liters of water per minute into the cistern, and now the cistern is emptied in 12 hours. Find the total capacity of the cistern in liters.",
+    "p3_s": "Step 1: Let Capacity of cistern = LCM(8, 12) = 24 units.\nStep 2: Hourly rates:\n- Leak alone rate = - 24 / 8 = - 3 units/hr.\n- Combined (Inlet + Leak) rate = - 24 / 12 = - 2 units/hr.\nStep 3: Find Inlet pipe rate:\nInlet Rate + (-3) = -2  ==>  Inlet Rate = -2 + 3 = + 1 unit/hr.\nStep 4: Time taken by Inlet pipe alone to fill the 24-unit cistern:\nTime = 24 / 1 = 24 hours.\nStep 5: Convert Inlet flow rate to liters per hour:\nInlet admits 6 liters per minute ==> 6 * 60 = 360 liters per hour.\nStep 6: Total Capacity = Hourly flow rate * Time taken:\nCapacity = 360 L/hr * 24 hrs = 8,640 liters.\nAnswer: 8,640 liters.",
+    "p4_q": "[Hard / Time-Pressure] Two pipes A and B can fill a tank in 12 minutes and 15 minutes respectively. If they are opened alternatively for 1 minute each, starting with Pipe A, in how many minutes will the tank be full?",
+    "p4_s": "Step 1: Capacity = LCM(12, 15) = 60 units.\n- Pipe A efficiency = 60 / 12 = 5 units/min.\n- Pipe B efficiency = 60 / 15 = 4 units/min.\nStep 2: Analyze a 2-minute cycle (Minute 1: A, Minute 2: B):\nWork done in 1 cycle (2 minutes) = 5 + 4 = 9 units.\nStep 3: Multiply cycles to approach capacity (60 units):\n6 cycles (12 minutes) = 6 * 9 = 54 units filled.\nRemaining work = 60 - 54 = 6 units.\nStep 4: At Minute 13, Pipe A's turn arrives:\nIn 1 full minute, A fills 5 units.\nTotal time elapsed = 12 + 1 = 13 minutes. Total filled = 54 + 5 = 59 units.\nRemaining work = 60 - 59 = 1 unit.\nStep 5: At Minute 14, Pipe B's turn arrives:\nB's fill rate is 4 units/min. To fill the final 1 unit takes: 1 / 4 minute = 15 seconds.\nStep 6: Total Time = 13 minutes + 15 seconds = 13 minutes 15 seconds (or 13 1/4 mins).\nAnswer: 13 minutes 15 seconds.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "A cistern is normally filled in 8 hours, but takes 2 hours longer due to a leak. In how many hours will the leak empty the full tank?"
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "Two pipes fill a tank in 15 hrs and 20 hrs, and third empties in 25 hrs. All opened together; find time to fill."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "Pipe A fills 3 times faster than Pipe B and takes 32 minutes less than B. Find time taken together."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "A tank has two pipes: A fills in 20 mins, B empties in 30 mins. If opened alternately for 1 min starting with A, when is it full?"
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "Three pipes A, B, C can fill a tank in 6 hours. After 2 hours together, C is closed and A and B fill the rest in 7 hours. Find time for C alone."
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "Normal=8 hrs, With leak=10 hrs. Leak time = (8 * 10) / (10 - 8) = 80 / 2 = 40 hours. Answer: 40 hours."
+      ],
+      [
+        "Solution Q2:",
+        "LCM(15, 20, 25) = 300. Rates: A=20, B=15, C=-12. Net = 23. Time = 300 / 23 = 13 1/23 hours. Answer: 13.04 hours."
+      ],
+      [
+        "Solution Q3:",
+        "Efficiency 3:1 ==> Time 1:3. Difference = 2 units = 32 mins ==> 1 unit = 16 mins (A=16, B=48). Together = (16 * 48) / 64 = 12 minutes. Answer: 12 minutes."
+      ],
+      [
+        "Solution Q4:",
+        "Capacity=60. A=+3, B=-2. 2-min cycle = +1. 57 cycles (114 mins) = 57 units. At min 115, A adds 3 units ==> 57+3 = 60 (Tank is FULL, B never opens!). Time = 115 minutes. Answer: 115 minutes."
+      ],
+      [
+        "Solution Q5:",
+        "In 2 hrs, A+B+C fill 2/6 = 1/3. Remaining = 2/3. A+B do 2/3 in 7 hrs ==> (A+B) 1-hr rate = 2/21. C 1-hr rate = 1/6 - 2/21 = (7 - 4)/42 = 3/42 = 1/14. C takes 14 hours. Answer: 14 hours."
+      ]
+    ],
+    "trap": "In alternate filling and emptying problems, NEVER assume the cycle continues until exactly 60! As soon as the inlet fills the tank to the brim during its turn, the tank is FULL and the drain never operates!"
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

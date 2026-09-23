@@ -1,0 +1,163 @@
+{
+  "day": 16,
+  "title": "KM OLAP Operations, Heaps/Priority Queues & Probability",
+  "sem_data": {
+    "subject": "BCA-5001 Knowledge Management",
+    "topic": "Unit II \u2014 Multidimensional OLAP Data Cubes & The 5 Core OLAP Operations",
+    "detailed_notes": [
+      "Online Analytical Processing (OLAP) is a computing methodology that enables management executives, business analysts, and decision makers to visually inspect, summarize, and navigate complex multidimensional data cubes from multiple perspectives rapidly and interactively.",
+      "The 5 Core OLAP Operations on Multidimensional Data Cubes:\n1. Roll-Up (Drill-Up / Aggregation): Performs data summarization by either climbing up a concept hierarchy for a dimension or by dimension reduction (removing a dimension). Example: Moving from Daily sales -> Monthly sales -> Quarterly sales -> Annual sales across all retail branches.\n2. Drill-Down (Roll-Down / Disaggregation): The exact inverse of Roll-Up. It introduces greater granularity by descending down a concept hierarchy or introducing a new dimension. Example: An executive viewing national sales drills down to inspect state-level sales, and drills down further to city-level stores.\n3. Slice: Performs a selection on one specific dimension of the cube, resulting in a two-dimensional sub-cube (a 'slice'). Example: In a 3D cube of dimensions (Time, Product, Location), setting Time = 'Q1 2026' isolates a 2D slice showing sales of all Products across all Locations during Q1.\n4. Dice: Defines a sub-cube by executing a selection across two or more dimensions simultaneously. Example: Selecting (Location = 'Kanpur' OR 'Lucknow') AND (Time = 'Q1' OR 'Q2') AND (Product = 'Electronics').\n5. Pivot (Rotate): A visualization operation that rotates the data axes in space to provide an alternative perspective on the dataset, transforming rows into columns and vice-versa (e.g. converting a 2D table of Store x Product into Product x Store).",
+      "Architectural Types of OLAP Servers:\n\u2022 ROLAP (Relational OLAP): Uses relational databases to store multidimensional data, translating OLAP operations into complex multi-table SQL queries. Highly scalable for massive volumes, but slower query response times.\n\u2022 MOLAP (Multidimensional OLAP): Stores data in dedicated multidimensional arrays (cubes). Pre-computes aggregations, delivering lightning-fast O(1) query performance, but suffers from data cube sparsity and high initial build times.\n\u2022 HOLAP (Hybrid OLAP): Combines the scalability of ROLAP with the speed of MOLAP by storing detailed transaction records in relational tables while caching high-level aggregated cubes in MOLAP storage."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    5 CORE OLAP DATA CUBE OPERATIONS                     |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|             [ ROLL-UP ]                   [ DRILL-DOWN ]                |\n|       (Climb Concept Hierarchy)     (Descend Concept Hierarchy)         |\n|       Day -> Month -> Year          Year -> Quarter -> Month            |\n|                     ^                         |                         |\n|                     |                         v                         |\n|              +---------------------------------------+                  |\n|              |         MULTIDIMENSIONAL CUBE         |                  |\n|              |    Dimensions: Product, Time, City    |                  |\n|              +---------------------------------------+                  |\n|                     /            |            \\                         |\n|                    /             |             \\                        |\n|                   v              v              v                       |\n|               [ SLICE ]       [ DICE ]       [ PIVOT ]                  |\n|             Filter on ONE   Filter on TWO+  Rotate 2D                   |\n|             dimension       dimensions      Axes (Swap                  |\n|             (Time = 'Q1')   (City & Prod)   Row/Column)                 |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Comparison Criterion",
+        "ROLAP (Relational OLAP)",
+        "MOLAP (Multidimensional OLAP)",
+        "HOLAP (Hybrid OLAP)"
+      ],
+      "rows": [
+        [
+          "Underlying Storage",
+          "Standard relational tables (RDBMS)",
+          "Proprietary multidimensional arrays/cubes",
+          "Relational tables + Pre-computed cubes"
+        ],
+        [
+          "Query Response Speed",
+          "Moderate to slow (complex SQL joins)",
+          "Fastest (pre-calculated matrix lookups)",
+          "Fast for aggregates, moderate for details"
+        ],
+        [
+          "Data Volume Scalability",
+          "Extremely high (handles petabytes)",
+          "Limited by cube explosion & sparsity",
+          "High (combines both architectures)"
+        ],
+        [
+          "Data Cube Sparsity",
+          "Immune to sparsity (only rows stored)",
+          "Highly vulnerable to sparse data waste",
+          "Optimized across storage tiers"
+        ],
+        [
+          "Hardware Cost",
+          "Standard enterprise database storage",
+          "High RAM and disk array requirements",
+          "Moderate hybrid infrastructure"
+        ]
+      ]
+    },
+    "memorize": "5 OLAP Operations: Roll-Up (Aggregate/Climb), Drill-Down (De-aggregate/Descend), Slice (1 Dimension fixed), Dice (2+ Dimensions sub-cube), Pivot (Rotate axes). ROLAP = Relational SQL; MOLAP = Array Storage Cube; HOLAP = Hybrid.",
+    "understand": "Think of an OLAP cube as a 3D Rubik's cube. 'Slicing' cuts off a single vertical 2D sheet of stickers. 'Dicing' cuts out a smaller 2x2 mini-cube from the corner. 'Pivoting' rotates the cube in your hand to look at the top face instead of the front.",
+    "common_mistakes": "1. Confusing Slice (filtering on strictly ONE dimension) with Dice (filtering across MULTIPLE dimensions). 2. Confusing Roll-Up (moves up toward higher summary) with Drill-Down (moves down toward granular detail).",
+    "pyq_year": "CSJMU BCA-5001 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "4 Consecutive University Sessions: 2021 (Q5 - 15m), 2022-23 (Q3a - 15m), 2023-24 (Q3 - 15m), 2024-25 (Q4 - 15m)",
+    "pyq_question": "Explain the various OLAP operations performed on multidimensional data cubes with neat diagrams and concrete business examples. Differentiate between ROLAP, MOLAP, and HOLAP. (15 Marks)",
+    "pyq_rubric": "OLAP concept & Data Cube definition (2 marks) + Explanation of all 5 OLAP operations with diagrams & examples (6 marks) + ROLAP vs MOLAP vs HOLAP architecture comparison table (5 marks) + Examination summary (2 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Theoretical Foundation of OLAP & Multidimensional Cubes:",
+        "Online Analytical Processing (OLAP) facilitates high-velocity, multidimensional analysis of consolidated enterprise data. Unlike transactional databases (OLTP) which model data in two-dimensional normalized tables, OLAP structures data into multidimensional Data Cubes (hypercubes), defined by Dimensions (categorical business perspectives like Time, Product, Location) and Facts (numerical quantitative measures like Sales Revenue, Units Sold)."
+      ],
+      [
+        "2. Detailed 5 Core OLAP Operations:",
+        "\u2022 Roll-Up (Drill-Up): Performs data aggregation by climbing up a concept hierarchy for a specific dimension or by stepping down a dimension. Example: In an automobile enterprise, rolling up sales data from 'City level' (Kanpur, Lucknow) to 'State level' (Uttar Pradesh) and 'National level' (India).\n\u2022 Drill-Down (Roll-Down): The reverse of roll-up. Navigates from less detailed summary data to highly granular data by descending down a concept hierarchy. Example: An executive examining Quarterly sales drills down into Monthly and Daily sales figures to diagnose a revenue dip.\n\u2022 Slice: Extracts a two-dimensional sub-cube by fixing a single dimension at a specific attribute value. Example: Setting Location = 'Delhi' generates a 2D slice showing sales of all Products across all Quarters specifically within Delhi.\n\u2022 Dice: Extracts a smaller sub-cube by applying selection filters simultaneously across multiple dimensions. Example: Selecting Time = ('Q1', 'Q2') AND Product = ('Laptops', 'Tablets') AND Location = ('Mumbai', 'Bangalore').\n\u2022 Pivot (Rotate): A visualization operation that rotates the multidimensional axes in 3D space, rearranging the layout of report rows and columns (e.g. converting a table of Products along rows and Months along columns into Months along rows and Products along columns)."
+      ],
+      [
+        "3. Comparative Analysis: ROLAP vs MOLAP vs HOLAP:",
+        "\u2022 ROLAP: Relies on relational databases to store fact and dimension tables directly. It uses extended SQL to simulate multidimensional cubes. It handles massive petabyte-scale data seamlessly, but query latency is high due to expensive join operations.\n\u2022 MOLAP: Implements dedicated multidimensional array storage structures. Pre-computes cell aggregations during cube build time, delivering instantaneous O(1) query response. However, when dimensions contain many sparse empty cells, storage utilization is inefficient.\n\u2022 HOLAP: A hybrid compromise. Detailed granular records are retained in scalable ROLAP relational databases, while high-frequency aggregated cubes are cached in high-speed MOLAP array structures."
+      ],
+      [
+        "4. Conclusion & Examination Summary:",
+        "OLAP operations empower business analysts to perform interactive multidimensional slicing and dicing without writing complex SQL scripts. Modern cloud analytical data platforms blend ROLAP and MOLAP techniques to achieve near-instantaneous business intelligence querying."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Explain Star Schema and how OLAP queries are executed on fact tables. (10 Marks)"
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "What is data cube sparsity in MOLAP and how is it mitigated? (5 Marks)"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master 5 OLAP Operations (Roll-Up, Drill-Down, Slice, Dice, Pivot) and ROLAP vs MOLAP.",
+    "milestone": "Full 15/15 marks on University Question 4 (BCA-5001 OLAP Operations)."
+  },
+  "apt_data": {
+    "topic": "Probability \u2014 Foundations, Addition Rule, Independent Events & Cards/Dice",
+    "tutorial": [
+      "Probability measures the mathematical likelihood that an uncertain event will occur:\nProbability of Event E: P(E) = n(E) / n(S) = (Number of Favorable Outcomes) / (Total Number of Exhaustive Sample Space Outcomes).\nFundamental Probability Invariants:\n\u2022 0 <= P(E) <= 1. P(Impossible Event) = 0; P(Certain Event) = 1.\n\u2022 Complementary Event: P(Not E) = 1 - P(E).",
+      "The Addition Theorem of Probability:\nFor any two events A and B:\nP(A cup B) = P(A) + P(B) - P(A cap B)\nIf events A and B are Mutually Exclusive (cannot happen simultaneously, P(A cap B) = 0):\nP(A cup B) = P(A) + P(B).",
+      "Independent Events (Multiplication Rule):\nTwo events A and B are Independent if the occurrence of one does not affect the probability of the other:\nP(A cap B) = P(A) * P(B).",
+      "Standard Placement Sample Spaces:\n\u2022 Tossing 'n' Coins: Total sample space = 2^n outcomes (2 coins = 4, 3 coins = 8).\n\u2022 Rolling 'n' Dice: Total sample space = 6^n outcomes (1 die = 6, 2 dice = 36).\n\u2022 Pack of 52 Playing Cards: 4 Suits of 13 cards each: Spades (Black), Clubs (Black), Hearts (Red), Diamonds (Red). 26 Red cards, 26 Black cards. 12 Face Cards (4 Kings, 4 Queens, 4 Jacks). 4 Aces."
+    ],
+    "formulas": "1. Basic Probability: P(E) = n(E) / n(S)\n2. Addition Theorem: P(A or B) = P(A) + P(B) - P(A and B)\n3. Independent Events: P(A and B) = P(A) * P(B)\n4. At Least One Occurrence: P(At least one A) = 1 - P(None of A) = 1 - [P(Not A)]^n",
+    "shortcut": "The 'At Least One' Inversion Shortcut:\nWhenever an exam question asks for 'the probability of getting AT LEAST ONE...', never sum multiple cases!\nCalculate the complementary probability of getting ZERO occurrences, and subtract from 1:\nP(At least one) = 1 - P(None) instantly!",
+    "recognition": "Look for 'what is the probability that a card drawn is either a king or a heart', 'two dice are thrown, find the probability that the sum is 8', or 'probability that at least one person hits the target'.",
+    "p1_q": "[Foundation] A card is drawn from a well-shuffled pack of 52 cards. What is the probability of getting either a King or a Heart?",
+    "p1_s": "Step 1: Total sample space n(S) = 52 cards.\nStep 2: Let Event A = Drawing a King; Event B = Drawing a Heart.\n- Number of Kings = 4 ==> P(A) = 4 / 52.\n- Number of Hearts = 13 ==> P(B) = 13 / 52.\nStep 3: Check for intersection (King of Hearts is counted in both):\n- King of Hearts n(A cap B) = 1 card ==> P(A cap B) = 1 / 52.\nStep 4: Apply Addition Theorem:\nP(A cup B) = P(A) + P(B) - P(A cap B) = (4 / 52) + (13 / 52) - (1 / 52) = 16 / 52.\nStep 5: Reduce fraction: 16 / 52 = 4 / 13.\nAnswer: 4 / 13.",
+    "p2_q": "[Standard Placement] In a single throw of two unbiased dice, find the probability of obtaining a total sum of 8.",
+    "p2_s": "Step 1: Total sample space for 2 dice: n(S) = 6 * 6 = 36 outcomes.\nStep 2: List all pairs (Die 1, Die 2) summing to 8:\nFavorable pairs = {(2, 6), (3, 5), (4, 4), (5, 3), (6, 2)}.\nNotice (1, 7) is impossible on a standard 6-sided die.\nTotal favorable outcomes n(E) = 5.\nStep 3: P(Sum of 8) = n(E) / n(S) = 5 / 36.\nSpeed Tip: Memorize dice sum frequency pattern (Sums 2 to 12):\nSum:       2   3   4   5   6   7   8   9  10  11  12\nWays:      1   2   3   4   5   6   5   4   3   2   1\nWays to get 8 is instantly 5 ==> 5/36!\nAnswer: 5 / 36.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Infosys / Cognizant Reasoning Round]",
+    "p3_q": "The probability that A can solve a problem is 2/3, and the probability that B can solve it is 3/4. If both attempt the problem independently, what is the probability that the problem is solved?",
+    "p3_s": "Step 1: The problem is solved if AT LEAST ONE person solves it.\nUse the 'At Least One' Inversion Shortcut:\nP(Problem is solved) = 1 - P(Neither A nor B solves it).\nStep 2: Calculate complementary failure probabilities:\n- P(A fails) = 1 - 2/3 = 1/3.\n- P(B fails) = 1 - 3/4 = 1/4.\nStep 3: Since events are independent, multiply failure probabilities:\nP(Neither solves it) = P(A fails) * P(B fails) = (1 / 3) * (1 / 4) = 1 / 12.\nStep 4: P(Solved) = 1 - 1/12 = 11 / 12.\nVerification via Addition Theorem: P(A cup B) = 2/3 + 3/4 - (2/3 * 3/4) = 8/12 + 9/12 - 6/12 = 11/12. Exact match!\nAnswer: 11 / 12.",
+    "p4_q": "[Hard / Time-Pressure] A bag contains 4 red, 5 white, and 6 blue balls. Three balls are drawn at random from the bag without replacement. What is the probability that all three balls drawn are of different colors?",
+    "p4_s": "Step 1: Total balls = 4 + 5 + 6 = 15 balls.\nTotal ways to choose any 3 balls out of 15: n(S) = ^15 C_3.\n^15 C_3 = (15 * 14 * 13) / (3 * 2 * 1) = 5 * 7 * 13 = 455 ways.\nStep 2: Favorable outcome: Exactly 1 Red AND 1 White AND 1 Blue ball:\n- Ways to select 1 Red from 4: ^4 C_1 = 4.\n- Ways to select 1 White from 5: ^5 C_1 = 5.\n- Ways to select 1 Blue from 6: ^6 C_1 = 6.\nTotal favorable ways n(E) = ^4 C_1 * ^5 C_1 * ^6 C_1 = 4 * 5 * 6 = 120 ways.\nStep 3: Probability P(All different) = n(E) / n(S) = 120 / 455.\nDivide numerator and denominator by 5: 120 / 5 = 24; 455 / 5 = 91.\nProbability = 24 / 91.\nAnswer: 24 / 91.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "Two coins are tossed simultaneously. What is the probability of getting at least one head?"
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "What is the probability of picking an Ace from a well-shuffled standard pack of 52 cards?"
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "In rolling two dice, what is the probability of getting a doublet (both dice showing the same number)?"
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "A box contains 20 electric bulbs, out of which 4 are defective. If 2 bulbs are chosen, find the probability that none is defective."
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "A speaks truth in 75% of cases and B in 80% of cases. In what percentage of cases are they likely to contradict each other in stating the same fact?"
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "Sample space = {HH, HT, TH, TT} (4). At least 1 head = 3. P = 3/4. Answer: 3/4."
+      ],
+      [
+        "Solution Q2:",
+        "Aces = 4. P = 4 / 52 = 1 / 13. Answer: 1 / 13."
+      ],
+      [
+        "Solution Q3:",
+        "Doublets = {(1,1), (2,2), (3,3), (4,4), (5,5), (6,6)} (6 ways). P = 6 / 36 = 1 / 6. Answer: 1 / 6."
+      ],
+      [
+        "Solution Q4:",
+        "Non-defective = 16. Total = 20. P = (^16 C_2) / (^20 C_2) = (16 * 15) / (20 * 19) = 240 / 380 = 12 / 19. Answer: 12 / 19."
+      ],
+      [
+        "Solution Q5:",
+        "Contradict when (A true and B false) OR (A false and B true). P = (3/4 * 1/5) + (1/4 * 4/5) = 3/20 + 4/20 = 7/20 = 35%. Answer: 35%."
+      ]
+    ],
+    "trap": "In contradiction questions, remember that contradiction means ONE speaks truth AND the other lies. Sum both combinations (A true/B false + A false/B true)."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

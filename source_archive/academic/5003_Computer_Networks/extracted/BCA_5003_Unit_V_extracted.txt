@@ -1,0 +1,693 @@
+SOURCE PROVENANCE: D:\Projects\Placement_Master_Handbook_Web\source_archive\academic\5003_Computer_Networks\notes\BCA_5003_Unit_V.pdf
+PAGES EXTRACTED: 14 / 14
+
+--- PAGE 1 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 1
+BCA-5003: COMPUTER NETWORK
+UNIT V — COMPLETE DETAILED NOTES + TOPIC-WISE PYQ ANSWER BOOK
+Transport Layer • Session, Presentation & Application Layers • Routing • Cryptography • Email
+Protocols
+Unit-I format: Index → detailed concepts → diagrams/tables → topic-wise PYQs with years → long
+model answers → revision plan
+Prepared from the supplied Unit-V material. The notes use corrected technical terms for safe,
+high-mark examination answers.
+
+
+--- PAGE 2 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 2
+Index
+No.
+Topic
+PYQ years found in supplied Unit-V material
+1
+Unit-V roadmap and score strategy
+—
+2
+Transport layer: functions, control mechanisms and connection management
+2016, 2017, 2019, 2022–23
+3
+TCP three-way handshake and connection release
+2019
+4
+Session layer and presentation layer
+2018
+5
+Application layer services and application protocols
+2018, 2023–24, 2024–25, 2025–26
+6
+SMTP, MIME, POP3, FTP, Telnet, DNS and email architecture
+2019
+7
+Cryptography, encryption, decryption and cryptosystem components
+2022–23, 2023–24, 2024–25, 2025–26
+8
+Routing algorithms and routing tables
+2024–25
+9
+Hamming distance and Hamming-code correction
+2022–23
+10
+Final revision tables, diagrams and 7-day plan
+—
+High-score strategy
+1. For every OSI-layer answer, state layer number, main purpose, functions, common protocols, and one practical example.
+2. For TCP connection questions, draw the three-way handshake and four-segment close procedure.
+3. For cryptography, use plaintext → encryption → ciphertext → decryption → plaintext diagrams.
+4. For routing, distinguish routing from forwarding, then explain static/adaptive algorithms and table fields.
+5. For email/MIME, write protocol role and architecture diagrams, not only full forms.
+
+
+--- PAGE 3 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 3
+1. Unit-V Roadmap
+Unit V joins Transport Layer functions with upper OSI layers—Session, Presentation, and Application—and includes networking
+services such as email, file transfer, remote access, routing, and security. It is a high-scoring unit because questions are
+definition-plus-diagram based and PYQs repeat frequently.
+Exam answer pattern
+For a 10-mark question: start with a definition, draw a labelled diagram, explain six to eight points under subheadings,
+give examples/protocols, then write a one-line conclusion. For comparison questions, use tables. For security
+questions, clearly distinguish encryption, hashing, authentication, integrity, and digital signatures.
+2. Transport Layer
+The Transport Layer is Layer 4 of the OSI model. Its primary purpose is process-to-process delivery: it delivers data not only
+to the correct host but to the correct application process on that host. It uses port numbers and provides services such as
+segmentation, reassembly, connection control, reliability, flow control, congestion control, and multiplexing.
+Transport layer position
+Application / Session / Presentation
+I user data
+[ TRANSPORT LAYER ] ← segments, ports, reliability
+I segments/datagrams
+[ NETWORK LAYER ] ← IP packets and routing
+Main functions
+Function
+Explanation
+Service-point addressing
+Uses port numbers to identify source and destination application processes. IP identifies host/interface; port identifies application/servic
+Segmentation and reassembly
+Divides a long application message into smaller transport segments; receiver reassembles them in correct order.
+Connection control
+May provide connection-oriented service (TCP) or connectionless service (UDP).
+Reliable delivery
+TCP uses sequence numbers, acknowledgements, timers, checksum, retransmission, and ordering.
+Flow control
+Prevents a fast sender from overwhelming a receiver; TCP uses advertised receive-window mechanisms.
+Congestion control
+TCP adjusts sending behaviour when network congestion is inferred.
+Multiplexing/demultiplexing
+Combines traffic from many applications at sender and delivers incoming segments to correct application at receiver.
+Buffering
+Uses buffers to accommodate rate differences, reordering, and retransmission handling.
+Connection-oriented versus connectionless transport
+Basis
+Connection-oriented (TCP)
+Connectionless (UDP)
+Setup
+Connection establishment before data transfer.
+No connection setup.
+Delivery
+Reliable, ordered byte stream.
+Best-effort independent datagrams.
+Control
+ACKs, sequence numbers, retransmissions, flow/congestion control. No built-in ACK/retransmission/order/flow control.
+Use
+Web, email, file transfer, SSH.
+DNS, real-time voice/video, games, DHCP.
+3. TCP Connection Establishment and Release
+TCP is connection-oriented. Before normal data transfer, it establishes a shared understanding of initial sequence numbers
+using the three-way handshake. This prevents old duplicate segments from being treated as part of a new connection and
+confirms that both directions are ready.
+Three-way handshake
+Client Server
+SYN, Seq = x IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+IIIIIIIIIIIIIIIIIIIIII SYN + ACK, Seq = y, Ack = x + 1
+ACK, Ack = y + 1 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+
+
+--- PAGE 4 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 4
+Connection established; data may now flow in both directions.
+1. Client performs an active open and sends SYN with initial sequence number x.
+2. Server responds with SYN+ACK: it acknowledges x+1 and announces its own initial sequence number y.
+3. Client sends ACK for y+1. Both sides now know the other side is reachable and sequence spaces are synchronized.
+Connection termination
+TCP close is normally a four-segment exchange because each direction closes independently.
+Client Server
+FIN, Seq = u IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII ACK, Ack = u + 1
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII FIN, Seq = v
+ACK, Ack = v + 1 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
+Connection closed after required state/timer handling.
+A reset (RST) can abort a connection immediately in exceptional/error cases; it is not the normal orderly closing
+procedure.
+4. Session and Presentation Layers
+4.1 Session Layer — Layer 5
+The Session Layer establishes, manages, synchronizes, and terminates dialogs/sessions between application processes. In
+modern Internet implementations, many session functions are handled by application frameworks and protocols rather than a
+separate universal Session-Layer protocol, but the OSI functions remain important for examination answers.
+Function
+Explanation
+Session establishment
+Creates a logical dialogue/session and agrees parameters before extended communication.
+Session maintenance
+Maintains/coordinates the active dialogue during communication.
+Session termination
+Closes the dialogue and releases associated resources.
+Dialog control
+Manages which side may transmit and supports half-duplex/full-duplex dialog conventions.
+Synchronization
+Adds checkpoints in a long operation, enabling restart from a checkpoint after interruption.
+Recovery support
+Helps coordinate resumption after failures using synchronization points.
+Checkpoint diagram
+Long transfer: Start II data II [Checkpoint 1] II data II [Checkpoint 2] II failure
+Recovery: restart from Checkpoint 2 instead of restarting from Start.
+4.2 Presentation Layer — Layer 6
+The Presentation Layer is concerned with data representation, syntax, and transformation. It ensures that systems with different
+internal data formats can exchange information correctly.
+Function
+Explanation
+Translation
+Converts data formats/character sets between systems, such as ASCII/Unicode and different numeric representations.
+Compression
+Reduces data size to save bandwidth/storage; receiver decompresses it.
+Encryption/decryption
+Transforms readable plaintext into ciphertext and restores it for confidentiality.
+Serialization/format representation
+Encodes structured data in transferable formats; examples include common image/document/data formats.
+Presentation-layer transformation diagram
+Sender data format → translate/compress/encrypt → network transfer → decrypt/decompress/translate → receiver data
+format
+5. Application Layer and Services
+
+
+--- PAGE 5 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 5
+The Application Layer is Layer 7 and provides network services directly to end-user applications. It is not the user application
+itself; it is the layer/interface through which applications use network services. Common Application-Layer protocols include
+HTTP/HTTPS, SMTP, DNS, FTP, SSH, DHCP, SNMP, and others.
+Service
+Explanation and examples
+Web service
+HTTP/HTTPS allow browser-client and web-server communication for pages, APIs, media, and web applications.
+Email service
+SMTP sends/transfers mail; IMAP or POP3 retrieves mail from server; MIME allows non-ASCII and attachment content.
+File transfer
+FTP/SFTP/SCP and related protocols transfer/manage files between systems.
+Remote access
+SSH provides secure remote command access; Telnet is an older insecure remote terminal protocol.
+Name resolution
+DNS maps names such as example.com to IP addresses and provides other domain records.
+Directory service
+LDAP and related systems manage/query directory information: users, groups, devices, permissions.
+Network management
+SNMP allows monitoring/management of network devices.
+Messaging/collaboration
+Protocols/services support chat, presence, conferencing, and real-time collaboration.
+Remote procedure calls
+RPC lets a program invoke a function/service on another machine as part of distributed computing.
+Application-service diagram
+[Browser] I HTTP(S) II [Web server]
+[Mail client] I SMTP/IMAP/POP3 II [Mail server]
+[User/device] I DNS query II [DNS resolver/server]
+[Admin terminal] I SSH II [Remote server/router]
+6. Email and Common Application Protocols
+SMTP
+SMTP (Simple Mail Transfer Protocol) is used to submit and relay email from a sender’s mail client/server to the recipient’s mail
+server. It is a push/transfer protocol; it is not normally used by an end user to retrieve stored mail. For retrieval, POP3 or IMAP
+is used.
+Email architecture
+Sender MUA → MSA → MTA III SMTP IIII recipient MTA → MDA → mailbox → IMAP/POP3 → recipient MUA
+MUA = Mail User Agent; MSA = Mail Submission Agent; MTA = Mail Transfer Agent; MDA = Mail Delivery Agent.
+MIME
+MIME stands for Multipurpose Internet Mail Extensions. It extends the original email format so messages can carry non-ASCII
+text, attachments, images, audio, video, documents, and multiple message parts. MIME does not itself deliver email; it
+labels/encodes content for email transport.
+Important MIME headers
+Header
+Purpose / example
+MIME-Version
+Indicates MIME formatting, e.g. MIME-Version: 1.0.
+Content-Type
+Describes media type/subtype, e.g. text/plain, text/html, image/jpeg, application/pdf, multipart/mixed.
+Content-Transfer-Encoding
+Specifies safe representation for transport, e.g. base64 or quoted-printable.
+Content-Disposition
+Describes presentation, e.g. attachment; filename="notes.pdf".
+Other important protocols
+Protocol
+Main role
+Typical port note
+HTTP / HTTPS
+Web requests/responses. HTTPS is HTTP protected by TLS.
+80 / 443
+FTP
+File transfer; classic FTP uses separate control and data connections.
+21 control; 20 active-mode data historically
+SSH
+Secure remote login/command execution and tunnelling.
+22
+Telnet
+Older remote terminal protocol; sends data including credentials without modern encryption.23
+DNS
+Name-to-address and other domain record lookup.
+53 UDP/TCP
+
+
+--- PAGE 6 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 6
+Protocol
+Main role
+Typical port note
+POP3
+Downloads/retrieves mail from server, often for local storage.
+110; 995 with implicit TLS
+IMAP
+Synchronizes/accesses mail while keeping mailboxes on server.
+143; 993 with implicit TLS
+7. Cryptography, Encryption and Decryption
+Cryptography is the science and practice of protecting information through mathematical algorithms and keys. It protects data
+stored on systems and data transmitted over networks. Cryptography supports confidentiality, integrity, authentication, and
+non-repudiation when appropriate mechanisms are used.
+Security goals
+Goal
+Meaning
+Confidentiality
+Only authorized parties can read information. Encryption supports this goal.
+Integrity
+Unauthorized alteration is detected. Hashes/MACs/digital signatures support this.
+Authentication
+Verifies identity or origin of a user/message/system.
+Non-repudiation
+A sender cannot credibly deny a signed action/message, subject to proper key control and legal context.
+Symmetric-key encryption
+Symmetric encryption uses the same shared secret key for encryption and decryption. It is fast and suitable for large amounts of
+data. Its main challenge is secure key distribution: both parties must obtain and protect the same secret key. AES is a common
+modern symmetric algorithm; DES is historically important but not considered secure for modern use.
+Plaintext II Encrypt with shared secret key K III Ciphertext II Decrypt with same K III Plaintext
+Asymmetric/public-key encryption
+Asymmetric cryptography uses a mathematically related key pair: public key and private key. For confidentiality, a sender
+encrypts using recipient’s public key and only recipient’s private key can decrypt. Asymmetric methods are slower than
+symmetric encryption but solve key-distribution and digital-signature problems. RSA and elliptic-curve cryptography are
+common examples.
+Plaintext II Encrypt with receiver public key III Ciphertext II Decrypt with receiver private key III Plaintext
+Hash functions
+A cryptographic hash function converts input of arbitrary length into a fixed-length digest. Hashing is one-way: it is not
+encryption and is not reversed by “decryption.” Hashes help verify integrity and are used with salts/slow password-hashing
+schemes for password storage. Examples include SHA-256; weak legacy hashes should not be used for security.
+Digital signatures
+Digital signatures normally use asymmetric cryptography. Sender hashes the message and signs the hash using the sender’s
+private key. Anyone can verify the signature using the sender’s public key. This supports authenticity, integrity, and
+non-repudiation properties.
+Cryptosystem components
+Component
+Meaning
+Plaintext
+Original readable information to be protected.
+Encryption algorithm
+Mathematical process that converts plaintext to ciphertext using key material.
+Encryption key
+Key used as input to encryption operation.
+Ciphertext
+Unreadable/protected output produced by encryption.
+Decryption algorithm
+Process that converts ciphertext back to plaintext using the correct key.
+Decryption key
+Key used to recover plaintext; same as encryption key in symmetric systems, different/private key in public-key confidentiality.
+Key space
+Set of all possible keys for a cryptosystem.
+
+
+--- PAGE 7 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 7
+8. Routing Algorithms and Routing Tables
+Routing is the process of selecting a path for packets across interconnected networks. Forwarding is the router’s local action of
+sending a received packet to the appropriate next-hop interface according to its routing/forwarding table. The “best” route
+generally means lowest cost according to a metric, not always simply the fewest hops.
+Routing process diagram
+Source host → Router A → Router B → Router C → Destination network
+routing algorithm builds routes; forwarding table chooses next hop for each packet
+Routing algorithm categories
+Type
+Description
+Examples/notes
+Static / non-adaptive
+Routes are manually configured or fixed and do not automatically react to topology/traffic failures. Suitable for small, stable networks.
+Static routes; fixed routing.
+Dynamic / adaptive
+Routers exchange/update routing information and react to failures/topology changes; more flexible but more complex.
+Distance vector, link state, path vector.
+Flooding
+Forwards packet on all outgoing links except incoming link; uses controls such as hop count/sequence number to limit duplicates.
+Useful for discovery/robust delivery concepts; inefficient for
+Major dynamic approaches
+Approach
+Main idea
+Typical protocol
+Distance vector
+Router shares distance/cost to destinations with neighbours; chooses best neighbour route.
+RIP uses hop count metric.
+Link state
+Router learns network topology and link costs, then computes shortest paths.
+OSPF.
+Path vector
+Routes carry path/Autonomous System information; policy based inter-domain selection.BGP.
+Routing table
+A routing table is a data structure maintained by a router/host. It contains routes that tell the device how to reach destination
+networks. A route typically specifies destination prefix, subnet mask/prefix length, next hop, outgoing interface, metric, and
+source/type of route.
+Example routing table
+Destination prefix
+Next hop
+Interface
+Metric
+Meaning
+192.168.1.0/24
+Directly connected
+LAN1
+0
+Local LAN.
+10.10.0.0/16
+192.168.1.254
+LAN1
+10
+Send to next-hop router.
+0.0.0.0/0
+192.168.1.1
+LAN1
+100
+Default route for unknown destinations.
+9. Hamming Distance and Hamming Code
+Hamming distance is the number of bit positions at which two equal-length binary strings differ. Example: distance between
+`1011011` and `1001110` is 3 because three positions differ. The minimum Hamming distance of a code determines its
+error-detection/correction capability.
+Useful rule
+A code with minimum distance dmin can detect up to dmin − 1 errors and can correct up to I(dmin − 1)/2I errors. Basic
+Hamming codes have minimum distance 3 and can correct one-bit errors.
+Hamming (7,4) code layout
+Position: 1 2 3 4 5 6 7
+Role: P1 P2 D1 P4 D2 D3 D4
+Even parity groups:
+P1 checks positions 1, 3, 5, 7
+P2 checks positions 2, 3, 6, 7
+P4 checks positions 4, 5, 6, 7
+Received word example: 1011011 (even parity, positions numbered left to right)
+
+
+--- PAGE 8 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 8
+Positions: 1 2 3 4 5 6 7
+Bits: 1 0 1 1 0 1 1
+P1 group (1,3,5,7) = 1,1,0,1 → odd → fails
+P2 group (2,3,6,7) = 0,1,1,1 → odd → fails
+P4 group (4,5,6,7) = 1,0,1,1 → odd → fails
+Syndrome P4P2P1 = 111I = 7, so bit 7 is wrong.
+Corrected codeword: 1011010.
+
+
+--- PAGE 9 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 9
+10. Topic-Wise PYQ Answer Bank
+The following model answers correspond to questions visible in the Unit-V source. They are organized after the detailed notes,
+exactly as requested.
+Q1. Discuss the services offered by the Application Layer.
+Asked: 2023–24, 2024–25, 2025–26
+Answer
+The Application Layer is the seventh and highest layer of the OSI model. It provides network services directly to end-user
+applications. It acts as the interface through which application software uses the underlying network.
+1. File transfer and management: Protocols such as FTP/SFTP enable upload, download, remote file access, directory listing,
+and file management.
+2. Email service: SMTP transfers email between clients/servers; POP3 or IMAP retrieves messages for users. MIME enables
+attachments and multimedia mail content.
+3. Web service: HTTP/HTTPS support communication between browsers and web servers for websites, web applications,
+APIs, images, and multimedia resources.
+4. Remote access: SSH enables secure terminal access to remote systems. Telnet is an older remote terminal protocol but is
+insecure because it does not provide modern encryption.
+5. Name service: DNS translates human-readable domain names into IP addresses, enabling users to access Internet services
+by names rather than numeric addresses.
+6. Directory service: LDAP-type services store and provide controlled access to users, groups, devices, and organisational
+directory information.
+7. Network management: SNMP and related tools support monitoring and management of network devices.
+8. Messaging, collaboration and RPC: Application services support chat, presence, conferencing, remote procedure calls,
+and distributed applications.
+Conclusion: The Application Layer makes network resources useful to users by delivering services such as web access, email,
+file transfer, remote login, name resolution, and collaboration.
+Q2. Explain cryptography used for network security and privacy.
+Asked: 2023–24, 2025–26
+Answer
+Cryptography is the use of mathematical algorithms and keys to protect information and communication from unauthorized
+access or alteration. It is used in secure web browsing, online payments, VPNs, digital signatures, authentication systems, and
+protected data storage.
+Cryptography provides confidentiality so only authorised parties can read information; integrity so unauthorised changes are
+detected; authentication so identities/origin can be verified; and non-repudiation so a validly signed sender cannot easily
+deny an action/message.
+Symmetric-key cryptography: the same secret key encrypts and decrypts data. It is fast and appropriate for bulk data
+encryption. AES is a standard modern example. Its main issue is distributing the shared key securely.
+Asymmetric-key cryptography: uses a public/private key pair. For confidentiality, sender encrypts using receiver’s public key
+and receiver decrypts using private key. RSA and ECC are common examples. It is useful for key exchange and digital
+signatures but usually slower than symmetric encryption.
+Hash functions: create fixed-length one-way digests for integrity checking. Hashing is not encryption and cannot normally be
+reversed. Hashes are used in integrity verification, signatures, and password-storage systems with secure salting/slow hashing.
+Digital signature: sender signs a message hash with private key; verifier checks using public key. This supports authenticity
+and integrity.
+Conclusion: Modern secure systems commonly combine asymmetric cryptography for identity/key establishment, symmetric
+encryption for bulk data, and hashes/signatures for integrity and authentication.
+
+
+--- PAGE 10 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 10
+Q3. Explain encryption and decryption methods.
+Asked: 2024–25
+Answer
+Encryption is the process of converting readable data, called plaintext, into unreadable protected data, called ciphertext, using
+an algorithm and key. Decryption is the reverse process: it uses the correct key and algorithm to restore ciphertext to plaintext
+for an authorised recipient.
+Symmetric method: one shared secret key is used for both encryption and decryption. Diagram: Plaintext → Encrypt using key
+K → Ciphertext → Decrypt using key K → Plaintext. AES is a common example. It is fast but needs secure key sharing.
+Asymmetric method: uses a related public/private key pair. For confidentiality: Plaintext → Encrypt with receiver public key →
+Ciphertext → Decrypt with receiver private key → Plaintext. RSA/ECC are examples. This solves public key distribution but is
+slower for large data.
+Hybrid method: Practical systems such as HTTPS normally use public-key methods to authenticate/exchange a temporary
+symmetric session key, then symmetric encryption for actual bulk data because it is faster.
+Conclusion: Encryption provides confidentiality during storage/transmission; decryption permits only the correct key holder to
+read data.
+Q4. Explain routing algorithms and write short notes on routing table.
+Asked: 2024–25
+Answer
+Routing is path selection for packets across interconnected networks. A routing algorithm determines the best route according
+to metric/cost such as hop count, delay, bandwidth, reliability, or administrative policy. Forwarding then sends a packet to the
+selected next hop.
+Static/non-adaptive routing: routes are manually configured and do not automatically change with failures or traffic. It is
+simple and suitable for small stable networks but lacks adaptability.
+Dynamic/adaptive routing: routers update routes based on network information. Distance-vector algorithms exchange
+distance/cost information with neighbours; RIP is a classic example. Link-state algorithms build topology knowledge and
+compute shortest paths; OSPF is an example. Path-vector routing is used between autonomous systems; BGP is the key
+example.
+Routing table: a router’s data structure containing destination network prefixes, prefix lengths/masks, next-hop addresses,
+outgoing interfaces, metrics, and route source/type. The router uses longest-prefix matching to select the most specific suitable
+route. A default route is used when no more specific entry matches.
+Conclusion: Routing algorithms create/maintain route knowledge; routing tables are used for actual packet-forwarding
+decisions.
+Q5. Explain duties/functions of the Transport Layer.
+Asked: 2016, 2017, 2022–23
+Answer
+The Transport Layer is Layer 4 of the OSI model and provides process-to-process delivery. It ensures that data reaches the
+correct application process on the destination host, not only the correct machine.
+1. Port addressing: source/destination ports identify applications and enable multiple applications to share one host/network
+connection.
+2. Segmentation and reassembly: large application messages are divided into segments and correctly reassembled at
+destination.
+3. Connection control: may establish/manage/release a connection-oriented service or send independent connectionless
+datagrams.
+4. Reliability: TCP uses sequence numbers, acknowledgements, checksums, timers and retransmission to recover from
+losses/corruption and deliver bytes in order.
+5. Flow control: prevents a fast sender from overwhelming a slower receiver using buffering/window mechanisms.
+
+
+--- PAGE 11 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 11
+6. Congestion control: TCP adjusts sending rate based on network congestion to reduce loss and overload.
+7. Multiplexing/demultiplexing: combines data from many source processes and sends received data to appropriate
+destination process.
+Conclusion: The Transport Layer makes end-to-end application communication reliable, efficient, and properly addressed.
+Q6. Explain the components of cryptography/cryptosystem.
+Asked: 2022–23
+Answer
+A cryptosystem is a complete set of components used to protect information through encryption and decryption.
+Plaintext: original readable information to be protected.
+Encryption algorithm: mathematical procedure that takes plaintext and an encryption key and produces ciphertext.
+Encryption key: secret/private/public key material used as input to encryption.
+Ciphertext: scrambled output that should be unreadable without the appropriate decryption key.
+Decryption algorithm: mathematical procedure that takes ciphertext and correct decryption key and restores plaintext.
+Decryption key: key used to recover the plaintext. In symmetric cryptography it is the same shared secret key; in asymmetric
+confidentiality it is usually the recipient’s private key.
+Key space: set of all possible valid keys for a cryptographic scheme. Large key spaces make brute-force attacks harder.
+Attacker/interceptor: unauthorised entity attempting to recover plaintext or keys. Secure cryptography assumes algorithms
+may be publicly known; security should depend on protecting keys, not hiding the algorithm.
+Q7. Explain Hamming distance. Received 7-bit Hamming codeword is 1011011 using even parity. Is it
+correct? If not, locate error.
+Asked: 2022–23
+Answer
+Hamming distance is the number of positions in which two equal-length binary strings differ. It is used to measure code
+separation and determine error-detection/correction ability. Basic Hamming code adds parity bits at positions 1, 2, 4, and so on
+to locate a single-bit error.
+Assume the seven positions are numbered left to right. Received word: positions 1–7 = 1 0 1 1 0 1 1. With even parity, P1
+checks 1,3,5,7 = 1,1,0,1, which has three 1s and fails. P2 checks 2,3,6,7 = 0,1,1,1, which has three 1s and fails. P4 checks
+4,5,6,7 = 1,0,1,1, which has three 1s and fails.
+Syndrome = P4P2P1 = 111I = 7. Therefore, bit position 7 is in error. Flip the seventh bit from 1 to 0. Corrected codeword =
+1011010. Hence received codeword is wrong and has a single-bit error at position 7.
+Always state the numbering convention in an exam because some texts number from the right; the method is unchanged.
+Q8. What is MIME? Explain standard content types of MIME.
+Asked: 2019
+Answer
+MIME stands for Multipurpose Internet Mail Extensions. It extends the original Internet email format so email can carry
+non-ASCII text, attachments, images, audio, video, documents, and multiple content parts. MIME works with email systems; it
+does not replace SMTP for mail transport.
+MIME uses headers such as MIME-Version, Content-Type, Content-Transfer-Encoding, and Content-Disposition. Content-Type
+contains a major type and subtype.
+text: text/plain, text/html. Used for ordinary/plain or HTML text messages.
+image: image/jpeg, image/png, image/gif. Used for image attachments/content.
+audio: audio/mpeg, audio/wav. Used for sound content.
+video: video/mp4, video/mpeg. Used for video content.
+
+
+--- PAGE 12 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 12
+application: application/pdf, application/zip, application/octet-stream. Used for documents, binary files, executable-like generic
+data, etc.
+multipart: multipart/mixed for text plus attachments; multipart/alternative for same content in formats such as text/plain and
+text/html; multipart/related for linked resources; multipart/form-data for form submissions.
+message: message/rfc822 for an attached/embedded email message.
+Conclusion: MIME labels and encodes content so mail clients know how to safely transfer and display different kinds of email
+data.
+Q9. What is SMTP? Explain its components with example.
+Asked: 2019
+Answer
+SMTP, Simple Mail Transfer Protocol, is the standard Application-Layer protocol for submitting and relaying email. It transfers
+outgoing messages from a user’s mail client to a submission server and between mail servers until the recipient domain’s
+server accepts the message. It uses TCP for reliable transfer.
+Components: MUA (Mail User Agent) is the user’s email client such as a webmail interface or mail app. MSA (Mail Submission
+Agent) receives submitted outgoing mail. MTA (Mail Transfer Agent) relays mail between servers using SMTP and DNS MX
+records. MDA (Mail Delivery Agent) places accepted mail in the recipient mailbox. The recipient then reads mail using IMAP or
+POP3 through a MUA.
+Example flow: Alice composes a message in MUA → submits it to her MSA → MTA queries DNS for the recipient domain’s
+mail exchanger → sends SMTP message to recipient MTA → MDA stores it in recipient mailbox → Bob opens MUA and
+retrieves/synchronizes mail using IMAP or POP3.
+Conclusion: SMTP handles sending and relaying; IMAP/POP3 mainly handle user retrieval of received mail.
+Q10. Write five Application-Layer protocols and explain each briefly.
+Asked: 2018
+Answer
+SMTP: sends and relays electronic mail between mail clients/servers and mail servers.
+HTTP/HTTPS: transfers web pages, APIs and web resources between browser/client and web server; HTTPS adds TLS
+protection.
+FTP: transfers files between hosts. Classic FTP uses a control connection and a separate data connection.
+DNS: resolves domain names to IP addresses and provides other DNS records needed for Internet services.
+Telnet/SSH: provide remote terminal access. Telnet is legacy and unencrypted; SSH is the secure modern alternative.
+Other acceptable examples include POP3, IMAP, DHCP, SNMP, NTP, LDAP, and TFTP. In answers, always write the full form
+plus one precise function.
+Q11. Discuss difference between Presentation and Application Layer.
+Asked in supplied Unit-V material
+Answer
+Presentation Layer: Layer 6. It handles data representation: translation between formats/character sets,
+compression/decompression, encryption/decryption, and data syntax. It normally does not directly offer web/email/file services
+to the user.
+Application Layer: Layer 7. It provides network services directly to user applications, such as email, file transfer, web access,
+DNS, remote login, and network management.
+In short: Presentation Layer makes data understandable and secure across unlike systems; Application Layer makes network
+services available to applications/users.
+Q12. Write functions of Session Layer.
+Asked in supplied Unit-V material
+
+
+--- PAGE 13 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 13
+Answer
+The Session Layer is Layer 5 of the OSI model. It establishes, manages, synchronizes, and terminates logical communication
+sessions between applications.
+Session establishment: creates a session and agrees communication parameters before an extended dialogue.
+Session maintenance: manages the active session and coordinates the dialogue while communication continues.
+Dialog control: manages who may send and when; supports half-duplex/full-duplex conversational coordination.
+Synchronization: inserts checkpoints in a long data transfer or transaction. If failure occurs, processing can resume from the
+latest checkpoint rather than beginning again.
+Session termination: closes the session cleanly and releases resources.
+Conclusion: These functions organize and recover long-running application conversations.
+
+
+--- PAGE 14 ---
+BCA-5003 Computer Network — Unit V Detailed Notes + Topic-Wise PYQ Answers
+Page 14
+11. Final Revision Sheet
+Must-practise diagrams
+• Transport Layer segmentation and port-based delivery.
+• TCP three-way handshake and TCP four-step termination.
+• Session checkpoint/recovery diagram.
+• Presentation transformation: translate/compress/encrypt → reverse at receiver.
+• Application service diagram: browser/web server, mail client/mail server, DNS query, SSH remote access.
+• SMTP mail-flow architecture: MUA → MSA → MTA → MDA → mailbox → IMAP/POP3 → MUA.
+• Symmetric encryption, asymmetric encryption, hash, and digital-signature diagrams.
+• Routing process and a sample routing table.
+• Hamming (7,4) parity-position/checking layout.
+Fast comparison tables
+Concept
+Remember this
+TCP vs UDP
+TCP is reliable, ordered, connection-oriented; UDP is connectionless, lightweight, best effort.
+Session vs Presentation
+Session manages dialogue/checkpoints; Presentation handles syntax, translation, compression, encryption.
+Presentation vs Application
+Presentation transforms data; Application provides services to applications/users.
+Symmetric vs Asymmetric
+Same shared key vs public/private key pair. Symmetric is faster; asymmetric helps with key exchange/signatures.
+Encryption vs Hashing
+Encryption is reversible with a key; cryptographic hashing is one-way and used for integrity.
+Static vs Dynamic routing
+Manual/fixed routes vs routes that update based on network information.
+SMTP vs POP3/IMAP
+SMTP sends/relays email; POP3/IMAP retrieves/accesses mailbox email.
+7-Day Unit-V 10-CGPA Study Plan
+Day
+Focus
+Output
+1
+Transport layer
+Write functions and TCP vs UDP table from memory.
+2
+TCP handshake/release
+Draw handshake and close diagrams; practise Q5.
+3
+Session + Presentation
+Prepare Q11/Q12 and all layer functions.
+4
+Application services + protocols
+Write Q1/Q10; learn protocol roles and ports.
+5
+SMTP + MIME
+Draw email architecture; learn MIME header/content types.
+6
+Cryptography + routing
+Write Q2/Q3/Q4/Q6; revise diagrams.
+7
+Hamming + complete mock
+Solve Hamming numerical; write all important PYQs under time limit.
+Accuracy reminders
+• The Application Layer is not the same thing as a user application; it provides services to applications.
+• SMTP primarily sends/relays mail. POP3/IMAP are used to retrieve/access mailboxes.
+• Hashing is not encryption. A secure hash is designed to be one-way.
+• Encryption supports confidentiality; integrity/authentication/non-repudiation need appropriate hashes, MACs, signatures, and
+key management.
+• Routing chooses paths; forwarding sends packets using a route/forwarding table.
+• A “best route” is lowest metric/policy cost, not necessarily fewest hops.
+• TCP has orderly close using FIN/ACK; RST is normally an abrupt reset.
+Final high-score rule: learn definitions, reproduce the diagrams without looking, write the year-wise PYQs in your
+notebook, and revise the formula/terms tables before the exam.

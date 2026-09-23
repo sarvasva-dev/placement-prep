@@ -1,0 +1,235 @@
+{
+  "day": 26,
+  "title": "Network Cryptography (AES & RSA), Kadane's Algorithm & Python Concurrency",
+  "sem_data": {
+    "subject": "BCA-5003 Computer Network",
+    "topic": "Unit V \u2014 Network Security & Cryptography: Symmetric vs Asymmetric, RSA Algorithm & Digital Signatures",
+    "detailed_notes": [
+      "Cryptography secures network communication across untrusted channels, guaranteeing Confidentiality, Integrity, Authentication, and Non-Repudiation (the CIA-N triad).",
+      "1. Symmetric Key Cryptography (Secret Key):\n\u2022 The sender and receiver share the EXACT SAME secret key for both encryption and decryption: Ciphertext C = E(K, P); Plaintext P = D(K, C).\n\u2022 Algorithms: AES (Advanced Encryption Standard: 128, 192, 256 bits), DES (56-bit key, obsolete), 3DES.\n\u2022 Advantages: Highly optimized in hardware, extremely fast throughput (megabytes per second), minimal CPU overhead.\n\u2022 The Key Distribution Problem: How can sender and receiver agree on a shared secret key across an insecure network without an eavesdropper intercepting it? (Requires n*(n-1)/2 keys for n users!).",
+      "2. Asymmetric Key Cryptography (Public Key):\n\u2022 Uses a mathematically linked Key Pair: a Public Key (distributed openly) and a Private Key (kept strictly confidential).\n\u2022 Encryption: Anyone can encrypt using the recipient's Public Key: C = E(PU_receiver, P). Decryption: ONLY the recipient's Private Key can decrypt: P = D(PR_receiver, C).\n\u2022 Key Management: Each user requires only 1 key pair (2n keys total for n users).\n\u2022 Disadvantage: Computationally intensive (1000x slower than symmetric AES).",
+      "3. The RSA Algorithm (Rivest, Shamir, Adleman):\nBased on the mathematical difficulty of factoring the product of two large prime numbers:\n\u2022 Step 1: Select two distinct large prime numbers p and q.\n\u2022 Step 2: Compute n = p * q (the modulus, part of public and private keys).\n\u2022 Step 3: Compute Euler's Totient function phi(n) = (p - 1) * (q - 1).\n\u2022 Step 4: Choose public exponent e such that 1 < e < phi(n) and gcd(e, phi(n)) = 1 (typically e = 65537).\n\u2022 Step 5: Compute private exponent d such that d * e = 1 mod phi(n) (Modular Multiplicative Inverse: d = e^(-1) mod phi(n)).\n\u2022 Public Key = (e, n); Private Key = (d, n).\n\u2022 Encryption: C = (M^e) mod n.\n\u2022 Decryption: M = (C^d) mod n.",
+      "4. Digital Signatures & Message Digests:\n\u2022 Ensures sender authenticity and non-repudiation: Sender hashes the message (using SHA-256) and ENCRYPTS the hash with their own PRIVATE KEY!\n\u2022 Receiver decrypts the signature using the sender's PUBLIC KEY and compares it against a freshly computed SHA-256 hash. If hashes match, the message is authentic and untampered."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|                    RSA PUBLIC KEY ENCRYPTION & SIGNING                  |\n+-------------------------------------------------------------------------+\n|                                                                         |\n|  1. CONFIDENTIALITY (Encryption):                                       |\n|     Plaintext M ---> [ Encrypt with Bob's PUBLIC Key ] ---> Ciphertext C|\n|                                                                   |     |\n|     Plaintext M <--- [ Decrypt with Bob's PRIVATE Key ] <---------+     |\n|                                                                         |\n|  2. AUTHENTICATION & NON-REPUDIATION (Digital Signature):               |\n|     Message M ---> [ SHA-256 ] ---> Hash                                |\n|                                      |                                  |\n|     Signature S <--- [ Encrypt with Alice's PRIVATE Key ] <-------------+     |\n|                                                                         |\n|     Verify: Decrypt Signature S with Alice's PUBLIC Key === Hash?        |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Comparison Feature",
+        "Symmetric Cryptography (AES)",
+        "Asymmetric Cryptography (RSA)"
+      ],
+      "rows": [
+        [
+          "Keys Used",
+          "Single shared secret key for encryption & decryption",
+          "Key pair: Public key (encrypt) & Private key (decrypt)"
+        ],
+        [
+          "Execution Speed",
+          "Extremely fast (Hardware AES-NI instructions)",
+          "Slow (1000x slower due to large modular exponentiation)"
+        ],
+        [
+          "Key Distribution",
+          "Complex (must securely share secret key)",
+          "Simple (public keys shared openly over network)"
+        ],
+        [
+          "Total Keys in Network",
+          "n * (n - 1) / 2 keys for n users",
+          "2 * n keys for n users (1 key pair per user)"
+        ],
+        [
+          "Primary Use Case",
+          "Bulk data payload encryption (HTTPS data frames)",
+          "Key exchange (TLS session key agreement) & Digital Signatures"
+        ]
+      ]
+    },
+    "memorize": "Symmetric: 1 key, fast, bulk data (AES). Asymmetric: 2 keys, slow, key exchange (RSA). RSA math: n = p*q, phi = (p-1)*(q-1), d = e^(-1) mod phi. C = M^e mod n; M = C^d mod n.",
+    "understand": "How does HTTPS combine both? Hybrid Cryptography! Asymmetric RSA/Diffie-Hellman is used strictly during the initial 1-second TLS handshake to securely negotiate a random 256-bit symmetric session key. Once negotiated, all subsequent gigabytes of webpage data are encrypted using lightning-fast symmetric AES.",
+    "common_mistakes": "1. Thinking RSA encrypts bulk files directly (too slow, produces huge CPU spikes). 2. Confusing Digital Signatures (signed with sender's private key) with Confidentiality (encrypted with receiver's public key).",
+    "pyq_year": "CSJMU BCA-5003 (2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_freq": "High-Frequency 15-Mark Core Question (Appeared in 2021, 2022-23, 2023-24, 2024-25)",
+    "pyq_question": "Explain the difference between Symmetric and Asymmetric Cryptography. Describe the RSA algorithm step-by-step. Perform RSA encryption and decryption for primes p = 3, q = 11, e = 7, and message M = 2. (15 Marks)",
+    "pyq_rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA algorithm mathematical derivation (5 marks) + Step-by-step numerical calculation with p=3, q=11, e=7, M=2 (6 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Symmetric vs Asymmetric Cryptography:",
+        "Symmetric encryption (e.g. AES, DES) uses a single secret key shared by sender and receiver. It offers superior throughput for high-volume data but suffers from key distribution complexity. Asymmetric encryption (e.g. RSA, ECC) utilizes mathematically coupled public and private keys, solving the key distribution dilemma and enabling digital signatures at the expense of computational overhead."
+      ],
+      [
+        "2. The RSA Algorithm Mathematical Steps:",
+        "1. Select primes p and q.\n2. Modulus n = p * q.\n3. Euler's Totient phi(n) = (p - 1) * (q - 1).\n4. Choose e such that 1 < e < phi(n) and gcd(e, phi(n)) = 1.\n5. Compute d = e^(-1) mod phi(n), satisfying (d * e) mod phi(n) = 1.\n6. Ciphertext C = (M^e) mod n. Decryption M = (C^d) mod n."
+      ],
+      [
+        "3. Complete Hand Numerical Solution (p=3, q=11, e=7, M=2):",
+        "\u2022 Step 1: p = 3, q = 11.\n\u2022 Step 2: n = p * q = 3 * 11 = 33.\n\u2022 Step 3: phi(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20.\n\u2022 Step 4: Given e = 7. Verify gcd(7, 20) = 1. Valid.\n\u2022 Step 5: Find d such that (d * 7) mod 20 = 1.\n  Test multiples of 20 plus 1:\n  (1 * 20 + 1) = 21. Is 21 divisible by 7? Yes: 21 / 7 = 3.\n  Therefore, private key d = 3! (Check: 7 * 3 = 21 = 1 mod 20).\n  Public Key = (e=7, n=33); Private Key = (d=3, n=33).\n\n\u2022 Step 6 (Encryption of M = 2):\n  C = (M^e) mod n = (2^7) mod 33.\n  2^7 = 128.\n  128 / 33 = 3 with remainder: 128 - (3 * 33) = 128 - 99 = 29.\n  Transmitted Ciphertext C = 29!\n\n\u2022 Step 7 (Decryption of C = 29):\n  M = (C^d) mod n = (29^3) mod 33.\n  Notice: 29 = -4 mod 33.\n  29^3 = (-4)^3 mod 33 = -64 mod 33.\n  -64 = -2 * 33 + 2 = -66 + 2.\n  Therefore, -64 mod 33 = 2!\n  Decrypted Message M = 2. Exact match with original message!"
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master RSA Mathematical Steps & Modular Arithmetic",
+    "milestone": "Full 15/15 on Networks Unit V Exam Question"
+  },
+  "apt_data": {
+    "topic": "Verbal Ability \u2014 Sentence Correction, Error Spotting & Reading Comprehension",
+    "tutorial": [
+      "Top Grammar Rules for Placement Verbal Rounds (TCS NQT, Infosys, Cognizant):\n1. Subject-Verb Agreement: Singular subjects take singular verbs; plural subjects take plural verbs.\n\u2022 Words joined by 'with', 'as well as', 'along with': Verb agrees with the FIRST subject! ('The manager, along with his team, is arriving').\n\u2022 'Either... or' / 'Neither... nor': Verb agrees with the NEAREST subject! ('Neither the teacher nor the students were present').\n2. Dangling Modifiers: An introductory modifying participle phrase must be immediately followed by the noun it describes. ('Walking down the street, a tree fell on him' is incorrect\u2014the tree wasn't walking!).\n3. Parallelism: Elements in a list or comparison must maintain identical grammatical forms ('He likes swimming, running, and to cycle' ==> change to 'cycling')."
+    ],
+    "formulas": "Along with/as well as ==> agrees with Subject 1. Neither/nor ==> agrees with Subject 2. Lists must share parallel structure (-ing with -ing).",
+    "shortcut": "Identify the Real Subject: Ignore prepositional phrases between the subject and verb (e.g. 'The quality [of these mangoes] is excellent').",
+    "recognition": "Error spotting questions with marked segments [A] / [B] / [C] / [D] in TCS NQT and Wipro.",
+    "tier1_problem": "Identify the error: 'Each of the participants [A] / were given [B] / a certificate [C] / upon completion [D].'",
+    "tier1_solution": "'Each' is a singular indefinite pronoun. The subject is 'Each', not 'participants'. A singular subject requires the singular verb 'was given'. Error is in part [B]. Correct sentence: 'Each of the participants was given a certificate'. Answer: [B].",
+    "tier2_problem": "Identify the error: 'Neither the principal [A] / nor the lecturers [B] / was present [C] / at the annual conference [D].'",
+    "tier2_solution": "Rule of proximity: In 'neither... nor', the verb agrees with the closer subject ('the lecturers', plural). Plural subject requires 'were present'. Error is in part [C]. Answer: [C].",
+    "tier3_problem": "[Infosys Verbal Pattern] Choose the grammatically correct sentence:\n(A) Not only did she won the competition, but also broke the national record.\n(B) Not only she won the competition, but also she broke the record.\n(C) Not only did she win the competition, but she also broke the national record.\n(D) She won not only the competition, but broke also the national record.",
+    "tier3_solution": "Rule of Inversion with 'Not only': When 'not only' begins a clause, auxiliary verb inversion is required ('did she win', base verb). Furthermore, correlative conjunctions require balanced parallel placement: 'did she win' paired with 'she also broke'. Sentence (C) correctly implements inversion and parallelism. Answer: (C).",
+    "tier4_problem": "Correct the dangling modifier: 'Having finished the examination, the papers were collected by the invigilator.'",
+    "tier4_solution": "The introductory participial phrase 'Having finished the examination' grammatically attaches to the immediately following subject 'the papers'. But papers cannot finish an examination! The logical subject is the students. Correct revision: 'Having finished the examination, the students handed their papers to the invigilator.'",
+    "speed_drills": [
+      {
+        "q": "The committee [have/has] submitted its report.",
+        "a": "'has'. Committee acting as a collective single unit with 'its'."
+      },
+      {
+        "q": "Bread and butter [is/are] his favorite breakfast.",
+        "a": "'is'. Representing a single composite culinary dish."
+      },
+      {
+        "q": "One of my friends [is/are] an engineer.",
+        "a": "'is'. The subject is 'One', not 'friends'."
+      },
+      {
+        "q": "Ten miles [is/are] a long distance to walk.",
+        "a": "'is'. A specific quantitative unit of measurement treated as singular."
+      },
+      {
+        "q": "He is senior [than/to] me.",
+        "a": "'to'. Latin adjectives (senior, junior, prior, superior) take 'to', not 'than'."
+      }
+    ]
+  },
+  "dsa_problems": [
+    {
+      "title": "Maximum Subarray (LeetCode 53 - Kadane's Algorithm)",
+      "difficulty": "Medium",
+      "importance": "Top 3 Most Asked Placement Problem Worldwide (Amazon, Microsoft, TCS)",
+      "problem_statement": "Given an integer array nums, find the subarray with the largest sum, and return its sum.",
+      "solution_approach": "Kadane's Algorithm (Greedy / DP in O(N)):\n1. Maintain two variables: `max_so_far` and `curr_max`.\n2. Initialize both to `nums[0]`.\n3. For each number x from index 1 onward:\n   `curr_max = max(x, curr_max + x)`\n   (Either start a brand new subarray at x, or extend the existing running subarray).\n4. `max_so_far = max(max_so_far, curr_max)`.\n5. Return `max_so_far`.",
+      "code": "def maxSubArray(nums: list[int]) -> int:\n    max_so_far = nums[0]\n    curr_max = nums[0]\n    \n    for x in nums[1:]:\n        curr_max = max(x, curr_max + x)\n        max_so_far = max(max_so_far, curr_max)\n        \n    return max_so_far",
+      "line_by_line": [
+        [
+          "max_so_far = nums[0]; curr_max = nums[0]",
+          "Initialize baselines to first element to handle all-negative arrays correctly."
+        ],
+        [
+          "curr_max = max(x, curr_max + x)",
+          "Decide whether to discard accumulated debt or extend subarray."
+        ],
+        [
+          "max_so_far = max(max_so_far, curr_max)",
+          "Update global maximum."
+        ]
+      ],
+      "time_complexity": "O(N) single linear traversal.",
+      "space_complexity": "O(1) constant auxiliary memory.",
+      "edge_cases": "All negative numbers [-5, -2, -8] (returns -2); single element array [1]."
+    },
+    {
+      "title": "Maximum Product Subarray (LeetCode 152 - Medium)",
+      "difficulty": "Medium",
+      "importance": "High-Frequency Extension Tracking Negative Inversions",
+      "problem_statement": "Given an integer array nums, find a subarray that has the largest product, and return the product.",
+      "solution_approach": "Dual-Tracking Dynamic Programming:\nMultiplying two negative numbers produces a positive number! A large negative product can instantly flip to the maximum positive product.\nMaintain BOTH `curr_max` and `curr_min` simultaneously.\nWhen encountering a negative number, swap `curr_max` and `curr_min` before computing new states.",
+      "code": "def maxProduct(nums: list[int]) -> int:\n    res = max(nums)\n    cur_min, cur_max = 1, 1\n    \n    for n in nums:\n        if n < 0:\n            cur_max, cur_min = cur_min, cur_max\n            \n        cur_max = max(n, cur_max * n)\n        cur_min = min(n, cur_min * n)\n        res = max(res, cur_max)\n        \n    return res",
+      "line_by_line": [
+        [
+          "if n < 0: cur_max, cur_min = cur_min, cur_max",
+          "Negative multiplier inverts signs: maximum becomes minimum and vice-versa."
+        ],
+        [
+          "cur_max = max(n, cur_max * n)",
+          "Update running maximum product."
+        ],
+        [
+          "cur_min = min(n, cur_min * n)",
+          "Update running minimum product to prepare for future negative flips."
+        ]
+      ],
+      "time_complexity": "O(N) single pass.",
+      "space_complexity": "O(1) space.",
+      "edge_cases": "Array containing zeros [2, 0, 3]; all negative numbers [-2, -3, -4]."
+    }
+  ],
+  "cs_core": {
+    "subject": "Python Programming",
+    "topic": "Python Concurrency Models: Threading vs Multiprocessing vs AsyncIO",
+    "detailed_notes": [
+      "CPython Concurrency Paradigms Explained:\n1. Global Interpreter Lock (GIL):\nA mutual-exclusion lock protecting CPython internal memory structures, ensuring only ONE native thread executes Python bytecode at any given moment. Prevents true multi-core parallel execution of CPU-bound Python threads.\n2. Threading (`threading.Thread`):\n\u2022 OS-level threads sharing the same process memory space.\n\u2022 Best for: I/O-bound tasks (file I/O, network requests). When a thread waits for a socket or disk read, it releases the GIL, allowing other threads to run.\n3. Multiprocessing (`multiprocessing.Process`):\n\u2022 Spawns completely independent OS processes, each with its OWN Python interpreter, memory space, and GIL.\n\u2022 Best for: CPU-bound tasks (machine learning inference, OCR image processing, heavy matrix math). Achieves true 100% multi-core utilization.\n\u2022 Trade-off: Higher memory footprint and requires Inter-Process Communication (IPC: Pipes/Queues) to share data.\n4. Asynchronous I/O (`asyncio`):\n\u2022 Single-threaded, cooperative multitasking using an Event Loop and Coroutines (`async`/`await`).\n\u2022 Extremely lightweight: can handle 100,000 concurrent network sockets with minimal RAM (used in FastAPI and aiohttp)."
+    ],
+    "interview_qa": [
+      {
+        "q": "If Python has a GIL, why would you ever use `threading`?",
+        "a": "Because `threading` is highly effective for I/O-bound operations (such as making HTTP requests, querying a database, or reading disk files). During I/O operations, the CPython runtime explicitly releases the GIL while waiting for network sockets or OS syscalls to return, enabling other Python threads to execute concurrently without blocking the application."
+      },
+      {
+        "q": "When should you choose `multiprocessing` over `asyncio`?",
+        "a": "Choose `multiprocessing` for CPU-intensive operations (such as Tesseract OCR image transformations in TerraStract or numerical simulations in BCA-5004) where multiple CPU cores must be saturated simultaneously. Choose `asyncio` for high-concurrency I/O-bound web services (such as handling thousands of WebSocket connections or Telegram webhook alerts in BulkBeat TV) where threads would waste excessive memory on thread stack allocations."
+      }
+    ]
+  },
+  "project_defense": {
+    "project_name": "VPS Infrastructure & Security",
+    "feature_focus": "Cloud VPS Hardening, Nginx Reverse Proxy & SSL Automation",
+    "architecture_deep_dive": "Production Linux Server Hardening & Reverse Proxy Architecture:\n\n1. Server Hardening Protocol:\n\u2022 Disabling SSH root login and password authentication (`PermitRootLogin no`, `PasswordAuthentication no` in `/etc/ssh/sshd_config`).\n\u2022 Enforcing SSH key pair authentication (`ed25519`).\n\u2022 Configuring Uncomplicated Firewall (`ufw`): strictly allow ports 22 (SSH), 80 (HTTP), 443 (HTTPS), blocking all internal database ports (PostgreSQL 5432, Redis 6379) from public internet exposure.\n\n2. Nginx Reverse Proxy & TLS Automation:\n\u2022 Nginx sits as the public gateway, terminating SSL using Let's Encrypt certificates provisioned via Certbot (`certbot --nginx -d api.domain.com`).\n\u2022 Reverse proxies traffic internally to FastAPI/Uvicorn running on `127.0.0.1:8000` via `proxy_pass`.\n\u2022 Injects essential security headers: `X-Forwarded-For`, `X-Real-IP`, `Strict-Transport-Security` (HSTS), and `X-Content-Type-Options: nosniff`.",
+    "interview_qa": [
+      {
+        "q": "Why should you never expose a FastAPI application directly to the internet on port 80/443 without Nginx?",
+        "a": "Direct exposure leaves the application vulnerable to Slowloris attacks, unhandled TLS certificate lifecycles, and high concurrency bottlenecks. Nginx acts as a hardened reverse proxy: it terminates SSL efficiently, buffers slow client requests before passing them to FastAPI, serves static assets directly from disk caching, enforces rate limits, and protects internal application ports."
+      },
+      {
+        "q": "How do you automate SSL certificate renewal on a production Linux VPS?",
+        "a": "I configure Certbot with Let's Encrypt, which automatically schedules a systemd timer (`certbot.timer`) or cron job running `certbot renew --quiet`. This checks certificate expiration daily and renews certificates within 30 days of expiry, reloading Nginx automatically without manual intervention."
+      }
+    ]
+  },
+  "daily_test": {
+    "day": 26,
+    "questions": [
+      {
+        "q": "What is the key difference between Symmetric and Asymmetric encryption?",
+        "a": "Symmetric uses a single shared secret key for encryption and decryption; Asymmetric uses a mathematically linked pair: Public Key (encrypt) and Private Key (decrypt)."
+      },
+      {
+        "q": "Given RSA parameters p = 3, q = 11, compute Euler's Totient phi(n).",
+        "a": "phi(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20."
+      },
+      {
+        "q": "How does a Digital Signature ensure Non-Repudiation?",
+        "a": "The sender encrypts the message hash using their private key. Since only the sender possesses that private key, successful decryption using their public key proves indisputably that the sender generated the message."
+      },
+      {
+        "q": "What is the time complexity of Kadane's Algorithm for Maximum Subarray?",
+        "a": "O(N) single linear traversal with O(1) auxiliary space."
+      },
+      {
+        "q": "Why does Python's GIL not prevent concurrency for I/O-bound operations?",
+        "a": "Because CPython explicitly releases the GIL when waiting for I/O operations (sockets, disk reads), allowing other threads to execute."
+      },
+      {
+        "q": "When should you use Multiprocessing instead of Threading in Python?",
+        "a": "For CPU-bound tasks requiring true multi-core parallel computation, bypassing the GIL by running independent Python processes."
+      },
+      {
+        "q": "Correct the error: 'The list of items are on the desk.'",
+        "a": "'is on the desk'. The subject is singular 'list', not 'items'."
+      },
+      {
+        "q": "Why should database ports (5432, 6379) be blocked by UFW firewall on a production VPS?",
+        "a": "To prevent unauthorized brute-force and port-scanning attacks over the public internet, restricting database access exclusively to localhost or private VPC networks."
+      }
+    ]
+  }
+}

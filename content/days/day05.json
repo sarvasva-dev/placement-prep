@@ -1,0 +1,172 @@
+{
+  "day": 5,
+  "title": "Numerical Bisection Method, Ratio/Proportion & Subarray Sum",
+  "sem_data": {
+    "subject": "BCA-5004 Numerical Methods",
+    "topic": "Unit I \u2014 Transcendental Equations: The Bisection Method",
+    "detailed_notes": [
+      "In numerical analysis, finding the roots of non-linear algebraic and transcendental equations f(x) = 0 is a fundamental mathematical problem. Analytical solutions are often impossible for equations involving trigonometric, exponential, or higher-order polynomial terms.",
+      "The Bisection Method (also known as the Bolzano Interval Halving Method) is a bracketing method based on the Intermediate Value Theorem. The theorem states: If a real-valued continuous function f(x) defined on an interval [a, b] satisfies f(a) * f(b) < 0 (meaning f(a) and f(b) have opposite signs), then there exists at least one real root c in the open interval (a, b) such that f(c) = 0.",
+      "Algorithm & Iterative Procedure:\n1. Find two initial points a and b such that f(a) and f(b) possess opposite signs: f(a) * f(b) < 0.\n2. Compute the midpoint (first approximation to the root): c = (a + b) / 2.\n3. Evaluate f(c):\n   - If f(c) == 0, then c is the exact root; stop.\n   - If f(a) * f(c) < 0, the root lies in [a, c]; set b = c.\n   - If f(c) * f(b) < 0, the root lies in [c, b]; set a = c.\n4. Repeat steps 2 and 3 until the interval width |b - a| < epsilon or |f(c)| < tolerance.",
+      "Convergence Analysis: The Bisection Method halves the interval width at every iteration: Width_n = (b - a) / 2^n. It is guaranteed to converge to a root because the interval monotonically shrinks to zero. Its order of convergence is linear (p = 1), with an asymptotic error constant of 0.5. While slower than Newton-Raphson, its absolute reliability makes it the standard benchmark bracketing algorithm."
+    ],
+    "diagram_ascii": "+-------------------------------------------------------------------------+\n|               BISECTION METHOD (INTERVAL HALVING PROCESS)               |\n+-------------------------------------------------------------------------+\n|      y                                                                  |\n|      |                 * f(b) > 0                                       |\n|      |                /                                                 |\n|   ---+---------------c1-------c2-----b----------> x                     |\n|      |     a        /     root                                          |\n|      |             /                                                    |\n|      |  * f(a) < 0                                                      |\n|      Iteration 1: c1 = (a + b)/2. f(c1) < 0 ==> New interval is [c1, b] |\n|      Iteration 2: c2 = (c1 + b)/2. Interval halves again to [c1, c2]    |\n+-------------------------------------------------------------------------+",
+    "comparison_table": {
+      "headers": [
+        "Iteration n",
+        "Interval [a, b]",
+        "Midpoint c = (a+b)/2",
+        "f(c)",
+        "Sign of f(a)*f(c)",
+        "Next Interval"
+      ],
+      "rows": [
+        [
+          "1",
+          "[2.000, 3.000]",
+          "2.500",
+          "-3.375",
+          "+ (Same sign)",
+          "[2.500, 3.000]"
+        ],
+        [
+          "2",
+          "[2.500, 3.000]",
+          "2.750",
+          "+0.797",
+          "- (Opposite)",
+          "[2.500, 2.750]"
+        ],
+        [
+          "3",
+          "[2.500, 2.750]",
+          "2.625",
+          "-1.412",
+          "+ (Same sign)",
+          "[2.625, 2.750]"
+        ],
+        [
+          "4",
+          "[2.625, 2.750]",
+          "2.688",
+          "-0.341",
+          "+ (Same sign)",
+          "[2.688, 2.750]"
+        ],
+        [
+          "5",
+          "[2.688, 2.750]",
+          "2.719",
+          "+0.219",
+          "- (Opposite)",
+          "[2.688, 2.719]"
+        ]
+      ]
+    },
+    "memorize": "Bolzano's Theorem condition: f(a) * f(b) < 0. Midpoint formula: c = (a + b)/2. Error bound after n steps: Error <= (b - a) / 2^n. Convergence rate: Linear (p = 1).",
+    "understand": "The bisection method works like binary search over a continuous mathematical interval. Because it discards half the search space at each iteration, it is mathematically guaranteed to find the root if f(x) is continuous.",
+    "common_mistakes": "1. Forgetting to verify that f(a) and f(b) have opposite signs before starting. 2. Rounding intermediate decimals prematurely (always maintain 4-5 decimal places during examination calculations).",
+    "pyq_year": "CSJMU BCA-5004 (2021, 2022-23, 2023-24, 2024-25, 2025-26)",
+    "pyq_freq": "5 Consecutive University Sessions: 2021 (Q1 - 15m), 2022-23 (Q2 - 15m), 2023-24 (Q1 - 15m), 2024-25 (Q1 - 15m), 2025-26 (Q1 - 15m)",
+    "pyq_question": "Find a real root of the equation x^3 - 4x - 9 = 0 using the Bisection Method correct to three decimal places. (15 Marks)",
+    "pyq_rubric": "Interval identification with opposite signs (3 marks) + Iteration formula (2 marks) + Step-by-step calculation table for 5-8 iterations (8 marks) + Final root statement (2 marks) = 15 Marks.",
+    "model_answer_paragraphs": [
+      [
+        "1. Statement of Problem & Initial Bracketing:",
+        "Let f(x) = x^3 - 4x - 9 = 0. We evaluate f(x) for integer values to find two points where f(x) changes sign:\nf(0) = 0 - 0 - 9 = -9 < 0\nf(1) = 1 - 4 - 9 = -12 < 0\nf(2) = 8 - 8 - 9 = -9 < 0\nf(3) = 27 - 12 - 9 = +6 > 0\nSince f(2) = -9 < 0 and f(3) = +6 > 0, we have f(2) * f(3) < 0. By Bolzano's Intermediate Value Theorem, a real root lies in the open interval (2, 3)."
+      ],
+      [
+        "2. Iterative Bisection Computation:",
+        "Iteration 1: a = 2, b = 3. Midpoint c1 = (2 + 3)/2 = 2.500.\nf(2.5) = (2.5)^3 - 4(2.5) - 9 = 15.625 - 10 - 9 = -3.375 < 0.\nSince f(2.5) < 0 and f(3) > 0, the root lies in [2.5, 3].\n\nIteration 2: a = 2.5, b = 3. Midpoint c2 = (2.5 + 3)/2 = 2.750.\nf(2.75) = (2.75)^3 - 4(2.75) - 9 = 20.7969 - 11 - 9 = +0.7969 > 0.\nSince f(2.5) < 0 and f(2.75) > 0, the root lies in [2.5, 2.75].\n\nIteration 3: a = 2.5, b = 2.75. Midpoint c3 = (2.5 + 2.75)/2 = 2.625.\nf(2.625) = (2.625)^3 - 4(2.625) - 9 = 18.0879 - 10.5 - 9 = -1.4121 < 0.\nSince f(2.625) < 0 and f(2.75) > 0, the root lies in [2.625, 2.75].\n\nIteration 4: a = 2.625, b = 2.75. Midpoint c4 = (2.625 + 2.75)/2 = 2.6875.\nf(2.6875) = (2.6875)^3 - 4(2.6875) - 9 = 19.4089 - 10.75 - 9 = -0.3411 < 0.\nSince f(2.6875) < 0 and f(2.75) > 0, the root lies in [2.6875, 2.75].\n\nIteration 5: a = 2.6875, b = 2.75. Midpoint c5 = (2.6875 + 2.75)/2 = 2.7188.\nf(2.7188) = (2.7188)^3 - 4(2.7188) - 9 = +0.2192 > 0.\nThe root lies in [2.6875, 2.7188].\n\nIteration 6: c6 = (2.6875 + 2.7188)/2 = 2.7031. f(2.7031) = -0.063 < 0.\nIteration 7: c7 = (2.7031 + 2.7188)/2 = 2.7109. f(2.7109) = +0.077 > 0.\nIteration 8: c8 = (2.7031 + 2.7109)/2 = 2.7070. Both endpoints now agree to two decimal places: 2.70."
+      ],
+      [
+        "3. Conclusion & Final Value:",
+        "After 8 iterations, the approximate real root of x^3 - 4x - 9 = 0 correct to two decimal places is x = 2.707 (or 2.71)."
+      ]
+    ],
+    "practice_pyqs": [
+      [
+        "Practice Question 1 (CSJMU 2024):",
+        "Find the positive root of x^3 - x - 1 = 0 using Bisection Method in 4 iterations. (Answer: Root lies between 1 and 2; c1=1.5, c2=1.25, c3=1.375, c4=1.3125)."
+      ],
+      [
+        "Practice Question 2 (CSJMU 2023):",
+        "State the convergence condition and order of convergence of Bisection Method. (Answer: Guaranteed convergence if f(x) is continuous and f(a)*f(b) < 0; order of convergence is linear, p = 1)."
+      ]
+    ]
+  },
+  "sgpa_target": {
+    "focus": "Master Bisection Method 5-Step Numerical Presentation.",
+    "milestone": "Full 15/15 marks on Numerical Methods Unit 1 (BCA-5004)."
+  },
+  "apt_data": {
+    "topic": "Ratio, Proportion & Variations \u2014 Foundations & Placement Patterns",
+    "tutorial": [
+      "A ratio a : b represents the relative size of two quantities expressed as a fraction a/b. Ratios can be scaled by multiplying or dividing both terms by any non-zero constant.",
+      "Compounding & Proportions: If a : b = c : d, then a, b, c, d are in proportion (ad = bc). Product of Extremes = Product of Means.",
+      "Definitions:\n\u2022 Fourth Proportional to a, b, c is x such that a/b = c/x ==> x = bc/a.\n\u2022 Third Proportional to a, b is x such that a/b = b/x ==> x = b^2 / a.\n\u2022 Mean Proportional between a and b is x = sqrt(a * b).",
+      "Combining Ratios: If A : B = 2 : 3 and B : C = 4 : 5, equalize B (LCM of 3 and 4 is 12). A : B = 8 : 12 and B : C = 12 : 15 ==> A : B : C = 8 : 12 : 15."
+    ],
+    "formulas": "1. Product of Extremes = Product of Means: ad = bc\n2. Mean Proportional between a and b = sqrt(ab)\n3. Third Proportional to a and b = b^2 / a\n4. Fourth Proportional to a, b, c = bc / a",
+    "shortcut": "Invert-and-Multiply ratio bridge:\nTo combine A:B = p:q and B:C = r:s, write: A = p*r, B = q*r, C = q*s.\nExample: A:B = 2:3, B:C = 4:5 ==> A = 2*4=8, B = 3*4=12, C = 3*5=15.",
+    "recognition": "Look for 'A, B, C share an amount in ratio...', 'find the third proportional to...', or 'a bag contains 50p, 25p, 10p coins in ratio...'.",
+    "p1_q": "[Foundation] If A : B = 3 : 4 and B : C = 8 : 9, find the ratio A : C.",
+    "p1_s": "A/C = (A/B) * (B/C) = (3/4) * (8/9) = (3 * 8) / (4 * 9) = 24 / 36 = 2 / 3.\nAnswer: A : C = 2 : 3.",
+    "p2_q": "[Standard Placement] Find the mean proportional between 9 and 64, and the third proportional to 16 and 24.",
+    "p2_s": "Part 1: Mean proportional = sqrt(9 * 64) = sqrt(576) = 24.\nPart 2: Third proportional = b^2 / a = (24 * 24) / 16 = 576 / 16 = 36.\nAnswer: Mean = 24, Third = 36.",
+    "p3_source": "[VERIFIED PUBLIC COMPANY QUESTION \u2014 Accenture Critical Thinking Pattern]",
+    "p3_q": "A bag contains 50 paise, 25 paise, and 10 paise coins in the ratio 5 : 9 : 4, amounting to Rs. 206. Find the number of coins of each type.",
+    "p3_s": "Step 1: Let the number of coins be 5x, 9x, and 4x respectively.\nStep 2: Express values in Rupees:\n- 50p coins = 5x * (1/2) = 2.5x Rupees\n- 25p coins = 9x * (1/4) = 2.25x Rupees\n- 10p coins = 4x * (1/10) = 0.40x Rupees\nStep 3: Total value equation:\n2.5x + 2.25x + 0.40x = 206\n5.15x = 206 ==> x = 206 / 5.15 = 40.\nStep 4: Count of coins:\n- 50p coins = 5 * 40 = 200 coins\n- 25p coins = 9 * 40 = 360 coins\n- 10p coins = 4 * 40 = 160 coins.\nAnswer: 200, 360, and 160 coins.",
+    "p4_q": "[Hard / Time-Pressure] Two vessels A and B contain milk and water in the ratio 7 : 5 and 17 : 7 respectively. In what ratio should liquid from both vessels be mixed to obtain a new mixture containing milk and water in the ratio 3 : 2?",
+    "p4_s": "Using the Allegation Rule on Milk Concentration:\n- Concentration in Vessel A = 7 / (7 + 5) = 7/12 = 70/120\n- Concentration in Vessel B = 17 / (17 + 7) = 17/24 = 85/120\n- Desired Mean Concentration = 3 / (3 + 2) = 3/5 = 72/120\nBy Allegation: (B - Mean) : (Mean - A) = (85 - 72) : (72 - 70) = 13 : 2.\nAnswer: 13 : 2.",
+    "timed_set": [
+      [
+        "Q1 (Aptitude Quantitative):",
+        "If x : y = 5 : 2, find the value of (8x + 9y) : (8x + 2y)."
+      ],
+      [
+        "Q2 (Aptitude Quantitative):",
+        "Find the fourth proportional to 4, 9, and 12."
+      ],
+      [
+        "Q3 (Aptitude Quantitative):",
+        "The ratio of ages of two persons is 4 : 7. Eight years ago, the ratio was 1 : 2. Find their present ages."
+      ],
+      [
+        "Q4 (Aptitude Quantitative):",
+        "Rs. 782 is divided into three parts in the ratio 1/2 : 2/3 : 3/4. Find the first part."
+      ],
+      [
+        "Q5 (Aptitude Quantitative):",
+        "If 15 men can complete a project in 20 days, how many men are needed to complete it in 12 days?"
+      ]
+    ],
+    "timed_solutions": [
+      [
+        "Solution Q1:",
+        "Substitute x=5, y=2: (40 + 18) / (40 + 4) = 58 / 44 = 29 / 22. Answer: 29 : 22."
+      ],
+      [
+        "Solution Q2:",
+        "Fourth proportional = (9 * 12) / 4 = 27. Answer: 27."
+      ],
+      [
+        "Solution Q3:",
+        "(4x - 8) / (7x - 8) = 1 / 2 ==> 8x - 16 = 7x - 8 ==> x = 8. Ages are 32 and 56. Answer: 32 and 56 years."
+      ],
+      [
+        "Solution Q4:",
+        "LCM of 2, 3, 4 is 12. Ratio = 6 : 8 : 9. Sum = 23 parts. 1st part = (6/23)*782 = 6 * 34 = Rs. 204. Answer: Rs. 204."
+      ],
+      [
+        "Solution Q5:",
+        "M1 * D1 = M2 * D2 ==> 15 * 20 = M2 * 12 ==> M2 = 300 / 12 = 25 men. Answer: 25 men."
+      ]
+    ],
+    "trap": "When dividing money in fractional ratios (e.g. 1/2 : 2/3 : 3/4), NEVER divide directly by the denominators. Multiply all fractions by their common LCM first to get an integer ratio."
+  },
+  "dsa_problems": [],
+  "cs_core": {},
+  "project_defense": {},
+  "daily_test": {}
+}

@@ -1,0 +1,173 @@
+/* Responsive Breakpoints & Mobile Optimization */
+
+/* Overlay for Mobile Sidebar Drawer */
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.sidebar-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   LAPTOP / TABLET LANDSCAPE (< 1024px)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 240px;
+    --content-max-width: 100%;
+  }
+
+  #content-container {
+    padding: var(--space-5);
+  }
+}
+
+/* ==========================================================================
+   TABLET PORTRAIT (< 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 280px;
+    --header-height: 56px;
+  }
+
+  /* Collapse sidebar into off-canvas drawer */
+  #sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+
+  #sidebar.drawer-open {
+    transform: translateX(0);
+  }
+
+  #main-wrapper {
+    margin-left: 0;
+  }
+
+  /* Show Mobile Hamburger */
+  .menu-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #topbar {
+    padding: 0 var(--space-4);
+  }
+
+  .kbd-shortcut {
+    display: none;
+  }
+
+  .search-trigger-btn span.label-text {
+    display: none;
+  }
+
+  #content-container {
+    padding: var(--space-4);
+  }
+
+  /* Multi-column grids stack on tablet/mobile */
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dashboard-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .card {
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  /* Typography downscaling for smaller viewports */
+  h1 { font-size: var(--font-size-2xl); }
+  h2 { font-size: var(--font-size-xl); }
+  h3 { font-size: var(--font-size-lg); }
+}
+
+/* ==========================================================================
+   MOBILE PHONES (< 480px / 375px / 320px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  :root {
+    --font-size-base: 0.9375rem; /* 15px */
+  }
+
+  #content-container {
+    padding: var(--space-3);
+  }
+
+  .dashboard-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .topbar-right .btn-text-label {
+    display: none;
+  }
+
+  /* Code block margins */
+  .code-pre {
+    padding: var(--space-3);
+    font-size: 0.8rem;
+  }
+
+  /* Diagram Box font size for small phones */
+  .diagram-box {
+    font-size: 0.7rem;
+    padding: var(--space-3);
+  }
+
+  /* Mobile Tap Targets: minimum 44px for primary actions */
+  .btn {
+    min-height: 44px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-inline {
+    width: auto;
+  }
+
+  .quiz-card {
+    padding: var(--space-4);
+  }
+
+  .tabs-header {
+    padding-bottom: var(--space-2);
+  }
+
+  .tab-btn {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Very Small Devices (320px - iPhone SE) */
+@media (max-width: 340px) {
+  .brand-title {
+    font-size: 0.8rem;
+  }
+  .diagram-box {
+    font-size: 0.65rem;
+  }
+}
