@@ -59,7 +59,7 @@ function normalizeOptions(options) {
   return [];
 }
 
-export function renderDayView(container, dayNumber, daysIndex) {
+export function renderDayView(container, dayNumber, daysIndex, targetSection = null) {
   const dayNum = parseInt(dayNumber, 10);
   Storage.setActiveDay(dayNum);
 
@@ -79,6 +79,13 @@ export function renderDayView(container, dayNumber, daysIndex) {
     })
     .then(data => {
       buildDayPage(container, data, daysIndex);
+      if (targetSection) {
+        setTimeout(() => {
+          scrollToDaySection(targetSection, false, false);
+        }, 60);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+      }
     })
     .catch(err => {
       container.innerHTML = `
@@ -852,6 +859,43 @@ function buildDayPage(container, d, daysIndex) {
   attachDayInteractivity(d);
 }
 
+export function scrollToDaySection(targetId, smooth = true, updateHash = true) {
+  if (!targetId) return;
+  const cleanId = targetId.startsWith('#') ? targetId.slice(1) : targetId;
+  const targetEl = document.getElementById(cleanId);
+  if (!targetEl) return;
+
+  const tocBtns = document.querySelectorAll('.day-toc-bar .tab-btn');
+  let matchedBtn = null;
+  tocBtns.forEach(b => {
+    if (b.dataset.target === cleanId) {
+      b.classList.add('active');
+      matchedBtn = b;
+    } else {
+      b.classList.remove('active');
+    }
+  });
+
+  if (matchedBtn) {
+    matchedBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+
+  // Top header (70px) + sticky TOC bar (48px) + breathing buffer (12px) = 130px
+  const headerOffset = 130;
+  const elementPosition = targetEl.getBoundingClientRect().top;
+  const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+  window.scrollTo({
+    top: Math.max(0, offsetPosition),
+    behavior: smooth ? 'smooth' : 'auto'
+  });
+
+  if (updateHash) {
+    const currentDay = Storage.getActiveDay() || 1;
+    history.replaceState(null, '', `#day/${currentDay}#${cleanId}`);
+  }
+}
+
 function attachDayInteractivity(d) {
   const dayNum = d.day;
 
@@ -859,29 +903,22 @@ function attachDayInteractivity(d) {
   let isManualScrolling = false;
   let scrollTimeout = null;
   const tocBtns = document.querySelectorAll('.day-toc-bar .tab-btn');
+
   tocBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const targetId = btn.dataset.target;
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        isManualScrolling = true;
-        tocBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+      isManualScrolling = true;
+      scrollToDaySection(targetId, true, true);
 
-        const topbarHeight = 70;
-        const y = targetEl.getBoundingClientRect().top + window.pageYOffset - topbarHeight;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-
-        if (scrollTimeout) clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          isManualScrolling = false;
-        }, 1000);
-      }
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isManualScrolling = false;
+      }, 1000);
     });
   });
 
-  // Automatically highlight active TOC button on scroll
+  // Automatically highlight active TOC button on scroll & keep active tab centered
   const sectionIds = [
     'sec-acad', 'sec-pyq', 'sec-apt-lesson', 'sec-apt-solved', 'sec-apt-mcq',
     'sec-dsa-pattern', 'sec-coding-probs', 'sec-core-cs', 'sec-proj-defense',
@@ -893,16 +930,21 @@ function attachDayInteractivity(d) {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const activeId = entry.target.id;
+          let matched = null;
           tocBtns.forEach(b => {
             if (b.dataset.target === activeId) {
               b.classList.add('active');
+              matched = b;
             } else {
               b.classList.remove('active');
             }
           });
+          if (matched) {
+            matched.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          }
         }
       });
-    }, { rootMargin: '-70px 0px -70% 0px', threshold: 0 });
+    }, { rootMargin: '-130px 0px -60% 0px', threshold: 0 });
 
     sectionIds.forEach(id => {
       const el = document.getElementById(id);

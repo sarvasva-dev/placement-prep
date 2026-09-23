@@ -3,24 +3,24 @@
  * Master Application Orchestrator & Client Hash Router
  */
 
-import { Storage } from './storage.js';
-import { GlobalSearch } from './search.js';
+import { Storage } from './storage.js?v=2.2.0';
+import { GlobalSearch } from './search.js?v=2.2.0';
 
-// Import View Controllers
-import { renderDashboard } from './views/dashboardView.js';
-import { renderDayView } from './views/dayView.js';
-import { renderSemesterView } from './views/semesterView.js';
-import { renderPyqView } from './views/pyqView.js';
-import { renderAptitudeView } from './views/aptitudeView.js';
-import { renderCodingView } from './views/codingView.js';
-import { renderCoreCsView } from './views/coreCsView.js';
-import { renderProjectHubView } from './views/projectHubView.js';
-import { renderInterviewView } from './views/interviewView.js';
-import { renderResumeView } from './views/resumeView.js';
-import { renderRevisionView } from './views/revisionView.js';
-import { renderFreelanceView } from './views/freelanceView.js';
-import { renderDoNotStudyView } from './views/doNotStudyView.js';
-import { renderSourceArchiveView } from './views/sourceArchiveView.js';
+// Import View Controllers with Cache-Busting Versioning
+import { renderDashboard } from './views/dashboardView.js?v=2.2.0';
+import { renderDayView, scrollToDaySection } from './views/dayView.js?v=2.2.0';
+import { renderSemesterView } from './views/semesterView.js?v=2.2.0';
+import { renderPyqView } from './views/pyqView.js?v=2.2.0';
+import { renderAptitudeView } from './views/aptitudeView.js?v=2.2.0';
+import { renderCodingView } from './views/codingView.js?v=2.2.0';
+import { renderCoreCsView } from './views/coreCsView.js?v=2.2.0';
+import { renderProjectHubView } from './views/projectHubView.js?v=2.2.0';
+import { renderInterviewView } from './views/interviewView.js?v=2.2.0';
+import { renderResumeView } from './views/resumeView.js?v=2.2.0';
+import { renderRevisionView } from './views/revisionView.js?v=2.2.0';
+import { renderFreelanceView } from './views/freelanceView.js?v=2.2.0';
+import { renderDoNotStudyView } from './views/doNotStudyView.js?v=2.2.0';
+import { renderSourceArchiveView } from './views/sourceArchiveView.js?v=2.2.0';
 
 class StudyApp {
   constructor() {
@@ -37,6 +37,10 @@ class StudyApp {
     this.modalOverlay = document.getElementById('command-palette-modal');
     this.paletteInput = document.getElementById('palette-search-input');
     this.paletteResults = document.getElementById('palette-results-list');
+
+    // Route & View State Tracking
+    this.currentView = null;
+    this.currentDayNumber = null;
   }
 
   async init() {
@@ -233,79 +237,150 @@ class StudyApp {
     // Update active nav-item in sidebar
     this.updateActiveNavLink(rootRoute, rawHash);
 
-    // Scroll window to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
     // Route dispatch
     switch (rootRoute) {
       case 'dashboard':
       case '':
+        this.currentView = 'dashboard';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderDashboard(this.contentContainer, this.daysIndex, this.semesterData);
         break;
 
       case 'days':
+        this.currentView = 'dashboard';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderDashboard(this.contentContainer, this.daysIndex, this.semesterData);
         break;
 
       case 'day': {
-        const dayNumber = parseInt(subRoute || '1', 10);
+        let dayPart = subRoute || '1';
+        let targetSection = null;
+
+        // Support formats: #day/1#sec-pyq, #day/1/sec-pyq, #day/1?sec=sec-pyq
+        if (dayPart.includes('#')) {
+          const parts = dayPart.split('#');
+          dayPart = parts[0];
+          targetSection = parts[1];
+        } else if (segments[2]) {
+          targetSection = segments[2];
+        } else if (queryParams.has('sec')) {
+          targetSection = queryParams.get('sec');
+        }
+
+        const dayNumber = parseInt(dayPart, 10);
         if (isNaN(dayNumber) || dayNumber < 1 || dayNumber > 30) {
-          this.renderNotFound(rawHash, `Day <strong>${subRoute || ''}</strong> is out of range. Valid preparation days are <strong>Day 1 to Day 30</strong>.`);
+          this.currentView = '404';
+          this.currentDayNumber = null;
+          this.renderNotFound(rawHash, `Day <strong>${dayPart || ''}</strong> is out of range. Valid preparation days are <strong>Day 1 to Day 30</strong>.`);
           return;
         }
-        renderDayView(this.contentContainer, dayNumber, this.daysIndex);
+
+        // Check if user is ALREADY on this exact day chapter
+        if (this.currentView === 'day' && this.currentDayNumber === dayNumber) {
+          if (targetSection) {
+            scrollToDaySection(targetSection, true, false);
+          } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+          return;
+        }
+
+        // Brand new day chapter navigation
+        this.currentView = 'day';
+        this.currentDayNumber = dayNumber;
+        renderDayView(this.contentContainer, dayNumber, this.daysIndex, targetSection);
         break;
       }
 
       case 'semester':
+        this.currentView = 'semester';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderSemesterView(this.contentContainer, this.daysIndex);
         break;
 
       case 'pyqs':
+        this.currentView = 'pyqs';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderPyqView(this.contentContainer, this.daysIndex, queryParams.get('q') || '');
         break;
 
       case 'aptitude':
+        this.currentView = 'aptitude';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderAptitudeView(this.contentContainer, this.daysIndex);
         break;
 
       case 'coding':
+        this.currentView = 'coding';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderCodingView(this.contentContainer, this.daysIndex, queryParams.get('problem') || '');
         break;
 
       case 'core-cs':
+        this.currentView = 'core-cs';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderCoreCsView(this.contentContainer, this.daysIndex);
         break;
 
       case 'projects':
+        this.currentView = 'projects';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderProjectHubView(this.contentContainer, this.daysIndex, subRoute);
         break;
 
       case 'interviews':
+        this.currentView = 'interviews';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderInterviewView(this.contentContainer, this.daysIndex);
         break;
 
       case 'resumes':
+        this.currentView = 'resumes';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderResumeView(this.contentContainer, this.daysIndex);
         break;
 
       case 'revision':
+        this.currentView = 'revision';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderRevisionView(this.contentContainer, this.daysIndex);
         break;
 
       case 'freelance':
+        this.currentView = 'freelance';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderFreelanceView(this.contentContainer, this.daysIndex);
         break;
 
       case 'do-not-study':
+        this.currentView = 'do-not-study';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderDoNotStudyView(this.contentContainer, this.daysIndex);
         break;
 
       case 'source-archive':
+        this.currentView = 'source-archive';
+        this.currentDayNumber = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         renderSourceArchiveView(this.contentContainer, this.daysIndex);
         break;
 
       default:
+        this.currentView = '404';
+        this.currentDayNumber = null;
         this.renderNotFound(rawHash);
         break;
     }

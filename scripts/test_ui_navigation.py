@@ -182,8 +182,16 @@ def run_browser_qa():
         toc_btn.click()
         time.sleep(0.3)
         curr_hash = page.evaluate("window.location.hash")
-        toc_success = (curr_hash == "#day/1") and ("active" in (toc_btn.get_attribute("class") or ""))
+        toc_success = (curr_hash in ["#day/1", "#day/1#sec-dsa-pattern"]) and ("active" in (toc_btn.get_attribute("class") or ""))
         log_check("Interactivity", "TOC Tab Button Click (Scrolls without URL redirect)", toc_success, f"Hash is {curr_hash}")
+
+        # 1b. Deep-link section jump to #day/1#sec-pyq
+        page.goto(f"{BASE_URL}/#day/1#sec-pyq")
+        page.wait_for_timeout(800)
+        pyq_btn = page.locator(".day-toc-bar button[data-target='sec-pyq']")
+        pyq_active = "active" in (pyq_btn.get_attribute("class") or "")
+        pyq_scroll = page.evaluate("() => window.pageYOffset || document.documentElement.scrollTop")
+        log_check("Interactivity", "Direct Deep-Link to #day/1#sec-pyq (Auto-scrolls & activates tab)", pyq_active and pyq_scroll > 1500, f"Scroll Y: {pyq_scroll}")
 
         # 2. Toggle Answer in Aptitude Solved
         ans_toggle = page.locator(".toggle-ans-btn").first
