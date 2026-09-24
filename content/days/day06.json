@@ -9,7 +9,7 @@
         "Understand Thread lifecycle states.",
         "Master synchronized keyword, monitor locks, and wait()/notify()."
       ],
-      "explanation": "Multithreading in Java enables concurrent execution of two or more threads to maximize CPU utilization. A thread in Java can be created by extending the `Thread` class or implementing the `Runnable` interface. Thread states in JVM are: New -> Runnable -> Blocked/Waiting/Timed_Waiting -> Terminated. When multiple threads share mutable data, race conditions occur. Java provides the `synchronized` keyword (method or block level) backed by intrinsic monitor locks (mutex). Inter-thread communication relies on `wait()`, `notify()`, and `notifyAll()` methods defined on `java.lang.Object`.",
+      "explanation": "Multithreading in Java enables concurrent execution of two or more threads to maximize CPU utilization. A thread in Java can be created by extending the `Thread` class or implementing the `Runnable` interface. The official Java Thread.State enum defines exactly 6 lifecycle states: NEW (thread object created, start() not yet called), RUNNABLE (executing or ready to execute on CPU), BLOCKED (waiting to acquire an intrinsic monitor lock), WAITING (indefinitely waiting via wait() or join() with no timeout), TIMED_WAITING (waiting for a specified time via sleep(ms), wait(ms), or join(ms)), and TERMINATED (run() method has completed). When multiple threads share mutable data, race conditions occur. Java provides the `synchronized` keyword (method or block level) backed by intrinsic monitor locks (mutex). Inter-thread communication relies on `wait()`, `notify()`, and `notifyAll()` methods defined on `java.lang.Object`.",
       "definitions": [
         {
           "term": "Thread Synchronization",
@@ -33,7 +33,7 @@
       "examples": [
         "Classic Producer-Consumer problem with a bounded buffer using synchronized methods and wait/notify."
       ],
-      "diagram": "+---------------------------------------------------+\n|                THREAD LIFECYCLE                   |\n| [New] -> [Runnable] <-> [Blocked/Waiting] -> [Dead]|\n+---------------------------------------------------+",
+      "diagram": "+---------------------------------------------------+\n|                THREAD LIFECYCLE                   |\n| [New] -> [Runnable] <-> [Blocked/Waiting] -> [TERMINATED]|\n+---------------------------------------------------+",
       "comparison_table": {
         "headers": [
           "Method",
@@ -68,7 +68,7 @@
           ]
         ]
       },
-      "memorize": "Thread states: New, Runnable, Blocked, Waiting, Timed_Waiting, Terminated. wait() releases the monitor lock; sleep() DOES NOT release locks!",
+      "memorize": "Java Thread.State enum (6 official states): NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED. wait() releases the monitor lock; sleep() DOES NOT release locks! wait() releases the monitor lock; sleep() DOES NOT release locks!",
       "understand": "wait() and notify() belong to Object class (not Thread) because locks reside on objects, not on threads.",
       "common_mistakes": "Calling wait() outside of a synchronized block (throws IllegalMonitorStateException).",
       "exam_writing_guidance": "Draw the thread state diagram, compare Thread vs Runnable, write a complete working synchronized producer-consumer code block.",

@@ -5,6 +5,7 @@
 
 import { Storage } from '../storage.js';
 import { renderSvgDiagram } from '../diagrams.js';
+import { renderDsaVisualizer, attachVisualizerInteractivity } from '../visualizers.js';
 
 export function displayValue(value, fallback = "") {
   if (value === undefined || value === null) {
@@ -447,13 +448,12 @@ function buildDayPage(container, d, daysIndex) {
       </div>
 
       <!-- Visual Representation (SVG + Trace) -->
-      ${dsaPattern.visual_explanation ? `
+      ${dsaPattern.pattern_name ? `
         <div style="margin: var(--space-4) 0;">
           <h4 style="margin-bottom: var(--space-2); color: var(--color-primary); display: flex; align-items: center; justify-content: space-between;">
-            <span>Visual Execution Trace & Pointer Mechanics</span>
-            <span class="badge badge-success">Algorithm Visualizer</span>
+            <span>Interactive Animated Execution Trace</span>
           </h4>
-          ${renderSvgDiagram(dsaPattern.pattern_name || '', dsaPattern.visual_explanation)}
+          ${renderDsaVisualizer(dsaPattern, dsaPattern.java_code || dsaPattern.java_solution || dsaPattern.code || '')}
         </div>
       ` : ''}
 
@@ -1071,6 +1071,9 @@ function attachDayInteractivity(d) {
       }
     }
   }
+
+  // Initialize DSA visualizer
+  attachVisualizerInteractivity(container);
 
   // Checkbox bindings & persistence
   const syncChecklist = () => {
