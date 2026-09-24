@@ -957,6 +957,14 @@ function buildDayPage(container, d, daysIndex) {
   attachDayInteractivity(d);
 }
 
+function scrollTocButtonIntoView(btn) {
+  if (!btn) return;
+  const tocBar = btn.closest('.day-toc-bar') || document.querySelector('.day-toc-bar');
+  if (!tocBar) return;
+  const scrollLeft = btn.offsetLeft - (tocBar.clientWidth / 2) + (btn.clientWidth / 2);
+  tocBar.scrollTo({ left: Math.max(0, scrollLeft), behavior: 'smooth' });
+}
+
 export function scrollToDaySection(targetId, smooth = true, updateHash = true) {
   if (!targetId) return;
   const cleanId = targetId.startsWith('#') ? targetId.slice(1) : targetId;
@@ -975,7 +983,7 @@ export function scrollToDaySection(targetId, smooth = true, updateHash = true) {
   });
 
   if (matchedBtn) {
-    matchedBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    scrollTocButtonIntoView(matchedBtn);
   }
 
   // Top header (70px) + sticky TOC bar (48px) + breathing buffer (12px) = 130px
@@ -1038,7 +1046,7 @@ function attachDayInteractivity(d) {
             }
           });
           if (matched) {
-            matched.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            scrollTocButtonIntoView(matched);
           }
         }
       });
