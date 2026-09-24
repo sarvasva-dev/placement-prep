@@ -110,7 +110,7 @@ export function renderRevisionView(container, daysIndex) {
       ${Object.keys(testResults).length === 0 ? `
         <div style="text-align: center; padding: var(--space-6); color: var(--text-muted);">
           <p>No daily tests completed yet.</p>
-          <span style="font-size: var(--font-size-xs);">Complete the 8-question test at the bottom of any day's chapter to record your diagnostic score.</span>
+          <span style="font-size: var(--font-size-xs);">Complete the 20-question test at the bottom of any day's chapter to record your diagnostic score.</span>
         </div>
       ` : `
         <div class="table-container">

@@ -24,7 +24,7 @@ OUTPUT_DOCX = os.path.join(EXPORTS_DIR, "Sarthak_30_Day_Placement_Master_Handboo
 
 def build_master_docx():
     print("==========================================================")
-    print("COMPILING 30-DAY MASTER HANDBOOK DOCX FROM CONTENT LAYER")
+    print("COMPILING 30-DAY MASTER HANDBOOK DOCX FROM CANONICAL STREAMS")
     print("==========================================================")
     
     doc = init_document()
@@ -37,7 +37,7 @@ def build_master_docx():
         author="Sarthak Srivastava (3rd-Year BCA, CSJM University)",
         metadata={
             "Standard": "SGPA >= 9.0 Standard",
-            "Edition": "September 2026 Master Edition",
+            "Edition": "September 2026 Canonical Master Edition",
             "Target": "Campus Placement Clearance & Production Readiness"
         }
     )
@@ -46,8 +46,8 @@ def build_master_docx():
 
     # Foreword & Architecture
     add_heading_1(doc, "Master Handbook Architecture & Ground Truth")
-    add_paragraph(doc, "This master handbook is the offline compilation of the Sarthak 30-Day Placement & Semester Master Web System. It is generated directly from the identical structured content layer that powers the interactive study application.", bold_prefix="Single Source of Truth:")
-    add_paragraph(doc, "Every day from Day 1 to Day 30 is a complete, self-contained study chapter containing: 1. Full textbook academic lectures, 2. Verified university PYQ model answers, 3. 4-tier worked aptitude problems with speed drills, 4. Java 17+ DSA solutions with line-by-line walks, 5. Core CS lectures with interview Q&As, 6. Real project defenses grounded in D:\\Projects code, and 7. Daily 8-question revision tests.")
+    add_paragraph(doc, "This master handbook is the offline compilation of the Sarthak 30-Day Placement & Semester Master Web System. It is generated directly from the identical canonical streams layer that powers the interactive study application.", bold_prefix="Single Source of Truth:")
+    add_paragraph(doc, "Every day from Day 1 to Day 30 is a complete, self-contained study chapter containing: 1. Full textbook academic lectures with vector architecture models, 2. Verified university PYQ 15-mark model answers, 3. Authentic topic-specific worked aptitude problems with speed drills, 4. Java 17+ DSA solutions with execution traces, 5. Core CS lectures with interview Q&As, 6. Real project defenses grounded in production repository code, and 7. Daily 20-question mixed mastery tests.")
 
     # Loop through all 30 days
     for day_num in range(1, 31):
@@ -60,140 +60,234 @@ def build_master_docx():
             d = json.load(f)
 
         doc.add_page_break()
-        print(f"--> Rendering Day {day_num:02d}: {d['title']}")
+        print(f"--> Rendering Day {day_num:02d}: {d.get('title', '')}")
         
-        add_heading_1(doc, f"DAY {day_num}: {d['title'].upper()}")
+        add_heading_1(doc, f"DAY {day_num:02d}: {d.get('title', '').upper()}")
         
-        sem = d.get("sem_data", {})
-        apt = d.get("apt_data", {})
-        
+        streams = d.get("streams", {})
+        acad = streams.get("academic", {})
+        pyqs = streams.get("academic_pyqs", [])
+        apt_lesson = streams.get("aptitude_lesson", {})
+        apt_solved = streams.get("aptitude_solved", [])
+        dsa_pattern = streams.get("dsa_pattern", {})
+        coding_probs = streams.get("coding_problems", [])
+        cs = streams.get("core_cs", {})
+        proj = streams.get("project_preparation", {})
+        interviews = streams.get("placement_interview", [])
+        mixed_test = streams.get("mixed_test", [])
+
         # Header Info
-        add_paragraph(doc, f"Day {day_num} of 30  |  Subject Focus: {sem.get('subject', 'General')}  |  Aptitude: {apt.get('topic', 'General')}  |  Target: SGPA >= 9.0 Standard", italic=True)
+        subj_name = acad.get('subject_name') or acad.get('subject_code') or 'Academic'
+        apt_topic = apt_lesson.get('topic') or 'Aptitude'
+        add_paragraph(doc, f"Day {day_num} of 30  |  Subject Focus: {subj_name}  |  Aptitude: {apt_topic}  |  Target: SGPA >= 9.0 Standard", italic=True)
 
+        # -------------------------------------------------------------
         # 1. SEMESTER ACADEMIC STUDY
-        add_heading_2(doc, f"1. Semester 5 Deep Academic Lecture: {sem.get('subject', '')}")
-        add_paragraph(doc, sem.get('topic', ''), bold_prefix="Syllabus Module:")
+        # -------------------------------------------------------------
+        add_heading_2(doc, f"1. Semester 5 Deep Academic Lecture: {acad.get('topic', subj_name)}")
         
-        for note in sem.get("detailed_notes", []):
-            add_paragraph(doc, note)
+        if acad.get("objectives"):
+            add_paragraph(doc, "Learning Objectives:", bold_prefix="Objectives:")
+            for obj in acad["objectives"]:
+                add_bullet(doc, obj)
 
-        if "diagram_ascii" in sem and sem["diagram_ascii"]:
-            add_paragraph(doc, "Architectural Block / Data Flow Diagram:", bold_prefix="Architecture:")
-            add_code_block(doc, sem["diagram_ascii"], language="text")
+        # Notes / Explanation
+        explanation = acad.get("explanation")
+        if isinstance(explanation, list):
+            for p in explanation:
+                add_paragraph(doc, p)
+        elif isinstance(explanation, str) and explanation:
+            for p in explanation.split("\n\n"):
+                if p.strip(): add_paragraph(doc, p.strip())
 
-        if "comparison_table" in sem and sem["comparison_table"]:
-            tbl = sem["comparison_table"]
+        # Subtopics
+        for sub in acad.get("subtopics", []):
+            add_heading_3(doc, sub.get("title", ""))
+            add_paragraph(doc, sub.get("content", ""))
+
+        # System Architecture Model (Clean Callout, NO raw ASCII!)
+        if acad.get("diagram"):
+            add_callout(doc, f"ARCHITECTURAL FRAMEWORK & CONCEPTUAL FLOW: {acad.get('topic', '')}", [
+                ("Interactive Vector Model:", f"Refer to the web visualizer for the full SVG rendering of {acad.get('topic')}.")
+            ], box_type="understand")
+
+        # Comparison Table
+        if acad.get("comparison_table"):
+            tbl = acad["comparison_table"]
             headers = tbl.get("headers", [])
             rows = tbl.get("rows", [])
-            widths = [Inches(6.5 / len(headers))] * len(headers)
-            add_paragraph(doc, "Key Comparative Dimensions:", bold_prefix="Comparative Analysis:")
-            add_table(doc, headers, rows, widths)
+            if headers and rows:
+                widths = [Inches(6.5 / len(headers))] * len(headers)
+                add_paragraph(doc, "Key Comparative Dimensions:", bold_prefix="Comparative Analysis:")
+                add_table(doc, headers, rows, widths)
 
-        # Callouts
-        add_callout(doc, f"WHAT TO MEMORIZE (DAY {day_num})", [
-            ("Core Definitions & Terminology:", sem.get('memorize', 'Master definitions.'))
-        ], box_type="memorize")
+        # High-Yield Worked Numerical Problems (5004 Expansion)
+        worked_nm = acad.get("worked_numerical_problems", [])
+        if worked_nm:
+            add_heading_3(doc, f"High-Yield Worked Numerical Problems ({len(worked_nm)} Fully Solved)")
+            for widx, wp in enumerate(worked_nm, 1):
+                add_paragraph(doc, f"Problem {widx}: {wp.get('problem', '')} [{wp.get('difficulty', 'Exam-Level')}]", bold_prefix=f"Problem {widx}:")
+                add_paragraph(doc, wp.get("formula", ""), bold_prefix="Governing Formula:")
+                for st in wp.get("step_by_step_calculation", []):
+                    add_bullet(doc, st)
+                
+                # Iteration table if present
+                iter_tbl = wp.get("iteration_table", [])
+                if iter_tbl and isinstance(iter_tbl, list) and len(iter_tbl) > 0 and isinstance(iter_tbl[0], dict):
+                    t_headers = [k.upper() for k in iter_tbl[0].keys()]
+                    t_rows = [[str(v) for v in r.values()] for r in iter_tbl]
+                    t_widths = [Inches(6.5 / len(t_headers))] * len(t_headers)
+                    add_table(doc, t_headers, t_rows, t_widths)
+                    
+                add_paragraph(doc, f"Final Answer: {wp.get('final_answer', '')}  |  Verification: {wp.get('verification', '')}", bold_prefix="Result:")
+                if wp.get("common_mistake"):
+                    add_paragraph(doc, wp.get("common_mistake"), bold_prefix="Watch Out:")
 
-        add_callout(doc, f"WHAT TO UNDERSTAND DEEPLY (DAY {day_num})", [
-            ("Conceptual Mechanics & Intuition:", sem.get('understand', 'Understand mechanics.'))
-        ], box_type="understand")
+        if acad.get("timed_numerical_drill"):
+            td = acad["timed_numerical_drill"]
+            add_callout(doc, f"TIMED NUMERICAL EXAM DRILL ({td.get('time_limit_minutes', 15)} Mins | {td.get('marks', 15)} Marks)", [
+                ("Exam Problem:", td.get("problem", "")),
+                ("Governing Formula:", td.get("formula", "")),
+                ("Verified Answer:", td.get("final_answer", ""))
+            ], box_type="exam")
 
-        if "common_mistakes" in sem and sem["common_mistakes"]:
-            add_callout(doc, f"EXAM MISTAKES TO AVOID (DAY {day_num})", [
-                ("Common Mark-Losing Errors:", sem['common_mistakes'])
-            ], box_type="trap")
-
-        # PYQ Model Answer
-        if "pyq_question" in sem and sem["pyq_question"]:
-            add_callout(doc, f"UNIVERSITY PYQ ANALYSIS & SCORING RUBRIC (DAY {day_num})", [
-                ("University Examination Papers:", sem.get('pyq_year', '')),
-                ("Recurrence Frequency:", sem.get('pyq_freq', '')),
-                ("Actual University Question:", sem.get('pyq_question', '')),
-                ("Examiner Scoring Rubric:", sem.get('pyq_rubric', ''))
-            ], box_type="pyq")
-
-            add_heading_3(doc, f"University Model Answer (15/15 Marks Blueprint)")
-            for heading, body in sem.get("model_answer_paragraphs", []):
-                add_paragraph(doc, body, bold_prefix=heading)
-
-        # 2. APTITUDE
-        add_heading_2(doc, f"2. Quantitative & Placement Aptitude: {apt.get('topic', '')}")
-        for tut in apt.get("tutorial", []):
-            add_paragraph(doc, tut)
-
-        if "formulas" in apt and apt["formulas"]:
-            add_callout(doc, "ESSENTIAL FORMULAS & SHORTCUTS", [
-                ("Key Mathematical Formulas:", apt.get('formulas', '')),
-                ("Speed Calculation Shortcut:", apt.get('shortcut', ''))
+        # Memorize / Understand / Traps
+        if acad.get("memorize"):
+            add_callout(doc, f"WHAT TO MEMORIZE (DAY {day_num})", [
+                ("Core Definitions & Terminology:", acad['memorize'])
             ], box_type="memorize")
 
-        add_heading_3(doc, "4-Tier Progressively Challenging Solved Problems")
-        if "tier1_problem" in apt:
-            add_paragraph(doc, apt["tier1_problem"], bold_prefix="Tier 1 (Foundation):")
-            add_paragraph(doc, apt["tier1_solution"], bold_prefix="Solution:")
-        if "tier2_problem" in apt:
-            add_paragraph(doc, apt["tier2_problem"], bold_prefix="Tier 2 (Standard):")
-            add_paragraph(doc, apt["tier2_solution"], bold_prefix="Solution:")
-        if "tier3_problem" in apt:
-            add_paragraph(doc, apt["tier3_problem"], bold_prefix="Tier 3 (Placement):")
-            add_paragraph(doc, apt["tier3_solution"], bold_prefix="Solution:")
-        if "tier4_problem" in apt:
-            add_paragraph(doc, apt["tier4_problem"], bold_prefix="Tier 4 (Hard / Advanced):")
-            add_paragraph(doc, apt["tier4_solution"], bold_prefix="Solution:")
+        if acad.get("understand"):
+            add_callout(doc, f"WHAT TO UNDERSTAND DEEPLY (DAY {day_num})", [
+                ("Conceptual Mechanics & Intuition:", acad['understand'])
+            ], box_type="understand")
 
-        # 3. DSA PATTERN & CODING PROBLEMS (Java 17+)
-        dsa_pattern = d.get("dsa_pattern", {})
-        if dsa_pattern and "pattern_name" in dsa_pattern:
-            add_heading_2(doc, f"3. Java DSA Pattern: {dsa_pattern.get('pattern_name', '')}")
-            add_paragraph(doc, dsa_pattern.get('concept', ''), bold_prefix="Core Concept:")
-            code_str = dsa_pattern.get("java_code") or dsa_pattern.get("code", "")
-            if code_str:
-                add_code_block(doc, code_str, language="java")
-            add_paragraph(doc, f"Time & Space: {dsa_pattern.get('complexity', '')}", bold_prefix="Complexity:")
+        if acad.get("common_mistakes"):
+            add_callout(doc, f"EXAM MISTAKES TO AVOID (DAY {day_num})", [
+                ("Common Mark-Losing Errors:", acad['common_mistakes'])
+            ], box_type="trap")
 
-        dsa = d.get("dsa_problems", [])
-        if dsa:
-            add_heading_3(doc, "Java 17+ Placement Coding Problems")
-            for p in dsa:
-                add_heading_3(doc, f"Problem: {p.get('title', '')}")
-                add_paragraph(doc, p.get('problem_statement', ''), bold_prefix="Problem Statement:")
-                add_paragraph(doc, p.get('solution_approach', ''), bold_prefix="Algorithmic Approach:")
-                p_code = p.get("solution_java") or p.get("code", "")
-                if p_code:
-                    add_code_block(doc, p_code, language="java")
-                add_paragraph(doc, f"Time: {p.get('time_complexity', 'O(N)')}  |  Space: {p.get('space_complexity', 'O(1)')}", bold_prefix="Complexities:")
-                if "edge_cases" in p:
-                    add_paragraph(doc, str(p["edge_cases"]), bold_prefix="Edge Cases:")
+        # -------------------------------------------------------------
+        # 2. UNIVERSITY PYQ MODEL ANSWERS
+        # -------------------------------------------------------------
+        if pyqs:
+            add_heading_2(doc, "2. CSJM University PYQs & Model Answers (15-Mark Standard)")
+            for pidx, pyq in enumerate(pyqs, 1):
+                add_callout(doc, f"UNIVERSITY PYQ #{pidx}: {pyq.get('year', 'CSJM University')} ({pyq.get('marks', 15)} Marks)", [
+                    ("Exam Question:", pyq.get('question', '')),
+                    ("Examiner Scoring Rubric:", pyq.get('rubric', 'Definition (3m) + Diagram (4m) + Technical Depth (5m) + Summary (3m) = 15 Marks'))
+                ], box_type="pyq")
 
-        # 4. CORE CS
-        cs = d.get("cs_core", {})
-        if cs and "topic" in cs:
-            add_heading_2(doc, f"4. Core Computer Science: {cs.get('subject', '')} — {cs.get('topic', '')}")
+                if pyq.get("model_answer"):
+                    add_heading_3(doc, f"Model Answer #{pidx} (15/15 Presentation)")
+                    ma = pyq["model_answer"]
+                    if isinstance(ma, list):
+                        for item in ma:
+                            if isinstance(item, list) and len(item) == 2:
+                                add_paragraph(doc, item[1], bold_prefix=f"{item[0]}:")
+                            elif isinstance(item, dict):
+                                add_paragraph(doc, item.get('content', ''), bold_prefix=f"{item.get('heading', 'Key Point')}:")
+                            else:
+                                add_paragraph(doc, str(item))
+                    elif isinstance(ma, str):
+                        for p in ma.split("\n\n"):
+                            if p.strip(): add_paragraph(doc, p.strip())
+
+        # -------------------------------------------------------------
+        # 3. APTITUDE (100% Topic-Specific Authentic Examples!)
+        # -------------------------------------------------------------
+        add_heading_2(doc, f"3. Quantitative & Placement Aptitude: {apt_topic}")
+        if apt_lesson.get("concept"):
+            add_paragraph(doc, apt_lesson.get("concept"))
+            
+        if apt_lesson.get("formulas"):
+            add_callout(doc, "ESSENTIAL FORMULAS & SHORTCUTS", [
+                ("Governing Formulas:", str(apt_lesson.get('formulas', ''))),
+                ("Speed Shortcut:", str(apt_lesson.get('shortcuts', '')))
+            ], box_type="shortcut")
+
+        if apt_solved:
+            add_heading_3(doc, f"Progressively Challenging Solved Problems ({len(apt_solved)} Solved)")
+            for sidx, sp in enumerate(apt_solved, 1):
+                tier_label = sp.get('tier') or f"Tier {sidx}"
+                add_paragraph(doc, sp.get('question', sp.get('problem', '')), bold_prefix=f"Problem {sidx} ({tier_label}):")
+                for st in sp.get('step_by_step_solution', sp.get('solution', [])):
+                    add_bullet(doc, st)
+                add_paragraph(doc, f"Answer: {sp.get('final_answer', sp.get('answer', ''))}  |  Shortcut: {sp.get('shortcut', '')}", bold_prefix="Result:")
+
+        # -------------------------------------------------------------
+        # 4. JAVA 17+ DSA PATTERN & CODING PROBLEMS
+        # -------------------------------------------------------------
+        if dsa_pattern and dsa_pattern.get("pattern_name"):
+            add_heading_2(doc, f"4. Java 17+ DSA Pattern: {dsa_pattern.get('pattern_name', '')}")
+            add_paragraph(doc, dsa_pattern.get('concept', ''), bold_prefix="Core Intuition:")
+            java_code = dsa_pattern.get("java_code") or dsa_pattern.get("code", "")
+            if java_code:
+                add_code_block(doc, java_code, language="java")
+            add_paragraph(doc, f"Time: {dsa_pattern.get('time_complexity', 'O(N)')}  |  Space: {dsa_pattern.get('space_complexity', 'O(1)')}", bold_prefix="Complexity:")
+
+        if coding_probs:
+            add_heading_3(doc, "High-Frequency Java 17+ Placement Coding Problems")
+            for cp in coding_probs:
+                add_paragraph(doc, cp.get('problem_statement', cp.get('problem', '')), bold_prefix=f"Problem: {cp.get('title', '')}")
+                add_paragraph(doc, cp.get('solution_approach', cp.get('approach', '')), bold_prefix="Algorithmic Strategy:")
+                c_code = cp.get("solution_java") or cp.get("code", "")
+                if c_code:
+                    add_code_block(doc, c_code, language="java")
+                add_paragraph(doc, f"Time: {cp.get('time_complexity', 'O(N)')}  |  Space: {cp.get('space_complexity', 'O(1)')}", bold_prefix="Complexities:")
+
+        # -------------------------------------------------------------
+        # 5. CORE COMPUTER SCIENCE
+        # -------------------------------------------------------------
+        if cs and cs.get("topic"):
+            add_heading_2(doc, f"5. Core Computer Science: {cs.get('subject', '')} — {cs.get('topic', '')}")
             for note in cs.get("detailed_notes", []):
                 add_paragraph(doc, note)
             for qa in cs.get("interview_qa", []):
-                add_callout(doc, f"PLACEMENT INTERVIEW Q&A: {qa['q']}", [
-                    ("Expected Technical Answer:", qa['a'])
+                add_callout(doc, f"CORE CS INTERVIEW Q&A: {qa.get('q', '')}", [
+                    ("Expected Technical Answer:", qa.get('a', ''))
                 ], box_type="understand")
 
-        # 5. PROJECT DEFENSE
-        proj = d.get("project_defense", {})
-        if proj and "project_name" in proj:
-            add_heading_2(doc, f"5. Project Architecture Defense: {proj.get('project_name', '')}")
+        # -------------------------------------------------------------
+        # 6. PROJECT DEFENSE & PLACEMENT INTERVIEW
+        # -------------------------------------------------------------
+        if proj and proj.get("project_name"):
+            add_heading_2(doc, f"6. Project Architecture Defense: {proj.get('project_name', '')}")
             add_paragraph(doc, proj.get('architecture_deep_dive', ''))
             for qa in proj.get("interview_qa", []):
-                add_callout(doc, f"PROJECT INTERVIEW DEFENSE: {qa['q']}", [
-                    ("Strong Architectural Answer:", qa['a'])
+                add_callout(doc, f"PROJECT INTERVIEW DEFENSE: {qa.get('q', '')}", [
+                    ("Architectural Defense:", qa.get('a', ''))
                 ], box_type="memorize")
 
-        # 6. DAILY TEST
-        test = d.get("daily_test", {})
-        if test and "questions" in test:
-            add_heading_2(doc, f"6. Day {day_num} Comprehensive 8-Question Mastery Test")
-            q_rows = []
-            for idx, q in enumerate(test.get("questions", []), 1):
-                q_rows.append([f"Q{idx}", q["q"], q["a"]])
-            add_table(doc, ["No.", "Question", "Full Solution"], q_rows, [Inches(0.6), Inches(2.9), Inches(3.0)])
+        if interviews:
+            add_heading_3(doc, "Placement HR & Technical STAR Behavioral Answers")
+            for iv in interviews:
+                add_callout(doc, f"INTERVIEW QUESTION: {iv.get('question', '')}", [
+                    ("Strong Candidate Response (STAR Framework):", iv.get('answer', ''))
+                ], box_type="interview")
+
+        # -------------------------------------------------------------
+        # 7. DAILY 20-QUESTION MIXED MASTERY TEST
+        # -------------------------------------------------------------
+        if mixed_test:
+            add_heading_2(doc, f"7. Day {day_num:02d} Comprehensive 20-Question Daily Mastery Test")
+            add_paragraph(doc, f"Diagnostic evaluation covering Academic ({subj_name}), Aptitude ({apt_topic}), Java DSA, and Core CS. Total: {len(mixed_test)} Questions.", italic=True)
+            
+            test_rows = []
+            for idx, q in enumerate(mixed_test, 1):
+                opts = q.get("options", {})
+                if isinstance(opts, dict):
+                    opt_str = f"A: {opts.get('A','')} | B: {opts.get('B','')} | C: {opts.get('C','')} | D: {opts.get('D','')}"
+                elif isinstance(opts, list):
+                    opt_str = " | ".join(opts)
+                else:
+                    opt_str = ""
+                    
+                q_text = f"{q.get('question', '')}\nOptions: {opt_str}"
+                ans_text = f"Ans: {q.get('correct_answer', '')}\n{q.get('explanation', '')}"
+                test_rows.append([f"Q{idx}", q_text, ans_text])
+                
+            add_table(doc, ["No.", "Question & Multiple Choice Options", "Correct Answer & Technical Rationale"], test_rows, [Inches(0.5), Inches(3.4), Inches(2.6)])
 
     # Save final DOCX
     print(f"\n--> Saving final DOCX to: {OUTPUT_DOCX}")

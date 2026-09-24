@@ -826,6 +826,9 @@ export function attachVisualizerInteractivity(container) {
   const visualizers = container.querySelectorAll('.dsa-visualizer');
 
   visualizers.forEach(viz => {
+    if (viz.dataset.attached === 'true') return;
+    viz.dataset.attached = 'true';
+
     let steps;
     try {
       steps = JSON.parse(viz.dataset.steps);

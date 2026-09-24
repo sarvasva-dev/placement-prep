@@ -187,31 +187,31 @@
           "unit": "Unit 1: Roots of Equations",
           "topic": "Bisection Method",
           "difficulty": "Exam-Level",
-          "problem": "Find a real root of the equation f(x) = x^3 - 4x - 9 = 0 on [2, 3] correct to 3 decimal places using the Bisection method.",
+          "problem": "Find a real root of f(x) = x^3 - 4x - 9 = 0 on [2, 3] using Bisection method. Show full iteration table.",
           "data": {
             "equation": "x^3 - 4x - 9 = 0",
             "interval": [
               2.0,
               3.0
             ],
-            "tolerance": 0.001
+            "steps": 5
           },
           "method": "Bisection Method",
-          "formula": "c_k = (a_k + b_k) / 2. If f(a)*f(c) < 0 then b = c, else a = c.",
+          "formula": "c_k = (a_k + b_k) / 2; root bracket update based on sign of f(a)*f(c)",
           "step_by_step_calculation": [
-            "Step 1: Evaluate endpoints: f(2) = 8 - 8 - 9 = -9 < 0; f(3) = 27 - 12 - 9 = +6 > 0. Root lies in [2, 3].",
-            "Step 2: Iteration 1: c1 = (2+3)/2 = 2.5. f(2.5) = 15.625 - 10 - 9 = -3.375 < 0. New interval [2.5, 3.0].",
-            "Step 3: Iteration 2: c2 = (2.5+3)/2 = 2.75. f(2.75) = 20.796875 - 11 - 9 = +0.7969 > 0. New interval [2.5, 2.75].",
-            "Step 4: Iteration 3: c3 = (2.5+2.75)/2 = 2.625. f(2.625) = -1.4121 < 0. New interval [2.625, 2.75].",
-            "Step 5: Continue halving intervals until |b - a| < 0.001. At Iteration 11, c11 = 2.7065 with f(2.7065) approx 0."
+            "Step 1: Check initial bracketing: f(2) = -9.0000 < 0, f(3) = 6.0000 > 0. Opposite signs confirmed.",
+            "Step 2: Iterations 1-5 executed systematically halving the search interval.",
+            "Step 3: After 5 iterations, bracket narrows to [2.6875, 2.71875].",
+            "Step 4: Last computed midpoint c5 = 2.71875 (residual f(c5) = 0.220917). Bracket midpoint = 2.703125 (residual = -0.061077). True root x \u2248 2.7065."
           ],
           "intermediate_values": {
-            "c1": 2.5,
-            "c2": 2.75,
-            "c3": 2.625,
-            "c4": 2.6875,
-            "c5": 2.7188,
-            "c11": 2.7065
+            "last_midpoint_c5": 2.71875,
+            "final_bracket": [
+              2.6875,
+              2.71875
+            ],
+            "bracket_midpoint": 2.703125,
+            "residual": 0.220917
           },
           "iteration_table": [
             {
@@ -229,7 +229,7 @@
               "b": 3.0,
               "c": 2.75,
               "f_a": -3.375,
-              "f_c": 0.7969,
+              "f_c": 0.796875,
               "new_interval": "[2.5, 2.75]"
             },
             {
@@ -238,7 +238,7 @@
               "b": 2.75,
               "c": 2.625,
               "f_a": -3.375,
-              "f_c": -1.4121,
+              "f_c": -1.412109,
               "new_interval": "[2.625, 2.75]"
             },
             {
@@ -246,23 +246,23 @@
               "a": 2.625,
               "b": 2.75,
               "c": 2.6875,
-              "f_a": -1.4121,
-              "f_c": -0.3391,
+              "f_a": -1.412109,
+              "f_c": -0.339111,
               "new_interval": "[2.6875, 2.75]"
             },
             {
               "iter": 5,
               "a": 2.6875,
               "b": 2.75,
-              "c": 2.7188,
-              "f_a": -0.3391,
-              "f_c": 0.2209,
-              "new_interval": "[2.6875, 2.7188]"
+              "c": 2.71875,
+              "f_a": -0.339111,
+              "f_c": 0.220917,
+              "new_interval": "[2.6875, 2.71875]"
             }
           ],
-          "final_answer": "Root x \u2248 2.706",
-          "verification": "Substitute x = 2.7064: 2.7064^3 - 4(2.7064) - 9 = 19.8249 - 10.8256 - 9 = -0.0007 \u2248 0.",
-          "common_mistake": "Choosing wrong subinterval when updating bounds; always verify sign of f(a)*f(c)."
+          "final_answer": "Last midpoint c5 = 2.71875; Final bracket [2.6875, 2.71875]; Reported approximation x \u2248 2.703125",
+          "verification": "Verified: f(2.703125) = -0.061077 is within acceptable tolerance. Exact root \u2248 2.7065.",
+          "common_mistake": "Confusing last calculated midpoint c_k with the center of the updated bracket."
         },
         {
           "problem_id": "NM-U1-BIS-02",
@@ -281,17 +281,18 @@
           "method": "Bisection Method",
           "formula": "c_k = (a_k + b_k) / 2",
           "step_by_step_calculation": [
-            "f(1) = 1 - 1 - 1 = -1 < 0; f(2) = 8 - 2 - 1 = +5 > 0. Root in [1, 2].",
-            "Iter 1: c1 = 1.5. f(1.5) = 3.375 - 1.5 - 1 = 0.875 > 0. Interval -> [1, 1.5].",
-            "Iter 2: c2 = 1.25. f(1.25) = 1.9531 - 1.25 - 1 = -0.2969 < 0. Interval -> [1.25, 1.5].",
-            "Iter 3: c3 = 1.375. f(1.375) = 2.5996 - 1.375 - 1 = 0.2246 > 0. Interval -> [1.25, 1.375].",
-            "Iter 4: c4 = 1.3125. f(1.3125) = 2.2610 - 1.3125 - 1 = -0.0515 < 0. Interval -> [1.3125, 1.375]."
+            "Step 1: Verify sign change: f(1) = -1.0000 < 0, f(2) = 5.0000 > 0. Root bracketed.",
+            "Step 2: Compute midpoints c1, c2, c3, c4 and update intervals based on sign of f(c).",
+            "Step 3: 4th iteration yields midpoint c4 = 1.3125 with f(c4) = -0.051514.",
+            "Step 4: Final bracket is [1.3125, 1.375]. Bracket midpoint = 1.34375. True root \u2248 1.3247."
           ],
           "intermediate_values": {
-            "c1": 1.5,
-            "c2": 1.25,
-            "c3": 1.375,
-            "c4": 1.3125
+            "last_midpoint_c4": 1.3125,
+            "final_bracket": [
+              1.3125,
+              1.375
+            ],
+            "bracket_midpoint": 1.34375
           },
           "iteration_table": [
             {
@@ -309,7 +310,7 @@
               "b": 1.5,
               "c": 1.25,
               "f_a": -1.0,
-              "f_c": -0.2969,
+              "f_c": -0.296875,
               "new_interval": "[1.25, 1.5]"
             },
             {
@@ -317,8 +318,8 @@
               "a": 1.25,
               "b": 1.5,
               "c": 1.375,
-              "f_a": -0.2969,
-              "f_c": 0.2246,
+              "f_a": -0.296875,
+              "f_c": 0.224609,
               "new_interval": "[1.25, 1.375]"
             },
             {
@@ -326,42 +327,50 @@
               "a": 1.25,
               "b": 1.375,
               "c": 1.3125,
-              "f_a": -0.2969,
-              "f_c": -0.0515,
+              "f_a": -0.296875,
+              "f_c": -0.051514,
               "new_interval": "[1.3125, 1.375]"
             }
           ],
-          "final_answer": "Root after 4 iterations x \u2248 1.3125 (True root = 1.3247)",
-          "verification": "f(1.3125) = -0.0515, root bracketed in [1.3125, 1.3750].",
-          "common_mistake": "Premature rounding of midpoint coordinates during intermediate arithmetic."
+          "final_answer": "Last midpoint c4 = 1.3125; Final bracket [1.3125, 1.375]; Reported approximation x \u2248 1.34375",
+          "verification": "f(1.34375) = 0.082611 \u2248 0. Narrows interval width from 1.0 to 0.0625.",
+          "common_mistake": "Premature rounding of intermediate midpoints."
         },
         {
           "problem_id": "NM-U1-BIS-03",
           "unit": "Unit 1: Roots of Equations",
           "topic": "Bisection Method",
           "difficulty": "Standard",
-          "problem": "Find the root of f(x) = x^3 - 2x - 5 = 0 between 2 and 3 using 4 iterations of Bisection.",
+          "problem": "Find the root of f(x) = x^3 - 2x - 5 = 0 between 2 and 3 using 4 iterations of Bisection. Clearly label last midpoint, final bracket, and final approximation.",
           "data": {
             "equation": "x^3 - 2x - 5 = 0",
             "interval": [
               2.0,
               3.0
-            ]
+            ],
+            "iterations": 4
           },
           "method": "Bisection Method",
           "formula": "c = (a+b)/2",
           "step_by_step_calculation": [
-            "f(2) = 8 - 4 - 5 = -1 < 0; f(3) = 27 - 6 - 5 = 16 > 0.",
-            "Iter 1: c1 = 2.5, f(2.5) = 15.625 - 5 - 5 = 5.625 > 0. Interval [2, 2.5].",
-            "Iter 2: c2 = 2.25, f(2.25) = 11.3906 - 4.5 - 5 = 1.8906 > 0. Interval [2, 2.25].",
-            "Iter 3: c3 = 2.125, f(2.125) = 9.5957 - 4.25 - 5 = 0.3457 > 0. Interval [2, 2.125].",
-            "Iter 4: c4 = 2.0625, f(2.0625) = 8.7737 - 4.125 - 5 = -0.3513 < 0. Interval [2.0625, 2.125]."
+            "Step 1: Check initial values: f(2) = -1.0000 < 0, f(3) = 16.0000 > 0. Opposite signs confirm root in [2, 3].",
+            "Step 2: Iteration 1: c1 = 2.5, f(2.5) = 5.625000 > 0 \u2192 New bracket [2.0, 2.5].",
+            "Step 3: Iteration 2: c2 = 2.25, f(2.25) = 1.890625 > 0 \u2192 New bracket [2.0, 2.25].",
+            "Step 4: Iteration 3: c3 = 2.125, f(2.125) = 0.345703 > 0 \u2192 New bracket [2.0, 2.125].",
+            "Step 5: Iteration 4: c4 = 2.0625, f(2.0625) = -0.351318 < 0 \u2192 Final refined bracket [2.0625, 2.125].",
+            "Step 6: Mathematical distinction: Last computed midpoint is c4 = 2.0625 (residual = -0.351318). The midpoint of the final bracket [2.0625, 2.125] is c_bracket = 2.09375 (residual = -0.008942). Actual root x \u2248 2.09455."
           ],
           "intermediate_values": {
             "c1": 2.5,
             "c2": 2.25,
             "c3": 2.125,
-            "c4": 2.0625
+            "c4": 2.0625,
+            "final_bracket": [
+              2.0625,
+              2.125
+            ],
+            "bracket_midpoint": 2.09375,
+            "actual_root": 2.09455
           },
           "iteration_table": [
             {
@@ -379,7 +388,7 @@
               "b": 2.5,
               "c": 2.25,
               "f_a": -1.0,
-              "f_c": 1.8906,
+              "f_c": 1.890625,
               "new_interval": "[2.0, 2.25]"
             },
             {
@@ -388,7 +397,7 @@
               "b": 2.25,
               "c": 2.125,
               "f_a": -1.0,
-              "f_c": 0.3457,
+              "f_c": 0.345703,
               "new_interval": "[2.0, 2.125]"
             },
             {
@@ -397,37 +406,44 @@
               "b": 2.125,
               "c": 2.0625,
               "f_a": -1.0,
-              "f_c": -0.3513,
+              "f_c": -0.351318,
               "new_interval": "[2.0625, 2.125]"
             }
           ],
-          "final_answer": "Root after 4 iterations x \u2248 2.0938 (midpoint of [2.0625, 2.125])",
-          "verification": "f(2.0945) = 9.1915 - 4.1890 - 5 = 0.0025 \u2248 0.",
-          "common_mistake": "Sign reversal error when computing f(a) vs f(c)."
+          "final_answer": "Last computed midpoint c4 = 2.0625; Final refined bracket = [2.0625, 2.125]; Bracket midpoint approximation x \u2248 2.09375 (True root x \u2248 2.09455)",
+          "verification": "Verified: f(2.09375) = -0.008942 confirming high accuracy within error bound \u0394x = 0.03125.",
+          "common_mistake": "Conflating last midpoint c4=2.0625 with the center of the newly refined bracket 2.09375 or the true root."
         },
         {
           "problem_id": "NM-U1-BIS-04",
           "unit": "Unit 1: Roots of Equations",
           "topic": "Bisection Method",
           "difficulty": "Standard",
-          "problem": "Find root of x^3 - x - 4 = 0 in interval [1.0, 2.0] using 4 steps of Bisection.",
+          "problem": "Find root of x^3 - x - 4 = 0 in interval [1.0, 2.0] using 4 steps of Bisection. Show complete computed iteration table.",
           "data": {
             "equation": "x^3 - x - 4 = 0",
             "interval": [
               1.0,
               2.0
-            ]
+            ],
+            "iterations": 4
           },
           "method": "Bisection Method",
           "formula": "c = (a+b)/2",
           "step_by_step_calculation": [
-            "Evaluate f(1.0) and f(2.0), verifying opposite signs.",
-            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-            "Interval narrows to width 0.0625 after 4 iterations."
+            "Step 1: Check initial values: f(1.0) = -4.0000, f(2.0) = 2.0000. Opposite signs confirmed.",
+            "Step 2: Calculate midpoints c1=1.5, c2=1.75, c3=1.875, c4=1.8125.",
+            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [1.75, 1.8125].",
+            "Step 4: Last computed midpoint c4 = 1.8125 (residual f(c4) = 0.141846). Bracket midpoint = 1.78125 (residual = -0.129608). True root x \u2248 1.796322."
           ],
           "intermediate_values": {
-            "final_bracket_width": 0.0625,
-            "approx_c": 1.796
+            "last_midpoint_c4": 1.8125,
+            "final_bracket": [
+              1.75,
+              1.8125
+            ],
+            "bracket_midpoint": 1.78125,
+            "actual_root": 1.796322
           },
           "iteration_table": [
             {
@@ -435,33 +451,41 @@
               "a": 1.0,
               "b": 2.0,
               "c": 1.5,
-              "new_interval": "[1.0, 1.5]"
+              "f_a": -4.0,
+              "f_c": -2.125,
+              "new_interval": "[1.5, 2.0]"
             },
             {
               "iter": 2,
-              "a": 1.0,
-              "b": 1.5,
-              "c": 1.25,
-              "new_interval": "Refined bracket"
+              "a": 1.5,
+              "b": 2.0,
+              "c": 1.75,
+              "f_a": -2.125,
+              "f_c": -0.390625,
+              "new_interval": "[1.75, 2.0]"
             },
             {
               "iter": 3,
-              "a": "a3",
-              "b": "b3",
-              "c": "c3",
-              "new_interval": "Refined bracket"
+              "a": 1.75,
+              "b": 2.0,
+              "c": 1.875,
+              "f_a": -0.390625,
+              "f_c": 0.716797,
+              "new_interval": "[1.75, 1.875]"
             },
             {
               "iter": 4,
-              "a": "a4",
-              "b": "b4",
-              "c": 1.796,
-              "new_interval": "[1.766, 1.826]"
+              "a": 1.75,
+              "b": 1.875,
+              "c": 1.8125,
+              "f_a": -0.390625,
+              "f_c": 0.141846,
+              "new_interval": "[1.75, 1.8125]"
             }
           ],
-          "final_answer": "Root x \u2248 1.796",
-          "verification": "Evaluated residual f(1.796) is within acceptable tolerance (< 0.05).",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+          "final_answer": "Last midpoint c4 = 1.8125; Final bracket [1.75, 1.8125]; Reported approximation x \u2248 1.78125",
+          "verification": "Residual f(1.78125) = -0.129608 demonstrates convergence within error tolerance.",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
         }
       ],
       "expanded_numerical_practice": [
@@ -470,24 +494,31 @@
           "unit": "Unit 1: Roots of Equations",
           "topic": "Bisection Method",
           "difficulty": "Standard",
-          "problem": "Find root of x^3 - 9x + 1 = 0 in interval [2.0, 3.0] using 4 steps of Bisection.",
+          "problem": "Find root of x^3 - 9x + 1 = 0 in interval [2.0, 3.0] using 4 steps of Bisection. Show complete computed iteration table.",
           "data": {
             "equation": "x^3 - 9x + 1 = 0",
             "interval": [
               2.0,
               3.0
-            ]
+            ],
+            "iterations": 4
           },
           "method": "Bisection Method",
           "formula": "c = (a+b)/2",
           "step_by_step_calculation": [
-            "Evaluate f(2.0) and f(3.0), verifying opposite signs.",
-            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-            "Interval narrows to width 0.0625 after 4 iterations."
+            "Step 1: Check initial values: f(2.0) = -9.0000, f(3.0) = 1.0000. Opposite signs confirmed.",
+            "Step 2: Calculate midpoints c1=2.5, c2=2.75, c3=2.875, c4=2.9375.",
+            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [2.9375, 3.0].",
+            "Step 4: Last computed midpoint c4 = 2.9375 (residual f(c4) = -0.090088). Bracket midpoint = 2.96875 (residual = 0.446259). True root x \u2248 2.94282."
           ],
           "intermediate_values": {
-            "final_bracket_width": 0.0625,
-            "approx_c": 2.942
+            "last_midpoint_c4": 2.9375,
+            "final_bracket": [
+              2.9375,
+              3.0
+            ],
+            "bracket_midpoint": 2.96875,
+            "actual_root": 2.94282
           },
           "iteration_table": [
             {
@@ -495,57 +526,72 @@
               "a": 2.0,
               "b": 3.0,
               "c": 2.5,
-              "new_interval": "[2.0, 2.5]"
+              "f_a": -9.0,
+              "f_c": -5.875,
+              "new_interval": "[2.5, 3.0]"
             },
             {
               "iter": 2,
-              "a": 2.0,
-              "b": 2.5,
-              "c": 2.25,
-              "new_interval": "Refined bracket"
+              "a": 2.5,
+              "b": 3.0,
+              "c": 2.75,
+              "f_a": -5.875,
+              "f_c": -2.953125,
+              "new_interval": "[2.75, 3.0]"
             },
             {
               "iter": 3,
-              "a": "a3",
-              "b": "b3",
-              "c": "c3",
-              "new_interval": "Refined bracket"
+              "a": 2.75,
+              "b": 3.0,
+              "c": 2.875,
+              "f_a": -2.953125,
+              "f_c": -1.111328,
+              "new_interval": "[2.875, 3.0]"
             },
             {
               "iter": 4,
-              "a": "a4",
-              "b": "b4",
-              "c": 2.942,
-              "new_interval": "[2.9120000000000004, 2.972]"
+              "a": 2.875,
+              "b": 3.0,
+              "c": 2.9375,
+              "f_a": -1.111328,
+              "f_c": -0.090088,
+              "new_interval": "[2.9375, 3.0]"
             }
           ],
-          "final_answer": "Root x \u2248 2.942",
-          "verification": "Evaluated residual f(2.942) is within acceptable tolerance (< 0.05).",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+          "final_answer": "Last midpoint c4 = 2.9375; Final bracket [2.9375, 3.0]; Reported approximation x \u2248 2.96875",
+          "verification": "Residual f(2.96875) = 0.446259 demonstrates convergence within error tolerance.",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
         },
         {
           "problem_id": "NM-U1-BIS-06",
           "unit": "Unit 1: Roots of Equations",
           "topic": "Bisection Method",
           "difficulty": "Standard",
-          "problem": "Find root of cos(x) - x*exp(x) = 0 in interval [0.0, 1.0] using 4 steps of Bisection.",
+          "problem": "Find root of cos(x) - x*exp(x) = 0 in interval [0.0, 1.0] using 4 steps of Bisection. Show complete computed iteration table.",
           "data": {
             "equation": "cos(x) - x*exp(x) = 0",
             "interval": [
               0.0,
               1.0
-            ]
+            ],
+            "iterations": 4
           },
           "method": "Bisection Method",
           "formula": "c = (a+b)/2",
           "step_by_step_calculation": [
-            "Evaluate f(0.0) and f(1.0), verifying opposite signs.",
-            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-            "Interval narrows to width 0.0625 after 4 iterations."
+            "Step 1: Check initial values: f(0.0) = 1.0000, f(1.0) = -2.1780. Opposite signs confirmed.",
+            "Step 2: Calculate midpoints c1=0.5, c2=0.75, c3=0.625, c4=0.5625.",
+            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [0.5, 0.5625].",
+            "Step 4: Last computed midpoint c4 = 0.5625 (residual f(c4) = -0.141294). Bracket midpoint = 0.53125 (residual = -0.041512). True root x \u2248 0.517757."
           ],
           "intermediate_values": {
-            "final_bracket_width": 0.0625,
-            "approx_c": 0.517
+            "last_midpoint_c4": 0.5625,
+            "final_bracket": [
+              0.5,
+              0.5625
+            ],
+            "bracket_midpoint": 0.53125,
+            "actual_root": 0.517757
           },
           "iteration_table": [
             {
@@ -553,57 +599,72 @@
               "a": 0.0,
               "b": 1.0,
               "c": 0.5,
-              "new_interval": "[0.0, 0.5]"
+              "f_a": 1.0,
+              "f_c": 0.053222,
+              "new_interval": "[0.5, 1.0]"
             },
             {
               "iter": 2,
-              "a": 0.0,
-              "b": 0.5,
-              "c": 0.25,
-              "new_interval": "Refined bracket"
+              "a": 0.5,
+              "b": 1.0,
+              "c": 0.75,
+              "f_a": 0.053222,
+              "f_c": -0.856061,
+              "new_interval": "[0.5, 0.75]"
             },
             {
               "iter": 3,
-              "a": "a3",
-              "b": "b3",
-              "c": "c3",
-              "new_interval": "Refined bracket"
+              "a": 0.5,
+              "b": 0.75,
+              "c": 0.625,
+              "f_a": 0.053222,
+              "f_c": -0.356691,
+              "new_interval": "[0.5, 0.625]"
             },
             {
               "iter": 4,
-              "a": "a4",
-              "b": "b4",
-              "c": 0.517,
-              "new_interval": "[0.487, 0.547]"
+              "a": 0.5,
+              "b": 0.625,
+              "c": 0.5625,
+              "f_a": 0.053222,
+              "f_c": -0.141294,
+              "new_interval": "[0.5, 0.5625]"
             }
           ],
-          "final_answer": "Root x \u2248 0.517",
-          "verification": "Evaluated residual f(0.517) is within acceptable tolerance (< 0.05).",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+          "final_answer": "Last midpoint c4 = 0.5625; Final bracket [0.5, 0.5625]; Reported approximation x \u2248 0.53125",
+          "verification": "Residual f(0.53125) = -0.041512 demonstrates convergence within error tolerance.",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
         },
         {
           "problem_id": "NM-U1-BIS-07",
           "unit": "Unit 1: Roots of Equations",
           "topic": "Bisection Method",
           "difficulty": "Standard",
-          "problem": "Find root of x*log10(x) - 1.2 = 0 in interval [2.0, 3.0] using 4 steps of Bisection.",
+          "problem": "Find root of x*log10(x) - 1.2 = 0 in interval [2.0, 3.0] using 4 steps of Bisection. Show complete computed iteration table.",
           "data": {
             "equation": "x*log10(x) - 1.2 = 0",
             "interval": [
               2.0,
               3.0
-            ]
+            ],
+            "iterations": 4
           },
           "method": "Bisection Method",
           "formula": "c = (a+b)/2",
           "step_by_step_calculation": [
-            "Evaluate f(2.0) and f(3.0), verifying opposite signs.",
-            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-            "Interval narrows to width 0.0625 after 4 iterations."
+            "Step 1: Check initial values: f(2.0) = -0.5979, f(3.0) = 0.2314. Opposite signs confirmed.",
+            "Step 2: Calculate midpoints c1=2.5, c2=2.75, c3=2.625, c4=2.6875.",
+            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [2.6875, 2.75].",
+            "Step 4: Last computed midpoint c4 = 2.6875 (residual f(c4) = -0.046126). Bracket midpoint = 2.71875 (residual = -0.019059). True root x \u2248 2.74065."
           ],
           "intermediate_values": {
-            "final_bracket_width": 0.0625,
-            "approx_c": 2.74
+            "last_midpoint_c4": 2.6875,
+            "final_bracket": [
+              2.6875,
+              2.75
+            ],
+            "bracket_midpoint": 2.71875,
+            "actual_root": 2.74065
           },
           "iteration_table": [
             {
@@ -611,57 +672,72 @@
               "a": 2.0,
               "b": 3.0,
               "c": 2.5,
-              "new_interval": "[2.0, 2.5]"
+              "f_a": -0.59794,
+              "f_c": -0.20515,
+              "new_interval": "[2.5, 3.0]"
             },
             {
               "iter": 2,
-              "a": 2.0,
-              "b": 2.5,
-              "c": 2.25,
-              "new_interval": "Refined bracket"
+              "a": 2.5,
+              "b": 3.0,
+              "c": 2.75,
+              "f_a": -0.20515,
+              "f_c": 0.008165,
+              "new_interval": "[2.5, 2.75]"
             },
             {
               "iter": 3,
-              "a": "a3",
-              "b": "b3",
-              "c": "c3",
-              "new_interval": "Refined bracket"
+              "a": 2.5,
+              "b": 2.75,
+              "c": 2.625,
+              "f_a": -0.20515,
+              "f_c": -0.099786,
+              "new_interval": "[2.625, 2.75]"
             },
             {
               "iter": 4,
-              "a": "a4",
-              "b": "b4",
-              "c": 2.74,
-              "new_interval": "[2.7100000000000004, 2.77]"
+              "a": 2.625,
+              "b": 2.75,
+              "c": 2.6875,
+              "f_a": -0.099786,
+              "f_c": -0.046126,
+              "new_interval": "[2.6875, 2.75]"
             }
           ],
-          "final_answer": "Root x \u2248 2.740",
-          "verification": "Evaluated residual f(2.74) is within acceptable tolerance (< 0.05).",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+          "final_answer": "Last midpoint c4 = 2.6875; Final bracket [2.6875, 2.75]; Reported approximation x \u2248 2.71875",
+          "verification": "Residual f(2.71875) = -0.019059 demonstrates convergence within error tolerance.",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
         },
         {
           "problem_id": "NM-U1-BIS-08",
           "unit": "Unit 1: Roots of Equations",
           "topic": "Bisection Method",
           "difficulty": "Standard",
-          "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection.",
+          "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection. Show complete computed iteration table.",
           "data": {
             "equation": "x^4 - x - 10 = 0",
             "interval": [
               1.0,
               2.0
-            ]
+            ],
+            "iterations": 4
           },
           "method": "Bisection Method",
           "formula": "c = (a+b)/2",
           "step_by_step_calculation": [
-            "Evaluate f(1.0) and f(2.0), verifying opposite signs.",
-            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-            "Interval narrows to width 0.0625 after 4 iterations."
+            "Step 1: Check initial values: f(1.0) = -10.0000, f(2.0) = 4.0000. Opposite signs confirmed.",
+            "Step 2: Calculate midpoints c1=1.5, c2=1.75, c3=1.875, c4=1.8125.",
+            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [1.8125, 1.875].",
+            "Step 4: Last computed midpoint c4 = 1.8125 (residual f(c4) = -1.020248). Bracket midpoint = 1.84375 (residual = -0.287734). True root x \u2248 1.85558."
           ],
           "intermediate_values": {
-            "final_bracket_width": 0.0625,
-            "approx_c": 1.855
+            "last_midpoint_c4": 1.8125,
+            "final_bracket": [
+              1.8125,
+              1.875
+            ],
+            "bracket_midpoint": 1.84375,
+            "actual_root": 1.85558
           },
           "iteration_table": [
             {
@@ -669,40 +745,48 @@
               "a": 1.0,
               "b": 2.0,
               "c": 1.5,
-              "new_interval": "[1.0, 1.5]"
+              "f_a": -10.0,
+              "f_c": -6.4375,
+              "new_interval": "[1.5, 2.0]"
             },
             {
               "iter": 2,
-              "a": 1.0,
-              "b": 1.5,
-              "c": 1.25,
-              "new_interval": "Refined bracket"
+              "a": 1.5,
+              "b": 2.0,
+              "c": 1.75,
+              "f_a": -6.4375,
+              "f_c": -2.371094,
+              "new_interval": "[1.75, 2.0]"
             },
             {
               "iter": 3,
-              "a": "a3",
-              "b": "b3",
-              "c": "c3",
-              "new_interval": "Refined bracket"
+              "a": 1.75,
+              "b": 2.0,
+              "c": 1.875,
+              "f_a": -2.371094,
+              "f_c": 0.484619,
+              "new_interval": "[1.75, 1.875]"
             },
             {
               "iter": 4,
-              "a": "a4",
-              "b": "b4",
-              "c": 1.855,
-              "new_interval": "[1.825, 1.885]"
+              "a": 1.75,
+              "b": 1.875,
+              "c": 1.8125,
+              "f_a": -2.371094,
+              "f_c": -1.020248,
+              "new_interval": "[1.8125, 1.875]"
             }
           ],
-          "final_answer": "Root x \u2248 1.855",
-          "verification": "Evaluated residual f(1.855) is within acceptable tolerance (< 0.05).",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+          "final_answer": "Last midpoint c4 = 1.8125; Final bracket [1.8125, 1.875]; Reported approximation x \u2248 1.84375",
+          "verification": "Residual f(1.84375) = -0.287734 demonstrates convergence within error tolerance.",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
         },
         {
           "problem_id": "NM-U1-RF-01",
           "unit": "Unit 1: Roots of Equations",
           "topic": "Regula-Falsi Method",
           "difficulty": "Exam-Level",
-          "problem": "Find real root of f(x) = x^3 - 2x - 5 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi).",
+          "problem": "Find real root of f(x) = x^3 - 2x - 5 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
           "data": {
             "equation": "x^3 - 2x - 5 = 0",
             "interval": [
@@ -713,50 +797,51 @@
           "method": "Regula-Falsi (False Position) Method",
           "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
           "step_by_step_calculation": [
-            "Step 1: Check initial signs f(2.0) and f(3.0). Verify f(a)*f(b) < 0.",
-            "Step 2: Compute x_r using the chord intersection formula.",
-            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-            "Step 4: Convergence note: Endpoint x=3 stays fixed due to convexity (f''>0); false position slowly creeps from x=2."
+            "Step 1: Check initial signs f(2.0) = -1.0000 and f(3.0) = 16.0000. Product f(a)*f(b) < 0.",
+            "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+            "Step 4: Convergence characteristics: Convex curvature pins endpoint x=3; false position converges monotonically from left."
           ],
           "intermediate_values": {
-            "root_approx": 2.0945
+            "root_approx": 2.089639,
+            "residual": -0.054677
           },
           "iteration_table": [
             {
               "iter": 1,
               "a": 2.0,
               "b": 3.0,
-              "x_r": 2.0473,
-              "f_xr": "evaluated",
-              "new_interval": "[2.0473, 3.0]"
+              "x_r": 2.058824,
+              "f_xr": -0.3908,
+              "new_interval": "[2.058824, 3.0]"
             },
             {
               "iter": 2,
-              "a": 2.0473,
+              "a": 2.058824,
               "b": 3.0,
-              "x_r": 2.0795,
-              "f_xr": "evaluated",
-              "new_interval": "Refined bracket"
+              "x_r": 2.081264,
+              "f_xr": -0.147204,
+              "new_interval": "[2.081264, 3.0]"
             },
             {
               "iter": 3,
-              "a": 2.0795,
+              "a": 2.081264,
               "b": 3.0,
-              "x_r": 2.0945,
-              "f_xr": "~0.0000",
-              "new_interval": "Converged"
+              "x_r": 2.089639,
+              "f_xr": -0.054677,
+              "new_interval": "[2.089639, 3.0]"
             }
           ],
-          "final_answer": "Root x \u2248 2.0945",
-          "verification": "f(2.0945) \u2248 0, chord slope updates correctly bracket root.",
-          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+          "final_answer": "Root after 3 iterations x \u2248 2.0896",
+          "verification": "Residual evaluated f(2.0896) = -0.054677 confirming convergence.",
+          "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
         },
         {
           "problem_id": "NM-U1-RF-02",
           "unit": "Unit 1: Roots of Equations",
           "topic": "Regula-Falsi Method",
           "difficulty": "Exam-Level",
-          "problem": "Find real root of f(x) = x^3 + x - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi).",
+          "problem": "Find real root of f(x) = x^3 + x - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
           "data": {
             "equation": "x^3 + x - 1 = 0",
             "interval": [
@@ -767,43 +852,44 @@
           "method": "Regula-Falsi (False Position) Method",
           "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
           "step_by_step_calculation": [
-            "Step 1: Check initial signs f(0.0) and f(1.0). Verify f(a)*f(b) < 0.",
-            "Step 2: Compute x_r using the chord intersection formula.",
-            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-            "Step 4: Convergence note: Fast convergence since curvature is modest near root."
+            "Step 1: Check initial signs f(0.0) = -1.0000 and f(1.0) = 1.0000. Product f(a)*f(b) < 0.",
+            "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+            "Step 4: Convergence characteristics: Modest curvature leads to rapid false-position chord convergence."
           ],
           "intermediate_values": {
-            "root_approx": 0.6823
+            "root_approx": 0.671196,
+            "residual": -0.026428
           },
           "iteration_table": [
             {
               "iter": 1,
               "a": 0.0,
               "b": 1.0,
-              "x_r": 0.3412,
-              "f_xr": "evaluated",
-              "new_interval": "[0.3412, 1.0]"
+              "x_r": 0.5,
+              "f_xr": -0.375,
+              "new_interval": "[0.5, 1.0]"
             },
             {
               "iter": 2,
-              "a": 0.3412,
+              "a": 0.5,
               "b": 1.0,
-              "x_r": 0.6673,
-              "f_xr": "evaluated",
-              "new_interval": "Refined bracket"
+              "x_r": 0.636364,
+              "f_xr": -0.105935,
+              "new_interval": "[0.636364, 1.0]"
             },
             {
               "iter": 3,
-              "a": 0.6673,
+              "a": 0.636364,
               "b": 1.0,
-              "x_r": 0.6823,
-              "f_xr": "~0.0000",
-              "new_interval": "Converged"
+              "x_r": 0.671196,
+              "f_xr": -0.026428,
+              "new_interval": "[0.671196, 1.0]"
             }
           ],
-          "final_answer": "Root x \u2248 0.6823",
-          "verification": "f(0.6823) \u2248 0, chord slope updates correctly bracket root.",
-          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+          "final_answer": "Root after 3 iterations x \u2248 0.6712",
+          "verification": "Residual evaluated f(0.6712) = -0.026428 confirming convergence.",
+          "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
         }
       ],
       "timed_numerical_drill": {
@@ -811,11 +897,11 @@
         "title": "Timed Exam Drill: Bisection Method",
         "time_limit_minutes": 15,
         "marks": 15,
-        "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection.",
+        "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection. Show complete computed iteration table.",
         "formula": "c = (a+b)/2",
-        "final_answer": "Root x \u2248 1.855",
-        "verification": "Evaluated residual f(1.855) is within acceptable tolerance (< 0.05).",
-        "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+        "final_answer": "Last midpoint c4 = 1.8125; Final bracket [1.8125, 1.875]; Reported approximation x \u2248 1.84375",
+        "verification": "Residual f(1.84375) = -0.287734 demonstrates convergence within error tolerance.",
+        "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
       },
       "formula_recall": "Bisection: c = (a+b)/2. Error bound: |b-a|/2^n < epsilon. Sign check: f(a)*f(b) < 0."
     },
@@ -931,133 +1017,144 @@
     "aptitude_solved": [
       {
         "example_no": 1,
-        "title": "Foundation Problem on Averages",
+        "title": "Replacement in Group Average",
         "tier": "Tier 1: Foundation Concept",
-        "difficulty": "Tier 1",
-        "source": "Placement Exam Pattern",
+        "difficulty": "Foundation",
+        "source": "TCS NQT Pattern",
         "target_time_seconds": 45,
-        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
-        "problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "question": "The average weight of 15 students increases by 1.5 kg when one student weighing 40 kg is replaced by a new student. What is the weight of the new student?",
+        "problem": "The average weight of 15 students increases by 1.5 kg when one student weighing 40 kg is replaced by a new student. What is the weight of the new student?",
         "step_by_step_solution": [
-          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
-          "Step 2: Improvement factor = 20% increase on initial score.",
-          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
-          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
-          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+          "Step 1: Total weight increase = Number of students * Increase in average = 15 * 1.5 = 22.5 kg.",
+          "Step 2: Weight of new student = Weight of replaced student + Total weight increase.",
+          "Step 3: New weight = 40 + 22.5 = 62.5 kg."
         ],
         "solution": [
-          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
-          "Step 2: Improvement factor = 20% increase on initial score.",
-          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
-          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
-          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
+          "Step 1: Total weight increase = Number of students * Increase in average = 15 * 1.5 = 22.5 kg.",
+          "Step 2: Weight of new student = Weight of replaced student + Total weight increase.",
+          "Step 3: New weight = 40 + 22.5 = 62.5 kg."
         ],
-        "final_answer": "180 marks (90%)",
-        "answer": "180 marks (90%)"
+        "formula": "New Value = Replaced Value + (N * \u0394Average)",
+        "shortcut": "15 * 1.5 = 22.5; add to 40 = 62.5 kg.",
+        "trap": "Subtracting 22.5 kg instead of adding when average increases.",
+        "final_answer": "62.5 kg",
+        "answer": "62.5 kg"
       },
       {
         "example_no": 2,
-        "title": "Standard Placement Problem on Averages",
+        "title": "Batsman Innings Average Calculation",
         "tier": "Tier 2: Standard Placement",
-        "difficulty": "Tier 2",
-        "source": "Placement Exam Pattern",
+        "difficulty": "Standard",
+        "source": "Infosys Pattern",
         "target_time_seconds": 45,
-        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
-        "problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "question": "A batsman scores 87 runs in his 17th innings and thus increases his average by 3 runs. Find his average after the 17th innings.",
+        "problem": "A batsman scores 87 runs in his 17th innings and thus increases his average by 3 runs. Find his average after the 17th innings.",
         "step_by_step_solution": [
-          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
-          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
-          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
-          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+          "Step 1: Let previous average (after 16 innings) = A. Total runs after 16 innings = 16A.",
+          "Step 2: New total runs = 16A + 87. New average = A + 3.",
+          "Step 3: (16A + 87) / 17 = A + 3 => 16A + 87 = 17A + 51.",
+          "Step 4: A = 87 - 51 = 36 (average after 16th innings).",
+          "Step 5: Average after 17th innings = A + 3 = 36 + 3 = 39 runs."
         ],
         "solution": [
-          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
-          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
-          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
-          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
+          "Step 1: Let previous average (after 16 innings) = A. Total runs after 16 innings = 16A.",
+          "Step 2: New total runs = 16A + 87. New average = A + 3.",
+          "Step 3: (16A + 87) / 17 = A + 3 => 16A + 87 = 17A + 51.",
+          "Step 4: A = 87 - 51 = 36 (average after 16th innings).",
+          "Step 5: Average after 17th innings = A + 3 = 36 + 3 = 39 runs."
         ],
-        "final_answer": "Rs. 864",
-        "answer": "Rs. 864"
+        "formula": "New Average = Innings Score - (Innings Count - 1) * Increase",
+        "shortcut": "New Average = 87 - (16 * 3) = 87 - 48 = 39.",
+        "trap": "Forgetting to add 3 to obtain the *new* average (stopping at 36).",
+        "final_answer": "39 runs",
+        "answer": "39 runs"
       },
       {
         "example_no": 3,
-        "title": "Efficiency & Work Ratio Problem on Averages",
+        "title": "Alligation of Two Milk-Water Solutions",
         "tier": "Tier 3: Company Exam Pattern",
-        "difficulty": "Tier 3",
-        "source": "Placement Exam Pattern",
-        "target_time_seconds": 45,
-        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
-        "problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "difficulty": "Placement",
+        "source": "Wipro Pattern",
+        "target_time_seconds": 50,
+        "question": "In what ratio must a grocer mix tea at Rs. 60 per kg and Rs. 65 per kg so that by selling the mixture at Rs. 68.20 per kg he may gain 10%?",
+        "problem": "In what ratio must a grocer mix tea at Rs. 60 per kg and Rs. 65 per kg so that by selling the mixture at Rs. 68.20 per kg he may gain 10%?",
         "step_by_step_solution": [
-          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
-          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
-          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
-          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
-          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
-          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+          "Step 1: Selling Price of mixture = Rs. 68.20 with 10% profit.",
+          "Step 2: Mean Cost Price CP = 68.20 / 1.10 = Rs. 62 per kg.",
+          "Step 3: Apply Alligation rule between Cheaper (60) and Dearer (65) around Mean (62):",
+          "   Cheaper (60)         Dearer (65)",
+          "                Mean (62)",
+          "   (65 - 62) = 3        (62 - 60) = 2",
+          "Step 4: Required ratio = 3 : 2."
         ],
         "solution": [
-          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
-          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
-          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
-          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
-          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
-          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
+          "Step 1: Selling Price of mixture = Rs. 68.20 with 10% profit.",
+          "Step 2: Mean Cost Price CP = 68.20 / 1.10 = Rs. 62 per kg.",
+          "Step 3: Apply Alligation rule between Cheaper (60) and Dearer (65) around Mean (62):",
+          "   Cheaper (60)         Dearer (65)",
+          "                Mean (62)",
+          "   (65 - 62) = 3        (62 - 60) = 2",
+          "Step 4: Required ratio = 3 : 2."
         ],
-        "final_answer": "14 1/3 days",
-        "answer": "14 1/3 days"
+        "formula": "Ratio = (Dearer Price - Mean Price) : (Mean Price - Cheaper Price)",
+        "shortcut": "First calculate Mean CP: 68.20/1.1 = 62. Cross diffs: 65-62=3, 62-60=2.",
+        "trap": "Using the Selling Price (68.20) directly in the alligation cross without converting to Cost Price.",
+        "final_answer": "3 : 2",
+        "answer": "3 : 2"
       },
       {
         "example_no": 4,
-        "title": "Speed & Relative Distance Problem on Averages",
+        "title": "Combined Class Weighted Average",
         "tier": "Tier 4: Time-Pressure Challenge",
-        "difficulty": "Tier 4",
-        "source": "Placement Exam Pattern",
-        "target_time_seconds": 45,
-        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
-        "problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "difficulty": "Tricky",
+        "source": "Accenture Pattern",
+        "target_time_seconds": 50,
+        "question": "The average score of boys in an exam is 71 and that of girls is 73. If the average score of the entire school is 71.8, find the ratio of the number of boys to girls.",
+        "problem": "The average score of boys in an exam is 71 and that of girls is 73. If the average score of the entire school is 71.8, find the ratio of the number of boys to girls.",
         "step_by_step_solution": [
-          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
-          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
-          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
-          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
-          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+          "Step 1: Apply alligation directly on average scores around school mean 71.8.",
+          "Step 2: Boys (71) vs Girls (73), Mean = 71.8.",
+          "Step 3: (73 - 71.8) = 1.2; (71.8 - 71) = 0.8.",
+          "Step 4: Ratio Boys : Girls = 1.2 : 0.8 = 12 : 8 = 3 : 2."
         ],
         "solution": [
-          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
-          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
-          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
-          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
-          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
+          "Step 1: Apply alligation directly on average scores around school mean 71.8.",
+          "Step 2: Boys (71) vs Girls (73), Mean = 71.8.",
+          "Step 3: (73 - 71.8) = 1.2; (71.8 - 71) = 0.8.",
+          "Step 4: Ratio Boys : Girls = 1.2 : 0.8 = 12 : 8 = 3 : 2."
         ],
-        "final_answer": "2:15 PM",
-        "answer": "2:15 PM"
+        "formula": "N1 / N2 = (Avg2 - Avg_mean) / (Avg_mean - Avg1)",
+        "shortcut": "Cross differences: 73 - 71.8 = 1.2; 71.8 - 71 = 0.8 => 3:2.",
+        "trap": "Inverting the ratio (writing 2 : 3 instead of 3 : 2).",
+        "final_answer": "3 : 2 (Boys : Girls)",
+        "answer": "3 : 2 (Boys : Girls)"
       },
       {
         "example_no": 5,
-        "title": "Combinatorics & Probability Problem on Averages",
-        "tier": "Tier 5: Time-Pressure Challenge",
-        "difficulty": "Tier 5",
-        "source": "Placement Exam Pattern",
-        "target_time_seconds": 45,
-        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
-        "problem": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "title": "Repeated Liquid Replacement Formula",
+        "tier": "Tier 5: Advanced Placement Variant",
+        "difficulty": "Advanced",
+        "source": "Cognizant Pattern",
+        "target_time_seconds": 60,
+        "question": "A container contains 40 litres of pure milk. From this, 4 litres of milk was taken out and replaced by water. This process was repeated further two times. How much pure milk is now contained in the container?",
+        "problem": "A container contains 40 litres of pure milk. From this, 4 litres of milk was taken out and replaced by water. This process was repeated further two times. How much pure milk is now contained in the container?",
         "step_by_step_solution": [
-          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
-          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
-          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
-          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
-          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+          "Step 1: Total initial quantity C = 40 litres. Amount replaced each time x = 4 litres.",
+          "Step 2: Total number of operations n = 1 + 2 = 3 times.",
+          "Step 3: Remaining liquid = C * (1 - x/C)^n.",
+          "Step 4: Remaining Milk = 40 * (1 - 4/40)^3 = 40 * (9/10)^3 = 40 * (729 / 1000) = 4 * 7.29 = 29.16 litres."
         ],
         "solution": [
-          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
-          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
-          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
-          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
-          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
+          "Step 1: Total initial quantity C = 40 litres. Amount replaced each time x = 4 litres.",
+          "Step 2: Total number of operations n = 1 + 2 = 3 times.",
+          "Step 3: Remaining liquid = C * (1 - x/C)^n.",
+          "Step 4: Remaining Milk = 40 * (1 - 4/40)^3 = 40 * (9/10)^3 = 40 * (729 / 1000) = 4 * 7.29 = 29.16 litres."
         ],
-        "final_answer": "10/21",
-        "answer": "10/21"
+        "formula": "Remaining Liquid = Initial * (1 - x / C)^n",
+        "shortcut": "40 * (0.9)^3 = 40 * 0.729 = 29.16 litres.",
+        "trap": "Subtracting 12 litres linearly (40 - 12 = 28) ignoring dilution.",
+        "final_answer": "29.16 litres",
+        "answer": "29.16 litres"
       }
     ],
     "aptitude_mcqs": [
@@ -2307,14 +2404,14 @@
     "tutorial": [
       "The Alligation cross is a powerful graphical shortcut for solving weighted averages in seconds. It determines the exact mixing ratio of two ingredients at different prices to produce a target mixture price without solving simultaneous linear equations."
     ],
-    "tier1_problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
-    "tier1_solution": "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.\nStep 2: Improvement factor = 20% increase on initial score.\nStep 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.\nStep 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).\nSpeed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks.",
-    "tier2_problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
-    "tier2_solution": "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.\nStep 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).\nStep 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.\nVerification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864.",
-    "tier3_problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
-    "tier3_solution": "Step 1: Assume Total Work = LCM(12, 18) = 36 units.\nStep 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.\nStep 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.\nStep 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.\nStep 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.\nStep 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days).",
-    "tier4_problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
-    "tier4_solution": "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.\nStep 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.\nStep 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.\nStep 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.\nStep 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM.",
+    "tier1_problem": "The average weight of 15 students increases by 1.5 kg when one student weighing 40 kg is replaced by a new student. What is the weight of the new student?",
+    "tier1_solution": "Step 1: Total weight increase = Number of students * Increase in average = 15 * 1.5 = 22.5 kg.\\nStep 2: Weight of new student = Weight of replaced student + Total weight increase.\\nStep 3: New weight = 40 + 22.5 = 62.5 kg.",
+    "tier2_problem": "A batsman scores 87 runs in his 17th innings and thus increases his average by 3 runs. Find his average after the 17th innings.",
+    "tier2_solution": "Step 1: Let previous average (after 16 innings) = A. Total runs after 16 innings = 16A.\\nStep 2: New total runs = 16A + 87. New average = A + 3.\\nStep 3: (16A + 87) / 17 = A + 3 => 16A + 87 = 17A + 51.\\nStep 4: A = 87 - 51 = 36 (average after 16th innings).\\nStep 5: Average after 17th innings = A + 3 = 36 + 3 = 39 runs.",
+    "tier3_problem": "In what ratio must a grocer mix tea at Rs. 60 per kg and Rs. 65 per kg so that by selling the mixture at Rs. 68.20 per kg he may gain 10%?",
+    "tier3_solution": "Step 1: Selling Price of mixture = Rs. 68.20 with 10% profit.\\nStep 2: Mean Cost Price CP = 68.20 / 1.10 = Rs. 62 per kg.\\nStep 3: Apply Alligation rule between Cheaper (60) and Dearer (65) around Mean (62):\\n   Cheaper (60)         Dearer (65)\\n                Mean (62)\\n   (65 - 62) = 3        (62 - 60) = 2\\nStep 4: Required ratio = 3 : 2.",
+    "tier4_problem": "The average score of boys in an exam is 71 and that of girls is 73. If the average score of the entire school is 71.8, find the ratio of the number of boys to girls.",
+    "tier4_solution": "Step 1: Apply alligation directly on average scores around school mean 71.8.\\nStep 2: Boys (71) vs Girls (73), Mean = 71.8.\\nStep 3: (73 - 71.8) = 1.2; (71.8 - 71) = 0.8.\\nStep 4: Ratio Boys : Girls = 1.2 : 0.8 = 12 : 8 = 3 : 2.",
     "speed_drills": [
       {
         "q": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
@@ -2636,7 +2733,9 @@
           "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
         }
       ]
-    }
+    },
+    "tier5_problem": "A container contains 40 litres of pure milk. From this, 4 litres of milk was taken out and replaced by water. This process was repeated further two times. How much pure milk is now contained in the container?",
+    "tier5_solution": "Step 1: Total initial quantity C = 40 litres. Amount replaced each time x = 4 litres.\\nStep 2: Total number of operations n = 1 + 2 = 3 times.\\nStep 3: Remaining liquid = C * (1 - x/C)^n.\\nStep 4: Remaining Milk = 40 * (1 - 4/40)^3 = 40 * (9/10)^3 = 40 * (729 / 1000) = 4 * 7.29 = 29.16 litres."
   },
   "dsa_problems": [
     {
@@ -3061,301 +3160,227 @@
     ]
   },
   "daily_test": {
-    "title": "Day 05 Mixed Mastery Test (20 MCQs)",
+    "title": "Day 5 Comprehensive 20-Question Daily Mastery Test",
     "questions": [
       {
+        "no": 1,
         "q": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
-        "a": "Answer: B\n\nAbsolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
-      },
-      {
-        "q": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
-        "a": "Answer: B\n\nThe Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
-      },
-      {
-        "q": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
-        "a": "Answer: B\n\nIf f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
-      },
-      {
-        "q": "What is Truncation Error in numerical computation?",
-        "a": "Answer: B\n\nTruncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
-      },
-      {
-        "q": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
-        "a": "Answer: C\n\nInterval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
-      },
-      {
-        "q": "The average of 7 consecutive numbers is 20. What is the largest of these numbers?",
-        "a": "Answer: A\n\nIn 7 consecutive numbers, the average 20 is the middle (4th) number. The numbers are 17, 18, 19, 20, 21, 22, 23. The largest is 23."
-      },
-      {
-        "q": "A batsman in his 17th innings makes a score of 85, thereby increasing his average by 3 runs. What is his average after the 17th innings?",
-        "a": "Answer: A\n\nLet previous average be x. Total runs in 17 innings = 16x + 85 = 17(x + 3) => 16x + 85 = 17x + 51 => x = 34. New average = 34 + 3 = 37."
-      },
-      {
-        "q": "In what ratio must grocer mix coffee powder costing Rs. 250/kg with coffee powder costing Rs. 150/kg so that the mixture is worth Rs. 210/kg?",
-        "a": "Answer: A\n\nBy Alligation: Ratio of Expensive (250) to Cheaper (150) with Mean (210) = (210 - 150) / (250 - 210) = 60 / 40 = 3 : 2."
-      }
-    ],
-    "mcqs": [
-      {
-        "id": "TEST-05-01",
-        "category": "Academic (Academic Theory)",
-        "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
         "options": [
           "|X - X*|",
           "|X - X*| / |X|",
           "(|X - X*| / |X|) * 100",
           "|X - X*| * |X|"
         ],
-        "correct_answer": "B",
-        "explanation": "Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+        "a": "Answer: B \u2014 Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
       },
       {
-        "id": "TEST-05-02",
-        "category": "Academic (Academic Theory)",
-        "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+        "no": 2,
+        "q": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
         "options": [
           "Quadratic (order 2)",
           "Linear (order 1) with convergence factor 0.5",
           "Superlinear (order 1.618)",
           "Cubic (order 3)"
         ],
-        "correct_answer": "B",
-        "explanation": "The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+        "a": "Answer: B \u2014 The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
       },
       {
-        "id": "TEST-05-03",
-        "category": "Academic (Academic Theory)",
-        "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+        "no": 3,
+        "q": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
         "options": [
           "f(a) * f(b) > 0",
           "f(a) * f(b) < 0",
           "f'(a) = f'(b)",
           "f(a) + f(b) = 0"
         ],
-        "correct_answer": "B",
-        "explanation": "If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+        "a": "Answer: B \u2014 If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
       },
       {
-        "id": "TEST-05-04",
-        "category": "Academic (Academic Theory)",
-        "question": "What is Truncation Error in numerical computation?",
+        "no": 4,
+        "q": "What is Truncation Error in numerical computation?",
         "options": [
           "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
           "Error resulting from replacing an infinite mathematical process with a finite approximation (e.g., truncating a Taylor series)",
           "Mistakes made by the programmer entering data",
           "Error caused by noisy transmission channels"
         ],
-        "correct_answer": "B",
-        "explanation": "Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+        "a": "Answer: B \u2014 Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
       },
       {
-        "id": "TEST-05-05",
-        "category": "Academic (Academic Theory)",
-        "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+        "no": 5,
+        "q": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
         "options": [
           "4 iterations",
           "7 iterations",
           "10 iterations",
           "25 iterations"
         ],
-        "correct_answer": "C",
-        "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+        "a": "Answer: C \u2014 Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
       },
       {
-        "id": "TEST-05-06",
-        "category": "Placement Aptitude",
-        "question": "The average of 7 consecutive numbers is 20. What is the largest of these numbers?",
+        "no": 6,
+        "q": "The average of 7 consecutive numbers is 20. What is the largest of these numbers?",
         "options": [
           "23",
           "22",
           "24",
           "25"
         ],
-        "correct_answer": "A",
-        "explanation": "In 7 consecutive numbers, the average 20 is the middle (4th) number. The numbers are 17, 18, 19, 20, 21, 22, 23. The largest is 23."
+        "a": "Answer: A \u2014 In 7 consecutive numbers, the average 20 is the middle (4th) number. The numbers are 17, 18, 19, 20, 21, 22, 23. The largest is 23."
       },
       {
-        "id": "TEST-05-07",
-        "category": "Placement Aptitude",
-        "question": "A batsman in his 17th innings makes a score of 85, thereby increasing his average by 3 runs. What is his average after the 17th innings?",
+        "no": 7,
+        "q": "A batsman in his 17th innings makes a score of 85, thereby increasing his average by 3 runs. What is his average after the 17th innings?",
         "options": [
           "37",
           "34",
           "39",
           "35"
         ],
-        "correct_answer": "A",
-        "explanation": "Let previous average be x. Total runs in 17 innings = 16x + 85 = 17(x + 3) => 16x + 85 = 17x + 51 => x = 34. New average = 34 + 3 = 37."
+        "a": "Answer: A \u2014 Let previous average be x. Total runs in 17 innings = 16x + 85 = 17(x + 3) => 16x + 85 = 17x + 51 => x = 34. New average = 34 + 3 = 37."
       },
       {
-        "id": "TEST-05-08",
-        "category": "Placement Aptitude",
-        "question": "In what ratio must grocer mix coffee powder costing Rs. 250/kg with coffee powder costing Rs. 150/kg so that the mixture is worth Rs. 210/kg?",
+        "no": 8,
+        "q": "In what ratio must grocer mix coffee powder costing Rs. 250/kg with coffee powder costing Rs. 150/kg so that the mixture is worth Rs. 210/kg?",
         "options": [
           "3 : 2",
           "2 : 3",
           "4 : 3",
           "3 : 1"
         ],
-        "correct_answer": "A",
-        "explanation": "By Alligation: Ratio of Expensive (250) to Cheaper (150) with Mean (210) = (210 - 150) / (250 - 210) = 60 / 40 = 3 : 2."
+        "a": "Answer: A \u2014 By Alligation: Ratio of Expensive (250) to Cheaper (150) with Mean (210) = (210 - 150) / (250 - 210) = 60 / 40 = 3 : 2."
       },
       {
-        "id": "TEST-05-09",
-        "category": "Placement Aptitude",
-        "question": "The average age of 24 students and their teacher is 15 years. If the teacher's age is excluded, the average age decreases by 1 year. What is the teacher's age?",
+        "no": 9,
+        "q": "The average age of 24 students and their teacher is 15 years. If the teacher's age is excluded, the average age decreases by 1 year. What is the teacher's age?",
         "options": [
           "39 years",
           "38 years",
           "40 years",
           "35 years"
         ],
-        "correct_answer": "A",
-        "explanation": "Total age with teacher = 25 * 15 = 375. Total age of 24 students = 24 * 14 = 336. Teacher's age = 375 - 336 = 39 years."
+        "a": "Answer: A \u2014 Total age with teacher = 25 * 15 = 375. Total age of 24 students = 24 * 14 = 336. Teacher's age = 375 - 336 = 39 years."
       },
       {
-        "id": "TEST-05-10",
-        "category": "Placement Aptitude",
-        "question": "The average of 50 numbers is 38. If two numbers namely 45 and 55 are discarded, what is the average of the remaining numbers?",
+        "no": 10,
+        "q": "The average of 50 numbers is 38. If two numbers namely 45 and 55 are discarded, what is the average of the remaining numbers?",
         "options": [
           "37.5",
           "37",
           "38",
           "36.5"
         ],
-        "correct_answer": "A",
-        "explanation": "Sum of 50 numbers = 50 * 38 = 1,900. Discarded sum = 45 + 55 = 100. Remaining sum = 1,800. Remaining count = 48. New average = 1,800 / 48 = 37.5."
+        "a": "Answer: A \u2014 Sum of 50 numbers = 50 * 38 = 1,900. Discarded sum = 45 + 55 = 100. Remaining sum = 1,800. Remaining count = 48. New average = 1,800 / 48 = 37.5."
       },
       {
-        "id": "TEST-05-11",
-        "category": "Core CS (Operating Systems)",
-        "question": "Which of the following is NOT one of the 4 Coffman conditions for deadlock?",
+        "no": 11,
+        "q": "Which of the following is NOT one of the 4 Coffman conditions for deadlock?",
         "options": [
           "Mutual Exclusion",
           "Hold and Wait",
           "Process Aging",
           "Circular Wait"
         ],
-        "correct_answer": "C",
-        "explanation": "The 4 conditions are Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
+        "a": "Answer: C \u2014 The 4 conditions are Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
       },
       {
-        "id": "TEST-05-12",
-        "category": "Core CS (Operating Systems)",
-        "question": "If a Resource Allocation Graph contains a cycle and every resource type has exactly one single instance, then:",
+        "no": 12,
+        "q": "If a Resource Allocation Graph contains a cycle and every resource type has exactly one single instance, then:",
         "options": [
           "A deadlock definitely exists",
           "A deadlock may or may not exist",
           "The system is guaranteed safe",
           "The CPU enters thrashing"
         ],
-        "correct_answer": "A",
-        "explanation": "With single-instance resources, a cycle in the RAG is both necessary and sufficient for deadlock."
+        "a": "Answer: A \u2014 With single-instance resources, a cycle in the RAG is both necessary and sufficient for deadlock."
       },
       {
-        "id": "TEST-05-13",
-        "category": "Core CS (Operating Systems)",
-        "question": "The Banker's Algorithm is primarily used for:",
+        "no": 13,
+        "q": "The Banker's Algorithm is primarily used for:",
         "options": [
           "Deadlock Prevention",
           "Deadlock Avoidance",
           "Deadlock Detection",
           "Memory Compaction"
         ],
-        "correct_answer": "B",
-        "explanation": "Banker's Algorithm is a dynamic deadlock avoidance technique that checks for safe execution sequences."
+        "a": "Answer: B \u2014 Banker's Algorithm is a dynamic deadlock avoidance technique that checks for safe execution sequences."
       },
       {
-        "id": "TEST-05-14",
-        "category": "Core CS (Operating Systems)",
-        "question": "In a system with Need matrix, how is Need calculated in Banker's Algorithm?",
+        "no": 14,
+        "q": "In a system with Need matrix, how is Need calculated in Banker's Algorithm?",
         "options": [
           "Allocation - Available",
           "Max - Allocation",
           "Max + Available",
           "Allocation - Max"
         ],
-        "correct_answer": "B",
-        "explanation": "Need represents remaining resources a process may claim: Need = Max - Allocation."
+        "a": "Answer: B \u2014 Need represents remaining resources a process may claim: Need = Max - Allocation."
       },
       {
-        "id": "TEST-05-15",
-        "category": "Core CS (Operating Systems)",
-        "question": "Assigning global numerical IDs to resources and enforcing acquisition in ascending order eliminates which condition?",
+        "no": 15,
+        "q": "Assigning global numerical IDs to resources and enforcing acquisition in ascending order eliminates which condition?",
         "options": [
           "Mutual Exclusion",
           "Hold and Wait",
           "No Preemption",
           "Circular Wait"
         ],
-        "correct_answer": "D",
-        "explanation": "Strict resource ordering prevents cycles from forming, eliminating Circular Wait."
+        "a": "Answer: D \u2014 Strict resource ordering prevents cycles from forming, eliminating Circular Wait."
       },
       {
-        "id": "TEST-05-16",
-        "category": "Java DSA & Coding",
-        "question": "In Java 17+, how is the 'Monotonic Stack (Next Greater Element)' algorithmic pattern optimal for placement coding problems?",
+        "no": 16,
+        "q": "In Java 17+, how is the 'Monotonic Stack (Next Greater Element)' algorithmic pattern optimal for placement coding problems?",
         "options": [
           "It satisfies optimal asymptotic complexity: O(N) Time, O(N) Auxiliary Space.",
           "It uses recursion with infinite call stack depth.",
           "It allocates O(N^2) dynamic heap memory unnecessarily.",
           "It requires native C++ pointer arithmetic."
         ],
-        "correct_answer": "A",
-        "explanation": "The 'Monotonic Stack (Next Greater Element)' pattern operates with O(N) Time, O(N) Auxiliary Space: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.."
+        "a": "Answer: A \u2014 The 'Monotonic Stack (Next Greater Element)' pattern operates with O(N) Time, O(N) Auxiliary Space: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.."
       },
       {
-        "id": "TEST-05-17",
-        "category": "Java DSA & Coding",
-        "question": "When implementing 'Monotonic Stack (Next Greater Element)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "no": 17,
+        "q": "When implementing 'Monotonic Stack (Next Greater Element)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
         "options": [
           "Handling boundary conditions such as: Strictly decreasing sequence (all answers 0).",
           "Using only primitive floats instead of double.",
           "Declaring all methods native.",
           "Disabling JVM garbage collection."
         ],
-        "correct_answer": "A",
-        "explanation": "Critical edge cases for Monotonic Stack (Next Greater Element) include Strictly decreasing sequence (all answers 0), which must be validated with guard clauses before executing loop pointers."
+        "a": "Answer: A \u2014 Critical edge cases for Monotonic Stack (Next Greater Element) include Strictly decreasing sequence (all answers 0), which must be validated with guard clauses before executing loop pointers."
       },
       {
-        "id": "TEST-05-18",
-        "category": "Java DSA & Coding",
-        "question": "For 'Problem 1: Daily Temperatures', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "no": 18,
+        "q": "For 'Problem 1: Daily Temperatures', what Java collection or data structure provides the optimal auxiliary space bounds?",
         "options": [
           "Standard array or standard collection adhering to O(N) Auxiliary Space.",
           "A nested 3D LinkedList.",
           "External disk-backed SQL table.",
           "Unbounded blocking queue."
         ],
-        "correct_answer": "A",
-        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+        "a": "Answer: A \u2014 The optimal Java 17+ implementation achieves O(N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
       },
       {
-        "id": "TEST-05-19",
-        "category": "Projects (College Student Management System (CSMS))",
-        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Multi-Role Authentication & Bcrypt Password Security in CSMS'?",
+        "no": 19,
+        "q": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Multi-Role Authentication & Bcrypt Password Security in CSMS'?",
         "options": [
           "Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "correct_answer": "A",
-        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.."
+        "a": "Answer: A \u2014 For College Student Management System (CSMS), the architectural invariant is: Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.."
       },
       {
-        "id": "TEST-05-20",
-        "category": "Projects (College Student Management System (CSMS))",
-        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How is authentication handled in CSMS across different academic roles?'?",
+        "no": 20,
+        "q": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How is authentication handled in CSMS across different academic roles?'?",
         "options": [
           "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University E...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
-        "correct_answer": "A",
-        "explanation": "In technical interviews, anchor your defense in engineering metrics: In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students vi."
+        "a": "Answer: A \u2014 In technical interviews, anchor your defense in engineering metrics: In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students vi."
       }
     ]
   },

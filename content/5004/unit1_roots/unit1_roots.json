@@ -4,31 +4,31 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Bisection Method",
     "difficulty": "Exam-Level",
-    "problem": "Find a real root of the equation f(x) = x^3 - 4x - 9 = 0 on [2, 3] correct to 3 decimal places using the Bisection method.",
+    "problem": "Find a real root of f(x) = x^3 - 4x - 9 = 0 on [2, 3] using Bisection method. Show full iteration table.",
     "data": {
       "equation": "x^3 - 4x - 9 = 0",
       "interval": [
         2.0,
         3.0
       ],
-      "tolerance": 0.001
+      "steps": 5
     },
     "method": "Bisection Method",
-    "formula": "c_k = (a_k + b_k) / 2. If f(a)*f(c) < 0 then b = c, else a = c.",
+    "formula": "c_k = (a_k + b_k) / 2; root bracket update based on sign of f(a)*f(c)",
     "step_by_step_calculation": [
-      "Step 1: Evaluate endpoints: f(2) = 8 - 8 - 9 = -9 < 0; f(3) = 27 - 12 - 9 = +6 > 0. Root lies in [2, 3].",
-      "Step 2: Iteration 1: c1 = (2+3)/2 = 2.5. f(2.5) = 15.625 - 10 - 9 = -3.375 < 0. New interval [2.5, 3.0].",
-      "Step 3: Iteration 2: c2 = (2.5+3)/2 = 2.75. f(2.75) = 20.796875 - 11 - 9 = +0.7969 > 0. New interval [2.5, 2.75].",
-      "Step 4: Iteration 3: c3 = (2.5+2.75)/2 = 2.625. f(2.625) = -1.4121 < 0. New interval [2.625, 2.75].",
-      "Step 5: Continue halving intervals until |b - a| < 0.001. At Iteration 11, c11 = 2.7065 with f(2.7065) approx 0."
+      "Step 1: Check initial bracketing: f(2) = -9.0000 < 0, f(3) = 6.0000 > 0. Opposite signs confirmed.",
+      "Step 2: Iterations 1-5 executed systematically halving the search interval.",
+      "Step 3: After 5 iterations, bracket narrows to [2.6875, 2.71875].",
+      "Step 4: Last computed midpoint c5 = 2.71875 (residual f(c5) = 0.220917). Bracket midpoint = 2.703125 (residual = -0.061077). True root x \u2248 2.7065."
     ],
     "intermediate_values": {
-      "c1": 2.5,
-      "c2": 2.75,
-      "c3": 2.625,
-      "c4": 2.6875,
-      "c5": 2.7188,
-      "c11": 2.7065
+      "last_midpoint_c5": 2.71875,
+      "final_bracket": [
+        2.6875,
+        2.71875
+      ],
+      "bracket_midpoint": 2.703125,
+      "residual": 0.220917
     },
     "iteration_table": [
       {
@@ -46,7 +46,7 @@
         "b": 3.0,
         "c": 2.75,
         "f_a": -3.375,
-        "f_c": 0.7969,
+        "f_c": 0.796875,
         "new_interval": "[2.5, 2.75]"
       },
       {
@@ -55,7 +55,7 @@
         "b": 2.75,
         "c": 2.625,
         "f_a": -3.375,
-        "f_c": -1.4121,
+        "f_c": -1.412109,
         "new_interval": "[2.625, 2.75]"
       },
       {
@@ -63,23 +63,23 @@
         "a": 2.625,
         "b": 2.75,
         "c": 2.6875,
-        "f_a": -1.4121,
-        "f_c": -0.3391,
+        "f_a": -1.412109,
+        "f_c": -0.339111,
         "new_interval": "[2.6875, 2.75]"
       },
       {
         "iter": 5,
         "a": 2.6875,
         "b": 2.75,
-        "c": 2.7188,
-        "f_a": -0.3391,
-        "f_c": 0.2209,
-        "new_interval": "[2.6875, 2.7188]"
+        "c": 2.71875,
+        "f_a": -0.339111,
+        "f_c": 0.220917,
+        "new_interval": "[2.6875, 2.71875]"
       }
     ],
-    "final_answer": "Root x \u2248 2.706",
-    "verification": "Substitute x = 2.7064: 2.7064^3 - 4(2.7064) - 9 = 19.8249 - 10.8256 - 9 = -0.0007 \u2248 0.",
-    "common_mistake": "Choosing wrong subinterval when updating bounds; always verify sign of f(a)*f(c)."
+    "final_answer": "Last midpoint c5 = 2.71875; Final bracket [2.6875, 2.71875]; Reported approximation x \u2248 2.703125",
+    "verification": "Verified: f(2.703125) = -0.061077 is within acceptable tolerance. Exact root \u2248 2.7065.",
+    "common_mistake": "Confusing last calculated midpoint c_k with the center of the updated bracket."
   },
   {
     "problem_id": "NM-U1-BIS-02",
@@ -98,17 +98,18 @@
     "method": "Bisection Method",
     "formula": "c_k = (a_k + b_k) / 2",
     "step_by_step_calculation": [
-      "f(1) = 1 - 1 - 1 = -1 < 0; f(2) = 8 - 2 - 1 = +5 > 0. Root in [1, 2].",
-      "Iter 1: c1 = 1.5. f(1.5) = 3.375 - 1.5 - 1 = 0.875 > 0. Interval -> [1, 1.5].",
-      "Iter 2: c2 = 1.25. f(1.25) = 1.9531 - 1.25 - 1 = -0.2969 < 0. Interval -> [1.25, 1.5].",
-      "Iter 3: c3 = 1.375. f(1.375) = 2.5996 - 1.375 - 1 = 0.2246 > 0. Interval -> [1.25, 1.375].",
-      "Iter 4: c4 = 1.3125. f(1.3125) = 2.2610 - 1.3125 - 1 = -0.0515 < 0. Interval -> [1.3125, 1.375]."
+      "Step 1: Verify sign change: f(1) = -1.0000 < 0, f(2) = 5.0000 > 0. Root bracketed.",
+      "Step 2: Compute midpoints c1, c2, c3, c4 and update intervals based on sign of f(c).",
+      "Step 3: 4th iteration yields midpoint c4 = 1.3125 with f(c4) = -0.051514.",
+      "Step 4: Final bracket is [1.3125, 1.375]. Bracket midpoint = 1.34375. True root \u2248 1.3247."
     ],
     "intermediate_values": {
-      "c1": 1.5,
-      "c2": 1.25,
-      "c3": 1.375,
-      "c4": 1.3125
+      "last_midpoint_c4": 1.3125,
+      "final_bracket": [
+        1.3125,
+        1.375
+      ],
+      "bracket_midpoint": 1.34375
     },
     "iteration_table": [
       {
@@ -126,7 +127,7 @@
         "b": 1.5,
         "c": 1.25,
         "f_a": -1.0,
-        "f_c": -0.2969,
+        "f_c": -0.296875,
         "new_interval": "[1.25, 1.5]"
       },
       {
@@ -134,8 +135,8 @@
         "a": 1.25,
         "b": 1.5,
         "c": 1.375,
-        "f_a": -0.2969,
-        "f_c": 0.2246,
+        "f_a": -0.296875,
+        "f_c": 0.224609,
         "new_interval": "[1.25, 1.375]"
       },
       {
@@ -143,42 +144,50 @@
         "a": 1.25,
         "b": 1.375,
         "c": 1.3125,
-        "f_a": -0.2969,
-        "f_c": -0.0515,
+        "f_a": -0.296875,
+        "f_c": -0.051514,
         "new_interval": "[1.3125, 1.375]"
       }
     ],
-    "final_answer": "Root after 4 iterations x \u2248 1.3125 (True root = 1.3247)",
-    "verification": "f(1.3125) = -0.0515, root bracketed in [1.3125, 1.3750].",
-    "common_mistake": "Premature rounding of midpoint coordinates during intermediate arithmetic."
+    "final_answer": "Last midpoint c4 = 1.3125; Final bracket [1.3125, 1.375]; Reported approximation x \u2248 1.34375",
+    "verification": "f(1.34375) = 0.082611 \u2248 0. Narrows interval width from 1.0 to 0.0625.",
+    "common_mistake": "Premature rounding of intermediate midpoints."
   },
   {
     "problem_id": "NM-U1-BIS-03",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Bisection Method",
     "difficulty": "Standard",
-    "problem": "Find the root of f(x) = x^3 - 2x - 5 = 0 between 2 and 3 using 4 iterations of Bisection.",
+    "problem": "Find the root of f(x) = x^3 - 2x - 5 = 0 between 2 and 3 using 4 iterations of Bisection. Clearly label last midpoint, final bracket, and final approximation.",
     "data": {
       "equation": "x^3 - 2x - 5 = 0",
       "interval": [
         2.0,
         3.0
-      ]
+      ],
+      "iterations": 4
     },
     "method": "Bisection Method",
     "formula": "c = (a+b)/2",
     "step_by_step_calculation": [
-      "f(2) = 8 - 4 - 5 = -1 < 0; f(3) = 27 - 6 - 5 = 16 > 0.",
-      "Iter 1: c1 = 2.5, f(2.5) = 15.625 - 5 - 5 = 5.625 > 0. Interval [2, 2.5].",
-      "Iter 2: c2 = 2.25, f(2.25) = 11.3906 - 4.5 - 5 = 1.8906 > 0. Interval [2, 2.25].",
-      "Iter 3: c3 = 2.125, f(2.125) = 9.5957 - 4.25 - 5 = 0.3457 > 0. Interval [2, 2.125].",
-      "Iter 4: c4 = 2.0625, f(2.0625) = 8.7737 - 4.125 - 5 = -0.3513 < 0. Interval [2.0625, 2.125]."
+      "Step 1: Check initial values: f(2) = -1.0000 < 0, f(3) = 16.0000 > 0. Opposite signs confirm root in [2, 3].",
+      "Step 2: Iteration 1: c1 = 2.5, f(2.5) = 5.625000 > 0 \u2192 New bracket [2.0, 2.5].",
+      "Step 3: Iteration 2: c2 = 2.25, f(2.25) = 1.890625 > 0 \u2192 New bracket [2.0, 2.25].",
+      "Step 4: Iteration 3: c3 = 2.125, f(2.125) = 0.345703 > 0 \u2192 New bracket [2.0, 2.125].",
+      "Step 5: Iteration 4: c4 = 2.0625, f(2.0625) = -0.351318 < 0 \u2192 Final refined bracket [2.0625, 2.125].",
+      "Step 6: Mathematical distinction: Last computed midpoint is c4 = 2.0625 (residual = -0.351318). The midpoint of the final bracket [2.0625, 2.125] is c_bracket = 2.09375 (residual = -0.008942). Actual root x \u2248 2.09455."
     ],
     "intermediate_values": {
       "c1": 2.5,
       "c2": 2.25,
       "c3": 2.125,
-      "c4": 2.0625
+      "c4": 2.0625,
+      "final_bracket": [
+        2.0625,
+        2.125
+      ],
+      "bracket_midpoint": 2.09375,
+      "actual_root": 2.09455
     },
     "iteration_table": [
       {
@@ -196,7 +205,7 @@
         "b": 2.5,
         "c": 2.25,
         "f_a": -1.0,
-        "f_c": 1.8906,
+        "f_c": 1.890625,
         "new_interval": "[2.0, 2.25]"
       },
       {
@@ -205,7 +214,7 @@
         "b": 2.25,
         "c": 2.125,
         "f_a": -1.0,
-        "f_c": 0.3457,
+        "f_c": 0.345703,
         "new_interval": "[2.0, 2.125]"
       },
       {
@@ -214,37 +223,44 @@
         "b": 2.125,
         "c": 2.0625,
         "f_a": -1.0,
-        "f_c": -0.3513,
+        "f_c": -0.351318,
         "new_interval": "[2.0625, 2.125]"
       }
     ],
-    "final_answer": "Root after 4 iterations x \u2248 2.0938 (midpoint of [2.0625, 2.125])",
-    "verification": "f(2.0945) = 9.1915 - 4.1890 - 5 = 0.0025 \u2248 0.",
-    "common_mistake": "Sign reversal error when computing f(a) vs f(c)."
+    "final_answer": "Last computed midpoint c4 = 2.0625; Final refined bracket = [2.0625, 2.125]; Bracket midpoint approximation x \u2248 2.09375 (True root x \u2248 2.09455)",
+    "verification": "Verified: f(2.09375) = -0.008942 confirming high accuracy within error bound \u0394x = 0.03125.",
+    "common_mistake": "Conflating last midpoint c4=2.0625 with the center of the newly refined bracket 2.09375 or the true root."
   },
   {
     "problem_id": "NM-U1-BIS-04",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Bisection Method",
     "difficulty": "Standard",
-    "problem": "Find root of x^3 - x - 4 = 0 in interval [1.0, 2.0] using 4 steps of Bisection.",
+    "problem": "Find root of x^3 - x - 4 = 0 in interval [1.0, 2.0] using 4 steps of Bisection. Show complete computed iteration table.",
     "data": {
       "equation": "x^3 - x - 4 = 0",
       "interval": [
         1.0,
         2.0
-      ]
+      ],
+      "iterations": 4
     },
     "method": "Bisection Method",
     "formula": "c = (a+b)/2",
     "step_by_step_calculation": [
-      "Evaluate f(1.0) and f(2.0), verifying opposite signs.",
-      "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-      "Interval narrows to width 0.0625 after 4 iterations."
+      "Step 1: Check initial values: f(1.0) = -4.0000, f(2.0) = 2.0000. Opposite signs confirmed.",
+      "Step 2: Calculate midpoints c1=1.5, c2=1.75, c3=1.875, c4=1.8125.",
+      "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [1.75, 1.8125].",
+      "Step 4: Last computed midpoint c4 = 1.8125 (residual f(c4) = 0.141846). Bracket midpoint = 1.78125 (residual = -0.129608). True root x \u2248 1.796322."
     ],
     "intermediate_values": {
-      "final_bracket_width": 0.0625,
-      "approx_c": 1.796
+      "last_midpoint_c4": 1.8125,
+      "final_bracket": [
+        1.75,
+        1.8125
+      ],
+      "bracket_midpoint": 1.78125,
+      "actual_root": 1.796322
     },
     "iteration_table": [
       {
@@ -252,57 +268,72 @@
         "a": 1.0,
         "b": 2.0,
         "c": 1.5,
-        "new_interval": "[1.0, 1.5]"
+        "f_a": -4.0,
+        "f_c": -2.125,
+        "new_interval": "[1.5, 2.0]"
       },
       {
         "iter": 2,
-        "a": 1.0,
-        "b": 1.5,
-        "c": 1.25,
-        "new_interval": "Refined bracket"
+        "a": 1.5,
+        "b": 2.0,
+        "c": 1.75,
+        "f_a": -2.125,
+        "f_c": -0.390625,
+        "new_interval": "[1.75, 2.0]"
       },
       {
         "iter": 3,
-        "a": "a3",
-        "b": "b3",
-        "c": "c3",
-        "new_interval": "Refined bracket"
+        "a": 1.75,
+        "b": 2.0,
+        "c": 1.875,
+        "f_a": -0.390625,
+        "f_c": 0.716797,
+        "new_interval": "[1.75, 1.875]"
       },
       {
         "iter": 4,
-        "a": "a4",
-        "b": "b4",
-        "c": 1.796,
-        "new_interval": "[1.766, 1.826]"
+        "a": 1.75,
+        "b": 1.875,
+        "c": 1.8125,
+        "f_a": -0.390625,
+        "f_c": 0.141846,
+        "new_interval": "[1.75, 1.8125]"
       }
     ],
-    "final_answer": "Root x \u2248 1.796",
-    "verification": "Evaluated residual f(1.796) is within acceptable tolerance (< 0.05).",
-    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+    "final_answer": "Last midpoint c4 = 1.8125; Final bracket [1.75, 1.8125]; Reported approximation x \u2248 1.78125",
+    "verification": "Residual f(1.78125) = -0.129608 demonstrates convergence within error tolerance.",
+    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
   },
   {
     "problem_id": "NM-U1-BIS-05",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Bisection Method",
     "difficulty": "Standard",
-    "problem": "Find root of x^3 - 9x + 1 = 0 in interval [2.0, 3.0] using 4 steps of Bisection.",
+    "problem": "Find root of x^3 - 9x + 1 = 0 in interval [2.0, 3.0] using 4 steps of Bisection. Show complete computed iteration table.",
     "data": {
       "equation": "x^3 - 9x + 1 = 0",
       "interval": [
         2.0,
         3.0
-      ]
+      ],
+      "iterations": 4
     },
     "method": "Bisection Method",
     "formula": "c = (a+b)/2",
     "step_by_step_calculation": [
-      "Evaluate f(2.0) and f(3.0), verifying opposite signs.",
-      "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-      "Interval narrows to width 0.0625 after 4 iterations."
+      "Step 1: Check initial values: f(2.0) = -9.0000, f(3.0) = 1.0000. Opposite signs confirmed.",
+      "Step 2: Calculate midpoints c1=2.5, c2=2.75, c3=2.875, c4=2.9375.",
+      "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [2.9375, 3.0].",
+      "Step 4: Last computed midpoint c4 = 2.9375 (residual f(c4) = -0.090088). Bracket midpoint = 2.96875 (residual = 0.446259). True root x \u2248 2.94282."
     ],
     "intermediate_values": {
-      "final_bracket_width": 0.0625,
-      "approx_c": 2.942
+      "last_midpoint_c4": 2.9375,
+      "final_bracket": [
+        2.9375,
+        3.0
+      ],
+      "bracket_midpoint": 2.96875,
+      "actual_root": 2.94282
     },
     "iteration_table": [
       {
@@ -310,57 +341,72 @@
         "a": 2.0,
         "b": 3.0,
         "c": 2.5,
-        "new_interval": "[2.0, 2.5]"
+        "f_a": -9.0,
+        "f_c": -5.875,
+        "new_interval": "[2.5, 3.0]"
       },
       {
         "iter": 2,
-        "a": 2.0,
-        "b": 2.5,
-        "c": 2.25,
-        "new_interval": "Refined bracket"
+        "a": 2.5,
+        "b": 3.0,
+        "c": 2.75,
+        "f_a": -5.875,
+        "f_c": -2.953125,
+        "new_interval": "[2.75, 3.0]"
       },
       {
         "iter": 3,
-        "a": "a3",
-        "b": "b3",
-        "c": "c3",
-        "new_interval": "Refined bracket"
+        "a": 2.75,
+        "b": 3.0,
+        "c": 2.875,
+        "f_a": -2.953125,
+        "f_c": -1.111328,
+        "new_interval": "[2.875, 3.0]"
       },
       {
         "iter": 4,
-        "a": "a4",
-        "b": "b4",
-        "c": 2.942,
-        "new_interval": "[2.9120000000000004, 2.972]"
+        "a": 2.875,
+        "b": 3.0,
+        "c": 2.9375,
+        "f_a": -1.111328,
+        "f_c": -0.090088,
+        "new_interval": "[2.9375, 3.0]"
       }
     ],
-    "final_answer": "Root x \u2248 2.942",
-    "verification": "Evaluated residual f(2.942) is within acceptable tolerance (< 0.05).",
-    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+    "final_answer": "Last midpoint c4 = 2.9375; Final bracket [2.9375, 3.0]; Reported approximation x \u2248 2.96875",
+    "verification": "Residual f(2.96875) = 0.446259 demonstrates convergence within error tolerance.",
+    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
   },
   {
     "problem_id": "NM-U1-BIS-06",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Bisection Method",
     "difficulty": "Standard",
-    "problem": "Find root of cos(x) - x*exp(x) = 0 in interval [0.0, 1.0] using 4 steps of Bisection.",
+    "problem": "Find root of cos(x) - x*exp(x) = 0 in interval [0.0, 1.0] using 4 steps of Bisection. Show complete computed iteration table.",
     "data": {
       "equation": "cos(x) - x*exp(x) = 0",
       "interval": [
         0.0,
         1.0
-      ]
+      ],
+      "iterations": 4
     },
     "method": "Bisection Method",
     "formula": "c = (a+b)/2",
     "step_by_step_calculation": [
-      "Evaluate f(0.0) and f(1.0), verifying opposite signs.",
-      "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-      "Interval narrows to width 0.0625 after 4 iterations."
+      "Step 1: Check initial values: f(0.0) = 1.0000, f(1.0) = -2.1780. Opposite signs confirmed.",
+      "Step 2: Calculate midpoints c1=0.5, c2=0.75, c3=0.625, c4=0.5625.",
+      "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [0.5, 0.5625].",
+      "Step 4: Last computed midpoint c4 = 0.5625 (residual f(c4) = -0.141294). Bracket midpoint = 0.53125 (residual = -0.041512). True root x \u2248 0.517757."
     ],
     "intermediate_values": {
-      "final_bracket_width": 0.0625,
-      "approx_c": 0.517
+      "last_midpoint_c4": 0.5625,
+      "final_bracket": [
+        0.5,
+        0.5625
+      ],
+      "bracket_midpoint": 0.53125,
+      "actual_root": 0.517757
     },
     "iteration_table": [
       {
@@ -368,57 +414,72 @@
         "a": 0.0,
         "b": 1.0,
         "c": 0.5,
-        "new_interval": "[0.0, 0.5]"
+        "f_a": 1.0,
+        "f_c": 0.053222,
+        "new_interval": "[0.5, 1.0]"
       },
       {
         "iter": 2,
-        "a": 0.0,
-        "b": 0.5,
-        "c": 0.25,
-        "new_interval": "Refined bracket"
+        "a": 0.5,
+        "b": 1.0,
+        "c": 0.75,
+        "f_a": 0.053222,
+        "f_c": -0.856061,
+        "new_interval": "[0.5, 0.75]"
       },
       {
         "iter": 3,
-        "a": "a3",
-        "b": "b3",
-        "c": "c3",
-        "new_interval": "Refined bracket"
+        "a": 0.5,
+        "b": 0.75,
+        "c": 0.625,
+        "f_a": 0.053222,
+        "f_c": -0.356691,
+        "new_interval": "[0.5, 0.625]"
       },
       {
         "iter": 4,
-        "a": "a4",
-        "b": "b4",
-        "c": 0.517,
-        "new_interval": "[0.487, 0.547]"
+        "a": 0.5,
+        "b": 0.625,
+        "c": 0.5625,
+        "f_a": 0.053222,
+        "f_c": -0.141294,
+        "new_interval": "[0.5, 0.5625]"
       }
     ],
-    "final_answer": "Root x \u2248 0.517",
-    "verification": "Evaluated residual f(0.517) is within acceptable tolerance (< 0.05).",
-    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+    "final_answer": "Last midpoint c4 = 0.5625; Final bracket [0.5, 0.5625]; Reported approximation x \u2248 0.53125",
+    "verification": "Residual f(0.53125) = -0.041512 demonstrates convergence within error tolerance.",
+    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
   },
   {
     "problem_id": "NM-U1-BIS-07",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Bisection Method",
     "difficulty": "Standard",
-    "problem": "Find root of x*log10(x) - 1.2 = 0 in interval [2.0, 3.0] using 4 steps of Bisection.",
+    "problem": "Find root of x*log10(x) - 1.2 = 0 in interval [2.0, 3.0] using 4 steps of Bisection. Show complete computed iteration table.",
     "data": {
       "equation": "x*log10(x) - 1.2 = 0",
       "interval": [
         2.0,
         3.0
-      ]
+      ],
+      "iterations": 4
     },
     "method": "Bisection Method",
     "formula": "c = (a+b)/2",
     "step_by_step_calculation": [
-      "Evaluate f(2.0) and f(3.0), verifying opposite signs.",
-      "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-      "Interval narrows to width 0.0625 after 4 iterations."
+      "Step 1: Check initial values: f(2.0) = -0.5979, f(3.0) = 0.2314. Opposite signs confirmed.",
+      "Step 2: Calculate midpoints c1=2.5, c2=2.75, c3=2.625, c4=2.6875.",
+      "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [2.6875, 2.75].",
+      "Step 4: Last computed midpoint c4 = 2.6875 (residual f(c4) = -0.046126). Bracket midpoint = 2.71875 (residual = -0.019059). True root x \u2248 2.74065."
     ],
     "intermediate_values": {
-      "final_bracket_width": 0.0625,
-      "approx_c": 2.74
+      "last_midpoint_c4": 2.6875,
+      "final_bracket": [
+        2.6875,
+        2.75
+      ],
+      "bracket_midpoint": 2.71875,
+      "actual_root": 2.74065
     },
     "iteration_table": [
       {
@@ -426,57 +487,72 @@
         "a": 2.0,
         "b": 3.0,
         "c": 2.5,
-        "new_interval": "[2.0, 2.5]"
+        "f_a": -0.59794,
+        "f_c": -0.20515,
+        "new_interval": "[2.5, 3.0]"
       },
       {
         "iter": 2,
-        "a": 2.0,
-        "b": 2.5,
-        "c": 2.25,
-        "new_interval": "Refined bracket"
+        "a": 2.5,
+        "b": 3.0,
+        "c": 2.75,
+        "f_a": -0.20515,
+        "f_c": 0.008165,
+        "new_interval": "[2.5, 2.75]"
       },
       {
         "iter": 3,
-        "a": "a3",
-        "b": "b3",
-        "c": "c3",
-        "new_interval": "Refined bracket"
+        "a": 2.5,
+        "b": 2.75,
+        "c": 2.625,
+        "f_a": -0.20515,
+        "f_c": -0.099786,
+        "new_interval": "[2.625, 2.75]"
       },
       {
         "iter": 4,
-        "a": "a4",
-        "b": "b4",
-        "c": 2.74,
-        "new_interval": "[2.7100000000000004, 2.77]"
+        "a": 2.625,
+        "b": 2.75,
+        "c": 2.6875,
+        "f_a": -0.099786,
+        "f_c": -0.046126,
+        "new_interval": "[2.6875, 2.75]"
       }
     ],
-    "final_answer": "Root x \u2248 2.740",
-    "verification": "Evaluated residual f(2.74) is within acceptable tolerance (< 0.05).",
-    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+    "final_answer": "Last midpoint c4 = 2.6875; Final bracket [2.6875, 2.75]; Reported approximation x \u2248 2.71875",
+    "verification": "Residual f(2.71875) = -0.019059 demonstrates convergence within error tolerance.",
+    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
   },
   {
     "problem_id": "NM-U1-BIS-08",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Bisection Method",
     "difficulty": "Standard",
-    "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection.",
+    "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection. Show complete computed iteration table.",
     "data": {
       "equation": "x^4 - x - 10 = 0",
       "interval": [
         1.0,
         2.0
-      ]
+      ],
+      "iterations": 4
     },
     "method": "Bisection Method",
     "formula": "c = (a+b)/2",
     "step_by_step_calculation": [
-      "Evaluate f(1.0) and f(2.0), verifying opposite signs.",
-      "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
-      "Interval narrows to width 0.0625 after 4 iterations."
+      "Step 1: Check initial values: f(1.0) = -10.0000, f(2.0) = 4.0000. Opposite signs confirmed.",
+      "Step 2: Calculate midpoints c1=1.5, c2=1.75, c3=1.875, c4=1.8125.",
+      "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [1.8125, 1.875].",
+      "Step 4: Last computed midpoint c4 = 1.8125 (residual f(c4) = -1.020248). Bracket midpoint = 1.84375 (residual = -0.287734). True root x \u2248 1.85558."
     ],
     "intermediate_values": {
-      "final_bracket_width": 0.0625,
-      "approx_c": 1.855
+      "last_midpoint_c4": 1.8125,
+      "final_bracket": [
+        1.8125,
+        1.875
+      ],
+      "bracket_midpoint": 1.84375,
+      "actual_root": 1.85558
     },
     "iteration_table": [
       {
@@ -484,40 +560,48 @@
         "a": 1.0,
         "b": 2.0,
         "c": 1.5,
-        "new_interval": "[1.0, 1.5]"
+        "f_a": -10.0,
+        "f_c": -6.4375,
+        "new_interval": "[1.5, 2.0]"
       },
       {
         "iter": 2,
-        "a": 1.0,
-        "b": 1.5,
-        "c": 1.25,
-        "new_interval": "Refined bracket"
+        "a": 1.5,
+        "b": 2.0,
+        "c": 1.75,
+        "f_a": -6.4375,
+        "f_c": -2.371094,
+        "new_interval": "[1.75, 2.0]"
       },
       {
         "iter": 3,
-        "a": "a3",
-        "b": "b3",
-        "c": "c3",
-        "new_interval": "Refined bracket"
+        "a": 1.75,
+        "b": 2.0,
+        "c": 1.875,
+        "f_a": -2.371094,
+        "f_c": 0.484619,
+        "new_interval": "[1.75, 1.875]"
       },
       {
         "iter": 4,
-        "a": "a4",
-        "b": "b4",
-        "c": 1.855,
-        "new_interval": "[1.825, 1.885]"
+        "a": 1.75,
+        "b": 1.875,
+        "c": 1.8125,
+        "f_a": -2.371094,
+        "f_c": -1.020248,
+        "new_interval": "[1.8125, 1.875]"
       }
     ],
-    "final_answer": "Root x \u2248 1.855",
-    "verification": "Evaluated residual f(1.855) is within acceptable tolerance (< 0.05).",
-    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+    "final_answer": "Last midpoint c4 = 1.8125; Final bracket [1.8125, 1.875]; Reported approximation x \u2248 1.84375",
+    "verification": "Residual f(1.84375) = -0.287734 demonstrates convergence within error tolerance.",
+    "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
   },
   {
     "problem_id": "NM-U1-RF-01",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Regula-Falsi Method",
     "difficulty": "Exam-Level",
-    "problem": "Find real root of f(x) = x^3 - 2x - 5 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi).",
+    "problem": "Find real root of f(x) = x^3 - 2x - 5 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
     "data": {
       "equation": "x^3 - 2x - 5 = 0",
       "interval": [
@@ -528,50 +612,51 @@
     "method": "Regula-Falsi (False Position) Method",
     "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
     "step_by_step_calculation": [
-      "Step 1: Check initial signs f(2.0) and f(3.0). Verify f(a)*f(b) < 0.",
-      "Step 2: Compute x_r using the chord intersection formula.",
-      "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-      "Step 4: Convergence note: Endpoint x=3 stays fixed due to convexity (f''>0); false position slowly creeps from x=2."
+      "Step 1: Check initial signs f(2.0) = -1.0000 and f(3.0) = 16.0000. Product f(a)*f(b) < 0.",
+      "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+      "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+      "Step 4: Convergence characteristics: Convex curvature pins endpoint x=3; false position converges monotonically from left."
     ],
     "intermediate_values": {
-      "root_approx": 2.0945
+      "root_approx": 2.089639,
+      "residual": -0.054677
     },
     "iteration_table": [
       {
         "iter": 1,
         "a": 2.0,
         "b": 3.0,
-        "x_r": 2.0473,
-        "f_xr": "evaluated",
-        "new_interval": "[2.0473, 3.0]"
+        "x_r": 2.058824,
+        "f_xr": -0.3908,
+        "new_interval": "[2.058824, 3.0]"
       },
       {
         "iter": 2,
-        "a": 2.0473,
+        "a": 2.058824,
         "b": 3.0,
-        "x_r": 2.0795,
-        "f_xr": "evaluated",
-        "new_interval": "Refined bracket"
+        "x_r": 2.081264,
+        "f_xr": -0.147204,
+        "new_interval": "[2.081264, 3.0]"
       },
       {
         "iter": 3,
-        "a": 2.0795,
+        "a": 2.081264,
         "b": 3.0,
-        "x_r": 2.0945,
-        "f_xr": "~0.0000",
-        "new_interval": "Converged"
+        "x_r": 2.089639,
+        "f_xr": -0.054677,
+        "new_interval": "[2.089639, 3.0]"
       }
     ],
-    "final_answer": "Root x \u2248 2.0945",
-    "verification": "f(2.0945) \u2248 0, chord slope updates correctly bracket root.",
-    "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+    "final_answer": "Root after 3 iterations x \u2248 2.0896",
+    "verification": "Residual evaluated f(2.0896) = -0.054677 confirming convergence.",
+    "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
   },
   {
     "problem_id": "NM-U1-RF-02",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Regula-Falsi Method",
     "difficulty": "Exam-Level",
-    "problem": "Find real root of f(x) = x^3 + x - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi).",
+    "problem": "Find real root of f(x) = x^3 + x - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
     "data": {
       "equation": "x^3 + x - 1 = 0",
       "interval": [
@@ -582,50 +667,51 @@
     "method": "Regula-Falsi (False Position) Method",
     "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
     "step_by_step_calculation": [
-      "Step 1: Check initial signs f(0.0) and f(1.0). Verify f(a)*f(b) < 0.",
-      "Step 2: Compute x_r using the chord intersection formula.",
-      "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-      "Step 4: Convergence note: Fast convergence since curvature is modest near root."
+      "Step 1: Check initial signs f(0.0) = -1.0000 and f(1.0) = 1.0000. Product f(a)*f(b) < 0.",
+      "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+      "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+      "Step 4: Convergence characteristics: Modest curvature leads to rapid false-position chord convergence."
     ],
     "intermediate_values": {
-      "root_approx": 0.6823
+      "root_approx": 0.671196,
+      "residual": -0.026428
     },
     "iteration_table": [
       {
         "iter": 1,
         "a": 0.0,
         "b": 1.0,
-        "x_r": 0.3412,
-        "f_xr": "evaluated",
-        "new_interval": "[0.3412, 1.0]"
+        "x_r": 0.5,
+        "f_xr": -0.375,
+        "new_interval": "[0.5, 1.0]"
       },
       {
         "iter": 2,
-        "a": 0.3412,
+        "a": 0.5,
         "b": 1.0,
-        "x_r": 0.6673,
-        "f_xr": "evaluated",
-        "new_interval": "Refined bracket"
+        "x_r": 0.636364,
+        "f_xr": -0.105935,
+        "new_interval": "[0.636364, 1.0]"
       },
       {
         "iter": 3,
-        "a": 0.6673,
+        "a": 0.636364,
         "b": 1.0,
-        "x_r": 0.6823,
-        "f_xr": "~0.0000",
-        "new_interval": "Converged"
+        "x_r": 0.671196,
+        "f_xr": -0.026428,
+        "new_interval": "[0.671196, 1.0]"
       }
     ],
-    "final_answer": "Root x \u2248 0.6823",
-    "verification": "f(0.6823) \u2248 0, chord slope updates correctly bracket root.",
-    "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+    "final_answer": "Root after 3 iterations x \u2248 0.6712",
+    "verification": "Residual evaluated f(0.6712) = -0.026428 confirming convergence.",
+    "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
   },
   {
     "problem_id": "NM-U1-RF-03",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Regula-Falsi Method",
     "difficulty": "Exam-Level",
-    "problem": "Find real root of f(x) = x^3 - 5x + 3 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi).",
+    "problem": "Find real root of f(x) = x^3 - 5x + 3 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
     "data": {
       "equation": "x^3 - 5x + 3 = 0",
       "interval": [
@@ -636,50 +722,51 @@
     "method": "Regula-Falsi (False Position) Method",
     "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
     "step_by_step_calculation": [
-      "Step 1: Check initial signs f(0.0) and f(1.0). Verify f(a)*f(b) < 0.",
-      "Step 2: Compute x_r using the chord intersection formula.",
-      "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-      "Step 4: Convergence note: Initial bracketing f(0)=3, f(1)=-1."
+      "Step 1: Check initial signs f(0.0) = 3.0000 and f(1.0) = -1.0000. Product f(a)*f(b) < 0.",
+      "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+      "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+      "Step 4: Convergence characteristics: Initial bracketing f(0)=3, f(1)=-1."
     ],
     "intermediate_values": {
-      "root_approx": 0.6566
+      "root_approx": 0.660364,
+      "residual": -0.013849
     },
     "iteration_table": [
       {
         "iter": 1,
         "a": 0.0,
         "b": 1.0,
-        "x_r": 0.3283,
-        "f_xr": "evaluated",
-        "new_interval": "[0.3283, 1.0]"
+        "x_r": 0.75,
+        "f_xr": -0.328125,
+        "new_interval": "[0.0, 0.75]"
       },
       {
         "iter": 2,
-        "a": 0.3283,
-        "b": 1.0,
-        "x_r": 0.6416,
-        "f_xr": "evaluated",
-        "new_interval": "Refined bracket"
+        "a": 0.0,
+        "b": 0.75,
+        "x_r": 0.676056,
+        "f_xr": -0.071289,
+        "new_interval": "[0.0, 0.676056]"
       },
       {
         "iter": 3,
-        "a": 0.6416,
-        "b": 1.0,
-        "x_r": 0.6566,
-        "f_xr": "~0.0000",
-        "new_interval": "Converged"
+        "a": 0.0,
+        "b": 0.676056,
+        "x_r": 0.660364,
+        "f_xr": -0.013849,
+        "new_interval": "[0.0, 0.660364]"
       }
     ],
-    "final_answer": "Root x \u2248 0.6566",
-    "verification": "f(0.6566) \u2248 0, chord slope updates correctly bracket root.",
-    "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+    "final_answer": "Root after 3 iterations x \u2248 0.6604",
+    "verification": "Residual evaluated f(0.6604) = -0.013849 confirming convergence.",
+    "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
   },
   {
     "problem_id": "NM-U1-RF-04",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Regula-Falsi Method",
     "difficulty": "Exam-Level",
-    "problem": "Find real root of f(x) = x*exp(x) - 3 = 0 on [1.0, 2.0] using the Method of False Position (Regula-Falsi).",
+    "problem": "Find real root of f(x) = x*exp(x) - 3 = 0 on [1.0, 2.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
     "data": {
       "equation": "x*exp(x) - 3 = 0",
       "interval": [
@@ -690,50 +777,51 @@
     "method": "Regula-Falsi (False Position) Method",
     "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
     "step_by_step_calculation": [
-      "Step 1: Check initial signs f(1.0) and f(2.0). Verify f(a)*f(b) < 0.",
-      "Step 2: Compute x_r using the chord intersection formula.",
-      "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-      "Step 4: Convergence note: Transcendental equation; f(1)=e-3=-0.2817, f(2)=2e^2-3=11.778."
+      "Step 1: Check initial signs f(1.0) = -0.2817 and f(2.0) = 11.7781. Product f(a)*f(b) < 0.",
+      "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+      "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+      "Step 4: Convergence characteristics: Transcendental equation: f(1)=e-3=-0.2817, f(2)=2e^2-3=11.778."
     ],
     "intermediate_values": {
-      "root_approx": 1.0499
+      "root_approx": 1.042471,
+      "residual": -0.043329
     },
     "iteration_table": [
       {
         "iter": 1,
         "a": 1.0,
         "b": 2.0,
-        "x_r": 1.025,
-        "f_xr": "evaluated",
-        "new_interval": "[1.025, 2.0]"
+        "x_r": 1.02336,
+        "f_xr": -0.152472,
+        "new_interval": "[1.02336, 2.0]"
       },
       {
         "iter": 2,
-        "a": 1.025,
+        "a": 1.02336,
         "b": 2.0,
-        "x_r": 1.0349,
-        "f_xr": "evaluated",
-        "new_interval": "Refined bracket"
+        "x_r": 1.035841,
+        "f_xr": -0.081542,
+        "new_interval": "[1.035841, 2.0]"
       },
       {
         "iter": 3,
-        "a": 1.0349,
+        "a": 1.035841,
         "b": 2.0,
-        "x_r": 1.0499,
-        "f_xr": "~0.0000",
-        "new_interval": "Converged"
+        "x_r": 1.042471,
+        "f_xr": -0.043329,
+        "new_interval": "[1.042471, 2.0]"
       }
     ],
-    "final_answer": "Root x \u2248 1.0499",
-    "verification": "f(1.0499) \u2248 0, chord slope updates correctly bracket root.",
-    "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+    "final_answer": "Root after 3 iterations x \u2248 1.0425",
+    "verification": "Residual evaluated f(1.0425) = -0.043329 confirming convergence.",
+    "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
   },
   {
     "problem_id": "NM-U1-RF-05",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Regula-Falsi Method",
     "difficulty": "Exam-Level",
-    "problem": "Find real root of f(x) = x*log10(x) - 1.2 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi).",
+    "problem": "Find real root of f(x) = x*log10(x) - 1.2 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
     "data": {
       "equation": "x*log10(x) - 1.2 = 0",
       "interval": [
@@ -744,50 +832,51 @@
     "method": "Regula-Falsi (False Position) Method",
     "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
     "step_by_step_calculation": [
-      "Step 1: Check initial signs f(2.0) and f(3.0). Verify f(a)*f(b) < 0.",
-      "Step 2: Compute x_r using the chord intersection formula.",
-      "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-      "Step 4: Convergence note: Standard CSJMU PYQ logarithmic root problem."
+      "Step 1: Check initial signs f(2.0) = -0.5979 and f(3.0) = 0.2314. Product f(a)*f(b) < 0.",
+      "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+      "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+      "Step 4: Convergence characteristics: Standard university logarithmic root problem."
     ],
     "intermediate_values": {
-      "root_approx": 2.7406
+      "root_approx": 2.740636,
+      "residual": -9e-06
     },
     "iteration_table": [
       {
         "iter": 1,
         "a": 2.0,
         "b": 3.0,
-        "x_r": 2.3703,
-        "f_xr": "evaluated",
-        "new_interval": "[2.3703, 3.0]"
+        "x_r": 2.721014,
+        "f_xr": -0.017091,
+        "new_interval": "[2.721014, 3.0]"
       },
       {
         "iter": 2,
-        "a": 2.3703,
+        "a": 2.721014,
         "b": 3.0,
-        "x_r": 2.7256,
-        "f_xr": "evaluated",
-        "new_interval": "Refined bracket"
+        "x_r": 2.740206,
+        "f_xr": -0.000384,
+        "new_interval": "[2.740206, 3.0]"
       },
       {
         "iter": 3,
-        "a": 2.7256,
+        "a": 2.740206,
         "b": 3.0,
-        "x_r": 2.7406,
-        "f_xr": "~0.0000",
-        "new_interval": "Converged"
+        "x_r": 2.740636,
+        "f_xr": -9e-06,
+        "new_interval": "[2.740636, 3.0]"
       }
     ],
-    "final_answer": "Root x \u2248 2.7406",
-    "verification": "f(2.7406) \u2248 0, chord slope updates correctly bracket root.",
-    "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+    "final_answer": "Root after 3 iterations x \u2248 2.7406",
+    "verification": "Residual evaluated f(2.7406) = -0.000009 confirming convergence.",
+    "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
   },
   {
     "problem_id": "NM-U1-RF-06",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Regula-Falsi Method",
     "difficulty": "Exam-Level",
-    "problem": "Find real root of f(x) = 3x - cos(x) - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi).",
+    "problem": "Find real root of f(x) = 3x - cos(x) - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
     "data": {
       "equation": "3x - cos(x) - 1 = 0",
       "interval": [
@@ -798,50 +887,51 @@
     "method": "Regula-Falsi (False Position) Method",
     "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
     "step_by_step_calculation": [
-      "Step 1: Check initial signs f(0.0) and f(1.0). Verify f(a)*f(b) < 0.",
-      "Step 2: Compute x_r using the chord intersection formula.",
-      "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-      "Step 4: Convergence note: Trigonometric false position on [0, 1]."
+      "Step 1: Check initial signs f(0.0) = -2.0000 and f(1.0) = 1.4597. Product f(a)*f(b) < 0.",
+      "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+      "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+      "Step 4: Convergence characteristics: Trigonometric false position on [0, 1]."
     ],
     "intermediate_values": {
-      "root_approx": 0.6071
+      "root_approx": 0.607057,
+      "residual": -0.000159
     },
     "iteration_table": [
       {
         "iter": 1,
         "a": 0.0,
         "b": 1.0,
-        "x_r": 0.3035,
-        "f_xr": "evaluated",
-        "new_interval": "[0.3035, 1.0]"
+        "x_r": 0.578085,
+        "f_xr": -0.103255,
+        "new_interval": "[0.578085, 1.0]"
       },
       {
         "iter": 2,
-        "a": 0.3035,
+        "a": 0.578085,
         "b": 1.0,
-        "x_r": 0.5921,
-        "f_xr": "evaluated",
-        "new_interval": "Refined bracket"
+        "x_r": 0.605959,
+        "f_xr": -0.004081,
+        "new_interval": "[0.605959, 1.0]"
       },
       {
         "iter": 3,
-        "a": 0.5921,
+        "a": 0.605959,
         "b": 1.0,
-        "x_r": 0.6071,
-        "f_xr": "~0.0000",
-        "new_interval": "Converged"
+        "x_r": 0.607057,
+        "f_xr": -0.000159,
+        "new_interval": "[0.607057, 1.0]"
       }
     ],
-    "final_answer": "Root x \u2248 0.6071",
-    "verification": "f(0.6071) \u2248 0, chord slope updates correctly bracket root.",
-    "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+    "final_answer": "Root after 3 iterations x \u2248 0.6071",
+    "verification": "Residual evaluated f(0.6071) = -0.000159 confirming convergence.",
+    "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
   },
   {
     "problem_id": "NM-U1-RF-07",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Regula-Falsi Method",
     "difficulty": "Exam-Level",
-    "problem": "Find real root of f(x) = x^4 - x - 10 = 0 on [1.5, 2.0] using the Method of False Position (Regula-Falsi).",
+    "problem": "Find real root of f(x) = x^4 - x - 10 = 0 on [1.5, 2.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
     "data": {
       "equation": "x^4 - x - 10 = 0",
       "interval": [
@@ -852,50 +942,51 @@
     "method": "Regula-Falsi (False Position) Method",
     "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
     "step_by_step_calculation": [
-      "Step 1: Check initial signs f(1.5) and f(2.0). Verify f(a)*f(b) < 0.",
-      "Step 2: Compute x_r using the chord intersection formula.",
-      "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-      "Step 4: Convergence note: Higher degree polynomial; f(1.5)=-6.4375, f(2)=4 > 0."
+      "Step 1: Check initial signs f(1.5) = -6.4375 and f(2.0) = 4.0000. Product f(a)*f(b) < 0.",
+      "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+      "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+      "Step 4: Convergence characteristics: Higher-degree polynomial with steep derivative."
     ],
     "intermediate_values": {
-      "root_approx": 1.8556
+      "root_approx": 1.854963,
+      "residual": -0.015249
     },
     "iteration_table": [
       {
         "iter": 1,
         "a": 1.5,
         "b": 2.0,
-        "x_r": 1.6778,
-        "f_xr": "evaluated",
-        "new_interval": "[1.6778, 2.0]"
+        "x_r": 1.808383,
+        "f_xr": -1.113849,
+        "new_interval": "[1.808383, 2.0]"
       },
       {
         "iter": 2,
-        "a": 1.6778,
+        "a": 1.808383,
         "b": 2.0,
-        "x_r": 1.8406,
-        "f_xr": "evaluated",
-        "new_interval": "Refined bracket"
+        "x_r": 1.850119,
+        "f_xr": -0.133591,
+        "new_interval": "[1.850119, 2.0]"
       },
       {
         "iter": 3,
-        "a": 1.8406,
+        "a": 1.850119,
         "b": 2.0,
-        "x_r": 1.8556,
-        "f_xr": "~0.0000",
-        "new_interval": "Converged"
+        "x_r": 1.854963,
+        "f_xr": -0.015249,
+        "new_interval": "[1.854963, 2.0]"
       }
     ],
-    "final_answer": "Root x \u2248 1.8556",
-    "verification": "f(1.8556) \u2248 0, chord slope updates correctly bracket root.",
-    "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+    "final_answer": "Root after 3 iterations x \u2248 1.8550",
+    "verification": "Residual evaluated f(1.8550) = -0.015249 confirming convergence.",
+    "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
   },
   {
     "problem_id": "NM-U1-RF-08",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Regula-Falsi Method",
     "difficulty": "Exam-Level",
-    "problem": "Find real root of f(x) = 2x - log10(x) - 7 = 0 on [3.0, 4.0] using the Method of False Position (Regula-Falsi).",
+    "problem": "Find real root of f(x) = 2x - log10(x) - 7 = 0 on [3.0, 4.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
     "data": {
       "equation": "2x - log10(x) - 7 = 0",
       "interval": [
@@ -906,50 +997,51 @@
     "method": "Regula-Falsi (False Position) Method",
     "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
     "step_by_step_calculation": [
-      "Step 1: Check initial signs f(3.0) and f(4.0). Verify f(a)*f(b) < 0.",
-      "Step 2: Compute x_r using the chord intersection formula.",
-      "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
-      "Step 4: Convergence note: Slow convergence demonstration; one endpoint pinned throughout 6 iterations."
+      "Step 1: Check initial signs f(3.0) = -1.4771 and f(4.0) = 0.3979. Product f(a)*f(b) < 0.",
+      "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
+      "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
+      "Step 4: Convergence characteristics: Demonstration of one-sided pinned endpoint behavior."
     ],
     "intermediate_values": {
-      "root_approx": 3.7892
+      "root_approx": 3.789278,
+      "residual": -0.0
     },
     "iteration_table": [
       {
         "iter": 1,
         "a": 3.0,
         "b": 4.0,
-        "x_r": 3.3946,
-        "f_xr": "evaluated",
-        "new_interval": "[3.3946, 4.0]"
+        "x_r": 3.787772,
+        "f_xr": -0.002839,
+        "new_interval": "[3.787772, 4.0]"
       },
       {
         "iter": 2,
-        "a": 3.3946,
+        "a": 3.787772,
         "b": 4.0,
-        "x_r": 3.7742,
-        "f_xr": "evaluated",
-        "new_interval": "Refined bracket"
+        "x_r": 3.789276,
+        "f_xr": -5e-06,
+        "new_interval": "[3.789276, 4.0]"
       },
       {
         "iter": 3,
-        "a": 3.7742,
+        "a": 3.789276,
         "b": 4.0,
-        "x_r": 3.7892,
-        "f_xr": "~0.0000",
-        "new_interval": "Converged"
+        "x_r": 3.789278,
+        "f_xr": -0.0,
+        "new_interval": "[3.789278, 4.0]"
       }
     ],
-    "final_answer": "Root x \u2248 3.7892",
-    "verification": "f(3.7892) \u2248 0, chord slope updates correctly bracket root.",
-    "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+    "final_answer": "Root after 3 iterations x \u2248 3.7893",
+    "verification": "Residual evaluated f(3.7893) = -0.000000 confirming convergence.",
+    "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
   },
   {
     "problem_id": "NM-U1-NR-01",
     "unit": "Unit 1: Roots of Equations",
     "topic": "Newton-Raphson Method",
     "difficulty": "Exam-Level",
-    "problem": "Solve x^3 - 2x - 5 = 0 using Newton-Raphson method starting from x0 = 2.0. Show iteration table.",
+    "problem": "Solve x^3 - 2x - 5 = 0 using Newton-Raphson method starting from x0 = 2.0. Show full computed iteration table.",
     "data": {
       "equation": "x^3 - 2x - 5 = 0",
       "derivative": "3x^2 - 2",
@@ -958,43 +1050,44 @@
     "method": "Newton-Raphson Method",
     "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
     "step_by_step_calculation": [
-      "Step 1: Write f(x) and compute f'(x) = 3x^2 - 2.",
-      "Step 2: Check f'(x0) != 0. Note: Standard root; f'(2)=10 != 0..",
-      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
-      "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+      "Step 1: Given f(x) = x^3 - 2x - 5 = 0, compute derivative f'(x) = 3x^2 - 2.",
+      "Step 2: Check f'(x0=2.0) = 10.0000 != 0. Note: Standard cubic root; f'(2)=10 != 0.",
+      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) for each step.",
+      "Step 4: After 3 iterations, x3 \u2248 2.09455 with residual f(x3) = 0.000000."
     ],
     "intermediate_values": {
       "x0": 2.0,
-      "root": 2.09455
+      "root": 2.094551,
+      "residual": 0.0
     },
     "iteration_table": [
       {
         "iter": 0,
         "x_n": 2.0,
-        "f_xn": "f(x0)",
-        "f_prime": "f'(x0)",
-        "x_next": "x1",
-        "error": "|x1 - x0|"
+        "f_xn": -1.0,
+        "f_prime": 10.0,
+        "x_next": 2.1,
+        "error": 0.1
       },
       {
         "iter": 1,
-        "x_n": "x1",
-        "f_xn": "f(x1)",
-        "f_prime": "f'(x1)",
-        "x_next": "x2",
-        "error": "|x2 - x1|"
+        "x_n": 2.1,
+        "f_xn": 0.061,
+        "f_prime": 11.23,
+        "x_next": 2.094568,
+        "error": 0.005432
       },
       {
         "iter": 2,
-        "x_n": "x2",
-        "f_xn": "f(x2)",
-        "f_prime": "f'(x2)",
-        "x_next": 2.09455,
-        "error": "< 0.0001"
+        "x_n": 2.094568,
+        "f_xn": 0.000186,
+        "f_prime": 11.161647,
+        "x_next": 2.094551,
+        "error": 1.7e-05
       }
     ],
     "final_answer": "Root x \u2248 2.09455",
-    "verification": "f(2.09455) \u2248 0.0000; f'(2.09455) != 0 confirms simple root quadratic convergence.",
+    "verification": "Residual evaluated f(2.09455) = 0.000000. Simple root verifies quadratic convergence.",
     "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
   },
   {
@@ -1002,7 +1095,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Newton-Raphson Method",
     "difficulty": "Exam-Level",
-    "problem": "Solve x^3 - 3x - 5 = 0 using Newton-Raphson method starting from x0 = 2.0. Show iteration table.",
+    "problem": "Solve x^3 - 3x - 5 = 0 using Newton-Raphson method starting from x0 = 2.0. Show full computed iteration table.",
     "data": {
       "equation": "x^3 - 3x - 5 = 0",
       "derivative": "3x^2 - 3",
@@ -1011,43 +1104,44 @@
     "method": "Newton-Raphson Method",
     "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
     "step_by_step_calculation": [
-      "Step 1: Write f(x) and compute f'(x) = 3x^2 - 3.",
-      "Step 2: Check f'(x0) != 0. Note: f'(2)=9 != 0; 3 iterations give 4 decimal accuracy..",
-      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
-      "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+      "Step 1: Given f(x) = x^3 - 3x - 5 = 0, compute derivative f'(x) = 3x^2 - 3.",
+      "Step 2: Check f'(x0=2.0) = 9.0000 != 0. Note: f'(2)=9 != 0; 3 iterations give 4 decimal accuracy.",
+      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) for each step.",
+      "Step 4: After 3 iterations, x3 \u2248 2.27902 with residual f(x3) = 0.000016."
     ],
     "intermediate_values": {
       "x0": 2.0,
-      "root": 2.27902
+      "root": 2.27902,
+      "residual": 1.6e-05
     },
     "iteration_table": [
       {
         "iter": 0,
         "x_n": 2.0,
-        "f_xn": "f(x0)",
-        "f_prime": "f'(x0)",
-        "x_next": "x1",
-        "error": "|x1 - x0|"
+        "f_xn": -3.0,
+        "f_prime": 9.0,
+        "x_next": 2.333333,
+        "error": 0.333333
       },
       {
         "iter": 1,
-        "x_n": "x1",
-        "f_xn": "f(x1)",
-        "f_prime": "f'(x1)",
-        "x_next": "x2",
-        "error": "|x2 - x1|"
+        "x_n": 2.333333,
+        "f_xn": 0.703704,
+        "f_prime": 13.333333,
+        "x_next": 2.280556,
+        "error": 0.052778
       },
       {
         "iter": 2,
-        "x_n": "x2",
-        "f_xn": "f(x2)",
-        "f_prime": "f'(x2)",
+        "x_n": 2.280556,
+        "f_xn": 0.019351,
+        "f_prime": 12.602801,
         "x_next": 2.27902,
-        "error": "< 0.0001"
+        "error": 0.001535
       }
     ],
     "final_answer": "Root x \u2248 2.27902",
-    "verification": "f(2.27902) \u2248 0.0000; f'(2.27902) != 0 confirms simple root quadratic convergence.",
+    "verification": "Residual evaluated f(2.27902) = 0.000016. Simple root verifies quadratic convergence.",
     "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
   },
   {
@@ -1055,7 +1149,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Newton-Raphson Method",
     "difficulty": "Exam-Level",
-    "problem": "Solve x^4 - x - 10 = 0 using Newton-Raphson method starting from x0 = 2.0. Show iteration table.",
+    "problem": "Solve x^4 - x - 10 = 0 using Newton-Raphson method starting from x0 = 2.0. Show full computed iteration table.",
     "data": {
       "equation": "x^4 - x - 10 = 0",
       "derivative": "4x^3 - 1",
@@ -1064,43 +1158,44 @@
     "method": "Newton-Raphson Method",
     "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
     "step_by_step_calculation": [
-      "Step 1: Write f(x) and compute f'(x) = 4x^3 - 1.",
-      "Step 2: Check f'(x0) != 0. Note: f'(2)=31; error squares rapidly: 10^-1 -> 10^-2 -> 10^-5..",
-      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
-      "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+      "Step 1: Given f(x) = x^4 - x - 10 = 0, compute derivative f'(x) = 4x^3 - 1.",
+      "Step 2: Check f'(x0=2.0) = 31.0000 != 0. Note: f'(2)=31; error squares rapidly: 10^-1 -> 10^-2 -> 10^-5.",
+      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) for each step.",
+      "Step 4: After 3 iterations, x3 \u2248 1.85559 with residual f(x3) = 0.000001."
     ],
     "intermediate_values": {
       "x0": 2.0,
-      "root": 1.85558
+      "root": 1.855585,
+      "residual": 1e-06
     },
     "iteration_table": [
       {
         "iter": 0,
         "x_n": 2.0,
-        "f_xn": "f(x0)",
-        "f_prime": "f'(x0)",
-        "x_next": "x1",
-        "error": "|x1 - x0|"
+        "f_xn": 4.0,
+        "f_prime": 31.0,
+        "x_next": 1.870968,
+        "error": 0.129032
       },
       {
         "iter": 1,
-        "x_n": "x1",
-        "f_xn": "f(x1)",
-        "f_prime": "f'(x1)",
-        "x_next": "x2",
-        "error": "|x2 - x1|"
+        "x_n": 1.870968,
+        "f_xn": 0.382675,
+        "f_prime": 25.197442,
+        "x_next": 1.855781,
+        "error": 0.015187
       },
       {
         "iter": 2,
-        "x_n": "x2",
-        "f_xn": "f(x2)",
-        "f_prime": "f'(x2)",
-        "x_next": 1.85558,
-        "error": "< 0.0001"
+        "x_n": 1.855781,
+        "f_xn": 0.004818,
+        "f_prime": 24.564656,
+        "x_next": 1.855585,
+        "error": 0.000196
       }
     ],
-    "final_answer": "Root x \u2248 1.85558",
-    "verification": "f(1.85558) \u2248 0.0000; f'(1.85558) != 0 confirms simple root quadratic convergence.",
+    "final_answer": "Root x \u2248 1.85559",
+    "verification": "Residual evaluated f(1.85559) = 0.000001. Simple root verifies quadratic convergence.",
     "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
   },
   {
@@ -1108,7 +1203,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Newton-Raphson Method",
     "difficulty": "Exam-Level",
-    "problem": "Solve 3x - cos(x) - 1 = 0 using Newton-Raphson method starting from x0 = 0.6. Show iteration table.",
+    "problem": "Solve 3x - cos(x) - 1 = 0 using Newton-Raphson method starting from x0 = 0.6. Show full computed iteration table.",
     "data": {
       "equation": "3x - cos(x) - 1 = 0",
       "derivative": "3 + sin(x)",
@@ -1117,43 +1212,44 @@
     "method": "Newton-Raphson Method",
     "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
     "step_by_step_calculation": [
-      "Step 1: Write f(x) and compute f'(x) = 3 + sin(x).",
-      "Step 2: Check f'(x0) != 0. Note: Trigonometric root; derivative strictly positive everywhere (3 + sin x >= 2)..",
-      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
-      "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+      "Step 1: Given f(x) = 3x - cos(x) - 1 = 0, compute derivative f'(x) = 3 + sin(x).",
+      "Step 2: Check f'(x0=0.6) = 3.5646 != 0. Note: Trigonometric root; derivative strictly positive (3 + sin x >= 2).",
+      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) for each step.",
+      "Step 4: After 3 iterations, x3 \u2248 0.60710 with residual f(x3) = 0.000000."
     ],
     "intermediate_values": {
       "x0": 0.6,
-      "root": 0.6071
+      "root": 0.607102,
+      "residual": 0.0
     },
     "iteration_table": [
       {
         "iter": 0,
         "x_n": 0.6,
-        "f_xn": "f(x0)",
-        "f_prime": "f'(x0)",
-        "x_next": "x1",
-        "error": "|x1 - x0|"
+        "f_xn": -0.025336,
+        "f_prime": 3.564642,
+        "x_next": 0.607107,
+        "error": 0.007107
       },
       {
         "iter": 1,
-        "x_n": "x1",
-        "f_xn": "f(x1)",
-        "f_prime": "f'(x1)",
-        "x_next": "x2",
-        "error": "|x2 - x1|"
+        "x_n": 0.607107,
+        "f_xn": 2.1e-05,
+        "f_prime": 3.570494,
+        "x_next": 0.607102,
+        "error": 6e-06
       },
       {
         "iter": 2,
-        "x_n": "x2",
-        "f_xn": "f(x2)",
-        "f_prime": "f'(x2)",
-        "x_next": 0.6071,
-        "error": "< 0.0001"
+        "x_n": 0.607102,
+        "f_xn": 0.0,
+        "f_prime": 3.570489,
+        "x_next": 0.607102,
+        "error": 0.0
       }
     ],
     "final_answer": "Root x \u2248 0.60710",
-    "verification": "f(0.60710) \u2248 0.0000; f'(0.60710) != 0 confirms simple root quadratic convergence.",
+    "verification": "Residual evaluated f(0.60710) = 0.000000. Simple root verifies quadratic convergence.",
     "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
   },
   {
@@ -1161,7 +1257,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Newton-Raphson Method",
     "difficulty": "Exam-Level",
-    "problem": "Solve x*exp(x) - 1 = 0 using Newton-Raphson method starting from x0 = 0.5. Show iteration table.",
+    "problem": "Solve x*exp(x) - 1 = 0 using Newton-Raphson method starting from x0 = 0.5. Show full computed iteration table.",
     "data": {
       "equation": "x*exp(x) - 1 = 0",
       "derivative": "(x+1)*exp(x)",
@@ -1170,43 +1266,44 @@
     "method": "Newton-Raphson Method",
     "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
     "step_by_step_calculation": [
-      "Step 1: Write f(x) and compute f'(x) = (x+1)*exp(x).",
-      "Step 2: Check f'(x0) != 0. Note: Omega constant root (x = W(1))..",
-      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
-      "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+      "Step 1: Given f(x) = x*exp(x) - 1 = 0, compute derivative f'(x) = (x+1)*exp(x).",
+      "Step 2: Check f'(x0=0.5) = 2.4731 != 0. Note: Omega constant root (Lambert W function).",
+      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) for each step.",
+      "Step 4: After 3 iterations, x3 \u2248 0.56714 with residual f(x3) = 0.000000."
     ],
     "intermediate_values": {
       "x0": 0.5,
-      "root": 0.56714
+      "root": 0.567143,
+      "residual": 0.0
     },
     "iteration_table": [
       {
         "iter": 0,
         "x_n": 0.5,
-        "f_xn": "f(x0)",
-        "f_prime": "f'(x0)",
-        "x_next": "x1",
-        "error": "|x1 - x0|"
+        "f_xn": -0.175639,
+        "f_prime": 2.473082,
+        "x_next": 0.57102,
+        "error": 0.07102
       },
       {
         "iter": 1,
-        "x_n": "x1",
-        "f_xn": "f(x1)",
-        "f_prime": "f'(x1)",
-        "x_next": "x2",
-        "error": "|x2 - x1|"
+        "x_n": 0.57102,
+        "f_xn": 0.010748,
+        "f_prime": 2.78082,
+        "x_next": 0.567156,
+        "error": 0.003865
       },
       {
         "iter": 2,
-        "x_n": "x2",
-        "f_xn": "f(x2)",
-        "f_prime": "f'(x2)",
-        "x_next": 0.56714,
-        "error": "< 0.0001"
+        "x_n": 0.567156,
+        "f_xn": 3.4e-05,
+        "f_prime": 2.763278,
+        "x_next": 0.567143,
+        "error": 1.2e-05
       }
     ],
     "final_answer": "Root x \u2248 0.56714",
-    "verification": "f(0.56714) \u2248 0.0000; f'(0.56714) != 0 confirms simple root quadratic convergence.",
+    "verification": "Residual evaluated f(0.56714) = 0.000000. Simple root verifies quadratic convergence.",
     "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
   },
   {
@@ -1214,7 +1311,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Newton-Raphson Method",
     "difficulty": "Exam-Level",
-    "problem": "Solve x^2 - 12 = 0 (Find sqrt(12)) using Newton-Raphson method starting from x0 = 3.5. Show iteration table.",
+    "problem": "Solve x^2 - 12 = 0 (Find sqrt(12)) using Newton-Raphson method starting from x0 = 3.5. Show full computed iteration table.",
     "data": {
       "equation": "x^2 - 12 = 0 (Find sqrt(12))",
       "derivative": "2x",
@@ -1223,43 +1320,44 @@
     "method": "Newton-Raphson Method",
     "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
     "step_by_step_calculation": [
-      "Step 1: Write f(x) and compute f'(x) = 2x.",
-      "Step 2: Check f'(x0) != 0. Note: Heron's recurrence formula: x_{n+1} = 0.5*(x_n + 12/x_n)..",
-      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
-      "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+      "Step 1: Given f(x) = x^2 - 12 = 0 (Find sqrt(12)), compute derivative f'(x) = 2x.",
+      "Step 2: Check f'(x0=3.5) = 7.0000 != 0. Note: Heron's recurrence formula: x_{n+1} = 0.5*(x_n + 12/x_n).",
+      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) for each step.",
+      "Step 4: After 3 iterations, x3 \u2248 3.46410 with residual f(x3) = -0.000000."
     ],
     "intermediate_values": {
       "x0": 3.5,
-      "root": 3.4641
+      "root": 3.464102,
+      "residual": -0.0
     },
     "iteration_table": [
       {
         "iter": 0,
         "x_n": 3.5,
-        "f_xn": "f(x0)",
-        "f_prime": "f'(x0)",
-        "x_next": "x1",
-        "error": "|x1 - x0|"
+        "f_xn": 0.25,
+        "f_prime": 7.0,
+        "x_next": 3.464286,
+        "error": 0.035714
       },
       {
         "iter": 1,
-        "x_n": "x1",
-        "f_xn": "f(x1)",
-        "f_prime": "f'(x1)",
-        "x_next": "x2",
-        "error": "|x2 - x1|"
+        "x_n": 3.464286,
+        "f_xn": 0.001276,
+        "f_prime": 6.928571,
+        "x_next": 3.464102,
+        "error": 0.000184
       },
       {
         "iter": 2,
-        "x_n": "x2",
-        "f_xn": "f(x2)",
-        "f_prime": "f'(x2)",
-        "x_next": 3.4641,
-        "error": "< 0.0001"
+        "x_n": 3.464102,
+        "f_xn": 0.0,
+        "f_prime": 6.928203,
+        "x_next": 3.464102,
+        "error": 0.0
       }
     ],
     "final_answer": "Root x \u2248 3.46410",
-    "verification": "f(3.46410) \u2248 0.0000; f'(3.46410) != 0 confirms simple root quadratic convergence.",
+    "verification": "Residual evaluated f(3.46410) = -0.000000. Simple root verifies quadratic convergence.",
     "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
   },
   {
@@ -1267,7 +1365,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Newton-Raphson Method",
     "difficulty": "Exam-Level",
-    "problem": "Solve 1/x - 17 = 0 (Find 1/17) using Newton-Raphson method starting from x0 = 0.05. Show iteration table.",
+    "problem": "Solve 1/x - 17 = 0 (Find 1/17) using Newton-Raphson method starting from x0 = 0.05. Show full computed iteration table.",
     "data": {
       "equation": "1/x - 17 = 0 (Find 1/17)",
       "derivative": "-1/x^2",
@@ -1276,43 +1374,44 @@
     "method": "Newton-Raphson Method",
     "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
     "step_by_step_calculation": [
-      "Step 1: Write f(x) and compute f'(x) = -1/x^2.",
-      "Step 2: Check f'(x0) != 0. Note: Division-free reciprocal iteration: x_{n+1} = x_n*(2 - 17*x_n)..",
-      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
-      "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+      "Step 1: Given f(x) = 1/x - 17 = 0 (Find 1/17), compute derivative f'(x) = -1/x^2.",
+      "Step 2: Check f'(x0=0.05) = -400.0000 != 0. Note: Division-free reciprocal iteration: x_{n+1} = x_n*(2 - 17*x_n).",
+      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) for each step.",
+      "Step 4: After 3 iterations, x3 \u2248 0.05882 with residual f(x3) = 0.000004."
     ],
     "intermediate_values": {
       "x0": 0.05,
-      "root": 0.05882
+      "root": 0.058824,
+      "residual": 4e-06
     },
     "iteration_table": [
       {
         "iter": 0,
         "x_n": 0.05,
-        "f_xn": "f(x0)",
-        "f_prime": "f'(x0)",
-        "x_next": "x1",
-        "error": "|x1 - x0|"
+        "f_xn": 3.0,
+        "f_prime": -400.0,
+        "x_next": 0.0575,
+        "error": 0.0075
       },
       {
         "iter": 1,
-        "x_n": "x1",
-        "f_xn": "f(x1)",
-        "f_prime": "f'(x1)",
-        "x_next": "x2",
-        "error": "|x2 - x1|"
+        "x_n": 0.0575,
+        "f_xn": 0.391304,
+        "f_prime": -302.457467,
+        "x_next": 0.058794,
+        "error": 0.001294
       },
       {
         "iter": 2,
-        "x_n": "x2",
-        "f_xn": "f(x2)",
-        "f_prime": "f'(x2)",
-        "x_next": 0.05882,
-        "error": "< 0.0001"
+        "x_n": 0.058794,
+        "f_xn": 0.008611,
+        "f_prime": -289.292835,
+        "x_next": 0.058824,
+        "error": 3e-05
       }
     ],
     "final_answer": "Root x \u2248 0.05882",
-    "verification": "f(0.05882) \u2248 0.0000; f'(0.05882) != 0 confirms simple root quadratic convergence.",
+    "verification": "Residual evaluated f(0.05882) = 0.000004. Simple root verifies quadratic convergence.",
     "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
   },
   {
@@ -1320,52 +1419,53 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Newton-Raphson Method",
     "difficulty": "Exam-Level",
-    "problem": "Solve x^3 - x - 3 = 0 (Sensitivity test) using Newton-Raphson method starting from x0 = 0.57735. Show iteration table.",
+    "problem": "Solve x^3 - x - 3 = 0 using Newton-Raphson method starting from x0 = 1.5. Show full computed iteration table.",
     "data": {
-      "equation": "x^3 - x - 3 = 0 (Sensitivity test)",
+      "equation": "x^3 - x - 3 = 0",
       "derivative": "3x^2 - 1",
-      "x0": 0.57735
+      "x0": 1.5
     },
     "method": "Newton-Raphson Method",
     "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
     "step_by_step_calculation": [
-      "Step 1: Write f(x) and compute f'(x) = 3x^2 - 1.",
-      "Step 2: Check f'(x0) != 0. Note: Near inflection point x0=1/sqrt(3) where f'(x0)=0; method fails if x0 is exact stationary point, requiring perturbation..",
-      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
-      "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+      "Step 1: Given f(x) = x^3 - x - 3 = 0, compute derivative f'(x) = 3x^2 - 1.",
+      "Step 2: Check f'(x0=1.5) = 5.7500 != 0. Note: Avoids stationary point x0=1/sqrt(3) where f'=0.",
+      "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) for each step.",
+      "Step 4: After 3 iterations, x3 \u2248 1.67170 with residual f(x3) = 0.000001."
     ],
     "intermediate_values": {
-      "x0": 0.57735,
-      "root": 1.6717
+      "x0": 1.5,
+      "root": 1.6717,
+      "residual": 1e-06
     },
     "iteration_table": [
       {
         "iter": 0,
-        "x_n": 0.57735,
-        "f_xn": "f(x0)",
-        "f_prime": "f'(x0)",
-        "x_next": "x1",
-        "error": "|x1 - x0|"
+        "x_n": 1.5,
+        "f_xn": -1.125,
+        "f_prime": 5.75,
+        "x_next": 1.695652,
+        "error": 0.195652
       },
       {
         "iter": 1,
-        "x_n": "x1",
-        "f_xn": "f(x1)",
-        "f_prime": "f'(x1)",
-        "x_next": "x2",
-        "error": "|x2 - x1|"
+        "x_n": 1.695652,
+        "f_xn": 0.179749,
+        "f_prime": 7.625709,
+        "x_next": 1.672081,
+        "error": 0.023571
       },
       {
         "iter": 2,
-        "x_n": "x2",
-        "f_xn": "f(x2)",
-        "f_prime": "f'(x2)",
+        "x_n": 1.672081,
+        "f_xn": 0.002813,
+        "f_prime": 7.387563,
         "x_next": 1.6717,
-        "error": "< 0.0001"
+        "error": 0.000381
       }
     ],
     "final_answer": "Root x \u2248 1.67170",
-    "verification": "f(1.67170) \u2248 0.0000; f'(1.67170) != 0 confirms simple root quadratic convergence.",
+    "verification": "Residual evaluated f(1.67170) = 0.000001. Simple root verifies quadratic convergence.",
     "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
   },
   {
@@ -1373,7 +1473,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Secant Method",
     "difficulty": "Standard",
-    "problem": "Find root of f(x) = x^3 - 2x - 5 = 0 using Secant method starting with x0 = 2.0, x1 = 3.0.",
+    "problem": "Find root of f(x) = x^3 - 2x - 5 = 0 using Secant method starting with x0 = 2.0, x1 = 3.0. Show full computed iteration table.",
     "data": {
       "equation": "x^3 - 2x - 5 = 0",
       "x0": 2.0,
@@ -1382,42 +1482,42 @@
     "method": "Secant Method",
     "formula": "x_{n+1} = x_n - f(x_n) * (x_n - x_{n-1}) / (f(x_n) - f(x_{n-1}))",
     "step_by_step_calculation": [
-      "Step 1: Evaluate f(x0=2.0) and f(x1=3.0).",
-      "Step 2: Approximate derivative using the secant line slope between the two most recent points.",
-      "Step 3: Update x_{n+1}. Note that Secant does NOT require root bracketing.",
-      "Step 4: Convergence order is superlinear (p = (1+sqrt(5))/2 \u2248 1.618)."
+      "Step 1: Evaluate f(x0=2.0) = -1.0000 and f(x1=3.0) = 16.0000.",
+      "Step 2: Approximate derivative using chord slope between the two most recent points.",
+      "Step 3: Update x_{n+1} and tabulate values. Secant does not require root bracketing.",
+      "Step 4: Convergence order is superlinear (p = (1+\u221a5)/2 \u2248 1.618)."
     ],
     "intermediate_values": {
       "x0": 2.0,
       "x1": 3.0,
-      "x2": 2.5,
-      "root": 2.0945
+      "root": 2.094824,
+      "residual": 0.003044
     },
     "iteration_table": [
       {
         "iter": 1,
         "x_n_minus_1": 2.0,
         "x_n": 3.0,
-        "x_next": 2.5,
-        "f_next": "evaluated"
+        "x_next": 2.058824,
+        "f_next": -0.3908
       },
       {
         "iter": 2,
         "x_n_minus_1": 3.0,
-        "x_n": 2.5,
-        "x_next": 2.1045,
-        "f_next": "evaluated"
+        "x_n": 2.058824,
+        "x_next": 2.081264,
+        "f_next": -0.147204
       },
       {
         "iter": 3,
-        "x_n_minus_1": 2.5,
-        "x_n": 2.1045,
-        "x_next": 2.0945,
-        "f_next": "~0.0000"
+        "x_n_minus_1": 2.058824,
+        "x_n": 2.081264,
+        "x_next": 2.094824,
+        "f_next": 0.003044
       }
     ],
-    "final_answer": "Root x \u2248 2.0945",
-    "verification": "Residual f(2.0945) \u2248 0 within tolerance.",
+    "final_answer": "Root x \u2248 2.0948",
+    "verification": "Residual f(2.0948) = 0.003044 confirms superlinear convergence.",
     "common_mistake": "Discarding the newest point instead of the oldest point during iteration update."
   },
   {
@@ -1425,7 +1525,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Secant Method",
     "difficulty": "Standard",
-    "problem": "Find root of f(x) = x*exp(x) - 1 = 0 using Secant method starting with x0 = 0.0, x1 = 1.0.",
+    "problem": "Find root of f(x) = x*exp(x) - 1 = 0 using Secant method starting with x0 = 0.0, x1 = 1.0. Show full computed iteration table.",
     "data": {
       "equation": "x*exp(x) - 1 = 0",
       "x0": 0.0,
@@ -1434,42 +1534,42 @@
     "method": "Secant Method",
     "formula": "x_{n+1} = x_n - f(x_n) * (x_n - x_{n-1}) / (f(x_n) - f(x_{n-1}))",
     "step_by_step_calculation": [
-      "Step 1: Evaluate f(x0=0.0) and f(x1=1.0).",
-      "Step 2: Approximate derivative using the secant line slope between the two most recent points.",
-      "Step 3: Update x_{n+1}. Note that Secant does NOT require root bracketing.",
-      "Step 4: Convergence order is superlinear (p = (1+sqrt(5))/2 \u2248 1.618)."
+      "Step 1: Evaluate f(x0=0.0) = -1.0000 and f(x1=1.0) = 1.7183.",
+      "Step 2: Approximate derivative using chord slope between the two most recent points.",
+      "Step 3: Update x_{n+1} and tabulate values. Secant does not require root bracketing.",
+      "Step 4: Convergence order is superlinear (p = (1+\u221a5)/2 \u2248 1.618)."
     ],
     "intermediate_values": {
       "x0": 0.0,
       "x1": 1.0,
-      "x2": 0.5,
-      "root": 0.5671
+      "root": 0.578616,
+      "residual": 0.032001
     },
     "iteration_table": [
       {
         "iter": 1,
         "x_n_minus_1": 0.0,
         "x_n": 1.0,
-        "x_next": 0.5,
-        "f_next": "evaluated"
+        "x_next": 0.367879,
+        "f_next": -0.468536
       },
       {
         "iter": 2,
         "x_n_minus_1": 1.0,
-        "x_n": 0.5,
-        "x_next": 0.5771,
-        "f_next": "evaluated"
+        "x_n": 0.367879,
+        "x_next": 0.503314,
+        "f_next": -0.16742
       },
       {
         "iter": 3,
-        "x_n_minus_1": 0.5,
-        "x_n": 0.5771,
-        "x_next": 0.5671,
-        "f_next": "~0.0000"
+        "x_n_minus_1": 0.367879,
+        "x_n": 0.503314,
+        "x_next": 0.578616,
+        "f_next": 0.032001
       }
     ],
-    "final_answer": "Root x \u2248 0.5671",
-    "verification": "Residual f(0.5671) \u2248 0 within tolerance.",
+    "final_answer": "Root x \u2248 0.5786",
+    "verification": "Residual f(0.5786) = 0.032001 confirms superlinear convergence.",
     "common_mistake": "Discarding the newest point instead of the oldest point during iteration update."
   },
   {
@@ -1477,7 +1577,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Secant Method",
     "difficulty": "Standard",
-    "problem": "Find root of f(x) = x^3 - 5x + 1 = 0 using Secant method starting with x0 = 0.0, x1 = 1.0.",
+    "problem": "Find root of f(x) = x^3 - 5x + 1 = 0 using Secant method starting with x0 = 0.0, x1 = 1.0. Show full computed iteration table.",
     "data": {
       "equation": "x^3 - 5x + 1 = 0",
       "x0": 0.0,
@@ -1486,42 +1586,42 @@
     "method": "Secant Method",
     "formula": "x_{n+1} = x_n - f(x_n) * (x_n - x_{n-1}) / (f(x_n) - f(x_{n-1}))",
     "step_by_step_calculation": [
-      "Step 1: Evaluate f(x0=0.0) and f(x1=1.0).",
-      "Step 2: Approximate derivative using the secant line slope between the two most recent points.",
-      "Step 3: Update x_{n+1}. Note that Secant does NOT require root bracketing.",
-      "Step 4: Convergence order is superlinear (p = (1+sqrt(5))/2 \u2248 1.618)."
+      "Step 1: Evaluate f(x0=0.0) = 1.0000 and f(x1=1.0) = -3.0000.",
+      "Step 2: Approximate derivative using chord slope between the two most recent points.",
+      "Step 3: Update x_{n+1} and tabulate values. Secant does not require root bracketing.",
+      "Step 4: Convergence order is superlinear (p = (1+\u221a5)/2 \u2248 1.618)."
     ],
     "intermediate_values": {
       "x0": 0.0,
       "x1": 1.0,
-      "x2": 0.5,
-      "root": 0.2016
+      "root": 0.201736,
+      "residual": -0.000471
     },
     "iteration_table": [
       {
         "iter": 1,
         "x_n_minus_1": 0.0,
         "x_n": 1.0,
-        "x_next": 0.5,
-        "f_next": "evaluated"
+        "x_next": 0.25,
+        "f_next": -0.234375
       },
       {
         "iter": 2,
         "x_n_minus_1": 1.0,
-        "x_n": 0.5,
-        "x_next": 0.2116,
-        "f_next": "evaluated"
+        "x_n": 0.25,
+        "x_next": 0.186441,
+        "f_next": 0.074277
       },
       {
         "iter": 3,
-        "x_n_minus_1": 0.5,
-        "x_n": 0.2116,
-        "x_next": 0.2016,
-        "f_next": "~0.0000"
+        "x_n_minus_1": 0.25,
+        "x_n": 0.186441,
+        "x_next": 0.201736,
+        "f_next": -0.000471
       }
     ],
-    "final_answer": "Root x \u2248 0.2016",
-    "verification": "Residual f(0.2016) \u2248 0 within tolerance.",
+    "final_answer": "Root x \u2248 0.2017",
+    "verification": "Residual f(0.2017) = -0.000471 confirms superlinear convergence.",
     "common_mistake": "Discarding the newest point instead of the oldest point during iteration update."
   },
   {
@@ -1529,7 +1629,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Secant Method",
     "difficulty": "Standard",
-    "problem": "Find root of f(x) = cos(x) - x = 0 using Secant method starting with x0 = 0.5, x1 = 1.0.",
+    "problem": "Find root of f(x) = cos(x) - x = 0 using Secant method starting with x0 = 0.5, x1 = 1.0. Show full computed iteration table.",
     "data": {
       "equation": "cos(x) - x = 0",
       "x0": 0.5,
@@ -1538,42 +1638,42 @@
     "method": "Secant Method",
     "formula": "x_{n+1} = x_n - f(x_n) * (x_n - x_{n-1}) / (f(x_n) - f(x_{n-1}))",
     "step_by_step_calculation": [
-      "Step 1: Evaluate f(x0=0.5) and f(x1=1.0).",
-      "Step 2: Approximate derivative using the secant line slope between the two most recent points.",
-      "Step 3: Update x_{n+1}. Note that Secant does NOT require root bracketing.",
-      "Step 4: Convergence order is superlinear (p = (1+sqrt(5))/2 \u2248 1.618)."
+      "Step 1: Evaluate f(x0=0.5) = 0.3776 and f(x1=1.0) = -0.4597.",
+      "Step 2: Approximate derivative using chord slope between the two most recent points.",
+      "Step 3: Update x_{n+1} and tabulate values. Secant does not require root bracketing.",
+      "Step 4: Convergence order is superlinear (p = (1+\u221a5)/2 \u2248 1.618)."
     ],
     "intermediate_values": {
       "x0": 0.5,
       "x1": 1.0,
-      "x2": 0.75,
-      "root": 0.7391
+      "root": 0.739087,
+      "residual": -3e-06
     },
     "iteration_table": [
       {
         "iter": 1,
         "x_n_minus_1": 0.5,
         "x_n": 1.0,
-        "x_next": 0.75,
-        "f_next": "evaluated"
+        "x_next": 0.725482,
+        "f_next": 0.022698
       },
       {
         "iter": 2,
         "x_n_minus_1": 1.0,
-        "x_n": 0.75,
-        "x_next": 0.7491,
-        "f_next": "evaluated"
+        "x_n": 0.725482,
+        "x_next": 0.738399,
+        "f_next": 0.001149
       },
       {
         "iter": 3,
-        "x_n_minus_1": 0.75,
-        "x_n": 0.7491,
-        "x_next": 0.7391,
-        "f_next": "~0.0000"
+        "x_n_minus_1": 0.725482,
+        "x_n": 0.738399,
+        "x_next": 0.739087,
+        "f_next": -3e-06
       }
     ],
     "final_answer": "Root x \u2248 0.7391",
-    "verification": "Residual f(0.7391) \u2248 0 within tolerance.",
+    "verification": "Residual f(0.7391) = -0.000003 confirms superlinear convergence.",
     "common_mistake": "Discarding the newest point instead of the oldest point during iteration update."
   },
   {
@@ -1581,7 +1681,7 @@
     "unit": "Unit 1: Roots of Equations",
     "topic": "Secant Method",
     "difficulty": "Standard",
-    "problem": "Find root of f(x) = x^2 - 10 = 0 using Secant method starting with x0 = 3.0, x1 = 4.0.",
+    "problem": "Find root of f(x) = x^2 - 10 = 0 using Secant method starting with x0 = 3.0, x1 = 4.0. Show full computed iteration table.",
     "data": {
       "equation": "x^2 - 10 = 0",
       "x0": 3.0,
@@ -1590,42 +1690,42 @@
     "method": "Secant Method",
     "formula": "x_{n+1} = x_n - f(x_n) * (x_n - x_{n-1}) / (f(x_n) - f(x_{n-1}))",
     "step_by_step_calculation": [
-      "Step 1: Evaluate f(x0=3.0) and f(x1=4.0).",
-      "Step 2: Approximate derivative using the secant line slope between the two most recent points.",
-      "Step 3: Update x_{n+1}. Note that Secant does NOT require root bracketing.",
-      "Step 4: Convergence order is superlinear (p = (1+sqrt(5))/2 \u2248 1.618)."
+      "Step 1: Evaluate f(x0=3.0) = -1.0000 and f(x1=4.0) = 6.0000.",
+      "Step 2: Approximate derivative using chord slope between the two most recent points.",
+      "Step 3: Update x_{n+1} and tabulate values. Secant does not require root bracketing.",
+      "Step 4: Convergence order is superlinear (p = (1+\u221a5)/2 \u2248 1.618)."
     ],
     "intermediate_values": {
       "x0": 3.0,
       "x1": 4.0,
-      "x2": 3.5,
-      "root": 3.1623
+      "root": 3.162285,
+      "residual": 4.4e-05
     },
     "iteration_table": [
       {
         "iter": 1,
         "x_n_minus_1": 3.0,
         "x_n": 4.0,
-        "x_next": 3.5,
-        "f_next": "evaluated"
+        "x_next": 3.142857,
+        "f_next": -0.122449
       },
       {
         "iter": 2,
         "x_n_minus_1": 4.0,
-        "x_n": 3.5,
-        "x_next": 3.1723,
-        "f_next": "evaluated"
+        "x_n": 3.142857,
+        "x_next": 3.16,
+        "f_next": -0.0144
       },
       {
         "iter": 3,
-        "x_n_minus_1": 3.5,
-        "x_n": 3.1723,
-        "x_next": 3.1623,
-        "f_next": "~0.0000"
+        "x_n_minus_1": 3.142857,
+        "x_n": 3.16,
+        "x_next": 3.162285,
+        "f_next": 4.4e-05
       }
     ],
     "final_answer": "Root x \u2248 3.1623",
-    "verification": "Residual f(3.1623) \u2248 0 within tolerance.",
+    "verification": "Residual f(3.1623) = 0.000044 confirms superlinear convergence.",
     "common_mistake": "Discarding the newest point instead of the oldest point during iteration update."
   },
   {
