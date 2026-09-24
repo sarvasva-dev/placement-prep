@@ -561,7 +561,7 @@ assert overlap_count == 0, "Overlap found!"
 
 # Now update MIXED_DAYS_1_15
 for day in range(1, 16):
-    day_questions = MIXED_DAYS_1_15[day]
+    day_questions = MIXED_DAYS_1_15.get(day) or MIXED_DAYS_1_15.get(str(day))
     # Replace indices 5 to 9 (questions 6 to 10)
     fresh = FRESH_MIXED_APTITUDE[day]
     for idx, f_q in enumerate(fresh):
@@ -573,7 +573,7 @@ for day in range(1, 16):
 
 # Now update MIXED_DAYS_16_30
 for day in range(16, 31):
-    day_questions = MIXED_DAYS_16_30[day]
+    day_questions = MIXED_DAYS_16_30.get(day) or MIXED_DAYS_16_30.get(str(day))
     # Replace indices 5 to 9 (questions 6 to 10)
     fresh = FRESH_MIXED_APTITUDE[day]
     for idx, f_q in enumerate(fresh):
@@ -584,8 +584,8 @@ for day in range(16, 31):
         day_questions[target_idx]["explanation"] = f_q[3]
 
 # Fix Day 30 project questions (indices 18 and 19) to be distinct from Day 5
-d30_questions = MIXED_DAYS_16_30[30]
-d30_questions[18]["question"] = "In Sarthak's project portfolio synthesis (CSMS, SmartGalla, BulkBeat TV, Caloriv, TerraStract), which architectural invariant governs multi-service data consistency?"
+d30_questions = MIXED_DAYS_16_30.get(30) or MIXED_DAYS_16_30.get("30")
+d30_questions[18]["question"] = "In Sarthak's project portfolio synthesis (CSMS, SmartGalla, BulkBeat TV, Caloriv, BEVM), which architectural invariant governs multi-service data consistency?"
 d30_questions[18]["options"] = [
     "Database transactions with ACID guarantees, role-based access control, and asynchronous queue decoupling.",
     "Using unencrypted HTTP requests over public ports.",
@@ -593,7 +593,7 @@ d30_questions[18]["options"] = [
     "Restarting the production server on every user request."
 ]
 d30_questions[18]["correct_answer"] = "A"
-d30_questions[18]["explanation"] = "Across CSMS, SmartGalla, BulkBeat TV, Caloriv, and TerraStract, data integrity is preserved using ACID transactions, strict schema migrations, and decoupled background worker queues."
+d30_questions[18]["explanation"] = "Across CSMS, SmartGalla, BulkBeat TV, Caloriv, and BEVM, data integrity is preserved using ACID transactions, strict schema migrations, and decoupled background worker queues."
 
 d30_questions[19]["question"] = "Regarding production reliability across Sarthak's verified projects (CSMS, SmartGalla, Caloriv), how do you defend database migration safety in a technical interview?"
 d30_questions[19]["options"] = [

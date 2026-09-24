@@ -27,7 +27,7 @@ for p in [
     os.path.join(ACADEMIC_DIR, "5004_Numerical_Methods", "pyqs"),
     os.path.join(ACADEMIC_DIR, "5004_Numerical_Methods", "extracted"),
     os.path.join(PROJECTS_DIR, "bulkbeat"),
-    os.path.join(PROJECTS_DIR, "terrastract"),
+    os.path.join(PROJECTS_DIR, "bevm"),
     os.path.join(PROJECTS_DIR, "csms"),
     RESUMES_DIR,
     MANIFESTS_DIR

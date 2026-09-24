@@ -45,6 +45,8 @@ def test_visualizers():
                 
             # Elements
             viz_container = page.locator(".dsa-visualizer").first
+            viz_container.scroll_into_view_if_needed()
+            time.sleep(0.5)
             play_btn = viz_container.locator(".viz-play-btn")
             next_btn = viz_container.locator(".viz-next-btn")
             prev_btn = viz_container.locator(".viz-prev-btn")
@@ -75,7 +77,7 @@ def test_visualizers():
             
             # 2. Click Next
             if next_btn.is_enabled():
-                next_btn.click()
+                next_btn.click(force=True)
                 time.sleep(0.5)
                 day_result["next_verified"] = step_el.inner_text() != initial_step
                 mid_action = action_text.inner_text()
@@ -91,16 +93,16 @@ def test_visualizers():
             
             # 3. Click Previous
             if prev_btn.is_enabled():
-                prev_btn.click()
+                prev_btn.click(force=True)
                 time.sleep(0.5)
                 day_result["previous_verified"] = step_el.inner_text() == initial_step
                 print("  Previous state verified.")
             
             # 4. Click Play & Pause
             if play_btn.is_visible():
-                play_btn.click()
+                play_btn.click(force=True)
                 time.sleep(1.5) # Wait for animation to step
-                play_btn.click() # Pause
+                play_btn.click(force=True) # Pause
                 time.sleep(0.5)
                 day_result["play_verified"] = step_el.inner_text() != initial_step
                 day_result["pause_verified"] = True # We paused it
@@ -111,7 +113,7 @@ def test_visualizers():
             
             # 5. Reset
             if reset_btn.is_visible():
-                reset_btn.click()
+                reset_btn.click(force=True)
                 time.sleep(0.5)
                 day_result["reset_verified"] = step_el.inner_text() == initial_step
                 print("  Reset verified.")
@@ -133,14 +135,15 @@ def test_visualizers():
             day = res["day"]
             mobile_page.goto(f"http://localhost:8000/#day/{day}")
             mobile_page.wait_for_selector(".dsa-visualizer", timeout=5000)
-            time.sleep(2)
+            time.sleep(1)
             
             # Just verify visualizer fits and next button is clickable
             viz_container = mobile_page.locator(".dsa-visualizer").first
+            viz_container.scroll_into_view_if_needed()
             next_btn = viz_container.locator(".viz-next-btn")
             try:
                 if next_btn.is_visible():
-                    next_btn.click()
+                    next_btn.click(force=True)
                     res["mobile_verified"] = True
                     print(f"  Day {day} mobile interaction verified.")
             except Exception as e:

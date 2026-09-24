@@ -8,7 +8,7 @@ Master builder for:
 Ensures:
 - ZERO duplicate questions across all 30 days
 - ZERO duplicate questions between aptitude curriculum and mixed tests
-- 100% adherence to actual university syllabus, company aptitude patterns, and verified projects (CSMS, SmartGalla, BulkBeat TV, Caloriv, TerraStract, BEVM)
+- 100% adherence to actual university syllabus, company aptitude patterns, and verified projects (CSMS, SmartGalla, BulkBeat TV, Caloriv, BEVM)
 - ZERO references to Car Showroom / Dealership
 """
 

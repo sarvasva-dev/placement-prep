@@ -1856,36 +1856,36 @@
       ]
     },
     "project_preparation": {
-      "project_name": "TerraStract",
-      "name": "TerraStract",
-      "repo_path": "D:\\Projects\\terra_extract",
-      "topic": "Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding",
-      "feature_focus": "Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding",
-      "what_to_understand": "OpenCV image manipulation techniques that boost OCR character recognition rates.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nOpenCV image manipulation techniques that boost OCR character recognition rates.\n\nWHAT TO MEMORIZE:\nOtsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.\n\n60-SECOND INTERVIEW PITCH:\nIn TerraStract, OCR accuracy heavily depends on image quality. I developed an automated OpenCV preprocessing pipeline that deskews tilted scans, removes background paper discoloration via adaptive thresholding, and sharpens text contours, increasing OCR extraction reliability by 35% on low-quality documents.",
-      "what_to_memorize": "Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.",
+      "project_name": "Biometric Electronic Voting System (BEVM)",
+      "name": "Biometric Electronic Voting System (BEVM)",
+      "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
+      "topic": "Atomic State Locking & SQLite Double-Vote Prevention",
+      "feature_focus": "Atomic State Locking & SQLite Double-Vote Prevention",
+      "what_to_understand": "Preventing duplicate voting attempts through atomic database transactions and strict state flag locking.",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nPreventing duplicate voting attempts through atomic database transactions and strict state flag locking.\n\nWHAT TO MEMORIZE:\nAtomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
+      "what_to_memorize": "Atomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
       "interview_questions": [
         {
-          "q": "How does image preprocessing improve Tesseract OCR recognition accuracy in TerraStract?",
-          "a": "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of text contours to determine the skew angle and rotates the image to horizontal. It then applies Gaussian blur to remove salt-and-pepper noise and Otsu's adaptive binarization, boosting character accuracy by over 35% on degraded scans."
+          "q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
+          "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."
         },
         {
-          "q": "What is morphological opening and how does it clean scanned documents?",
-          "a": "Morphological opening is an erosion operation followed by dilation (`cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)`). It removes small background speckles and scanner noise while preserving the stroke structure of letters."
+          "q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
+          "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."
         }
       ],
       "interview_qa": [
         {
-          "q": "How does image preprocessing improve Tesseract OCR recognition accuracy in TerraStract?",
-          "a": "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of text contours to determine the skew angle and rotates the image to horizontal. It then applies Gaussian blur to remove salt-and-pepper noise and Otsu's adaptive binarization, boosting character accuracy by over 35% on degraded scans."
+          "q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
+          "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."
         },
         {
-          "q": "What is morphological opening and how does it clean scanned documents?",
-          "a": "Morphological opening is an erosion operation followed by dilation (`cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)`). It removes small background speckles and scanner noise while preserving the stroke structure of letters."
+          "q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
+          "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."
         }
       ],
-      "interview_pitch_exercise": "In TerraStract, OCR accuracy heavily depends on image quality. I developed an automated OpenCV preprocessing pipeline that deskews tilted scans, removes background paper discoloration via adaptive thresholding, and sharpens text contours, increasing OCR extraction reliability by 35% on low-quality documents.",
-      "pitch": "In TerraStract, OCR accuracy heavily depends on image quality. I developed an automated OpenCV preprocessing pipeline that deskews tilted scans, removes background paper discoloration via adaptive thresholding, and sharpens text contours, increasing OCR extraction reliability by 35% on low-quality documents."
+      "interview_pitch_exercise": "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots.",
+      "pitch": "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots."
     },
     "placement_interview": [
       {
@@ -2258,8 +2258,8 @@
       },
       {
         "id": "TEST-19-19",
-        "category": "Projects (TerraStract)",
-        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding'?",
+        "category": "Projects (Biometric Electronic Voting System (BEVM))",
+        "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding'?",
         "options": [
           "Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.",
           "Using unencrypted HTTP requests over public ports.",
@@ -2267,12 +2267,12 @@
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For TerraStract, the architectural invariant is: Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.."
+        "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.."
       },
       {
         "id": "TEST-19-20",
-        "category": "Projects (TerraStract)",
-        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does image preprocessing improve Tesseract OCR recognition accuracy in TerraStract?'?",
+        "category": "Projects (Biometric Electronic Voting System (BEVM))",
+        "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does image preprocessing improve Tesseract OCR recognition accuracy in Biometric Electronic Voting System (BEVM)?'?",
         "options": [
           "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of t...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
@@ -3270,36 +3270,36 @@
     ]
   },
   "project_defense": {
-    "project_name": "TerraStract",
-    "name": "TerraStract",
-    "repo_path": "D:\\Projects\\terra_extract",
-    "topic": "Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding",
-    "feature_focus": "Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding",
-    "what_to_understand": "OpenCV image manipulation techniques that boost OCR character recognition rates.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nOpenCV image manipulation techniques that boost OCR character recognition rates.\n\nWHAT TO MEMORIZE:\nOtsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.\n\n60-SECOND INTERVIEW PITCH:\nIn TerraStract, OCR accuracy heavily depends on image quality. I developed an automated OpenCV preprocessing pipeline that deskews tilted scans, removes background paper discoloration via adaptive thresholding, and sharpens text contours, increasing OCR extraction reliability by 35% on low-quality documents.",
-    "what_to_memorize": "Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.",
+    "project_name": "Biometric Electronic Voting System (BEVM)",
+    "name": "Biometric Electronic Voting System (BEVM)",
+    "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
+    "topic": "Atomic State Locking & SQLite Double-Vote Prevention",
+    "feature_focus": "Atomic State Locking & SQLite Double-Vote Prevention",
+    "what_to_understand": "Preventing duplicate voting attempts through atomic database transactions and strict state flag locking.",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nPreventing duplicate voting attempts through atomic database transactions and strict state flag locking.\n\nWHAT TO MEMORIZE:\nAtomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
+    "what_to_memorize": "Atomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
     "interview_questions": [
       {
-        "q": "How does image preprocessing improve Tesseract OCR recognition accuracy in TerraStract?",
-        "a": "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of text contours to determine the skew angle and rotates the image to horizontal. It then applies Gaussian blur to remove salt-and-pepper noise and Otsu's adaptive binarization, boosting character accuracy by over 35% on degraded scans."
+        "q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
+        "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."
       },
       {
-        "q": "What is morphological opening and how does it clean scanned documents?",
-        "a": "Morphological opening is an erosion operation followed by dilation (`cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)`). It removes small background speckles and scanner noise while preserving the stroke structure of letters."
+        "q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
+        "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."
       }
     ],
     "interview_qa": [
       {
-        "q": "How does image preprocessing improve Tesseract OCR recognition accuracy in TerraStract?",
-        "a": "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of text contours to determine the skew angle and rotates the image to horizontal. It then applies Gaussian blur to remove salt-and-pepper noise and Otsu's adaptive binarization, boosting character accuracy by over 35% on degraded scans."
+        "q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
+        "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."
       },
       {
-        "q": "What is morphological opening and how does it clean scanned documents?",
-        "a": "Morphological opening is an erosion operation followed by dilation (`cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)`). It removes small background speckles and scanner noise while preserving the stroke structure of letters."
+        "q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
+        "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."
       }
     ],
-    "interview_pitch_exercise": "In TerraStract, OCR accuracy heavily depends on image quality. I developed an automated OpenCV preprocessing pipeline that deskews tilted scans, removes background paper discoloration via adaptive thresholding, and sharpens text contours, increasing OCR extraction reliability by 35% on low-quality documents.",
-    "pitch": "In TerraStract, OCR accuracy heavily depends on image quality. I developed an automated OpenCV preprocessing pipeline that deskews tilted scans, removes background paper discoloration via adaptive thresholding, and sharpens text contours, increasing OCR extraction reliability by 35% on low-quality documents."
+    "interview_pitch_exercise": "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots.",
+    "pitch": "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots."
   },
   "placement_interview": [
     {
@@ -3638,18 +3638,18 @@
       },
       {
         "no": 19,
-        "q": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding'?",
+        "q": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding'?",
         "options": [
           "Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For TerraStract, the architectural invariant is: Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.."
+        "a": "Answer: A \u2014 For Biometric Electronic Voting System (BEVM), the architectural invariant is: Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.."
       },
       {
         "no": 20,
-        "q": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does image preprocessing improve Tesseract OCR recognition accuracy in TerraStract?'?",
+        "q": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does image preprocessing improve Tesseract OCR recognition accuracy in Biometric Electronic Voting System (BEVM)?'?",
         "options": [
           "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of t...",
           "Claim that standard frameworks are obsolete and write custom assembly.",

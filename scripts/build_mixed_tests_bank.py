@@ -9,7 +9,7 @@ Each day has exactly 20 unique questions:
 - Q1-Q5: Academic (CSJMU Syllabus)
 - Q6-Q10: Placement Aptitude (Topic Math & Logic)
 - Q11-Q15: Core Computer Science (OS, DBMS, Networks, Python, System Design)
-- Q16-Q20: Java DSA & Project Architecture (CSMS, SmartGalla, BulkBeat TV, Caloriv, TerraStract)
+- Q16-Q20: Java DSA & Project Architecture (CSMS, SmartGalla, BulkBeat TV, Caloriv, BEVM)
 
 ZERO template text. ZERO duplicates.
 """

@@ -233,7 +233,7 @@ def get_placement_for_day(day: int) -> list:
         ("SmartGalla", "Next.js 16, React 19, Supabase RLS, Razorpay, PWA", "D:\\Projects\\smartgalla"),
         ("NSE2 / BulkBeat TV", "Python aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Dhan API", "D:\\Projects\\NSE2"),
         ("Caloriv", "React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain", "D:\\Projects\\Caloriv"),
-        ("TerraStract", "FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR", "D:\\Projects\\terra_extract"),
+        ("Biometric Electronic Voting System (BEVM)", "Python, SQLite, Fernet AES-256, Chained SHA-256 Audit Ledger, Biometric Auth", "D:\\Projects\\FINGERPINT VOTING SYSTEM"),
         ("DevQBX & Sitekraft Engineering", "Project Management, Client Web Architecture, Microservices", "Career Experience")
     ]
     curr_proj = projects[(day - 1) % len(projects)]

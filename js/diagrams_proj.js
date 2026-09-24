@@ -1,5 +1,5 @@
 /**
- * SVG Diagram Generators for Verified Engineering Projects (SmartGalla, BulkBeat TV, Caloriv, TerraStract, CSMS)
+ * SVG Diagram Generators for Verified Engineering Projects (SmartGalla, BulkBeat TV, Caloriv, BEVM, CSMS)
  */
 
 export function renderProjectDefenseSvg(projectName = '', topic = '') {
@@ -35,14 +35,14 @@ export function renderProjectDefenseSvg(projectName = '', topic = '') {
     return createBulkBeatConcurrencySvg();
   }
 
-  if (p.includes('terrastract')) {
-    if (p.includes('spatial') || p.includes('coordinate') || p.includes('tabular')) {
-      return createTerraStractSpatialSvg();
+  if (p.includes('bevm') || p.includes('voting') || p.includes('fingerprint') || p.includes('cryptographic')) {
+    if (p.includes('fernet') || p.includes('encryption') || p.includes('key')) {
+      return createBevmEncryptionSvg();
     }
-    if (p.includes('cv') || p.includes('deskew') || p.includes('threshold')) {
-      return createTerraStractPreprocessingSvg();
+    if (p.includes('biometric') || p.includes('auth') || p.includes('role')) {
+      return createBevmBiometricAuthSvg();
     }
-    return createTerraStractHybridPipelineSvg();
+    return createBevmCryptographicLedgerSvg();
   }
 
   if (p.includes('caloriv')) {
@@ -422,137 +422,124 @@ function createBulkBeatNotificationSvg() {
   `;
 }
 
-function createTerraStractHybridPipelineSvg() {
+function createBevmCryptographicLedgerSvg() {
   return `
   <div class="svg-diagram-wrapper">
     <div class="svg-diagram-header">
-      <span class="svg-tag">TERRASTRACT DEFENSE</span>
-      <span class="svg-title">TerraStract: Hybrid Text Layer Extraction vs Tesseract OCR Fallback</span>
+      <span class="svg-tag">BEVM ARCHITECTURE</span>
+      <span class="svg-title">BEVM: Tamper-Evident Chained SHA-256 Ballot Ledger</span>
     </div>
-    <svg viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
-      <!-- Input PDF -->
-      <g transform="translate(30, 80)">
-        <rect width="140" height="70" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-        <text x="70" y="35" text-anchor="middle" fill="#38bdf8" font-weight="800">INPUT DOCUMENT</text>
-        <text x="70" y="55" text-anchor="middle" fill="#94a3b8" font-size="10">PDF / Scanned Bill</text>
+    <svg viewBox="0 0 860 220" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
+      <!-- Genesis Block -->
+      <g transform="translate(30, 40)">
+        <rect width="210" height="130" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+        <text x="105" y="30" text-anchor="middle" fill="#38bdf8" font-weight="800">GENESIS BLOCK #0</text>
+        <rect x="15" y="45" width="180" height="30" rx="4" fill="#0f172a"/>
+        <text x="105" y="65" text-anchor="middle" fill="#94a3b8" font-family="monospace" font-size="11">Prev: 000000000000</text>
+        <text x="105" y="105" text-anchor="middle" fill="#ffffff" font-size="11">Election Initialized</text>
+        <text x="105" y="125" text-anchor="middle" fill="#a7f3d0" font-family="monospace" font-size="10">H0 = SHA256(Genesis)</text>
       </g>
 
-      <line x1="170" y1="115" x2="230" y2="115" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <line x1="240" y1="105" x2="310" y2="105" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <text x="275" y="95" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="10">H0</text>
 
-      <!-- Decision Diamond -->
-      <g transform="translate(240, 65)">
-        <polygon points="70,0 140,50 70,100 0,50" fill="#1e1b4b" stroke="#f59e0b" stroke-width="2"/>
-        <text x="70" y="45" text-anchor="middle" fill="#fbbf24" font-weight="700" font-size="11">Digital Font</text>
-        <text x="70" y="60" text-anchor="middle" fill="#fbbf24" font-weight="700" font-size="11">Layer Exists?</text>
+      <!-- Ballot Block 1 -->
+      <g transform="translate(320, 40)">
+        <rect width="230" height="130" rx="8" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+        <text x="115" y="30" text-anchor="middle" fill="#c7d2fe" font-weight="800">BALLOT BLOCK #1</text>
+        <rect x="15" y="45" width="200" height="30" rx="4" fill="#0f172a"/>
+        <text x="115" y="65" text-anchor="middle" fill="#818cf8" font-family="monospace" font-size="10">Prev: H0 (Genesis)</text>
+        <text x="115" y="100" text-anchor="middle" fill="#ffffff" font-size="11">Fernet(Choice) + Timestamp</text>
+        <text x="115" y="125" text-anchor="middle" fill="#a7f3d0" font-family="monospace" font-size="10">H1 = SHA256(H0 + Data1)</text>
       </g>
 
-      <!-- Fast Path: PyMuPDF -->
-      <line x1="310" y1="65" x2="420" y2="35" stroke="#34d399" stroke-width="2.5" marker-end="url(#projArrow)"/>
-      <text x="360" y="45" fill="#34d399" font-weight="700" font-size="11">YES</text>
+      <line x1="550" y1="105" x2="620" y2="105" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <text x="585" y="95" text-anchor="middle" fill="#38bdf8" font-family="monospace" font-size="10">H1</text>
 
-      <g transform="translate(430, 15)">
-        <rect width="210" height="60" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
-        <text x="105" y="28" text-anchor="middle" fill="#a7f3d0" font-weight="800">PyMuPDF (fitz)</text>
-        <text x="105" y="48" text-anchor="middle" fill="#ffffff" font-size="11">Vector glyphs extracted (&lt;10ms)</text>
-      </g>
-
-      <!-- Slow Path: OpenCV + Tesseract -->
-      <line x1="310" y1="165" x2="420" y2="190" stroke="#f87171" stroke-width="2.5" marker-end="url(#projArrow)"/>
-      <text x="360" y="195" fill="#f87171" font-weight="700" font-size="11">NO (Scanned)</text>
-
-      <g transform="translate(430, 160)">
-        <rect width="210" height="65" rx="8" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
-        <text x="105" y="25" text-anchor="middle" fill="#fecaca" font-weight="800">OpenCV + Tesseract OCR</text>
-        <text x="105" y="44" text-anchor="middle" fill="#ffffff" font-size="10">Adaptive Binarization + Deskew</text>
-        <text x="105" y="58" text-anchor="middle" fill="#fca5a5" font-size="9">Slow path (~800ms)</text>
-      </g>
-
-      <!-- Convergence to structured JSON -->
-      <line x1="640" y1="45" x2="710" y2="90" stroke="#38bdf8" stroke-width="2" marker-end="url(#projArrow)"/>
-      <line x1="640" y1="190" x2="710" y2="135" stroke="#38bdf8" stroke-width="2" marker-end="url(#projArrow)"/>
-
-      <g transform="translate(710, 85)">
-        <rect width="130" height="60" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
-        <text x="65" y="28" text-anchor="middle" fill="#38bdf8" font-weight="800">STRUCTURED</text>
-        <text x="65" y="48" text-anchor="middle" fill="#a7f3d0" font-size="11">Clean JSON Output</text>
+      <!-- Ballot Block 2 -->
+      <g transform="translate(630, 40)">
+        <rect width="200" height="130" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
+        <text x="100" y="30" text-anchor="middle" fill="#a7f3d0" font-weight="800">BALLOT BLOCK #2</text>
+        <rect x="15" y="45" width="170" height="30" rx="4" fill="#0f172a"/>
+        <text x="100" y="65" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="10">Prev: H1 (Block #1)</text>
+        <text x="100" y="100" text-anchor="middle" fill="#ffffff" font-size="11">Fernet(Choice) + Timestamp</text>
+        <text x="100" y="125" text-anchor="middle" fill="#a7f3d0" font-family="monospace" font-size="10">H2 = SHA256(H1 + Data2)</text>
       </g>
     </svg>
   </div>
   `;
 }
 
-function createTerraStractSpatialSvg() {
+function createBevmEncryptionSvg() {
   return `
   <div class="svg-diagram-wrapper">
     <div class="svg-diagram-header">
-      <span class="svg-tag">TERRASTRACT DEFENSE</span>
-      <span class="svg-title">Tabular Coordinate Extraction & Spatial Bounding Box Alignment</span>
+      <span class="svg-tag">BEVM CRYPTOGRAPHY</span>
+      <span class="svg-title">BEVM: Fernet AES-256 Symmetric Payload Encryption & Key Isolation</span>
     </div>
     <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
-      <g transform="translate(40, 40)">
-        <rect width="200" height="120" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-        <text x="100" y="30" text-anchor="middle" fill="#38bdf8" font-weight="700">Raw Bounding Boxes</text>
-        <rect x="20" y="45" width="45" height="25" fill="#334155" stroke="#38bdf8"/>
-        <rect x="80" y="45" width="45" height="25" fill="#334155" stroke="#38bdf8"/>
-        <rect x="140" y="45" width="45" height="25" fill="#334155" stroke="#38bdf8"/>
-        <text x="100" y="100" text-anchor="middle" fill="#94a3b8" font-size="10">[x0, y0, x1, y1] coordinates</text>
+      <g transform="translate(40, 45)">
+        <rect width="180" height="110" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+        <text x="90" y="35" text-anchor="middle" fill="#38bdf8" font-weight="700">Raw Ballot Selection</text>
+        <text x="90" y="65" text-anchor="middle" fill="#ffffff" font-size="12">Candidate ID: 4</text>
+        <text x="90" y="85" text-anchor="middle" fill="#94a3b8" font-size="10">Timestamp: UTC ISO</text>
+        <text x="90" y="105" text-anchor="middle" fill="#f87171" font-size="10">Unencrypted Plaintext</text>
       </g>
-      <line x1="240" y1="100" x2="320" y2="100" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <line x1="220" y1="100" x2="300" y2="100" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(330, 40)">
-        <rect width="220" height="120" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="2"/>
-        <text x="110" y="30" text-anchor="middle" fill="#c084fc" font-weight="800">SPATIAL CLUSTERING</text>
-        <text x="110" y="55" text-anchor="middle" fill="#fff" font-size="11">Y-axis tolerance (within 4px)</text>
-        <text x="110" y="75" text-anchor="middle" fill="#fff" font-size="11">X-axis column projection</text>
-        <text x="110" y="100" text-anchor="middle" fill="#a7f3d0" font-size="10">Reconstructs Table Grid</text>
+      <g transform="translate(310, 35)">
+        <rect width="250" height="130" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="2"/>
+        <text x="125" y="30" text-anchor="middle" fill="#c084fc" font-weight="800">FERNET ENCRYPTION</text>
+        <text x="125" y="55" text-anchor="middle" fill="#fff" font-size="11">AES-128-CBC + PKCS7 Padding</text>
+        <text x="125" y="75" text-anchor="middle" fill="#fff" font-size="11">HMAC-SHA256 Authentication</text>
+        <rect x="25" y="90" width="200" height="25" rx="4" fill="#0f172a"/>
+        <text x="125" y="107" text-anchor="middle" fill="#fbbf24" font-family="monospace" font-size="10">Key: Air-Gapped secret.key</text>
       </g>
-      <line x1="550" y1="100" x2="630" y2="100" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <line x1="560" y1="100" x2="640" y2="100" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(640, 40)">
-        <rect width="180" height="120" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
-        <text x="90" y="30" text-anchor="middle" fill="#a7f3d0" font-weight="800">Export Pandas / CSV</text>
-        <text x="90" y="55" text-anchor="middle" fill="#fff" font-size="11">Clean Dataframe</text>
-        <text x="90" y="80" text-anchor="middle" fill="#e2e8f0" font-size="10">Header & Row align</text>
+      <g transform="translate(650, 45)">
+        <rect width="170" height="110" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
+        <text x="85" y="35" text-anchor="middle" fill="#a7f3d0" font-weight="800">Encrypted Ballot</text>
+        <text x="85" y="65" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="10">gAAAAABl...</text>
+        <text x="85" y="85" text-anchor="middle" fill="#e2e8f0" font-size="10">Ciphertext stored</text>
+        <text x="85" y="105" text-anchor="middle" fill="#34d399" font-size="10">Zero plain choice at rest</text>
       </g>
     </svg>
   </div>
   `;
 }
 
-function createTerraStractPreprocessingSvg() {
+function createBevmBiometricAuthSvg() {
   return `
   <div class="svg-diagram-wrapper">
     <div class="svg-diagram-header">
-      <span class="svg-tag">TERRASTRACT DEFENSE</span>
-      <span class="svg-title">Computer Vision Preprocessing: Grayscale → Adaptive Threshold → Deskew</span>
+      <span class="svg-tag">BEVM AUTHENTICATION</span>
+      <span class="svg-title">BEVM: Biometric Verification & Atomic SQLite State Locking</span>
     </div>
-    <svg viewBox="0 0 860 190" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
-      <g transform="translate(40, 45)">
-        <rect width="160" height="90" rx="8" fill="#1e293b" stroke="#64748b"/>
-        <text x="80" y="40" text-anchor="middle" fill="#cbd5e1" font-weight="700">1. Grayscale</text>
-        <text x="80" y="65" text-anchor="middle" fill="#94a3b8" font-size="10">cv2.cvtColor</text>
+    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
+      <g transform="translate(40, 50)">
+        <rect width="180" height="100" rx="8" fill="#1e293b" stroke="#64748b"/>
+        <text x="90" y="35" text-anchor="middle" fill="#cbd5e1" font-weight="700">1. Citizen Identity</text>
+        <text x="90" y="60" text-anchor="middle" fill="#94a3b8" font-size="11">Voter ID / Biometrics</text>
+        <text x="90" y="80" text-anchor="middle" fill="#38bdf8" font-size="10">Fingerprint Hash Match</text>
       </g>
-      <line x1="200" y1="90" x2="250" y2="90" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <line x1="220" y1="100" x2="280" y2="100" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(260, 45)">
-        <rect width="180" height="90" rx="8" fill="#1e1b4b" stroke="#818cf8"/>
-        <text x="90" y="35" text-anchor="middle" fill="#c7d2fe" font-weight="700">2. Otsu Binarization</text>
-        <text x="90" y="60" text-anchor="middle" fill="#fff" font-size="10">Eliminates shadows</text>
-        <text x="90" y="78" text-anchor="middle" fill="#a5b4fc" font-size="10">High contrast</text>
+      <g transform="translate(290, 45)">
+        <polygon points="70,0 140,55 70,110 0,55" fill="#1e1b4b" stroke="#f59e0b" stroke-width="2"/>
+        <text x="70" y="50" text-anchor="middle" fill="#fbbf24" font-weight="700" font-size="10">has_voted</text>
+        <text x="70" y="68" text-anchor="middle" fill="#fbbf24" font-weight="700" font-size="10">== 0 ?</text>
       </g>
-      <line x1="440" y1="90" x2="490" y2="90" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(500, 45)">
-        <rect width="160" height="90" rx="8" fill="#1e293b" stroke="#f59e0b"/>
-        <text x="80" y="35" text-anchor="middle" fill="#fbbf24" font-weight="700">3. Radon Deskew</text>
-        <text x="80" y="60" text-anchor="middle" fill="#fff" font-size="10">Find skew angle θ</text>
-        <text x="80" y="78" text-anchor="middle" fill="#fde68a" font-size="10">Rotate affine</text>
-      </g>
-      <line x1="660" y1="90" x2="710" y2="90" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <line x1="430" y1="100" x2="500" y2="100" stroke="#34d399" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <text x="465" y="90" fill="#34d399" font-weight="700" font-size="11">YES</text>
 
-      <g transform="translate(720, 45)">
-        <rect width="110" height="90" rx="8" fill="#064e3b" stroke="#34d399"/>
-        <text x="55" y="45" text-anchor="middle" fill="#a7f3d0" font-weight="800">Clean OCR</text>
+      <g transform="translate(510, 40)">
+        <rect width="310" height="120" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
+        <text x="155" y="30" text-anchor="middle" fill="#a7f3d0" font-weight="800">ATOMIC TRANSACTION COMMIT</text>
+        <text x="155" y="55" text-anchor="middle" fill="#fff" font-size="11">1. INSERT INTO votes (encrypted_ballot, hash)</text>
+        <text x="155" y="75" text-anchor="middle" fill="#fff" font-size="11">2. UPDATE voters SET has_voted = 1</text>
+        <text x="155" y="100" text-anchor="middle" fill="#fde68a" font-weight="700" font-size="10">Double-Vote mathematically prevented</text>
       </g>
     </svg>
   </div>

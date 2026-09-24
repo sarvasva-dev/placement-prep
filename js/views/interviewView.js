@@ -16,7 +16,7 @@ export function renderInterviewView(container, daysIndex) {
       questions: [
         {
           q: 'Tell me about yourself and your technical focus in under 90 seconds.',
-          framework: 'Present (BCA 3rd year, Python backend & API systems) → Past (Key projects: BulkBeat TV high-concurrency alert engine, TerraStract OCR pipeline) → Future (Excited to solve distributed system and reliability challenges at your company).',
+          framework: 'Present (BCA 3rd year, Python backend & API systems) → Past (Key projects: BulkBeat TV high-concurrency alert engine with 6k+ users and ₹1.11L revenue, BEVM cryptographic voting platform) → Future (Excited to solve distributed system and reliability challenges at your company).',
           key_points: 'Keep under 90 seconds. Focus on what you have built and deployed, not generic childhood interests.'
         },
         {
@@ -39,7 +39,7 @@ export function renderInterviewView(container, daysIndex) {
     {
       id: 'round2',
       title: 'Round 2: System Architecture & Project Defense',
-      subtitle: 'Deep-Dive into BulkBeat TV, TerraStract & CSMS Codebases',
+      subtitle: 'Deep-Dive into BulkBeat TV, BEVM & CSMS Codebases',
       duration: 5,
       questions: [
         {
@@ -48,9 +48,9 @@ export function renderInterviewView(container, daysIndex) {
           key_points: 'Demonstrate deep knowledge of write contention and non-blocking asynchronous architectures.'
         },
         {
-          q: 'In TerraStract, why combine PyMuPDF with Tesseract OCR rather than running OCR across all pages?',
-          framework: 'Performance & Resource Tradeoff (PyMuPDF extracts digital text vector streams in &lt;10ms; Tesseract requires 800ms+ per page and high CPU) → Hybrid Fallback Decision Matrix.',
-          key_points: 'Mention fallback triggers: empty text layer, font glyph corruption, or image-only scanned pages.'
+          q: 'In the Biometric Electronic Voting System (BEVM), how do you prevent ballot tampering while preserving absolute voter anonymity?',
+          framework: 'Cryptographic Design (Ballot choices are encrypted via Fernet AES-256 and chained using SHA-256 hashes) → Anonymity (Voter authentication status is decoupled from the encrypted ballot payload so no reverse-lookup is possible) → Tamper Evidence (Altering any historical vote invalidates the subsequent hash chain).',
+          key_points: 'Demonstrate understanding of SHA-256 cryptographic chaining, symmetric AES encryption, and separation of authentication from vote persistence.'
         },
         {
           q: 'How did you secure endpoints and manage database schema versions in CSMS?',

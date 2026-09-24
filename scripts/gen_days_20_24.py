@@ -219,27 +219,25 @@ def get_days_20_to_24():
             ]
         },
         "project_defense": {
-            "project_name": "TerraStract",
-            "feature_focus": "FastAPI REST Architecture & Asynchronous OCR Worker Queue",
+            "project_name": "Biometric Electronic Voting System (BEVM)",
+            "feature_focus": "Tamper-Evident Cryptographic Ledger & Chained SHA-256 Hashes",
             "architecture_deep_dive": (
-                "TerraStract processes large multi-page Hindi and English PDF documents. Performing heavy OCR synchronously inside "
-                "a standard HTTP request handler would block the server thread for 10-30 seconds, leading to HTTP 504 Gateway Timeouts.\n\n"
-                "1. Asynchronous Ingestion Workflow:\n"
-                "• Client uploads document via `POST /api/v1/extract`.\n"
-                "• The endpoint validates file mime-type and magic bytes, saves the binary payload to storage, generates a unique `job_id` (UUIDv4), and enqueues a background task via `BackgroundTasks` (or Celery worker).\n"
-                "• Server returns an immediate `HTTP 202 Accepted` response with JSON `{ 'job_id': '...', 'status': 'queued' }`.\n\n"
-                "2. Polling and Webhook Notifications:\n"
-                "• Client checks extraction status via `GET /api/v1/jobs/{job_id}`.\n"
-                "• When the worker completes the PyMuPDF/Tesseract pipeline, job status transitions from `processing` to `completed` with structured extraction payloads."
+                "BEVM operates as an air-gapped cryptographic voting platform designed to prevent retroactive ballot manipulation.\n\n"
+                "1. Chained Hash Architecture:\n"
+                "• Each cast vote block incorporates the SHA-256 hash of the immediately preceding ballot block (H_i = SHA256(H_{i-1} + ballot_data)).\n"
+                "• If an attacker alters or injects a past ballot in SQLite, the sequential hash chain breaks mathematically at that exact block index.\n\n"
+                "2. Decoupled Voter Privacy & State Flagging:\n"
+                "• Voter authentication sets has_voted = 1 in an atomic SQLite transaction, completely separated from ballot choices stored in the votes table.\n"
+                "• Ballots are encrypted with Fernet AES-256 before disk writes, guaranteeing that intermediate counts cannot be inspected until official decryption."
             ),
             "interview_qa": [
                 {
-                    "q": "Why did you use HTTP 202 Accepted instead of HTTP 200 OK for document uploads in TerraStract?",
-                    "a": "Because document extraction with OCR is an asynchronous, computationally intensive process that takes up to several seconds per page. Returning HTTP 202 Accepted informs the client that the request has been received and scheduled for processing, without forcing the client HTTP socket to remain open and susceptible to gateway timeouts."
+                    "q": "How does BEVM mathematically prove that ballots were not altered in SQLite?",
+                    "a": "BEVM implements an append-only sequential SHA-256 hash chain where each block incorporates the preceding block's hash. A forensic traversal script recalculates all block hashes prior to tally publication; any modified bit in historical records invalidates all subsequent hashes, providing mathematical proof of zero tampering."
                 },
                 {
-                    "q": "How did you prevent memory exhaustion when multiple users upload 100MB PDF files concurrently?",
-                    "a": "I streamed uploaded files directly to disk using `UploadFile.file` chunks rather than reading the entire byte payload into RAM via `file.read()`. Additionally, OCR workers process PDF pages sequentially one page at a time with explicit PyMuPDF garbage collection (`page = None; doc.close()`), keeping RAM usage strictly bounded below 250MB per worker."
+                    "q": "How does BEVM ensure voter secrecy while preventing double-voting?",
+                    "a": "Voter biometric verification and ballot recording are strictly decoupled. When a citizen authenticates, their record in the voters table sets has_voted = 1 within an atomic SQLite transaction. The encrypted ballot is stored in an independent votes table with no linkable identifier connecting voter identity to candidate preference."
                 }
             ]
         },
@@ -482,11 +480,12 @@ def get_days_20_to_24():
         },
         "project_defense": {
             "project_name": "Full Portfolio Multi-Tier Review",
-            "feature_focus": "Architectural Audit & Cross-Comparison: CSMS vs BulkBeat TV vs TerraStract vs BEVM",
+            "feature_focus": "Architectural Audit & Cross-Comparison: CSMS vs BulkBeat TV vs SmartGalla vs BEVM",
             "architecture_deep_dive": (
                 "Technical Cross-Comparison across Sarthak's 4 Flagship Projects:\n\n"
                 "1. Framework & Concurrency Paradigms:\n"
-                "• CSMS & TerraStract: Built on FastAPI (Python ASGI) utilizing Python's `asyncio` event loop for non-blocking I/O operations and automatic OpenAPI/Swagger documentation generation.\n"
+                "• CSMS: Built on FastAPI (Python ASGI) utilizing Python's `asyncio` event loop for non-blocking I/O operations and automatic OpenAPI/Swagger documentation generation.\n"
+                "• SmartGalla: Built on Next.js 16 App Router server components with Supabase PostgreSQL and Row-Level Security.\n"
                 "• BulkBeat TV: Built on `aiohttp` and native asyncio queues for high-throughput WebSocket/Telegram bot event dispatching.\n\n"
                 "2. Database & Data Consistency Models:\n"
                 "• CSMS: Relational PostgreSQL schema with ACID compliance, relational integrity (Foreign Keys, CASCADE), and Alembic migration version control.\n"
@@ -496,7 +495,7 @@ def get_days_20_to_24():
             "interview_qa": [
                 {
                     "q": "How do you decide between FastAPI and Django for a new backend project?",
-                    "a": "I choose FastAPI when building lightweight, high-performance microservices or APIs requiring async I/O (like real-time websockets or AI model integration in TerraStract). I choose Django when building comprehensive monolithic web applications requiring built-in administrative portals, user session management, and complex ORM migrations out of the box."
+                    "a": "I choose FastAPI when building lightweight, high-performance microservices or APIs requiring async I/O. I choose Django when building comprehensive monolithic web applications requiring built-in administrative portals, user session management, and complex ORM migrations out of the box."
                 },
                 {
                     "q": "How did you maintain database consistency during concurrent transactions across your projects?",
@@ -934,7 +933,7 @@ def get_days_20_to_24():
             "architecture_deep_dive": (
                 "Packaging Technical Competencies into High-Value Client Deliverables:\n\n"
                 "1. The 3 Core Freelance Offerings based on verified code:\n"
-                "• Offering 1 (Document Automation & OCR Pipelines): Extracting structured tabular data from PDFs/scans using TerraStract's hybrid PyMuPDF/Tesseract engine.\n"
+                "• Offering 1 (Real-Time Market Alert Engines): Event-driven notification pipelines in Python aiohttp with Telegram webhooks and sub-5s latency.\n"
                 "• Offering 2 (API Backend & Webhook Integration): Building production FastAPI microservices, JWT authentication, and Telegram/WhatsApp bot notifications.\n"
                 "• Offering 3 (Web Scraping & Real-Time Monitoring): Scheduled headless browsers and aiohttp workers with anti-blocking headers.\n\n"
                 "2. Statement of Work (SOW) Structure:\n"
@@ -1149,7 +1148,7 @@ def get_days_20_to_24():
             "architecture_deep_dive": (
                 "Transitioning One-Off Projects into Recurring Monthly Retainers:\n\n"
                 "1. Post-Deployment Maintenance Packaging:\n"
-                "After delivering an initial project (e.g., TerraStract OCR pipeline), clients face ongoing operational concerns: server downtime, "
+                "After delivering an initial project (e.g., custom FastAPI microservice or notification pipeline), clients face ongoing operational concerns: server downtime, "
                 "API updates, dependency vulnerability patches, and backup management.\n\n"
                 "2. Retainer Deliverables:\n"
                 "• Tier 1: System Monitoring, monthly dependency updates, automated offsite database backups, and 4 hours of emergency bug fixes for a fixed monthly fee (e.g., ₹15,000/month).\n"

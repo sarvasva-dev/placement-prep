@@ -18,12 +18,12 @@ For EVERY Day 1 to Day 30:
 
 REVISION_CATALOG = {
     "1": {
-        "yesterday_recall": "\u2022 Program Launch & Orientation: Established 30-day roadmap targeting SGPA >= 9.0 and top-tier placement readiness.\n\u2022 Portfolio baseline: Verified D:\\Projects codebase inventory across SmartGalla, BulkBeat TV, CSMS, and TerraStract.",
+        "yesterday_recall": "\u2022 Program Launch & Orientation: Established 30-day roadmap targeting SGPA >= 9.0 and top-tier placement readiness.\n\u2022 Portfolio baseline: Verified D:\\Projects codebase inventory across SmartGalla, BulkBeat TV, Caloriv, CSMS, and BEVM.",
         "today_recall": "\u2022 Mastered Herbert Simon's 4-Stage Decision Making Model: Intelligence -> Design -> Choice -> Implementation.\n\u2022 Understood Bounded Rationality and the vital distinction between Satisficing (adequate threshold) vs Optimizing (global maximum).\n\u2022 Explored Business Intelligence (BI) operational cycle and data warehouse integration.",
         "formula_recall": "\u2022 Percentage Change = [(New - Old) / Old] * 100%\n\u2022 Base Inversion: If A is r% more than B, B is [r / (100 + r)] * 100% less than A.\n\u2022 Price & Consumption: If price rises by 1/x, consumption must decrease by 1/(x+1) to maintain constant expenditure.\n\u2022 Two Pointers Time Complexity: O(N) linear time with O(1) auxiliary space.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section B, 15 Marks) \u2014 'Explain Herbert Simon's Decision Making Process with suitable diagram and real-world IT examples.'\n\u2022 Blueprint: 1. Definition (2m) -> 2. 4-Stage Diagram (4m) -> 3. Explanation of Phases (5m) -> 4. Satisficing Table (2m) -> 5. Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Two Pointers (Opposite Direction).\n\u2022 Invariant: Left pointer starts at 0, Right pointer starts at n-1. Advance left if sum is too small, decrement right if sum is too large.\n\u2022 Edge Cases: Sorted array requirement, duplicate values, empty or single-element arrays.",
-        "project_recall": "\u2022 Project: SmartGalla (Geospatial Kirana Supply Chain).\n\u2022 Architecture: Next.js 16 frontend + PostgreSQL backend with Point-in-Polygon geofencing and in-memory LRU cache.\n\u2022 Defense Pitch: 'Engineered sub-100ms inventory hydration and atomic ledgers for 12M+ Kirana stores, slashing DB compute by 60% with Supabase delta replication.'",
+        "project_recall": "\u2022 Project: SmartGalla (Geospatial Kirana Supply Chain).\n\u2022 Architecture: Next.js 16 frontend + PostgreSQL backend with Point-in-Polygon geofencing and in-memory LRU cache.\n\u2022 Defense Pitch: 'Engineered sub-100ms inventory hydration and atomic ledgers piloted with 4-5 local Kirana stores, slashing DB compute by 60% with Supabase delta replication before sunsetting due to hosting infrastructure costs.'",
         "rapid_fire": [
             [
                 "What are the 4 phases of Herbert Simon's decision-making model?",
@@ -73,7 +73,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Profit % = [(SP - CP) / CP] * 100%\n\u2022 Loss % = [(CP - SP) / CP] * 100%\n\u2022 Single Equivalent Discount: d = d1 + d2 - (d1 * d2 / 100)%\n\u2022 Equal SP with x% profit and x% loss: Net outcome is ALWAYS a loss of (x^2 / 100)%\n\u2022 Fixed Sliding Window: Window size K remains invariant; compute new sum in O(1) via sum = sum - arr[i-K] + arr[i].",
         "pyq_recall": "\u2022 University PYQ: CSJM University 2021 (Section B, 15 Marks) \u2014 'Define DSS. Detail the four subsystems of DSS and contrast MIS with DSS with an architectural comparison table.'\n\u2022 Blueprint: 1. Definition (2m) -> 2. Subsystem Block Diagram (4m) -> 3. Subsystem Breakdown (5m) -> 4. MIS vs DSS Table (2m) -> 5. Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Sliding Window (Fixed Size K).\n\u2022 Invariant: Window size remains exactly K. Slide forward by subtracting the element exiting the left and adding the element entering the right.\n\u2022 Edge Cases: Array length smaller than K, all negative integers, K = 1.",
-        "project_recall": "\u2022 Project: BulkBeat TV (Real-Time Market Intelligence Engine, bulkbeattv.com).\n\u2022 Architecture: Python AsyncIO backend, SQLite in WAL mode (30s busy-timeout), Telegram bot webhooks, and Tesseract OCR.\n\u2022 Defense Pitch: 'Architected real-time streaming market alerts with sub-5s latency on a 1GB VPS; 22-rule deterministic AI filters 90%+ noise, with zero database locks under heavy burst traffic.'",
+        "project_recall": "\u2022 Project: BulkBeat TV (Real-Time Market Intelligence Engine, bulkbeattv.com).\n\u2022 Architecture: Python AsyncIO backend, SQLite in WAL mode (30s busy-timeout), Telegram bot webhooks, and Tesseract OCR.\n\u2022 Defense Pitch: 'Architected real-time streaming market alerts with sub-5s latency for 6,000+ users generating \u20b91.11 Lakhs commercial revenue; 22-rule deterministic AI filters 90%+ noise, with zero database locks on a low-resource VPS.'",
         "rapid_fire": [
             [
                 "What are the four core subsystems of a Decision Support System (DSS)?",
@@ -112,8 +112,8 @@ REVISION_CATALOG = {
                 "To allow concurrent readers to read without blocking the single writer queue, preventing database locked errors."
             ],
             [
-                "What is the typical alert latency achieved by BulkBeat TV on a low-resource VPS?",
-                "Sub-5 seconds end-to-end alert delivery."
+                "What is the verified commercial track record achieved by BulkBeat TV?",
+                "Scaled to 6,000+ users and generated \u20b91.11 Lakhs in commercial revenue within months with sub-5s Telegram alerts."
             ]
         ]
     },
@@ -173,7 +173,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Compounded Ratio of (a:b) and (c:d) = ac:bd\n\u2022 Duplicate Ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b)\n\u2022 Direct Proportion: x1 / y1 = x2 / y2; Inverse Proportion: x1 * y1 = x2 * y2\n\u2022 Floyd's Cycle Detection: Fast pointer advances by 2, slow by 1. Distance from head to cycle start = distance from meeting point to cycle start.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section B, 15 Marks) \u2014 'Compare OSI reference model and TCP/IP protocol suite. Explain data encapsulation with layer-by-layer headers.'\n\u2022 Blueprint: 1. Definition (2m) -> 2. 7-Layer vs 4-Layer Diagram (4m) -> 3. Layer Functionalities (5m) -> 4. Architectural Comparison Table (2m) -> 5. Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Fast & Slow Pointers (Floyd's Tortoise and Hare).\n\u2022 Invariant: Slow pointer moves 1 step; fast pointer moves 2 steps. If a cycle exists, they must meet within the loop. To find cycle origin, reset slow to head and advance both by 1 step.\n\u2022 Edge Cases: Empty list, single node without loop, single node with self-loop, two nodes.",
-        "project_recall": "\u2022 Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline).\n\u2022 Architecture: FastAPI service, PyMuPDF vector extraction, Tesseract OCR fallback, and asynchronous background worker queues.\n\u2022 Defense Pitch: 'Engineered high-throughput document extraction API in FastAPI, parsing digital PDFs in <50ms with PyMuPDF and boosting noisy Hindi scan accuracy by 35% using OpenCV preprocessing.'",
+        "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM) [D:\\Projects\\FINGERPINT VOTING SYSTEM].\n\u2022 Architecture: Air-gapped Python/SQLite voting terminal, chained SHA-256 cryptographic audit ledger, and Fernet AES-256 ballot encryption.\n\u2022 Defense Pitch: 'Engineered an air-gapped cryptographic voting platform with biometric voter verification, atomic double-vote locking, and a chained SHA-256 append-only ledger ensuring mathematical proof of tamper-evidence.'",
         "rapid_fire": [
             [
                 "What are the 7 layers of the OSI reference model from bottom to top?",
@@ -208,12 +208,12 @@ REVISION_CATALOG = {
                 "Because the distance between fast and slow decreases by 1 node in every iteration once both enter the loop."
             ],
             [
-                "In TerraStract, why are background worker queues used for PDF processing?",
-                "To return an immediate HTTP 202 Accepted token, decoupling heavy OCR compute from client HTTP request lifecycles."
+                "In BEVM, how does sequential SHA-256 hash chaining prevent ballot tampering?",
+                "Each cast vote incorporates the SHA-256 hash of the previous block; modifying any past record breaks all downstream hashes."
             ],
             [
-                "What OCR engine is utilized in TerraStract as a fallback for scanned pages?",
-                "Tesseract OCR with OpenCV contrast preprocessing."
+                "How does BEVM mathematically prevent double-voting?",
+                "Via an atomic SQLite transaction that verifies has_voted == 0, records the encrypted ballot, and sets has_voted = 1 within a single commit."
             ]
         ]
     },
@@ -423,7 +423,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Fast & Slow Pointers (Linked List Mid/Cycle).\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for DBMS Architecture & Three-Schema Model.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Regula-Falsi & Newton-Raphson Methods.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Fast & Slow Pointers (Linked List Mid/Cycle).\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-        "project_recall": "\u2022 Project: TerraStract.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+        "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM).\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
         "rapid_fire": [
             [
                 "Day 9 Q1: What is the primary academic thesis of Regula-Falsi & Newton-Raphson Methods?",
@@ -450,7 +450,7 @@ REVISION_CATALOG = {
                 "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
             ],
             [
-                "Day 9 Q7: What is the verified technical foundation of TerraStract?",
+                "Day 9 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
                 "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
             ],
             [
@@ -773,7 +773,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Linear & Circular Seating Arrangement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: DFS Pre, In, Post.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Error Detection & Correction: CRC & Hamming.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Knowledge Sharing, Transfer & Communities of Practice.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Tree Traversals: DFS Pre, In, Post.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-        "project_recall": "\u2022 Project: TerraStract.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+        "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM).\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
         "rapid_fire": [
             [
                 "Day 16 Q1: What is the primary academic thesis of Knowledge Sharing, Transfer & Communities of Practice?",
@@ -800,7 +800,7 @@ REVISION_CATALOG = {
                 "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
             ],
             [
-                "Day 16 Q7: What is the verified technical foundation of TerraStract?",
+                "Day 16 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
                 "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
             ],
             [
@@ -1123,7 +1123,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Sentence Correction & Subject-Verb Agreement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Dijkstra's Shortest Path Algorithm.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Python Memory Model: PyObject, GIL & RefCount.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Transport Layer: TCP Handshake, Sliding Window & UDP.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Dijkstra's Shortest Path Algorithm.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-        "project_recall": "\u2022 Project: TerraStract.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+        "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM).\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
         "rapid_fire": [
             [
                 "Day 23 Q1: What is the primary academic thesis of Transport Layer: TCP Handshake, Sliding Window & UDP?",
@@ -1150,7 +1150,7 @@ REVISION_CATALOG = {
                 "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
             ],
             [
-                "Day 23 Q7: What is the verified technical foundation of TerraStract?",
+                "Day 23 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
                 "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
             ],
             [
@@ -1423,7 +1423,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Infosys & Wipro Critical Reasoning Simulation.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Trie (Prefix Tree) Insertion & Search.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Comprehensive Core CS Placement Technical Review.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Academic Sprint: 15-Mark University Answer Blueprints.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Trie (Prefix Tree) Insertion & Search.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-        "project_recall": "\u2022 Project: TerraStract.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+        "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM).\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
         "rapid_fire": [
             [
                 "Day 29 Q1: What is the primary academic thesis of Academic Sprint: 15-Mark University Answer Blueprints?",
@@ -1450,7 +1450,7 @@ REVISION_CATALOG = {
                 "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
             ],
             [
-                "Day 29 Q7: What is the verified technical foundation of TerraStract?",
+                "Day 29 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
                 "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
             ],
             [

@@ -141,7 +141,7 @@ Array of 2 objects:
 - `mcqs`: Array of 5 MCQs
 
 ### Stream 10: `project_preparation` (and `project_defense`)
-- `project_name`: String (`"SmartGalla"`, `"College Student Management System (CSMS)"`, `"NSE2 / BulkBeat TV"`, `"Caloriv"`, `"TerraStract"`)
+- `project_name`: String (`"SmartGalla"`, `"College Student Management System (CSMS)"`, `"NSE2 / BulkBeat TV"`, `"Caloriv"`, `"Biometric Electronic Voting System (BEVM)"`)
 - `name`: Alias for `project_name`
 - `repo_path`: String (local workstation path)
 - `topic`: String (architectural feature focus)

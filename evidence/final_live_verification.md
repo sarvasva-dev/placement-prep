@@ -1,18 +1,18 @@
 # Final Live Verification Report
 
-Generated at: 2026-09-24T08:23:22.958793
+Generated at: 2026-09-24T09:51:31.986078
 
 ## Day 01 Visualizer
-- **Status**: PASS
+- **Status**: FAIL
 - **Play/Pause**: True/True
-- **Next/Prev**: True/True
+- **Next/Prev**: False/False
 - **Reset**: True
 - **Java Sync**: False
 - **Mobile**: True
 
 ### States
 1. **Initial**: Initialize: L=0 (val=2), R=3 (val=15)
-2. **Middle**: sum = arr[L]+arr[R] = 2+15 = 17 > target(9) → R--
+2. **Middle**: Initialize: L=0 (val=2), R=3 (val=15)
 3. **Final**: sum = arr[L]+arr[R] = 2+15 = 17 > target(9) → R--
 
 ### Screenshots
@@ -75,8 +75,8 @@ Generated at: 2026-09-24T08:23:22.958793
 ![Final](screenshots/day10_visual_final.png)
 
 ## Day 15 Visualizer
-- **Status**: PASS
-- **Play/Pause**: True/True
+- **Status**: FAIL
+- **Play/Pause**: False/True
 - **Next/Prev**: True/True
 - **Reset**: True
 - **Java Sync**: False
@@ -85,7 +85,7 @@ Generated at: 2026-09-24T08:23:22.958793
 ### States
 1. **Initial**: Visit root: 1
 2. **Middle**: Go left → Visit: 2
-3. **Final**: Go left → Visit: 2
+3. **Final**: Visit root: 1
 
 ### Screenshots
 ![Initial](screenshots/day15_visual_initial.png)

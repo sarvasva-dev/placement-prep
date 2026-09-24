@@ -8,7 +8,7 @@ MIXED_DAYS_1_15 = {
   "1": [
     {
       "id": "TEST-01-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "According to Herbert A. Simon, in which phase of the decision-making process does an executive identify problems and scan the operational environment?",
       "options": [
         "Design Phase",
@@ -21,7 +21,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-01-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What core cognitive principle explains why managerial decision makers select 'satisficing' alternatives instead of global optimal solutions?",
       "options": [
         "Bounded Rationality",
@@ -34,7 +34,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-01-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "Which phase was explicitly added to complete the four-stage decision-making model by Simon to track execution feedback?",
       "options": [
         "Verification Phase",
@@ -47,7 +47,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-01-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In Herbert Simon's framework, what type of decisions can be handled entirely by established algorithms and automated rules without executive intervention?",
       "options": [
         "Unstructured decisions",
@@ -60,7 +60,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-01-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "Which technology directly assists executive decision making in the Design phase by simulating business consequences of generated alternatives?",
       "options": [
         "Transaction Processing Systems (TPS)",
@@ -270,7 +270,7 @@ MIXED_DAYS_1_15 = {
   "2": [
     {
       "id": "TEST-02-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "Which of the following is NOT one of the three primary architectural subsystems of a classical Decision Support System (DSS)?",
       "options": [
         "Database Management Subsystem (DBMS)",
@@ -283,7 +283,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-02-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "How does a Management Information System (MIS) fundamentally differ from a Decision Support System (DSS)?",
       "options": [
         "MIS focuses on ad-hoc interactive simulation, while DSS provides static scheduled reports",
@@ -296,7 +296,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-02-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the primary function of the Model Base Management Subsystem (MBMS) in a DSS?",
       "options": [
         "Storing raw SQL transaction tables",
@@ -309,7 +309,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-02-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In DSS sensitivity analysis, what does a 'Goal Seeking' query determine?",
       "options": [
         "The output metric given fixed input parameters",
@@ -322,7 +322,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-02-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "Executive Information Systems (EIS) are distinguished from general DSS by their strong emphasis on:",
       "options": [
         "Low-level assembly language programming",
@@ -532,7 +532,7 @@ MIXED_DAYS_1_15 = {
   "3": [
     {
       "id": "TEST-03-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which component of the JVM Execution Engine compiles frequently executed bytecode hot-spots into native machine instructions at runtime?",
       "options": [
         "Interpreter",
@@ -545,7 +545,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-03-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which runtime data area in the JVM is shared among all concurrent threads?",
       "options": [
         "Java Virtual Machine Stack",
@@ -558,7 +558,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-03-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What principle governs the ClassLoader subsystem hierarchy when resolving and loading Java classes?",
       "options": [
         "Round-Robin Principle",
@@ -571,7 +571,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-03-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which phase of ClassLoader Linking ensures that bytecode conforms to the JVM specification and cannot compromise system security?",
       "options": [
         "Preparation",
@@ -584,7 +584,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-03-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is stored inside a stack frame allocated on the Java Thread Stack during method execution?",
       "options": [
         "All newly instantiated objects via the 'new' operator",
@@ -794,7 +794,7 @@ MIXED_DAYS_1_15 = {
   "4": [
     {
       "id": "TEST-04-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "In the ISO-OSI 7-Layer Reference Model, which layer is responsible for dialog control, token management, and session checkpointing?",
       "options": [
         "Transport Layer",
@@ -807,7 +807,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-04-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What is the Protocol Data Unit (PDU) name at the Network Layer of the OSI model?",
       "options": [
         "Frame",
@@ -820,7 +820,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-04-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Which layer in the OSI reference model handles data syntax conversion, compression, and encryption/decryption (e.g., ASN.1, SSL/TLS)?",
       "options": [
         "Presentation Layer",
@@ -833,7 +833,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-04-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "How does the TCP/IP architectural suite map the top three layers of the OSI reference model (Session, Presentation, Application)?",
       "options": [
         "They are split across Network Access and Internet layers",
@@ -846,7 +846,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-04-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Which layer provides true end-to-end reliability and process-to-process communication using port numbers?",
       "options": [
         "Network Layer",
@@ -1028,35 +1028,35 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-04-19",
-      "category": "Projects (TerraStract)",
-      "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Tamper-Evident Cryptographic Ledger & Chained SHA-256 Audit Hashes'?",
       "options": [
-        "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
+        "Sequential cryptographic hash chaining guarantees historical immutability. If any past ballot is modified, all descendant block hashes fail validation.",
         "Using unencrypted HTTP requests over public ports.",
         "Storing passwords in plaintext inside localStorage.",
         "Restarting the production server on every user request."
       ],
       "correct_answer": "A",
-      "explanation": "For TerraStract, the architectural invariant is: Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.."
+      "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Sequential cryptographic hash chaining guarantees historical immutability. If any past ballot is modified, all descendant block hashes fail validation.."
     },
     {
       "id": "TEST-04-20",
-      "category": "Projects (TerraStract)",
-      "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does the Biometric Electronic Voting System (BEVM) prevent retroactive ballot tampering?'?",
       "options": [
-        "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular...",
+        "BEVM implements an append-only cryptographic ledger. Each cast vote record includes the SHA-256 hash of the immediately preceding ballot block alongside timesta...",
         "Claim that standard frameworks are obsolete and write custom assembly.",
         "State that testing was skipped to ship faster.",
         "Acknowledge that security was ignored."
       ],
       "correct_answer": "A",
-      "explanation": "In technical interviews, anchor your defense in engineering metrics: TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present,."
+      "explanation": "In technical interviews, anchor your defense in engineering metrics: BEVM implements an append-only cryptographic ledger. Each cast vote record includes the SHA-256 hash of the immediately preceding ballot blo."
     }
   ],
   "5": [
     {
       "id": "TEST-05-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
       "options": [
         "|X - X*|",
@@ -1069,7 +1069,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-05-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
       "options": [
         "Quadratic (order 2)",
@@ -1082,7 +1082,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-05-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
       "options": [
         "f(a) * f(b) > 0",
@@ -1095,7 +1095,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-05-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is Truncation Error in numerical computation?",
       "options": [
         "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
@@ -1108,7 +1108,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-05-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
       "options": [
         "4 iterations",
@@ -1318,7 +1318,7 @@ MIXED_DAYS_1_15 = {
   "6": [
     {
       "id": "TEST-06-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which method in Java is invoked to initiate the concurrent execution of a new thread created via Thread class or Runnable interface?",
       "options": [
         "run()",
@@ -1331,7 +1331,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-06-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What happens when a thread enters a method marked with the 'synchronized' keyword in Java?",
       "options": [
         "The thread acquires the intrinsic lock (monitor) associated with the target object",
@@ -1344,7 +1344,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-06-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which method releases the monitor lock and suspends the calling thread until another thread invokes notify() or notifyAll() on the same object?",
       "options": [
         "sleep()",
@@ -1357,7 +1357,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-06-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is the primary advantage of implementing the Runnable interface over extending the Thread class in Java?",
       "options": [
         "Runnable threads execute 10x faster than Thread subclasses",
@@ -1370,7 +1370,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-06-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What happens to a Daemon thread in Java when all non-daemon user threads finish executing?",
       "options": [
         "The JVM continues running until the daemon thread finishes",
@@ -1580,7 +1580,7 @@ MIXED_DAYS_1_15 = {
   "7": [
     {
       "id": "TEST-07-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In the Cyclic Redundancy Check (CRC) error detection mechanism, what mathematical operation is used in the polynomial modulo-2 arithmetic?",
       "options": [
         "Standard integer long division with carry",
@@ -1593,7 +1593,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-07-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "If a generator polynomial G(x) has degree r, how many zero bits are appended to the original message bitstream before performing CRC division?",
       "options": [
         "r - 1 zeros",
@@ -1606,7 +1606,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-07-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "To detect 'd' single-bit transmission errors in a block of data, the minimum Hamming distance of the code must be:",
       "options": [
         "d",
@@ -1619,7 +1619,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-07-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In byte stuffing (character-oriented framing), what escape character is inserted when the data payload itself contains the special FLAG byte?",
       "options": [
         "SYN",
@@ -1632,7 +1632,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-07-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In bit-oriented framing (HDLC protocol), bit stuffing inserts a '0' bit after encountering:",
       "options": [
         "Three consecutive 1s",
@@ -1842,7 +1842,7 @@ MIXED_DAYS_1_15 = {
   "8": [
     {
       "id": "TEST-08-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "In Nonaka and Takeuchi's SECI model of Knowledge Creation, what transformation mode represents converting Tacit Knowledge into Explicit Knowledge?",
       "options": [
         "Socialization",
@@ -1855,7 +1855,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-08-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which SECI quadrant describes apprentices learning tacit craft skills from a master artisan through shared observation, imitation, and practice without written manuals?",
       "options": [
         "Socialization (Tacit to Tacit)",
@@ -1868,7 +1868,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-08-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is the defining characteristic of Tacit Knowledge compared to Explicit Knowledge?",
       "options": [
         "It is easily indexed, codified, and stored in relational database tables",
@@ -1881,7 +1881,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-08-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "In the DIKW hierarchy, which layer adds actionable rules, context, and experience to raw processed information?",
       "options": [
         "Data",
@@ -1894,7 +1894,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-08-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which SECI quadrant involves integrating multiple documents, databases, and financial spreadsheets into a unified organizational repository?",
       "options": [
         "Internalization",
@@ -2104,7 +2104,7 @@ MIXED_DAYS_1_15 = {
   "9": [
     {
       "id": "TEST-09-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What is the order of convergence for the Newton-Raphson iterative method for solving f(x) = 0 with simple roots?",
       "options": [
         "1 (Linear)",
@@ -2117,7 +2117,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-09-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What is the Newton-Raphson iteration formula for finding root x_{n+1} from current estimate x_n?",
       "options": [
         "x_{n+1} = x_n - f(x_n) / f'(x_n)",
@@ -2130,7 +2130,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-09-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Under what condition does the Newton-Raphson method fail or breakdown completely?",
       "options": [
         "When f(x_n) = 0",
@@ -2143,7 +2143,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-09-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "How does the Regula-Falsi (False Position) method differ geometrically from the Bisection method?",
       "options": [
         "It uses the arithmetic midpoint (a + b) / 2 to divide the interval",
@@ -2156,7 +2156,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-09-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Using the Newton-Raphson iteration formula x_{n+1} = 0.5 * (x_n + N / x_n), what value is being computed?",
       "options": [
         "N^2",
@@ -2338,35 +2338,35 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-09-19",
-      "category": "Projects (TerraStract)",
-      "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Symmetric Ballot Payload Encryption with Fernet AES-256 & Key Management'?",
       "options": [
-        "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
+        "Fernet AES-256 provides both confidentiality and message integrity; without the physical `secret.key`, database files cannot be decrypted or inspected.",
         "Using unencrypted HTTP requests over public ports.",
         "Storing passwords in plaintext inside localStorage.",
         "Restarting the production server on every user request."
       ],
       "correct_answer": "A",
-      "explanation": "For TerraStract, the architectural invariant is: HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.."
+      "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Fernet AES-256 provides both confidentiality and message integrity; without the physical `secret.key`, database files cannot be decrypted or inspected.."
     },
     {
       "id": "TEST-09-20",
-      "category": "Projects (TerraStract)",
-      "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'Why use Fernet encryption rather than storing raw vote tallies in SQLite?'?",
       "options": [
-        "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the...",
+        "In electronic voting, physical access to the polling terminal could allow malicious actors to inspect intermediate voting trends before polling closes. Storing ...",
         "Claim that standard frameworks are obsolete and write custom assembly.",
         "State that testing was skipped to ship faster.",
         "Acknowledge that security was ignored."
       ],
       "correct_answer": "A",
-      "explanation": "In technical interviews, anchor your defense in engineering metrics: Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` en."
+      "explanation": "In technical interviews, anchor your defense in engineering metrics: In electronic voting, physical access to the polling terminal could allow malicious actors to inspect intermediate voting trends before poll."
     }
   ],
   "10": [
     {
       "id": "TEST-10-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "In the Java Collections Framework, what is the key difference between ArrayList and LinkedList for positional index-based retrieval (get(i))?",
       "options": [
         "ArrayList is O(1) random access, while LinkedList is O(N) sequential traversal",
@@ -2379,7 +2379,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-10-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "How does HashMap in Java 8+ handle severe hash collisions inside a single bucket when the chain length exceeds TREEIFY_THRESHOLD (8)?",
       "options": [
         "It drops incoming keys with a HashCollisionException",
@@ -2392,7 +2392,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-10-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "Which of the following collection classes is synchronized and thread-safe by default in Java?",
       "options": [
         "java.util.ArrayList",
@@ -2405,7 +2405,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-10-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the default initial capacity and default load factor of a java.util.HashMap?",
       "options": [
         "Capacity = 10, Load Factor = 0.5",
@@ -2418,7 +2418,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-10-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What contract must be maintained between the equals() and hashCode() methods in Java?",
       "options": [
         "If two objects have the same hashCode, they must be equal via equals()",
@@ -2628,7 +2628,7 @@ MIXED_DAYS_1_15 = {
   "11": [
     {
       "id": "TEST-11-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the maximum sender window size in the Go-Back-N ARQ protocol using m-bit sequence numbers?",
       "options": [
         "2^m",
@@ -2641,7 +2641,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-11-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In Stop-and-Wait ARQ, what sequence numbers are required for packet transmission?",
       "options": [
         "0 and 1 only (1-bit)",
@@ -2654,7 +2654,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-11-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What happens in Selective Repeat ARQ when a single frame in the transmission window is corrupted?",
       "options": [
         "Sender retransmits all subsequent frames from that frame onwards",
@@ -2667,7 +2667,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-11-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the sender window size in Selective Repeat ARQ using m-bit sequence numbering?",
       "options": [
         "2^m - 1",
@@ -2680,7 +2680,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-11-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "How is channel link utilization (efficiency U) defined in Stop-and-Wait protocol where propagation time is Tp and transmission time is Tt?",
       "options": [
         "1 / (1 + 2a), where a = Tp / Tt",
@@ -2890,7 +2890,7 @@ MIXED_DAYS_1_15 = {
   "12": [
     {
       "id": "TEST-12-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "In dimensional data warehouse modeling, how is a Star Schema structured?",
       "options": [
         "A central fact table linked directly to denormalized dimension tables",
@@ -2903,7 +2903,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-12-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "How does a Snowflake Schema differ fundamentally from a Star Schema?",
       "options": [
         "The fact table is split into multiple sub-facts",
@@ -2916,7 +2916,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-12-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What characterizes a Fact Table in a Data Warehouse?",
       "options": [
         "Contains descriptive textual names and addresses",
@@ -2929,7 +2929,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-12-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What are the three tiers in the standard Data Warehouse 3-tier architecture?",
       "options": [
         "Client Tier, Web Server Tier, Application Tier",
@@ -2942,7 +2942,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-12-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is the primary difference between ROLAP and MOLAP?",
       "options": [
         "ROLAP uses relational tables with star schemas; MOLAP uses precomputed multi-dimensional array cubes",
@@ -3152,7 +3152,7 @@ MIXED_DAYS_1_15 = {
   "13": [
     {
       "id": "TEST-13-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "In Gauss Elimination, what is the purpose of 'Partial Pivoting'?",
       "options": [
         "To reduce execution time by 50%",
@@ -3165,7 +3165,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-13-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What triangular matrix form does the coefficient matrix assume at the end of the forward elimination phase of Gauss Elimination?",
       "options": [
         "Lower Triangular Matrix",
@@ -3178,7 +3178,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-13-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "How does the Gauss-Jordan method differ from standard Gauss Elimination?",
       "options": [
         "It uses random guessing instead of algebra",
@@ -3191,7 +3191,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-13-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What is the computational operation count (time complexity) of Gauss Elimination for an n x n system?",
       "options": [
         "O(n)",
@@ -3204,7 +3204,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-13-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "A system of linear equations AX = B has a unique solution if and only if:",
       "options": [
         "det(A) = 0",
@@ -3414,7 +3414,7 @@ MIXED_DAYS_1_15 = {
   "14": [
     {
       "id": "TEST-14-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What mechanism does the Java compiler use to implement Generics while maintaining backward compatibility with older JVM versions?",
       "options": [
         "Dynamic byte generation",
@@ -3427,7 +3427,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-14-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "In Java Generics, what does the wildcard expression `List<? extends Number>` signify?",
       "options": [
         "A list that can store any Object",
@@ -3440,7 +3440,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-14-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which Java API allows runtime inspection of classes, methods, fields, and constructors, including invoking private methods dynamically?",
       "options": [
         "Java Collections API",
@@ -3453,7 +3453,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-14-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What retention policy must be specified on a custom Java annotation so it remains available in bytecode and inspectable via Reflection at runtime?",
       "options": [
         "RetentionPolicy.SOURCE",
@@ -3466,7 +3466,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-14-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is the effect of PECS (Producer Extends, Consumer Super) in Java Generics?",
       "options": [
         "Use 'extends' when you only read from a collection; use 'super' when you only write to a collection",
@@ -3648,35 +3648,35 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-14-19",
-      "category": "Projects (TerraStract)",
-      "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Tabular Coordinate Extraction & Spatial Column Alignment'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Biometric Authentication Workflow & Zero-Knowledge Role Separation'?",
       "options": [
-        "Horizontal and vertical vector lines determine cell intersections and boundary coordinates.",
+        "Role separation guarantees that polling booth operators cannot modify candidate rosters once an election commences.",
         "Using unencrypted HTTP requests over public ports.",
         "Storing passwords in plaintext inside localStorage.",
         "Restarting the production server on every user request."
       ],
       "correct_answer": "A",
-      "explanation": "For TerraStract, the architectural invariant is: Horizontal and vertical vector lines determine cell intersections and boundary coordinates.."
+      "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Role separation guarantees that polling booth operators cannot modify candidate rosters once an election commences.."
     },
     {
       "id": "TEST-14-20",
-      "category": "Projects (TerraStract)",
-      "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you extract tables from PDFs where table borders are missing (borderless tables)?'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does BEVM enforce role-based privilege separation between election officers and voters?'?",
       "options": [
-        "When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with overlapping vertica...",
+        "BEVM establishes two distinct software modes: Admin Mode and Polling Mode. Admin Mode requires administrative credentials to configure candidates, register vote...",
         "Claim that standard frameworks are obsolete and write custom assembly.",
         "State that testing was skipped to ship faster.",
         "Acknowledge that security was ignored."
       ],
       "correct_answer": "A",
-      "explanation": "In technical interviews, anchor your defense in engineering metrics: When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with."
+      "explanation": "In technical interviews, anchor your defense in engineering metrics: BEVM establishes two distinct software modes: Admin Mode and Polling Mode. Admin Mode requires administrative credentials to configure candi."
     }
   ],
   "15": [
     {
       "id": "TEST-15-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "How many host addresses can be assigned to devices on a subnetwork configured with a `/26` CIDR prefix?",
       "options": [
         "64 hosts",
@@ -3689,7 +3689,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-15-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the default subnet mask for an IPv4 Class B network address?",
       "options": [
         "255.0.0.0 (/8)",
@@ -3702,7 +3702,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-15-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the primary purpose of Classless Inter-Domain Routing (CIDR)?",
       "options": [
         "To encrypt IP packets on public Wi-Fi",
@@ -3715,7 +3715,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-15-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "Which of the following IP addresses represents a private IPv4 address defined in RFC 1918?",
       "options": [
         "8.8.8.8",
@@ -3728,7 +3728,7 @@ MIXED_DAYS_1_15 = {
     },
     {
       "id": "TEST-15-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the broadcast address for the subnet `192.168.1.32/27`?",
       "options": [
         "192.168.1.32",
@@ -3938,4 +3938,4 @@ MIXED_DAYS_1_15 = {
 }
 
 def get_mixed_mcqs_half1(day: int) -> list:
-    return MIXED_DAYS_1_15.get(day, MIXED_DAYS_1_15.get(str(day), []))
+    return MIXED_DAYS_1_15.get(day, [])

@@ -852,36 +852,36 @@
       ]
     },
     "project_preparation": {
-      "project_name": "TerraStract",
-      "name": "TerraStract",
-      "repo_path": "D:\\Projects\\terra_extract",
-      "topic": "Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines",
-      "feature_focus": "Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines",
-      "what_to_understand": "Preventing HTTP gateway timeouts when processing 50-page PDF documents.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nPreventing HTTP gateway timeouts when processing 50-page PDF documents.\n\nWHAT TO MEMORIZE:\nHTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.\n\n60-SECOND INTERVIEW PITCH:\nProcessing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts.",
-      "what_to_memorize": "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
+      "project_name": "Biometric Electronic Voting System (BEVM)",
+      "name": "Biometric Electronic Voting System (BEVM)",
+      "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
+      "topic": "Symmetric Ballot Payload Encryption with Fernet AES-256 & Key Management",
+      "feature_focus": "Symmetric Ballot Payload Encryption with Fernet AES-256 & Key Management",
+      "what_to_understand": "Securing vote choices stored on disk using Fernet symmetric encryption (AES-128-CBC with PKCS7 padding and HMAC-SHA256 authentication) backed by air-gapped key storage.",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nSecuring vote choices stored on disk using Fernet symmetric encryption (AES-128-CBC with PKCS7 padding and HMAC-SHA256 authentication) backed by air-gapped key storage.\n\nWHAT TO MEMORIZE:\nFernet AES-256 provides both confidentiality and message integrity; without the physical `secret.key`, database files cannot be decrypted or inspected.",
+      "what_to_memorize": "Fernet AES-256 provides both confidentiality and message integrity; without the physical `secret.key`, database files cannot be decrypted or inspected.",
       "interview_questions": [
         {
-          "q": "How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?",
-          "a": "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the uploaded file, generates a UUID task ID, enqueues the extraction job to an async background worker queue, and immediately returns HTTP 202 Accepted with a status URL. Clients poll `/api/extract/status/{task_id}` or receive a webhook callback upon completion."
+          "q": "Why use Fernet encryption rather than storing raw vote tallies in SQLite?",
+          "a": "In electronic voting, physical access to the polling terminal could allow malicious actors to inspect intermediate voting trends before polling closes. Storing ballot payloads encrypted with Fernet AES-256 ensures that even with direct file access to `voting_system.db`, candidate choices remain encrypted until the administrative decryption key is provided at election closing."
         },
         {
-          "q": "How do you clean up temporary PDF files and memory buffers after processing?",
-          "a": "We use Python context managers (`tempfile.NamedTemporaryFile`) and wrap the processing block in `try...finally` constructs to guarantee that temporary decrypted PDF fragments and image slices are deleted from disk and unlinked, preventing disk exhaustion and data leakage."
+          "q": "How is the cryptographic key managed during election cycles?",
+          "a": "The Fernet key (`secret.key`) is generated once by the Election Admin during terminal provisioning and stored with restricted filesystem permissions (chmod 600). It is decoupled from voter-facing interfaces and read into memory only during ballot encryption and final official tally publication."
         }
       ],
       "interview_qa": [
         {
-          "q": "How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?",
-          "a": "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the uploaded file, generates a UUID task ID, enqueues the extraction job to an async background worker queue, and immediately returns HTTP 202 Accepted with a status URL. Clients poll `/api/extract/status/{task_id}` or receive a webhook callback upon completion."
+          "q": "Why use Fernet encryption rather than storing raw vote tallies in SQLite?",
+          "a": "In electronic voting, physical access to the polling terminal could allow malicious actors to inspect intermediate voting trends before polling closes. Storing ballot payloads encrypted with Fernet AES-256 ensures that even with direct file access to `voting_system.db`, candidate choices remain encrypted until the administrative decryption key is provided at election closing."
         },
         {
-          "q": "How do you clean up temporary PDF files and memory buffers after processing?",
-          "a": "We use Python context managers (`tempfile.NamedTemporaryFile`) and wrap the processing block in `try...finally` constructs to guarantee that temporary decrypted PDF fragments and image slices are deleted from disk and unlinked, preventing disk exhaustion and data leakage."
+          "q": "How is the cryptographic key managed during election cycles?",
+          "a": "The Fernet key (`secret.key`) is generated once by the Election Admin during terminal provisioning and stored with restricted filesystem permissions (chmod 600). It is decoupled from voter-facing interfaces and read into memory only during ballot encryption and final official tally publication."
         }
       ],
-      "interview_pitch_exercise": "Processing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts.",
-      "pitch": "Processing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts."
+      "interview_pitch_exercise": "In BEVM, data confidentiality is enforced at rest. I implemented symmetric ballot payload encryption using Fernet AES-256 and HMAC verification. Even if polling hardware is physically intercepted, candidate choices cannot be viewed or manipulated without the administrative key.",
+      "pitch": "In BEVM, data confidentiality is enforced at rest. I implemented symmetric ballot payload encryption using Fernet AES-256 and HMAC verification. Even if polling hardware is physically intercepted, candidate choices cannot be viewed or manipulated without the administrative key."
     },
     "placement_interview": [
       {
@@ -947,7 +947,7 @@
       "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Fast & Slow Pointers (Linked List Mid/Cycle).\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for DBMS Architecture & Three-Schema Model.",
       "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Regula-Falsi & Newton-Raphson Methods.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
       "dsa_recall": "\u2022 Pattern: Fast & Slow Pointers (Linked List Mid/Cycle).\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-      "project_recall": "\u2022 Project: TerraStract.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM).\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
       "rapid_fire_questions": [
         {
           "q": "Day 9 Q1: What is the primary academic thesis of Regula-Falsi & Newton-Raphson Methods?",
@@ -974,7 +974,7 @@
           "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
         },
         {
-          "q": "Day 9 Q7: What is the verified technical foundation of TerraStract?",
+          "q": "Day 9 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
           "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
         },
         {
@@ -1009,7 +1009,7 @@
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "\u2022 Project: TerraStract."
+          "definition": "\u2022 Project: Biometric Electronic Voting System (BEVM)."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1254,8 +1254,8 @@
       },
       {
         "id": "TEST-09-19",
-        "category": "Projects (TerraStract)",
-        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines'?",
+        "category": "Projects (Biometric Electronic Voting System (BEVM))",
+        "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines'?",
         "options": [
           "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
           "Using unencrypted HTTP requests over public ports.",
@@ -1263,12 +1263,12 @@
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For TerraStract, the architectural invariant is: HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.."
+        "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.."
       },
       {
         "id": "TEST-09-20",
-        "category": "Projects (TerraStract)",
-        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?'?",
+        "category": "Projects (Biometric Electronic Voting System (BEVM))",
+        "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does Biometric Electronic Voting System (BEVM) prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?'?",
         "options": [
           "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
@@ -2273,36 +2273,36 @@
     ]
   },
   "project_defense": {
-    "project_name": "TerraStract",
-    "name": "TerraStract",
-    "repo_path": "D:\\Projects\\terra_extract",
-    "topic": "Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines",
-    "feature_focus": "Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines",
-    "what_to_understand": "Preventing HTTP gateway timeouts when processing 50-page PDF documents.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nPreventing HTTP gateway timeouts when processing 50-page PDF documents.\n\nWHAT TO MEMORIZE:\nHTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.\n\n60-SECOND INTERVIEW PITCH:\nProcessing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts.",
-    "what_to_memorize": "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
+    "project_name": "Biometric Electronic Voting System (BEVM)",
+    "name": "Biometric Electronic Voting System (BEVM)",
+    "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
+    "topic": "Symmetric Ballot Payload Encryption with Fernet AES-256 & Key Management",
+    "feature_focus": "Symmetric Ballot Payload Encryption with Fernet AES-256 & Key Management",
+    "what_to_understand": "Securing vote choices stored on disk using Fernet symmetric encryption (AES-128-CBC with PKCS7 padding and HMAC-SHA256 authentication) backed by air-gapped key storage.",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nSecuring vote choices stored on disk using Fernet symmetric encryption (AES-128-CBC with PKCS7 padding and HMAC-SHA256 authentication) backed by air-gapped key storage.\n\nWHAT TO MEMORIZE:\nFernet AES-256 provides both confidentiality and message integrity; without the physical `secret.key`, database files cannot be decrypted or inspected.",
+    "what_to_memorize": "Fernet AES-256 provides both confidentiality and message integrity; without the physical `secret.key`, database files cannot be decrypted or inspected.",
     "interview_questions": [
       {
-        "q": "How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?",
-        "a": "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the uploaded file, generates a UUID task ID, enqueues the extraction job to an async background worker queue, and immediately returns HTTP 202 Accepted with a status URL. Clients poll `/api/extract/status/{task_id}` or receive a webhook callback upon completion."
+        "q": "Why use Fernet encryption rather than storing raw vote tallies in SQLite?",
+        "a": "In electronic voting, physical access to the polling terminal could allow malicious actors to inspect intermediate voting trends before polling closes. Storing ballot payloads encrypted with Fernet AES-256 ensures that even with direct file access to `voting_system.db`, candidate choices remain encrypted until the administrative decryption key is provided at election closing."
       },
       {
-        "q": "How do you clean up temporary PDF files and memory buffers after processing?",
-        "a": "We use Python context managers (`tempfile.NamedTemporaryFile`) and wrap the processing block in `try...finally` constructs to guarantee that temporary decrypted PDF fragments and image slices are deleted from disk and unlinked, preventing disk exhaustion and data leakage."
+        "q": "How is the cryptographic key managed during election cycles?",
+        "a": "The Fernet key (`secret.key`) is generated once by the Election Admin during terminal provisioning and stored with restricted filesystem permissions (chmod 600). It is decoupled from voter-facing interfaces and read into memory only during ballot encryption and final official tally publication."
       }
     ],
     "interview_qa": [
       {
-        "q": "How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?",
-        "a": "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the uploaded file, generates a UUID task ID, enqueues the extraction job to an async background worker queue, and immediately returns HTTP 202 Accepted with a status URL. Clients poll `/api/extract/status/{task_id}` or receive a webhook callback upon completion."
+        "q": "Why use Fernet encryption rather than storing raw vote tallies in SQLite?",
+        "a": "In electronic voting, physical access to the polling terminal could allow malicious actors to inspect intermediate voting trends before polling closes. Storing ballot payloads encrypted with Fernet AES-256 ensures that even with direct file access to `voting_system.db`, candidate choices remain encrypted until the administrative decryption key is provided at election closing."
       },
       {
-        "q": "How do you clean up temporary PDF files and memory buffers after processing?",
-        "a": "We use Python context managers (`tempfile.NamedTemporaryFile`) and wrap the processing block in `try...finally` constructs to guarantee that temporary decrypted PDF fragments and image slices are deleted from disk and unlinked, preventing disk exhaustion and data leakage."
+        "q": "How is the cryptographic key managed during election cycles?",
+        "a": "The Fernet key (`secret.key`) is generated once by the Election Admin during terminal provisioning and stored with restricted filesystem permissions (chmod 600). It is decoupled from voter-facing interfaces and read into memory only during ballot encryption and final official tally publication."
       }
     ],
-    "interview_pitch_exercise": "Processing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts.",
-    "pitch": "Processing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts."
+    "interview_pitch_exercise": "In BEVM, data confidentiality is enforced at rest. I implemented symmetric ballot payload encryption using Fernet AES-256 and HMAC verification. Even if polling hardware is physically intercepted, candidate choices cannot be viewed or manipulated without the administrative key.",
+    "pitch": "In BEVM, data confidentiality is enforced at rest. I implemented symmetric ballot payload encryption using Fernet AES-256 and HMAC verification. Even if polling hardware is physically intercepted, candidate choices cannot be viewed or manipulated without the administrative key."
   },
   "placement_interview": [
     {
@@ -2368,7 +2368,7 @@
     "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Boats, Streams & Circular Tracks.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Fast & Slow Pointers (Linked List Mid/Cycle).\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for DBMS Architecture & Three-Schema Model.",
     "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Regula-Falsi & Newton-Raphson Methods.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
     "dsa_recall": "\u2022 Pattern: Fast & Slow Pointers (Linked List Mid/Cycle).\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-    "project_recall": "\u2022 Project: TerraStract.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM).\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
     "rapid_fire_questions": [
       {
         "q": "Day 9 Q1: What is the primary academic thesis of Regula-Falsi & Newton-Raphson Methods?",
@@ -2395,7 +2395,7 @@
         "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
       },
       {
-        "q": "Day 9 Q7: What is the verified technical foundation of TerraStract?",
+        "q": "Day 9 Q7: What is the verified technical foundation of Biometric Electronic Voting System (BEVM)?",
         "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
       },
       {
@@ -2430,7 +2430,7 @@
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "\u2022 Project: TerraStract."
+        "definition": "\u2022 Project: Biometric Electronic Voting System (BEVM)."
       },
       {
         "term": "Daily Core Concept 5",
@@ -2641,18 +2641,18 @@
       },
       {
         "no": 19,
-        "q": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines'?",
+        "q": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines'?",
         "options": [
           "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For TerraStract, the architectural invariant is: HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.."
+        "a": "Answer: A \u2014 For Biometric Electronic Voting System (BEVM), the architectural invariant is: HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.."
       },
       {
         "no": 20,
-        "q": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?'?",
+        "q": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does Biometric Electronic Voting System (BEVM) prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?'?",
         "options": [
           "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the...",
           "Claim that standard frameworks are obsolete and write custom assembly.",

@@ -4,7 +4,7 @@ Focuses strictly on Sarthak's real heavyweight repositories in D:\Projects:
 - SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA Serwist, Google Maps, Blinkit Scraping, PDF Invoices)
 - NSE2 / BulkBeat TV (Real-Time Ingestion, aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Razorpay Reconciliation, Dhan API, Systemd)
 - Caloriv (React Native Expo, Android Toolchain, Gradle Build Orchestration, Nutrition Analytics, Offline Sync)
-- TerraStract (FastAPI Document AI, PyMuPDF Vector + OpenCV + Tesseract OCR Fallback, Async Worker Queues)
+- Biometric Electronic Voting System - BEVM (Python, SQLite, Fernet AES-256, Chained SHA-256 Audit Ledger, Biometric Authentication)
 - College Student Management System - CSMS (FastAPI, Supabase PostgreSQL, Vanilla JS, Render)
 """
 
@@ -253,78 +253,78 @@ def get_project_for_day(day):
         }
 
     elif proj_type == 3:
-        # TerraStract
+        # Biometric Electronic Voting System (BEVM)
         topics = [
-            ("Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture",
-             "Combining PyMuPDF native vector stream parsing with OpenCV image binarization and Tesseract OCR.",
-             "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
+            ("Tamper-Evident Cryptographic Ledger & Chained SHA-256 Audit Hashes",
+             "Chaining ballot records using sequential SHA-256 cryptographic hashes (H_i = SHA256(H_{i-1} + ballot_data)) to guarantee that retrospective tampering immediately breaks downstream hash validity.",
+             "Sequential cryptographic hash chaining guarantees historical immutability. If any past ballot is modified, all descendant block hashes fail validation.",
              [
-                 {"q": "How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?",
-                  "a": "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular coordinates and text streams in &lt;10ms; 3. If the page is a scanned bitmap or has font glyph corruption, it routes to an OpenCV pipeline that applies grayscale conversion, Otsu's adaptive thresholding, and morphological opening to clean noise before invoking Tesseract OCR with `--oem 1 --psm 6`."},
-                 {"q": "How do you handle Devanagari Unicode characters and ligature rendering in OCR?",
-                  "a": "Standard Tesseract struggles with conjunct Hindi characters (Matras). We load the `hin` traineddata pack and post-process raw text with custom regex normalization rules that correct common OCR segmentation errors in regional land records (e.g., Khasra and Khatauni numbers)."}
+                 {"q": "How does the Biometric Electronic Voting System (BEVM) prevent retroactive ballot tampering?",
+                  "a": "BEVM implements an append-only cryptographic ledger. Each cast vote record includes the SHA-256 hash of the immediately preceding ballot block alongside timestamp and voter choice data. Prior to tally publication, an audit verification script traverses the block sequence; modifying or inserting a single vote invalidates all subsequent hashes, making undetected tampering mathematically impossible."},
+                 {"q": "How do you preserve voter ballot secrecy while maintaining an auditable cryptographic chain?",
+                  "a": "Voter authentication (biometric match status) and ballot recording are strictly decoupled. When a citizen authenticates, their record in the `voters` table sets `has_voted = 1`. The ballot record is written to a separate `votes` table containing only encrypted candidate choice and hash links, with no foreign key or linkable identifier connecting voter identity to candidate preference."}
              ],
-             "TerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing."),
+             "I engineered the Biometric Electronic Voting System (BEVM) as an air-gapped cryptographic voting platform in Python and SQLite. It combines biometric identity verification with a chained SHA-256 append-only audit ledger, guaranteeing that vote records cannot be altered or injected retroactively while strictly preserving voter ballot secrecy."),
 
-            ("Asynchronous Background Document Workers & Non-Blocking FastAPI Pipelines",
-             "Preventing HTTP gateway timeouts when processing 50-page PDF documents.",
-             "HTTP 202 Accepted returns an instant task tracking token while background workers execute the heavy extraction.",
+            ("Symmetric Ballot Payload Encryption with Fernet AES-256 & Key Management",
+             "Securing vote choices stored on disk using Fernet symmetric encryption (AES-128-CBC with PKCS7 padding and HMAC-SHA256 authentication) backed by air-gapped key storage.",
+             "Fernet AES-256 provides both confidentiality and message integrity; without the physical `secret.key`, database files cannot be decrypted or inspected.",
              [
-                 {"q": "How does TerraStract prevent HTTP 504 gateway timeouts when processing large multi-page PDFs?",
-                  "a": "Extracting text from a 40-page document can take 15-30 seconds, exceeding standard reverse proxy timeouts. In FastAPI, our `/api/extract` endpoint validates the uploaded file, generates a UUID task ID, enqueues the extraction job to an async background worker queue, and immediately returns HTTP 202 Accepted with a status URL. Clients poll `/api/extract/status/{task_id}` or receive a webhook callback upon completion."},
-                 {"q": "How do you clean up temporary PDF files and memory buffers after processing?",
-                  "a": "We use Python context managers (`tempfile.NamedTemporaryFile`) and wrap the processing block in `try...finally` constructs to guarantee that temporary decrypted PDF fragments and image slices are deleted from disk and unlinked, preventing disk exhaustion and data leakage."}
+                 {"q": "Why use Fernet encryption rather than storing raw vote tallies in SQLite?",
+                  "a": "In electronic voting, physical access to the polling terminal could allow malicious actors to inspect intermediate voting trends before polling closes. Storing ballot payloads encrypted with Fernet AES-256 ensures that even with direct file access to `voting_system.db`, candidate choices remain encrypted until the administrative decryption key is provided at election closing."},
+                 {"q": "How is the cryptographic key managed during election cycles?",
+                  "a": "The Fernet key (`secret.key`) is generated once by the Election Admin during terminal provisioning and stored with restricted filesystem permissions (chmod 600). It is decoupled from voter-facing interfaces and read into memory only during ballot encryption and final official tally publication."}
              ],
-             "Processing multi-page legal documents creates severe I/O bottlenecks. In TerraStract, I designed an asynchronous worker architecture in FastAPI that accepts document uploads, immediately returns an HTTP 202 tracking token, and processes OCR pipelines in background queues to guarantee zero gateway timeouts."),
+             "In BEVM, data confidentiality is enforced at rest. I implemented symmetric ballot payload encryption using Fernet AES-256 and HMAC verification. Even if polling hardware is physically intercepted, candidate choices cannot be viewed or manipulated without the administrative key."),
 
-            ("Tabular Coordinate Extraction & Spatial Column Alignment",
-             "Detecting table borders, bounding boxes, and aligning cells into structured JSON/Excel.",
-             "Horizontal and vertical vector lines determine cell intersections and boundary coordinates.",
+            ("Biometric Authentication Workflow & Zero-Knowledge Role Separation",
+             "Enforcing strict administrative separation between election setup, voter authentication, and tally calculation.",
+             "Role separation guarantees that polling booth operators cannot modify candidate rosters once an election commences.",
              [
-                 {"q": "How do you extract tables from PDFs where table borders are missing (borderless tables)?",
-                  "a": "When tables lack explicit line borders, we extract word bounding boxes `(x0, y0, x1, y1)`. We cluster words into rows by grouping items with overlapping vertical Y-coordinates within a 3pt tolerance, and compute horizontal X-coordinate gutters to detect column boundaries. These bounding box matrices are then reconstructed into structured JSON tables."},
-                 {"q": "How do you export extracted tables to formatted Excel spreadsheets?",
-                  "a": "We pass the reconstructed row/column dictionary into pandas or `openpyxl`, auto-fit column widths based on maximum string lengths, apply bold formatting to header rows, and stream the generated `.xlsx` binary directly to the user."}
+                 {"q": "How does BEVM enforce role-based privilege separation between election officers and voters?",
+                  "a": "BEVM establishes two distinct software modes: Admin Mode and Polling Mode. Admin Mode requires administrative credentials to configure candidates, register voter biometric hashes, and generate keys. Once an election is sealed, the system locks into Polling Mode where only biometric fingerprint verification and ballot casting are enabled."},
+                 {"q": "What happens if a biometric sensor fails or misreads a citizen's fingerprint?",
+                  "a": "The biometric verification module implements configurable matching threshold tolerances. If consecutive attempts fail, the terminal falls back to biometric administrator override requiring dual-authorization logging in `audit.log` before an alternate verification path is enabled."}
              ],
-             "Extracting tables from scanned government records is difficult because borders are often faded or absent. I implemented a coordinate-clustering algorithm in TerraStract that analyzes text bounding boxes to reconstruct table rows and columns, exporting structured tables directly to Excel and JSON."),
+             "To prevent administrative overreach in electronic voting, I architected BEVM with strict role-based state machines. Terminal provisioning is isolated from voter polling modes, and all administrative overrides require dual-authorized cryptographic audit logging."),
 
-            ("Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding",
-             "OpenCV image manipulation techniques that boost OCR character recognition rates.",
-             "Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.",
+            ("Atomic State Locking & SQLite Double-Vote Prevention",
+             "Preventing duplicate voting attempts through atomic database transactions and strict state flag locking.",
+             "Atomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
              [
-                 {"q": "How does image preprocessing improve Tesseract OCR recognition accuracy in TerraStract?",
-                  "a": "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of text contours to determine the skew angle and rotates the image to horizontal. It then applies Gaussian blur to remove salt-and-pepper noise and Otsu's adaptive binarization, boosting character accuracy by over 35% on degraded scans."},
-                 {"q": "What is morphological opening and how does it clean scanned documents?",
-                  "a": "Morphological opening is an erosion operation followed by dilation (`cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)`). It removes small background speckles and scanner noise while preserving the stroke structure of letters."}
+                 {"q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
+                  "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."},
+                 {"q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
+                  "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."}
              ],
-             "In TerraStract, OCR accuracy heavily depends on image quality. I developed an automated OpenCV preprocessing pipeline that deskews tilted scans, removes background paper discoloration via adaptive thresholding, and sharpens text contours, increasing OCR extraction reliability by 35% on low-quality documents."),
+             "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots."),
 
-            ("Security, Data Privacy & Temporary File Sanitization in Document Processing",
-             "Protecting sensitive citizen land records and PII during document extraction.",
-             "Never store unencrypted user documents permanently on application servers.",
+            ("Forensic Audit Verification & Ledger Consistency Traversal",
+             "Algorithmic validation of the entire vote chain and audit logs prior to publishing election results.",
+             "Automated ledger traversal recalculates all SHA-256 block hashes sequentially; a single altered bit halts tallying and flags corruption.",
              [
-                 {"q": "How do you ensure data privacy when processing confidential legal deeds in TerraStract?",
-                  "a": "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags and masks Aadhaar numbers and bank details before persisting structured outputs. All temporary files are wiped using secure unlinking immediately after extraction completes."},
-                 {"q": "How do you protect the extraction endpoint from malicious file upload attacks (ZIP bombs / executable masquerading)?",
-                  "a": "We inspect magic file signatures (MIME bytes) rather than relying on file extensions: PDFs must start with `%PDF-`. We enforce a strict 25MB file upload limit, reject password-protected or encrypted archives, and execute document parsers in isolated, unprivileged container processes."}
+                 {"q": "How does the forensic verification algorithm validate ledger integrity in BEVM?",
+                  "a": "The verification function queries all votes ordered by `block_id`. Starting with the genesis hash, it re-computes `expected_hash = SHA256(previous_hash + encrypted_payload + timestamp)`. If `expected_hash != current_block.hash` at any point, execution immediately halts, reporting the exact block ID of tampering and preventing fraudulent tally publication."},
+                 {"q": "What information is captured in BEVM's immutable `audit.log`?",
+                  "a": "Every system event (terminal boot, admin authentication, key generation, ballot cast, verification run) is written with ISO UTC timestamps and event classification. The log file is write-append-only and hashed alongside the database backup."}
              ],
-             "Handling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion."),
+             "Trust in voting technology requires verifiable proof. In BEVM, I authored a forensic verification engine that recalculates the cryptographic hash chain across all cast ballots prior to tally publication, providing mathematical proof of zero tampering."),
 
-            ("Benchmarking OCR Accuracy: Levenshtein Distance & Word Error Rate (WER)",
-             "Evaluating extraction performance objectively against ground truth datasets.",
-             "Word Error Rate (WER) = (Substitutions + Deletions + Insertions) / Total Reference Words.",
+            ("Offline Polling Booth Architecture & Air-Gapped System Hardening",
+             "Operating mission-critical voting platforms in completely air-gapped, zero-network environments.",
+             "Air-gapped deployment eliminates remote network vulnerabilities, DDoS vectors, and cloud dependency entirely.",
              [
-                 {"q": "How do you evaluate and benchmark the accuracy of TerraStract's extraction pipeline?",
-                  "a": "We maintain a benchmark dataset of 50 ground-truth legal documents with verified text transcriptions. After running extraction, an automated evaluation script computes Character Error Rate (CER) and Word Error Rate (WER) using Levenshtein distance matrices. This objective feedback loop allows us to tune OpenCV filter thresholds and Tesseract PSM parameters systematically."},
-                 {"q": "What is the difference between Tesseract PSM 6 and PSM 3?",
-                  "a": "PSM 3 is fully automatic page segmentation, which works well for multi-column magazines but struggles with tables. PSM 6 assumes a single uniform block of text, which is significantly more accurate when processing isolated tabular cells or cropped paragraph bounding boxes."}
+                 {"q": "Why design BEVM as an offline air-gapped application rather than a cloud-hosted web portal?",
+                  "a": "Online internet voting platforms are vulnerable to DDoS attacks, DNS hijacking, credential stuffing, and remote zero-day exploits. Air-gapping the terminal eliminates remote attack vectors entirely. Physical terminal security combined with local cryptographic hashing provides far higher integrity than any cloud database can guarantee."},
+                 {"q": "How are results aggregated from multiple air-gapped polling booths?",
+                  "a": "Upon election closing, each terminal generates a cryptographically signed, encrypted export package on an authenticated hardware token. The central counting station validates the digital signature of each terminal before ingesting and summing the verified tallies."}
              ],
-             "To ensure production reliability in TerraStract, I built a benchmarking harness that computes Character and Word Error Rates against ground-truth documents. This data-driven approach allowed us to fine-tune OpenCV binarization thresholds and achieve high extraction accuracy across complex tabular forms.")
+             "For mission-critical election integrity, I designed BEVM as a hardened, offline air-gapped system. By eliminating internet dependency and securing on-device SQLite databases with cryptographic hash chaining, the system provides rock-solid defense against remote tampering.")
         ]
         topic_info = topics[(day // 5) % len(topics)]
         return {
-            "project_name": "TerraStract",
-            "repo_path": "D:\\Projects\\terra_extract",
+            "project_name": "Biometric Electronic Voting System (BEVM)",
+            "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
             "topic": topic_info[0],
             "what_to_understand": topic_info[1],
             "what_to_memorize": topic_info[2],

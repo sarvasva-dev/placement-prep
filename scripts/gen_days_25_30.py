@@ -500,7 +500,7 @@ def get_days_25_to_30():
                 },
                 {
                     "q": "When should you choose `multiprocessing` over `asyncio`?",
-                    "a": "Choose `multiprocessing` for CPU-intensive operations (such as Tesseract OCR image transformations in TerraStract or numerical simulations in BCA-5004) where multiple CPU cores must be saturated simultaneously. Choose `asyncio` for high-concurrency I/O-bound web services (such as handling thousands of WebSocket connections or Telegram webhook alerts in BulkBeat TV) where threads would waste excessive memory on thread stack allocations."
+                    "a": "Choose `multiprocessing` for CPU-intensive operations (such as heavy cryptographic hashing/encryption or numerical simulations in BCA-5004) where multiple CPU cores must be saturated simultaneously. Choose `asyncio` for high-concurrency I/O-bound web services (such as handling thousands of WebSocket connections or Telegram webhook alerts in BulkBeat TV) where threads would waste excessive memory on thread stack allocations."
                 }
             ]
         },
@@ -740,13 +740,13 @@ def get_days_25_to_30():
             "architecture_deep_dive": (
                 "Preparing Sarthak's GitHub Repositories for Placement Technical Screeners:\n\n"
                 "1. Repository Cleanliness & Presentation:\n"
-                "• Pin the top 4 flagship repositories: `BulkBeat TV` (FastAPI/Telegram), `TerraStract` (Document AI/OCR), `CSMS` (Enterprise Backend), `BEVM` (Cryptographic Voting).\n"
+                "• Pin the top 4 flagship repositories: `BulkBeat TV` (FastAPI/Telegram), `SmartGalla` (Next.js/Supabase Retail), `CSMS` (Enterprise Backend), `BEVM` (Cryptographic Voting).\n"
                 "• Add descriptive badges (FastAPI, Python 3.11, Docker, PostgreSQL, MIT License).\n"
                 "• Include architecture diagrams (Mermaid or ASCII flowcharts) directly in the root `README.md`.\n\n"
                 "2. Live Screen-Sharing Script:\n"
                 "• Have Docker Compose pre-warmed so typing `docker compose up` starts the service in 3 seconds.\n"
                 "• Open Swagger interactive UI (`/docs`) to demonstrate live API execution.\n"
-                "• Walk through a complex code block (e.g. SQLite WAL pragma in BulkBeat or Tesseract fallback in TerraStract) with confidence."
+                "• Walk through a complex code block (e.g. SQLite WAL pragma in BulkBeat or chained SHA-256 traversal in BEVM) with confidence."
             ),
             "interview_qa": [
                 {
@@ -962,8 +962,8 @@ def get_days_25_to_30():
                 "• A — Action: Describe the SPECIFIC technical actions YOU took (use 'I', not 'we'). Highlight design choices and code implementations.\n"
                 "• R — Result: Quantify the outcome (e.g. 'reduced latency by 40%', 'served 6,000 users', 'zero data corruption').",
                 "High-Frequency Placement HR Questions:\n"
-                "1. 'Tell me about yourself': 90-second elevator pitch covering: BCA background, passion for Python backend systems, flagship achievements (BulkBeat TV & TerraStract), and why this company.\n"
-                "2. 'Why should we hire a BCA graduate when B.Tech graduates are available?': Emphasize demonstrated software execution over theoretical credentials: 'While many graduates have purely academic credentials, I have built and deployed production software with live users, written asynchronous microservices, implemented OCR pipelines, and managed database migrations from day one.'"
+                "1. 'Tell me about yourself': 90-second elevator pitch covering: BCA background, passion for Python backend systems, flagship achievements (BulkBeat TV with 6k+ users / ₹1.11L revenue, BEVM cryptographic voting), and why this company.\n"
+                "2. 'Why should we hire a BCA graduate when B.Tech graduates are available?': Emphasize demonstrated software execution over theoretical credentials: 'While many graduates have purely academic credentials, I have built and deployed production software with live users, written asynchronous microservices, implemented cryptographic audit ledgers, and managed database migrations from day one.'"
             ],
             "interview_qa": [
                 {
@@ -978,22 +978,22 @@ def get_days_25_to_30():
         },
         "project_defense": {
             "project_name": "Full Portfolio Final Defense",
-            "feature_focus": "The 90-Second Technical Pitch for BulkBeat TV & TerraStract",
+            "feature_focus": "The 90-Second Technical Pitch for BulkBeat TV & BEVM",
             "architecture_deep_dive": (
                 "End-to-End Executive Pitch Structure:\n\n"
                 "1. BulkBeat TV Pitch:\n"
                 "'BulkBeat TV is a real-time news streaming and notification system that ingests live media streams and delivers automated market alerts. "
                 "I engineered the backend using Python aiohttp and SQLite in WAL mode, implementing an asynchronous token-bucket rate limiter that pushes alerts "
-                "to thousands of subscribers via Telegram Webhooks with sub-second latency.'\n\n"
-                "2. TerraStract Pitch:\n"
-                "'TerraStract is an intelligent document processing pipeline designed to extract structured tabular data from complex, multi-lingual scanned PDFs. "
-                "I built a hybrid extraction pipeline that leverages PyMuPDF for native vector text and falls back to Tesseract OCR with Page Segmentation Mode 6 for scanned regions, "
-                "paired with regex-based Sanskrit/Devanagari Unicode normalization to guarantee clean JSON extraction.'"
+                "to thousands of subscribers via Telegram Webhooks with sub-second latency across 6,000+ users, generating ₹1.11 Lakhs in commercial revenue.'\n\n"
+                "2. BEVM Pitch:\n"
+                "'BEVM is an air-gapped cryptographic electronic voting platform designed in Python and SQLite. "
+                "It combines biometric voter authentication with a chained sequential SHA-256 audit ledger and Fernet AES-256 ballot encryption, "
+                "providing mathematical tamper-evidence while strictly preserving citizen ballot secrecy.'\n\n"
             ),
             "interview_qa": [
                 {
                     "q": "What was the most challenging technical bug you resolved across your projects?",
-                    "a": "In TerraStract, scanned Hindi legal documents frequently suffered from OCR segmentation errors when complex conjunct characters were misinterpreted. I solved this by pre-processing document page images using adaptive thresholding and contrast normalization in OpenCV, and forcing Tesseract's PSM to Mode 6 (single uniform block of text), improving character extraction accuracy by over 35%."
+                    "a": "In BulkBeat TV, concurrent SQLite write transactions initially threw database is locked errors during high-volatility news surges. I reconfigured the database to Write-Ahead Logging (WAL) with 30s busy-timeout queues and routed all database writes through a single dedicated asyncio queue, completely eliminating write contention across 6,000+ users."
                 },
                 {
                     "q": "If you had 1 more month to improve your projects, what would you implement next?",
@@ -1182,8 +1182,8 @@ def get_days_25_to_30():
                     "a": "SQLite provided extreme simplicity, zero network latency (in-process calls), and minimal RAM consumption. The trade-off is single-writer concurrency. I mitigated this by enabling Write-Ahead Logging (WAL) to allow simultaneous reads during writes and buffering write operations through an in-memory queue. For scaling beyond 10,000 users, I have architected a migration path to PostgreSQL."
                 },
                 {
-                    "q": "What was your approach to error handling in TerraStract's OCR pipeline?",
-                    "a": "I designed a resilient multi-tier fallback: First, try native PyMuPDF vector text extraction (100% accurate, sub-50ms). If character density is below threshold, crop image regions and run Tesseract OCR with PSM 6. If confidence score is below 70%, route the page to an exception review queue with raw image logs."
+                    "q": "What was your approach to error handling in BEVM's cryptographic ledger?",
+                    "a": "I designed a resilient tamper-verification routine that traverses sequential SHA-256 blocks from genesis to the latest block. If any hash fails or payload corruption occurs, the system halts tallying immediately, writes an alert to the immutable audit log, and flags the compromised block index."
                 }
             ]
         },
@@ -1260,7 +1260,7 @@ def get_days_25_to_30():
                     ["Aptitude Speed", "Formula memorization gaps, >2 mins per problem", "Instant pattern recognition, 4-tier shortcuts, <60s"],
                     ["Coding & DSA", "Disjoint LeetCode attempts without patterns", "50+ placement patterns in Python with complexity proofs"],
                     ["Core CS Foundations", "Scattered theoretical facts across subjects", "Deep systems architecture: OS, DBMS, Networks, Python"],
-                    ["Project Defenses", "Hesitant about architecture and metrics", "Rock-solid technical defense of BulkBeat TV & TerraStract"],
+                    ["Project Defenses", "Hesitant about architecture and metrics", "Rock-solid technical defense of BulkBeat TV & BEVM"],
                     ["Interview Mindset", "Anxious about degree comparison", "Unshakable confidence grounded in verifiable execution"]
                 ]
             },
@@ -1357,7 +1357,7 @@ def get_days_25_to_30():
                 },
                 {
                     "q": "Why should we select you today?",
-                    "a": "Because I combine solid computer science fundamentals with proven hands-on development experience. In my projects, I haven't just followed tutorials—I have built and deployed live systems, resolved real concurrency bottlenecks, implemented complex OCR pipelines, and designed clean relational schemas. I am eager to bring this same discipline and work ethic to your engineering team."
+                    "a": "Because I combine solid computer science fundamentals with proven hands-on development experience. In my projects, I haven't just followed tutorials—I have built and deployed live systems, resolved real concurrency bottlenecks, implemented cryptographic audit ledgers, and designed clean relational schemas. I am eager to bring this same discipline and work ethic to your engineering team."
                 }
             ]
         },
@@ -1366,8 +1366,8 @@ def get_days_25_to_30():
             "feature_focus": "The 30-Day Project Portfolio Milestone Sign-Off",
             "architecture_deep_dive": (
                 "Final Verification of Flagship Portfolio Assets:\n\n"
-                "• BulkBeat TV: Real-time media streaming, aiohttp backend, Telegram bot webhooks, SQLite WAL concurrency, token bucket rate limiting.\n"
-                "• TerraStract: Hybrid document AI, PyMuPDF vector extraction, Tesseract OCR PSM 6 fallback, Hindi Unicode regex normalization, async exception queue.\n"
+                "• BulkBeat TV: Real-time media streaming, aiohttp backend, Telegram bot webhooks, SQLite WAL concurrency, token bucket rate limiting (6k+ users, ₹1.11L revenue).\n"
+                "• SmartGalla: Multi-tenant Next.js 16/Supabase retail platform with Point-in-Polygon geofencing and offline-first PWA POS billing, piloted with 4-5 local Kirana stores.\n"
                 "• CSMS: College Student Management System, FastAPI, SQLAlchemy ORM, Alembic migrations, PostgreSQL, JWT role-based access control.\n"
                 "• BEVM: Biometric Electronic Voting Machine, Fernet AES-256 encryption, chained SHA-256 tamper-evident audit logs.\n\n"
                 "All 4 projects stand verified, documented, and ready for technical demonstration."

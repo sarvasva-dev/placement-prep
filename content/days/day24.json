@@ -853,36 +853,36 @@
       ]
     },
     "project_preparation": {
-      "project_name": "TerraStract",
-      "name": "TerraStract",
-      "repo_path": "D:\\Projects\\terra_extract",
-      "topic": "Security, Data Privacy & Temporary File Sanitization in Document Processing",
-      "feature_focus": "Security, Data Privacy & Temporary File Sanitization in Document Processing",
-      "what_to_understand": "Protecting sensitive citizen land records and PII during document extraction.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nProtecting sensitive citizen land records and PII during document extraction.\n\nWHAT TO MEMORIZE:\nNever store unencrypted user documents permanently on application servers.\n\n60-SECOND INTERVIEW PITCH:\nHandling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion.",
-      "what_to_memorize": "Never store unencrypted user documents permanently on application servers.",
+      "project_name": "Biometric Electronic Voting System (BEVM)",
+      "name": "Biometric Electronic Voting System (BEVM)",
+      "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
+      "topic": "Forensic Audit Verification & Ledger Consistency Traversal",
+      "feature_focus": "Forensic Audit Verification & Ledger Consistency Traversal",
+      "what_to_understand": "Algorithmic validation of the entire vote chain and audit logs prior to publishing election results.",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nAlgorithmic validation of the entire vote chain and audit logs prior to publishing election results.\n\nWHAT TO MEMORIZE:\nAutomated ledger traversal recalculates all SHA-256 block hashes sequentially; a single altered bit halts tallying and flags corruption.",
+      "what_to_memorize": "Automated ledger traversal recalculates all SHA-256 block hashes sequentially; a single altered bit halts tallying and flags corruption.",
       "interview_questions": [
         {
-          "q": "How do you ensure data privacy when processing confidential legal deeds in TerraStract?",
-          "a": "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags and masks Aadhaar numbers and bank details before persisting structured outputs. All temporary files are wiped using secure unlinking immediately after extraction completes."
+          "q": "How does the forensic verification algorithm validate ledger integrity in BEVM?",
+          "a": "The verification function queries all votes ordered by `block_id`. Starting with the genesis hash, it re-computes `expected_hash = SHA256(previous_hash + encrypted_payload + timestamp)`. If `expected_hash != current_block.hash` at any point, execution immediately halts, reporting the exact block ID of tampering and preventing fraudulent tally publication."
         },
         {
-          "q": "How do you protect the extraction endpoint from malicious file upload attacks (ZIP bombs / executable masquerading)?",
-          "a": "We inspect magic file signatures (MIME bytes) rather than relying on file extensions: PDFs must start with `%PDF-`. We enforce a strict 25MB file upload limit, reject password-protected or encrypted archives, and execute document parsers in isolated, unprivileged container processes."
+          "q": "What information is captured in BEVM's immutable `audit.log`?",
+          "a": "Every system event (terminal boot, admin authentication, key generation, ballot cast, verification run) is written with ISO UTC timestamps and event classification. The log file is write-append-only and hashed alongside the database backup."
         }
       ],
       "interview_qa": [
         {
-          "q": "How do you ensure data privacy when processing confidential legal deeds in TerraStract?",
-          "a": "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags and masks Aadhaar numbers and bank details before persisting structured outputs. All temporary files are wiped using secure unlinking immediately after extraction completes."
+          "q": "How does the forensic verification algorithm validate ledger integrity in BEVM?",
+          "a": "The verification function queries all votes ordered by `block_id`. Starting with the genesis hash, it re-computes `expected_hash = SHA256(previous_hash + encrypted_payload + timestamp)`. If `expected_hash != current_block.hash` at any point, execution immediately halts, reporting the exact block ID of tampering and preventing fraudulent tally publication."
         },
         {
-          "q": "How do you protect the extraction endpoint from malicious file upload attacks (ZIP bombs / executable masquerading)?",
-          "a": "We inspect magic file signatures (MIME bytes) rather than relying on file extensions: PDFs must start with `%PDF-`. We enforce a strict 25MB file upload limit, reject password-protected or encrypted archives, and execute document parsers in isolated, unprivileged container processes."
+          "q": "What information is captured in BEVM's immutable `audit.log`?",
+          "a": "Every system event (terminal boot, admin authentication, key generation, ballot cast, verification run) is written with ISO UTC timestamps and event classification. The log file is write-append-only and hashed alongside the database backup."
         }
       ],
-      "interview_pitch_exercise": "Handling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion.",
-      "pitch": "Handling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion."
+      "interview_pitch_exercise": "Trust in voting technology requires verifiable proof. In BEVM, I authored a forensic verification engine that recalculates the cryptographic hash chain across all cast ballots prior to tally publication, providing mathematical proof of zero tampering.",
+      "pitch": "Trust in voting technology requires verifiable proof. In BEVM, I authored a forensic verification engine that recalculates the cryptographic hash chain across all cast ballots prior to tally publication, providing mathematical proof of zero tampering."
     },
     "placement_interview": [
       {
@@ -1255,8 +1255,8 @@
       },
       {
         "id": "TEST-24-19",
-        "category": "Projects (TerraStract)",
-        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Security, Data Privacy & Temporary File Sanitization in Document Processing'?",
+        "category": "Projects (Biometric Electronic Voting System (BEVM))",
+        "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Security, Data Privacy & Temporary File Sanitization in Document Processing'?",
         "options": [
           "Never store unencrypted user documents permanently on application servers.",
           "Using unencrypted HTTP requests over public ports.",
@@ -1264,12 +1264,12 @@
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For TerraStract, the architectural invariant is: Never store unencrypted user documents permanently on application servers.."
+        "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Never store unencrypted user documents permanently on application servers.."
       },
       {
         "id": "TEST-24-20",
-        "category": "Projects (TerraStract)",
-        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you ensure data privacy when processing confidential legal deeds in TerraStract?'?",
+        "category": "Projects (Biometric Electronic Voting System (BEVM))",
+        "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How do you ensure data privacy when processing confidential legal deeds in Biometric Electronic Voting System (BEVM)?'?",
         "options": [
           "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags an...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
@@ -2276,36 +2276,36 @@
     ]
   },
   "project_defense": {
-    "project_name": "TerraStract",
-    "name": "TerraStract",
-    "repo_path": "D:\\Projects\\terra_extract",
-    "topic": "Security, Data Privacy & Temporary File Sanitization in Document Processing",
-    "feature_focus": "Security, Data Privacy & Temporary File Sanitization in Document Processing",
-    "what_to_understand": "Protecting sensitive citizen land records and PII during document extraction.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nProtecting sensitive citizen land records and PII during document extraction.\n\nWHAT TO MEMORIZE:\nNever store unencrypted user documents permanently on application servers.\n\n60-SECOND INTERVIEW PITCH:\nHandling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion.",
-    "what_to_memorize": "Never store unencrypted user documents permanently on application servers.",
+    "project_name": "Biometric Electronic Voting System (BEVM)",
+    "name": "Biometric Electronic Voting System (BEVM)",
+    "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
+    "topic": "Forensic Audit Verification & Ledger Consistency Traversal",
+    "feature_focus": "Forensic Audit Verification & Ledger Consistency Traversal",
+    "what_to_understand": "Algorithmic validation of the entire vote chain and audit logs prior to publishing election results.",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nAlgorithmic validation of the entire vote chain and audit logs prior to publishing election results.\n\nWHAT TO MEMORIZE:\nAutomated ledger traversal recalculates all SHA-256 block hashes sequentially; a single altered bit halts tallying and flags corruption.",
+    "what_to_memorize": "Automated ledger traversal recalculates all SHA-256 block hashes sequentially; a single altered bit halts tallying and flags corruption.",
     "interview_questions": [
       {
-        "q": "How do you ensure data privacy when processing confidential legal deeds in TerraStract?",
-        "a": "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags and masks Aadhaar numbers and bank details before persisting structured outputs. All temporary files are wiped using secure unlinking immediately after extraction completes."
+        "q": "How does the forensic verification algorithm validate ledger integrity in BEVM?",
+        "a": "The verification function queries all votes ordered by `block_id`. Starting with the genesis hash, it re-computes `expected_hash = SHA256(previous_hash + encrypted_payload + timestamp)`. If `expected_hash != current_block.hash` at any point, execution immediately halts, reporting the exact block ID of tampering and preventing fraudulent tally publication."
       },
       {
-        "q": "How do you protect the extraction endpoint from malicious file upload attacks (ZIP bombs / executable masquerading)?",
-        "a": "We inspect magic file signatures (MIME bytes) rather than relying on file extensions: PDFs must start with `%PDF-`. We enforce a strict 25MB file upload limit, reject password-protected or encrypted archives, and execute document parsers in isolated, unprivileged container processes."
+        "q": "What information is captured in BEVM's immutable `audit.log`?",
+        "a": "Every system event (terminal boot, admin authentication, key generation, ballot cast, verification run) is written with ISO UTC timestamps and event classification. The log file is write-append-only and hashed alongside the database backup."
       }
     ],
     "interview_qa": [
       {
-        "q": "How do you ensure data privacy when processing confidential legal deeds in TerraStract?",
-        "a": "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags and masks Aadhaar numbers and bank details before persisting structured outputs. All temporary files are wiped using secure unlinking immediately after extraction completes."
+        "q": "How does the forensic verification algorithm validate ledger integrity in BEVM?",
+        "a": "The verification function queries all votes ordered by `block_id`. Starting with the genesis hash, it re-computes `expected_hash = SHA256(previous_hash + encrypted_payload + timestamp)`. If `expected_hash != current_block.hash` at any point, execution immediately halts, reporting the exact block ID of tampering and preventing fraudulent tally publication."
       },
       {
-        "q": "How do you protect the extraction endpoint from malicious file upload attacks (ZIP bombs / executable masquerading)?",
-        "a": "We inspect magic file signatures (MIME bytes) rather than relying on file extensions: PDFs must start with `%PDF-`. We enforce a strict 25MB file upload limit, reject password-protected or encrypted archives, and execute document parsers in isolated, unprivileged container processes."
+        "q": "What information is captured in BEVM's immutable `audit.log`?",
+        "a": "Every system event (terminal boot, admin authentication, key generation, ballot cast, verification run) is written with ISO UTC timestamps and event classification. The log file is write-append-only and hashed alongside the database backup."
       }
     ],
-    "interview_pitch_exercise": "Handling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion.",
-    "pitch": "Handling government deeds requires strict data security. In TerraStract, I implemented MIME byte validation to prevent malicious uploads, automated PII redaction for sensitive citizen data, and ephemeral file processing that guarantees uploaded documents are securely wiped from disk upon job completion."
+    "interview_pitch_exercise": "Trust in voting technology requires verifiable proof. In BEVM, I authored a forensic verification engine that recalculates the cryptographic hash chain across all cast ballots prior to tally publication, providing mathematical proof of zero tampering.",
+    "pitch": "Trust in voting technology requires verifiable proof. In BEVM, I authored a forensic verification engine that recalculates the cryptographic hash chain across all cast ballots prior to tally publication, providing mathematical proof of zero tampering."
   },
   "placement_interview": [
     {
@@ -2644,18 +2644,18 @@
       },
       {
         "no": 19,
-        "q": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Security, Data Privacy & Temporary File Sanitization in Document Processing'?",
+        "q": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Security, Data Privacy & Temporary File Sanitization in Document Processing'?",
         "options": [
           "Never store unencrypted user documents permanently on application servers.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For TerraStract, the architectural invariant is: Never store unencrypted user documents permanently on application servers.."
+        "a": "Answer: A \u2014 For Biometric Electronic Voting System (BEVM), the architectural invariant is: Never store unencrypted user documents permanently on application servers.."
       },
       {
         "no": 20,
-        "q": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you ensure data privacy when processing confidential legal deeds in TerraStract?'?",
+        "q": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How do you ensure data privacy when processing confidential legal deeds in Biometric Electronic Voting System (BEVM)?'?",
         "options": [
           "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags an...",
           "Claim that standard frameworks are obsolete and write custom assembly.",

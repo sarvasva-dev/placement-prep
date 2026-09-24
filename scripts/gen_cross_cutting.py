@@ -317,43 +317,6 @@ def generate_cross_cutting(content_dir):
                 "Maintained 99.8% uptime on a cloud VPS using systemd process supervisors and automatic crash recovery handlers."
             ]
         },
-        "terrastract": {
-            "name": "TerraStract",
-            "category": "Hybrid Document AI & Multi-Lingual Tabular OCR Pipeline",
-            "repo_path": "D:\\Projects\\terra_extract",
-            "tech_stack": {
-                "used": ["Python 3.11", "FastAPI", "PyMuPDF (fitz)", "Tesseract OCR", "OpenCV", "Pydantic", "Regex Unicode Normalization"],
-                "understood": ["Page Segmentation Modes (PSM)", "Adaptive Image Binarization", "Devanagari Unicode Normalization", "Asynchronous HTTP Ingestion"],
-                "explored": ["Donut / LayoutLM Transformer Document Models", "AWS Textract"]
-            },
-            "metrics": {
-                "processing_speed": "15-30ms per vector PDF page; 1.2s per scanned OCR page",
-                "accuracy_improvement": "+35% OCR character accuracy on scanned Hindi legal documents via PSM 6 and contrast normalization",
-                "memory_footprint": "Strictly bounded < 250MB RAM per worker via incremental PyMuPDF garbage collection"
-            },
-            "architecture_flow": [
-                "1. Upload PDF via FastAPI endpoint (`POST /api/v1/extract`) returning immediate `HTTP 202 Accepted`",
-                "2. Primary Extraction: PyMuPDF vector text extraction directly from PDF font streams",
-                "3. Secondary Fallback: If text density < threshold, crop page images, apply OpenCV adaptive contrast, and run Tesseract OCR with PSM 6",
-                "4. Sanskrit/Devanagari Unicode regex cleanup resolving split conjunct consonants",
-                "5. Structured JSON output schema validated via Pydantic"
-            ],
-            "interview_defense": [
-                {
-                    "q": "Why did you build a hybrid extraction pipeline instead of sending everything to OCR?",
-                    "a": "Because running Tesseract OCR on a 100-page native vector PDF takes over 90 seconds of heavy CPU time and introduces optical recognition errors on clean digital text. PyMuPDF extracts native vector text directly from the PDF's internal font streams in under 20 milliseconds per page with 100% precision. I use OCR strictly as a fallback for scanned pages or rasterized image regions, achieving the optimal balance of speed and coverage."
-                },
-                {
-                    "q": "How did you handle OCR degradation in Indian regional languages (Hindi/Devanagari)?",
-                    "a": "Tesseract often splits conjunct consonants (halant ligatures) when using standard automatic page segmentation. I resolved this by: 1. Preprocessing scanned crops with OpenCV bilateral filtering and Otsu binarization to clean paper grain, 2. Setting Tesseract Page Segmentation Mode to PSM 6 (single uniform text block), and 3. Passing extracted strings through custom Unicode NFC normalization and regex post-processors to reconstruct valid Devanagari character sequences."
-                }
-            ],
-            "resume_bullets": [
-                "Built a production-grade multi-lingual document extraction API in FastAPI, processing complex English and Hindi PDFs with sub-50ms latency for digital pages.",
-                "Engineered a hybrid extraction pipeline combining PyMuPDF for native vector text with an OpenCV/Tesseract OCR fallback, boosting OCR extraction accuracy by 35% on low-quality scans.",
-                "Implemented non-blocking asynchronous document processing using background worker queues, returning immediate HTTP 202 status tokens to prevent gateway timeouts."
-            ]
-        },
         "csms": {
             "name": "College Student Management System (CSMS)",
             "category": "Enterprise ERP & Academic Management Backend",
@@ -447,21 +410,22 @@ def generate_cross_cutting(content_dir):
             },
             "experience_and_projects": [
                 {
-                    "name": "BulkBeat TV (NSE2) — Asynchronous Stream & Alert Backend",
-                    "role": "Lead Backend Developer",
+                    "name": "BulkBeat TV — Real-Time Market Intelligence Engine (bulkbeattv.com)",
+                    "role": "Systems Architect & Backend Lead",
                     "bullets": [
-                        "Engineered an event-driven notification service in Python aiohttp and AsyncIO, processing streaming news events with sub-second alert delivery via Telegram Webhooks.",
-                        "Optimized SQLite database performance by implementing Write-Ahead Logging (WAL) and single-writer asyncio queues, eliminating write contention locks during traffic surges.",
-                        "Maintained 99.8% uptime on a cloud VPS using systemd process supervisors and automatic crash recovery handlers."
+                        "Engineered an event-driven notification engine in Python AsyncIO, scanning 5+ live exchange/media sources with sub-5s alert delivery via Telegram Webhooks.",
+                        "Implemented 22-rule deterministic AI scoring that eliminates 90%+ market noise; built identity rotation and cookie warming to bypass bot detection.",
+                        "Optimized SQLite performance with Write-Ahead Logging (WAL) and 30s busy-timeout queues, guaranteeing zero-lock concurrent operations on low-resource VPS.",
+                        "Scaled platform to 6,000+ active users and generated ₹1.11 Lakhs in commercial revenue within months."
                     ]
                 },
                 {
-                    "name": "TerraStract — Multi-Lingual Document AI & Tabular Extraction Pipeline",
-                    "role": "Backend Engineer",
+                    "name": "Biometric Electronic Voting System (BEVM) — Air-Gapped Platform",
+                    "role": "Cryptographic Systems & Backend Engineer",
                     "bullets": [
-                        "Built a production-grade multi-lingual document extraction API in FastAPI, processing complex English and Hindi PDFs with sub-50ms latency for digital pages.",
-                        "Engineered a hybrid extraction pipeline combining PyMuPDF for native vector text with an OpenCV/Tesseract OCR fallback, boosting OCR extraction accuracy by 35% on low-quality scans.",
-                        "Implemented non-blocking asynchronous document processing using background worker queues, returning immediate HTTP 202 status tokens to prevent gateway timeouts."
+                        "Engineered an air-gapped cryptographic voting platform in Python and SQLite, securing all ballot choices with Fernet AES-256 symmetric encryption.",
+                        "Implemented an append-only cryptographic ledger using chained sequential SHA-256 hashes, ensuring mathematical tamper-evidence across all ballot blocks.",
+                        "Designed atomic state locking transactions that permanently prevent double-voting (has_voted = 1) while strictly preserving citizen ballot secrecy."
                     ]
                 },
                 {
@@ -492,7 +456,7 @@ def generate_cross_cutting(content_dir):
                 "github": "https://github.com/Sarthak-Srivastava13",
                 "linkedin": "https://linkedin.com/in/sarthak-srivastava"
             },
-            "summary": "Disciplined software developer pursuing BCA with demonstrated competence in systems programming, data structures, and production-grade backend engineering. Proven track record of delivering real-world software across media streaming, document OCR automation, and enterprise web applications.",
+            "summary": "Disciplined software developer pursuing BCA with demonstrated competence in systems programming, data structures, and production-grade backend engineering. Proven track record of delivering real-world software across financial market intelligence, cryptographic voting platforms, and enterprise web applications.",
             "skills": {
                 "Programming": "Python, Java, JavaScript, C, SQL",
                 "Systems & Web": "FastAPI, Java Servlets/JSP, HTML5/CSS3, Node.js, RESTful Architecture",
@@ -501,28 +465,28 @@ def generate_cross_cutting(content_dir):
             },
             "experience_and_projects": [
                 {
-                    "name": "BulkBeat TV — High-Concurrency Streaming Alert Engine",
-                    "role": "Software Developer",
+                    "name": "BulkBeat TV — Real-Time Market Intelligence Engine (bulkbeattv.com)",
+                    "role": "Systems Architect & Backend Lead",
                     "bullets": [
-                        "Developed an asynchronous media ingestion backend utilizing Python aiohttp and SQLite in Write-Ahead Logging (WAL) mode.",
-                        "Integrated Telegram Bot Webhooks with token-bucket rate limiting to broadcast alerts to subscribers with sub-second latency.",
-                        "Configured Linux cloud VPS deployment with Nginx reverse proxy and systemd process management."
+                        "Engineered an event-driven notification engine in Python AsyncIO, scanning 5+ live exchange/media sources with sub-5s alert delivery via Telegram Webhooks.",
+                        "Implemented 22-rule deterministic AI scoring that eliminates 90%+ market noise; scaled system to 6,000+ active users and ₹1.11 Lakhs in revenue.",
+                        "Optimized SQLite database performance with Write-Ahead Logging (WAL) and 30s busy-timeout queues, guaranteeing zero-lock concurrent operations."
                     ]
                 },
                 {
-                    "name": "TerraStract — Intelligent Document Extraction System",
-                    "role": "Software Engineer",
+                    "name": "SmartGalla — Geospatial Kirana Inventory & Commerce Platform",
+                    "role": "Full Stack Engineer",
                     "bullets": [
-                        "Designed a high-performance document extraction service in FastAPI using PyMuPDF and Tesseract OCR.",
-                        "Implemented OpenCV image contrast preprocessing and regex-based Unicode normalizers, improving Hindi text extraction accuracy by 35%.",
-                        "Structured background worker queues returning HTTP 202 Accepted tokens to decouple heavy compute from client HTTP connections."
+                        "Engineered edge-rendered multi-tenant retail platform in Next.js 16 and Supabase PostgreSQL with Point-in-Polygon geofencing.",
+                        "Piloted real-time inventory ledger with 4–5 local Kirana merchant shops, achieving sub-100ms hydration before sunsetting due to hosting infrastructure costs.",
+                        "Implemented offline-first PWA caching via Serwist and background sync to maintain POS operations during store network interruptions."
                     ]
                 },
                 {
                     "name": "Biometric Electronic Voting System (BEVM) — Cryptographic Ledger",
                     "role": "Software Developer",
                     "bullets": [
-                        "Built a tamper-evident electronic voting prototype utilizing Fernet AES-256 encryption and chained SHA-256 audit hashes to prevent unauthorized ballot tampering.",
+                        "Built a tamper-evident electronic voting platform utilizing Fernet AES-256 encryption and chained SHA-256 audit hashes to prevent unauthorized ballot tampering.",
                         "Developed verification algorithms that traverse historical audit blocks to validate cryptographic ledger integrity prior to tally publication."
                     ]
                 }

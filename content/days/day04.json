@@ -870,36 +870,36 @@
       ]
     },
     "project_preparation": {
-      "project_name": "TerraStract",
-      "name": "TerraStract",
-      "repo_path": "D:\\Projects\\terra_extract",
-      "topic": "Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture",
-      "feature_focus": "Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture",
-      "what_to_understand": "Combining PyMuPDF native vector stream parsing with OpenCV image binarization and Tesseract OCR.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nCombining PyMuPDF native vector stream parsing with OpenCV image binarization and Tesseract OCR.\n\nWHAT TO MEMORIZE:\nVector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.\n\n60-SECOND INTERVIEW PITCH:\nTerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing.",
-      "what_to_memorize": "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
+      "project_name": "Biometric Electronic Voting System (BEVM)",
+      "name": "Biometric Electronic Voting System (BEVM)",
+      "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
+      "topic": "Tamper-Evident Cryptographic Ledger & Chained SHA-256 Audit Hashes",
+      "feature_focus": "Tamper-Evident Cryptographic Ledger & Chained SHA-256 Audit Hashes",
+      "what_to_understand": "Chaining ballot records using sequential SHA-256 cryptographic hashes (H_i = SHA256(H_{i-1} + ballot_data)) to guarantee that retrospective tampering immediately breaks downstream hash validity.",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nChaining ballot records using sequential SHA-256 cryptographic hashes (H_i = SHA256(H_{i-1} + ballot_data)) to guarantee that retrospective tampering immediately breaks downstream hash validity.\n\nWHAT TO MEMORIZE:\nSequential cryptographic hash chaining guarantees historical immutability. If any past ballot is modified, all descendant block hashes fail validation.",
+      "what_to_memorize": "Sequential cryptographic hash chaining guarantees historical immutability. If any past ballot is modified, all descendant block hashes fail validation.",
       "interview_questions": [
         {
-          "q": "How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?",
-          "a": "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular coordinates and text streams in &lt;10ms; 3. If the page is a scanned bitmap or has font glyph corruption, it routes to an OpenCV pipeline that applies grayscale conversion, Otsu's adaptive thresholding, and morphological opening to clean noise before invoking Tesseract OCR with `--oem 1 --psm 6`."
+          "q": "How does the Biometric Electronic Voting System (BEVM) prevent retroactive ballot tampering?",
+          "a": "BEVM implements an append-only cryptographic ledger. Each cast vote record includes the SHA-256 hash of the immediately preceding ballot block alongside timestamp and voter choice data. Prior to tally publication, an audit verification script traverses the block sequence; modifying or inserting a single vote invalidates all subsequent hashes, making undetected tampering mathematically impossible."
         },
         {
-          "q": "How do you handle Devanagari Unicode characters and ligature rendering in OCR?",
-          "a": "Standard Tesseract struggles with conjunct Hindi characters (Matras). We load the `hin` traineddata pack and post-process raw text with custom regex normalization rules that correct common OCR segmentation errors in regional land records (e.g., Khasra and Khatauni numbers)."
+          "q": "How do you preserve voter ballot secrecy while maintaining an auditable cryptographic chain?",
+          "a": "Voter authentication (biometric match status) and ballot recording are strictly decoupled. When a citizen authenticates, their record in the `voters` table sets `has_voted = 1`. The ballot record is written to a separate `votes` table containing only encrypted candidate choice and hash links, with no foreign key or linkable identifier connecting voter identity to candidate preference."
         }
       ],
       "interview_qa": [
         {
-          "q": "How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?",
-          "a": "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular coordinates and text streams in &lt;10ms; 3. If the page is a scanned bitmap or has font glyph corruption, it routes to an OpenCV pipeline that applies grayscale conversion, Otsu's adaptive thresholding, and morphological opening to clean noise before invoking Tesseract OCR with `--oem 1 --psm 6`."
+          "q": "How does the Biometric Electronic Voting System (BEVM) prevent retroactive ballot tampering?",
+          "a": "BEVM implements an append-only cryptographic ledger. Each cast vote record includes the SHA-256 hash of the immediately preceding ballot block alongside timestamp and voter choice data. Prior to tally publication, an audit verification script traverses the block sequence; modifying or inserting a single vote invalidates all subsequent hashes, making undetected tampering mathematically impossible."
         },
         {
-          "q": "How do you handle Devanagari Unicode characters and ligature rendering in OCR?",
-          "a": "Standard Tesseract struggles with conjunct Hindi characters (Matras). We load the `hin` traineddata pack and post-process raw text with custom regex normalization rules that correct common OCR segmentation errors in regional land records (e.g., Khasra and Khatauni numbers)."
+          "q": "How do you preserve voter ballot secrecy while maintaining an auditable cryptographic chain?",
+          "a": "Voter authentication (biometric match status) and ballot recording are strictly decoupled. When a citizen authenticates, their record in the `voters` table sets `has_voted = 1`. The ballot record is written to a separate `votes` table containing only encrypted candidate choice and hash links, with no foreign key or linkable identifier connecting voter identity to candidate preference."
         }
       ],
-      "interview_pitch_exercise": "TerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing.",
-      "pitch": "TerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing."
+      "interview_pitch_exercise": "I engineered the Biometric Electronic Voting System (BEVM) as an air-gapped cryptographic voting platform in Python and SQLite. It combines biometric identity verification with a chained SHA-256 append-only audit ledger, guaranteeing that vote records cannot be altered or injected retroactively while strictly preserving voter ballot secrecy.",
+      "pitch": "I engineered the Biometric Electronic Voting System (BEVM) as an air-gapped cryptographic voting platform in Python and SQLite. It combines biometric identity verification with a chained SHA-256 append-only audit ledger, guaranteeing that vote records cannot be altered or injected retroactively while strictly preserving voter ballot secrecy."
     },
     "placement_interview": [
       {
@@ -965,7 +965,7 @@
       "formula_recall": "\u2022 Compounded Ratio of (a:b) and (c:d) = ac:bd\n\u2022 Duplicate Ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b)\n\u2022 Direct Proportion: x1 / y1 = x2 / y2; Inverse Proportion: x1 * y1 = x2 * y2\n\u2022 Floyd's Cycle Detection: Fast pointer advances by 2, slow by 1. Distance from head to cycle start = distance from meeting point to cycle start.",
       "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section B, 15 Marks) \u2014 'Compare OSI reference model and TCP/IP protocol suite. Explain data encapsulation with layer-by-layer headers.'\n\u2022 Blueprint: 1. Definition (2m) -> 2. 7-Layer vs 4-Layer Diagram (4m) -> 3. Layer Functionalities (5m) -> 4. Architectural Comparison Table (2m) -> 5. Summary (2m).",
       "dsa_recall": "\u2022 Pattern: Fast & Slow Pointers (Floyd's Tortoise and Hare).\n\u2022 Invariant: Slow pointer moves 1 step; fast pointer moves 2 steps. If a cycle exists, they must meet within the loop. To find cycle origin, reset slow to head and advance both by 1 step.\n\u2022 Edge Cases: Empty list, single node without loop, single node with self-loop, two nodes.",
-      "project_recall": "\u2022 Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline).\n\u2022 Architecture: FastAPI service, PyMuPDF vector extraction, Tesseract OCR fallback, and asynchronous background worker queues.\n\u2022 Defense Pitch: 'Engineered high-throughput document extraction API in FastAPI, parsing digital PDFs in <50ms with PyMuPDF and boosting noisy Hindi scan accuracy by 35% using OpenCV preprocessing.'",
+      "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM) (Multi-Lingual Document AI & Tabular Extraction Pipeline).\n\u2022 Architecture: FastAPI service, PyMuPDF vector extraction, Tesseract OCR fallback, and asynchronous background worker queues.\n\u2022 Defense Pitch: 'Engineered high-throughput document extraction API in FastAPI, parsing digital PDFs in <50ms with PyMuPDF and boosting noisy Hindi scan accuracy by 35% using OpenCV preprocessing.'",
       "rapid_fire_questions": [
         {
           "q": "What are the 7 layers of the OSI reference model from bottom to top?",
@@ -1000,11 +1000,11 @@
           "a": "Because the distance between fast and slow decreases by 1 node in every iteration once both enter the loop."
         },
         {
-          "q": "In TerraStract, why are background worker queues used for PDF processing?",
+          "q": "In Biometric Electronic Voting System (BEVM), why are background worker queues used for PDF processing?",
           "a": "To return an immediate HTTP 202 Accepted token, decoupling heavy OCR compute from client HTTP request lifecycles."
         },
         {
-          "q": "What OCR engine is utilized in TerraStract as a fallback for scanned pages?",
+          "q": "What OCR engine is utilized in Biometric Electronic Voting System (BEVM) as a fallback for scanned pages?",
           "a": "Tesseract OCR with OpenCV contrast preprocessing."
         }
       ],
@@ -1027,7 +1027,7 @@
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "\u2022 Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline)."
+          "definition": "\u2022 Project: Biometric Electronic Voting System (BEVM) (Multi-Lingual Document AI & Tabular Extraction Pipeline)."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1272,8 +1272,8 @@
       },
       {
         "id": "TEST-04-19",
-        "category": "Projects (TerraStract)",
-        "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture'?",
+        "category": "Projects (Biometric Electronic Voting System (BEVM))",
+        "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture'?",
         "options": [
           "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
           "Using unencrypted HTTP requests over public ports.",
@@ -1281,20 +1281,20 @@
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For TerraStract, the architectural invariant is: Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.."
+        "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.."
       },
       {
         "id": "TEST-04-20",
-        "category": "Projects (TerraStract)",
-        "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?'?",
+        "category": "Projects (Biometric Electronic Voting System (BEVM))",
+        "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does Biometric Electronic Voting System (BEVM) achieve high accuracy on complex Hindi and English land property deeds?'?",
         "options": [
-          "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular...",
+          "Biometric Electronic Voting System (BEVM) implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
         "correct_answer": "A",
-        "explanation": "In technical interviews, anchor your defense in engineering metrics: TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present,."
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Biometric Electronic Voting System (BEVM) implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present,."
       }
     ],
     "daily_coding_task": {
@@ -2295,36 +2295,36 @@
     ]
   },
   "project_defense": {
-    "project_name": "TerraStract",
-    "name": "TerraStract",
-    "repo_path": "D:\\Projects\\terra_extract",
-    "topic": "Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture",
-    "feature_focus": "Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture",
-    "what_to_understand": "Combining PyMuPDF native vector stream parsing with OpenCV image binarization and Tesseract OCR.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nCombining PyMuPDF native vector stream parsing with OpenCV image binarization and Tesseract OCR.\n\nWHAT TO MEMORIZE:\nVector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.\n\n60-SECOND INTERVIEW PITCH:\nTerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing.",
-    "what_to_memorize": "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
+    "project_name": "Biometric Electronic Voting System (BEVM)",
+    "name": "Biometric Electronic Voting System (BEVM)",
+    "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
+    "topic": "Tamper-Evident Cryptographic Ledger & Chained SHA-256 Audit Hashes",
+    "feature_focus": "Tamper-Evident Cryptographic Ledger & Chained SHA-256 Audit Hashes",
+    "what_to_understand": "Chaining ballot records using sequential SHA-256 cryptographic hashes (H_i = SHA256(H_{i-1} + ballot_data)) to guarantee that retrospective tampering immediately breaks downstream hash validity.",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nChaining ballot records using sequential SHA-256 cryptographic hashes (H_i = SHA256(H_{i-1} + ballot_data)) to guarantee that retrospective tampering immediately breaks downstream hash validity.\n\nWHAT TO MEMORIZE:\nSequential cryptographic hash chaining guarantees historical immutability. If any past ballot is modified, all descendant block hashes fail validation.",
+    "what_to_memorize": "Sequential cryptographic hash chaining guarantees historical immutability. If any past ballot is modified, all descendant block hashes fail validation.",
     "interview_questions": [
       {
-        "q": "How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?",
-        "a": "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular coordinates and text streams in &lt;10ms; 3. If the page is a scanned bitmap or has font glyph corruption, it routes to an OpenCV pipeline that applies grayscale conversion, Otsu's adaptive thresholding, and morphological opening to clean noise before invoking Tesseract OCR with `--oem 1 --psm 6`."
+        "q": "How does the Biometric Electronic Voting System (BEVM) prevent retroactive ballot tampering?",
+        "a": "BEVM implements an append-only cryptographic ledger. Each cast vote record includes the SHA-256 hash of the immediately preceding ballot block alongside timestamp and voter choice data. Prior to tally publication, an audit verification script traverses the block sequence; modifying or inserting a single vote invalidates all subsequent hashes, making undetected tampering mathematically impossible."
       },
       {
-        "q": "How do you handle Devanagari Unicode characters and ligature rendering in OCR?",
-        "a": "Standard Tesseract struggles with conjunct Hindi characters (Matras). We load the `hin` traineddata pack and post-process raw text with custom regex normalization rules that correct common OCR segmentation errors in regional land records (e.g., Khasra and Khatauni numbers)."
+        "q": "How do you preserve voter ballot secrecy while maintaining an auditable cryptographic chain?",
+        "a": "Voter authentication (biometric match status) and ballot recording are strictly decoupled. When a citizen authenticates, their record in the `voters` table sets `has_voted = 1`. The ballot record is written to a separate `votes` table containing only encrypted candidate choice and hash links, with no foreign key or linkable identifier connecting voter identity to candidate preference."
       }
     ],
     "interview_qa": [
       {
-        "q": "How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?",
-        "a": "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular coordinates and text streams in &lt;10ms; 3. If the page is a scanned bitmap or has font glyph corruption, it routes to an OpenCV pipeline that applies grayscale conversion, Otsu's adaptive thresholding, and morphological opening to clean noise before invoking Tesseract OCR with `--oem 1 --psm 6`."
+        "q": "How does the Biometric Electronic Voting System (BEVM) prevent retroactive ballot tampering?",
+        "a": "BEVM implements an append-only cryptographic ledger. Each cast vote record includes the SHA-256 hash of the immediately preceding ballot block alongside timestamp and voter choice data. Prior to tally publication, an audit verification script traverses the block sequence; modifying or inserting a single vote invalidates all subsequent hashes, making undetected tampering mathematically impossible."
       },
       {
-        "q": "How do you handle Devanagari Unicode characters and ligature rendering in OCR?",
-        "a": "Standard Tesseract struggles with conjunct Hindi characters (Matras). We load the `hin` traineddata pack and post-process raw text with custom regex normalization rules that correct common OCR segmentation errors in regional land records (e.g., Khasra and Khatauni numbers)."
+        "q": "How do you preserve voter ballot secrecy while maintaining an auditable cryptographic chain?",
+        "a": "Voter authentication (biometric match status) and ballot recording are strictly decoupled. When a citizen authenticates, their record in the `voters` table sets `has_voted = 1`. The ballot record is written to a separate `votes` table containing only encrypted candidate choice and hash links, with no foreign key or linkable identifier connecting voter identity to candidate preference."
       }
     ],
-    "interview_pitch_exercise": "TerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing.",
-    "pitch": "TerraStract is a document AI pipeline I built to parse complex English and Hindi land deeds into structured data. Rather than blindly applying slow OCR everywhere, I engineered a hybrid architecture: clean vector text is extracted instantaneously via PyMuPDF, while low-quality scans pass through an OpenCV noise-reduction pipeline before targeted Tesseract OCR processing."
+    "interview_pitch_exercise": "I engineered the Biometric Electronic Voting System (BEVM) as an air-gapped cryptographic voting platform in Python and SQLite. It combines biometric identity verification with a chained SHA-256 append-only audit ledger, guaranteeing that vote records cannot be altered or injected retroactively while strictly preserving voter ballot secrecy.",
+    "pitch": "I engineered the Biometric Electronic Voting System (BEVM) as an air-gapped cryptographic voting platform in Python and SQLite. It combines biometric identity verification with a chained SHA-256 append-only audit ledger, guaranteeing that vote records cannot be altered or injected retroactively while strictly preserving voter ballot secrecy."
   },
   "placement_interview": [
     {
@@ -2390,7 +2390,7 @@
     "formula_recall": "\u2022 Compounded Ratio of (a:b) and (c:d) = ac:bd\n\u2022 Duplicate Ratio of a:b = a^2:b^2; Sub-duplicate = sqrt(a):sqrt(b)\n\u2022 Direct Proportion: x1 / y1 = x2 / y2; Inverse Proportion: x1 * y1 = x2 * y2\n\u2022 Floyd's Cycle Detection: Fast pointer advances by 2, slow by 1. Distance from head to cycle start = distance from meeting point to cycle start.",
     "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section B, 15 Marks) \u2014 'Compare OSI reference model and TCP/IP protocol suite. Explain data encapsulation with layer-by-layer headers.'\n\u2022 Blueprint: 1. Definition (2m) -> 2. 7-Layer vs 4-Layer Diagram (4m) -> 3. Layer Functionalities (5m) -> 4. Architectural Comparison Table (2m) -> 5. Summary (2m).",
     "dsa_recall": "\u2022 Pattern: Fast & Slow Pointers (Floyd's Tortoise and Hare).\n\u2022 Invariant: Slow pointer moves 1 step; fast pointer moves 2 steps. If a cycle exists, they must meet within the loop. To find cycle origin, reset slow to head and advance both by 1 step.\n\u2022 Edge Cases: Empty list, single node without loop, single node with self-loop, two nodes.",
-    "project_recall": "\u2022 Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline).\n\u2022 Architecture: FastAPI service, PyMuPDF vector extraction, Tesseract OCR fallback, and asynchronous background worker queues.\n\u2022 Defense Pitch: 'Engineered high-throughput document extraction API in FastAPI, parsing digital PDFs in <50ms with PyMuPDF and boosting noisy Hindi scan accuracy by 35% using OpenCV preprocessing.'",
+    "project_recall": "\u2022 Project: Biometric Electronic Voting System (BEVM) (Multi-Lingual Document AI & Tabular Extraction Pipeline).\n\u2022 Architecture: FastAPI service, PyMuPDF vector extraction, Tesseract OCR fallback, and asynchronous background worker queues.\n\u2022 Defense Pitch: 'Engineered high-throughput document extraction API in FastAPI, parsing digital PDFs in <50ms with PyMuPDF and boosting noisy Hindi scan accuracy by 35% using OpenCV preprocessing.'",
     "rapid_fire_questions": [
       {
         "q": "What are the 7 layers of the OSI reference model from bottom to top?",
@@ -2425,11 +2425,11 @@
         "a": "Because the distance between fast and slow decreases by 1 node in every iteration once both enter the loop."
       },
       {
-        "q": "In TerraStract, why are background worker queues used for PDF processing?",
+        "q": "In Biometric Electronic Voting System (BEVM), why are background worker queues used for PDF processing?",
         "a": "To return an immediate HTTP 202 Accepted token, decoupling heavy OCR compute from client HTTP request lifecycles."
       },
       {
-        "q": "What OCR engine is utilized in TerraStract as a fallback for scanned pages?",
+        "q": "What OCR engine is utilized in Biometric Electronic Voting System (BEVM) as a fallback for scanned pages?",
         "a": "Tesseract OCR with OpenCV contrast preprocessing."
       }
     ],
@@ -2452,7 +2452,7 @@
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "\u2022 Project: TerraStract (Multi-Lingual Document AI & Tabular Extraction Pipeline)."
+        "definition": "\u2022 Project: Biometric Electronic Voting System (BEVM) (Multi-Lingual Document AI & Tabular Extraction Pipeline)."
       },
       {
         "term": "Daily Core Concept 5",
@@ -2663,25 +2663,25 @@
       },
       {
         "no": 19,
-        "q": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture'?",
+        "q": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Hybrid Document AI & Multi-Lingual Tabular Extraction Architecture'?",
         "options": [
           "Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For TerraStract, the architectural invariant is: Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.."
+        "a": "Answer: A \u2014 For Biometric Electronic Voting System (BEVM), the architectural invariant is: Vector extraction is 80x faster than OCR. Use OCR only as a fallback when the PDF contains scanned images or corrupted fonts.."
       },
       {
         "no": 20,
-        "q": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does TerraStract achieve high accuracy on complex Hindi and English land property deeds?'?",
+        "q": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does Biometric Electronic Voting System (BEVM) achieve high accuracy on complex Hindi and English land property deeds?'?",
         "options": [
-          "TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular...",
+          "Biometric Electronic Voting System (BEVM) implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present, it extracts tabular...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
-        "a": "Answer: A \u2014 In technical interviews, anchor your defense in engineering metrics: TerraStract implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present,."
+        "a": "Answer: A \u2014 In technical interviews, anchor your defense in engineering metrics: Biometric Electronic Voting System (BEVM) implements a hybrid decision pipeline: 1. PyMuPDF inspects each PDF page to detect if a native text layer exists; 2. If present,."
       }
     ]
   },

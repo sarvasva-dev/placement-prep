@@ -8,7 +8,7 @@ Provides exactly 20 unique mixed MCQs from authentic, topic-grounded banks:
 - 5 Academic MCQs (BCA 5001, 5002, 5003, 5004)
 - 5 Aptitude MCQs (Quantitative, Logical, Verbal)
 - 5 Core CS MCQs (OS, DBMS, Networks, Python, System Design)
-- 5 Coding & Project MCQs (Java DSA Patterns, CSMS, SmartGalla, BulkBeat TV, Caloriv, TerraStract, BEVM)
+- 5 Coding & Project MCQs (Java DSA Patterns, CSMS, SmartGalla, BulkBeat TV, Caloriv, BEVM)
 
 Total = 20 interactive questions per day with options, correct_answer, and explanation.
 Zero template placeholders.

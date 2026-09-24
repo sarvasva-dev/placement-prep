@@ -8,7 +8,7 @@ MIXED_DAYS_16_30 = {
   "16": [
     {
       "id": "TEST-16-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is a 'Community of Practice' (CoP) in an enterprise Knowledge Management ecosystem?",
       "options": [
         "An official disciplinary board that terminates underperforming employees",
@@ -21,7 +21,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-16-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the primary cultural barrier to successful knowledge sharing in corporate organizations?",
       "options": [
         "Lack of Gigabit Ethernet bandwidth",
@@ -34,7 +34,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-16-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "Which KM capture mechanism pairs a junior engineer with an experienced expert to observe and absorb intuitive problem-solving heuristics?",
       "options": [
         "Database Normalization",
@@ -47,7 +47,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-16-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In knowledge management metrics, what does the 'Knowledge Retention Rate' measure?",
       "options": [
         "The percentage of hard drives retained during data center upgrades",
@@ -60,7 +60,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-16-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What role does an After Action Review (AAR) play in organizational learning?",
       "options": [
         "It calculates end-of-year tax liabilities",
@@ -270,7 +270,7 @@ MIXED_DAYS_16_30 = {
   "17": [
     {
       "id": "TEST-17-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What condition guarantees the convergence of both Gauss-Jacobi and Gauss-Seidel iterative methods for solving AX = B?",
       "options": [
         "Matrix A is skew-symmetric",
@@ -283,7 +283,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-17-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "How does Gauss-Seidel iteration differ from the Gauss-Jacobi method?",
       "options": [
         "Gauss-Seidel uses the most freshly computed variable values immediately in the current iteration",
@@ -296,7 +296,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-17-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "In iterative methods, what does the relaxation parameter omega represent in the Successive Over-Relaxation (SOR) method?",
       "options": [
         "Matrix inversion scale",
@@ -309,7 +309,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-17-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "If an iterative method computes x^{(k+1)} = [2.001, 3.999] and x^{(k)} = [2.000, 4.000], what is the absolute error norm ||x^{(k+1)} - x^{(k)}||_infinity?",
       "options": [
         "0.001",
@@ -322,7 +322,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-17-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Why are iterative methods (Jacobi, Seidel) preferred over direct methods (Gauss Elimination) for very large sparse systems (e.g., 100,000 equations)?",
       "options": [
         "They require O(N) storage preserving zero entries and avoid massive O(N^3) matrix fill-in",
@@ -532,7 +532,7 @@ MIXED_DAYS_16_30 = {
   "18": [
     {
       "id": "TEST-18-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Which JDBC driver type is known as the 'Pure Java Native Protocol Driver' (Type 4) and communicates directly with the database engine without client libraries?",
       "options": [
         "Type 1 (JDBC-ODBC Bridge)",
@@ -545,7 +545,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-18-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Why is PreparedStatement preferred over standard Statement in JDBC for executing parameterized queries?",
       "options": [
         "PreparedStatement compiles SQL once on the database server, improves execution speed, and inherently prevents SQL Injection",
@@ -558,7 +558,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-18-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What JDBC interface method must be called to process the tabular rows returned by an `executeQuery()` statement?",
       "options": [
         "ResultSet.next()",
@@ -571,7 +571,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-18-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "How does database Connection Pooling improve enterprise web application performance?",
       "options": [
         "It permanently encrypts all database tables",
@@ -584,7 +584,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-18-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "To execute multiple transactional SQL updates atomically, what method must be called on the JDBC Connection before executing queries?",
       "options": [
         "connection.setAutoCommit(false)",
@@ -794,7 +794,7 @@ MIXED_DAYS_16_30 = {
   "19": [
     {
       "id": "TEST-19-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "Which shortest path algorithm does the Open Shortest Path First (OSPF) Link-State routing protocol use to build its routing table?",
       "options": [
         "Bellman-Ford Algorithm",
@@ -807,7 +807,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-19-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What critical flaw affects the Distance Vector Routing (DVR) algorithm based on Bellman-Ford when a link or destination goes down?",
       "options": [
         "Split Horizon failure",
@@ -820,7 +820,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-19-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What two mechanisms are commonly implemented to mitigate the Count-to-Infinity problem in Distance Vector routing?",
       "options": [
         "Split Horizon and Poison Reverse",
@@ -833,7 +833,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-19-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "In hierarchical routing, what protocol is used to route traffic BETWEEN autonomous systems across the global Internet backbone?",
       "options": [
         "Routing Information Protocol (RIP)",
@@ -846,7 +846,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-19-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the metric used by the legacy Routing Information Protocol (RIP) to calculate distance?",
       "options": [
         "Bandwidth delay product",
@@ -1028,35 +1028,35 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-19-19",
-      "category": "Projects (TerraStract)",
-      "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Atomic State Locking & SQLite Double-Vote Prevention'?",
       "options": [
-        "Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.",
+        "Atomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
         "Using unencrypted HTTP requests over public ports.",
         "Storing passwords in plaintext inside localStorage.",
         "Restarting the production server on every user request."
       ],
       "correct_answer": "A",
-      "explanation": "For TerraStract, the architectural invariant is: Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.."
+      "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Atomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.."
     },
     {
       "id": "TEST-19-20",
-      "category": "Projects (TerraStract)",
-      "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How does image preprocessing improve Tesseract OCR recognition accuracy in TerraStract?'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does BEVM mathematically prevent a voter from casting multiple ballots?'?",
       "options": [
-        "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of t...",
+        "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it ...",
         "Claim that standard frameworks are obsolete and write custom assembly.",
         "State that testing was skipped to ship faster.",
         "Acknowledge that security was ignored."
       ],
       "correct_answer": "A",
-      "explanation": "In technical interviews, anchor your defense in engineering metrics: Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bou."
+      "explanation": "In technical interviews, anchor your defense in engineering metrics: When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `."
     }
   ],
   "20": [
     {
       "id": "TEST-20-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "How does the Knowledge Management System Life Cycle (KMSLC) differ from the conventional Software Development Life Cycle (SDLC)?",
       "options": [
         "KMSLC is purely linear (Waterfall), while SDLC is iterative",
@@ -1069,7 +1069,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-20-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the first foundational stage of the 8-stage KMSLC framework?",
       "options": [
         "System Deployment",
@@ -1082,7 +1082,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-20-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In KM project evaluation, what does the Balanced Scorecard framework assess?",
       "options": [
         "Only the quarterly financial net profit",
@@ -1095,7 +1095,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-20-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What role does a Chief Knowledge Officer (CKO) play in an enterprise?",
       "options": [
         "Writing Java bytecode for database drivers",
@@ -1108,7 +1108,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-20-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is a 'Knowledge Audit'?",
       "options": [
         "An IRS tax examination of company profits",
@@ -1318,7 +1318,7 @@ MIXED_DAYS_16_30 = {
   "21": [
     {
       "id": "TEST-21-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "When should Newton's Forward Difference Interpolation formula be chosen over Newton's Backward formula?",
       "options": [
         "When the target interpolation value x lies near the beginning of the tabulated values",
@@ -1331,7 +1331,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-21-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is the relationship between the Forward Difference operator (Delta) and the Shift operator (E)?",
       "options": [
         "Delta = E + 1",
@@ -1344,7 +1344,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-21-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "If a polynomial of degree n is tabulated at equidistant intervals, what is the value of its (n+1)-th forward difference Delta^{n+1} f(x)?",
       "options": [
         "A non-zero constant",
@@ -1357,7 +1357,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-21-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is the formula for the dimensionless parameter u in Newton's Forward Difference interpolation formula?",
       "options": [
         "u = (x - x_n) / h",
@@ -1370,7 +1370,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-21-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is the Backward Difference operator (Nabla) defined as?",
       "options": [
         "Nabla f(x) = f(x) - f(x - h)",
@@ -1580,7 +1580,7 @@ MIXED_DAYS_16_30 = {
   "22": [
     {
       "id": "TEST-22-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
       "options": [
         "service()",
@@ -1593,7 +1593,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-22-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
       "options": [
         "service(ServletRequest, ServletResponse)",
@@ -1606,7 +1606,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-22-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
       "options": [
         "Cookies cannot store more than 1 byte of data",
@@ -1619,7 +1619,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-22-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
       "options": [
         "pom.xml",
@@ -1632,7 +1632,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-22-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
       "options": [
         "@WebServlet",
@@ -1842,7 +1842,7 @@ MIXED_DAYS_16_30 = {
   "23": [
     {
       "id": "TEST-23-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "In the TCP 3-way handshake to establish a reliable connection, what sequence of control flags is exchanged between client and server?",
       "options": [
         "SYN -> SYN-ACK -> ACK",
@@ -1855,7 +1855,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-23-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "How does TCP handle Congestion Control during the initial 'Slow Start' phase upon connection startup?",
       "options": [
         "It sets window size to maximum bandwidth immediately",
@@ -1868,7 +1868,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-23-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What mechanism does TCP use during Congestion Avoidance after cwnd exceeds ssthresh?",
       "options": [
         "Additive Increase Multiplicative Decrease (AIMD) — increasing cwnd by 1 MSS per RTT",
@@ -1881,7 +1881,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-23-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the primary architectural difference between TCP and UDP?",
       "options": [
         "TCP is connection-oriented, reliable, and provides byte-stream ordering; UDP is connectionless, unreliable, and datagram-oriented",
@@ -1894,7 +1894,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-23-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the size of the standard base IPv4 and TCP headers without options?",
       "options": [
         "20 bytes for IPv4 and 20 bytes for TCP (40 bytes total overhead)",
@@ -2104,7 +2104,7 @@ MIXED_DAYS_16_30 = {
   "24": [
     {
       "id": "TEST-24-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "Which interpolation formula is designed specifically for calculating values when the given independent variable arguments x_i are spaced at UNEQUAL intervals?",
       "options": [
         "Newton's Forward Interpolation Formula",
@@ -2117,7 +2117,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-24-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the degree of the Lagrange interpolating polynomial passing through (n + 1) distinct points?",
       "options": [
         "At most n",
@@ -2130,7 +2130,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-24-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the mathematical property of the Lagrange basis polynomial L_i(x) evaluated at data point x_j?",
       "options": [
         "L_i(x_j) = 1 if i = j, and L_i(x_j) = 0 if i != j (Kronecker delta)",
@@ -2143,7 +2143,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-24-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the primary computational disadvantage of Lagrange's interpolation formula when a new data point is added to the table?",
       "options": [
         "It cannot handle negative numbers",
@@ -2156,7 +2156,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-24-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "The first divided difference f[x_0, x_1] of a function f(x) is defined as:",
       "options": [
         "[f(x_1) - f(x_0)] / (x_1 - x_0)",
@@ -2338,35 +2338,35 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-24-19",
-      "category": "Projects (TerraStract)",
-      "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Security, Data Privacy & Temporary File Sanitization in Document Processing'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Forensic Audit Verification & Ledger Consistency Traversal'?",
       "options": [
-        "Never store unencrypted user documents permanently on application servers.",
+        "Automated ledger traversal recalculates all SHA-256 block hashes sequentially; a single altered bit halts tallying and flags corruption.",
         "Using unencrypted HTTP requests over public ports.",
         "Storing passwords in plaintext inside localStorage.",
         "Restarting the production server on every user request."
       ],
       "correct_answer": "A",
-      "explanation": "For TerraStract, the architectural invariant is: Never store unencrypted user documents permanently on application servers.."
+      "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Automated ledger traversal recalculates all SHA-256 block hashes sequentially; a single altered bit halts tallying and flags corruption.."
     },
     {
       "id": "TEST-24-20",
-      "category": "Projects (TerraStract)",
-      "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you ensure data privacy when processing confidential legal deeds in TerraStract?'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does the forensic verification algorithm validate ledger integrity in BEVM?'?",
       "options": [
-        "Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitization pass that flags an...",
+        "The verification function queries all votes ordered by `block_id`. Starting with the genesis hash, it re-computes `expected_hash = SHA256(previous_hash + encryp...",
         "Claim that standard frameworks are obsolete and write custom assembly.",
         "State that testing was skipped to ship faster.",
         "Acknowledge that security was ignored."
       ],
       "correct_answer": "A",
-      "explanation": "In technical interviews, anchor your defense in engineering metrics: Uploaded documents are processed entirely in ephemeral RAM buffers or encrypted temporary directories. We run an automated regex sanitizatio."
+      "explanation": "In technical interviews, anchor your defense in engineering metrics: The verification function queries all votes ordered by `block_id`. Starting with the genesis hash, it re-computes `expected_hash = SHA256(pr."
     }
   ],
   "25": [
     {
       "id": "TEST-25-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "When a JavaServer Page (.jsp) is requested for the first time, what translation step occurs inside the web container?",
       "options": [
         "The JSP is compiled directly into a C++ binary",
@@ -2379,7 +2379,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-25-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which JSP scripting element syntax `<%= expression %>` is used to output values directly into the client response stream?",
       "options": [
         "JSP Scriptlet",
@@ -2392,7 +2392,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-25-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "Which JSP directive defines page-wide attributes such as imported Java packages, error pages, and session participation?",
       "options": [
         "<%@ include ... %>",
@@ -2405,7 +2405,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-25-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What is the key difference between `<%@ include file=\"header.jsp\" %>` and `<jsp:include page=\"header.jsp\" />`?",
       "options": [
         "Directive include is static at translation time; standard action `<jsp:include>` is dynamic at request runtime",
@@ -2418,7 +2418,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-25-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Java Programming & Dynamic Webpage Design)",
       "question": "What scope in JSP stores attributes that are accessible to all users and all servlets across the entire web application?",
       "options": [
         "page scope",
@@ -2628,7 +2628,7 @@ MIXED_DAYS_16_30 = {
   "26": [
     {
       "id": "TEST-26-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
       "options": [
         "A Record",
@@ -2641,7 +2641,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-26-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
       "options": [
         "By removing TCP completely",
@@ -2654,7 +2654,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-26-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
       "options": [
         "TCP port 80",
@@ -2667,7 +2667,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-26-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
       "options": [
         "Transport Layer Security (TLS / SSL)",
@@ -2680,7 +2680,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-26-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Computer Networks)",
       "question": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
       "options": [
         "POP3 downloads and removes emails from the server locally; IMAP synchronizes folders bidirectionally, keeping emails stored on the server",
@@ -2890,7 +2890,7 @@ MIXED_DAYS_16_30 = {
   "27": [
     {
       "id": "TEST-27-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What geometric curve does Simpson's 1/3 Rule fit across consecutive sets of three equidistant points to approximate the integral?",
       "options": [
         "Straight lines (degree 1 polynomials)",
@@ -2903,7 +2903,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-27-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What restriction MUST the number of subintervals (n) satisfy when applying Simpson's 1/3 Rule?",
       "options": [
         "n must be an odd number",
@@ -2916,7 +2916,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-27-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the mathematical formula for the composite Trapezoidal Rule for interval [a, b] with step size h?",
       "options": [
         "(h / 2) * [ (y_0 + y_n) + 2*(y_1 + y_2 + ... + y_{n-1}) ]",
@@ -2929,7 +2929,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-27-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "Which numerical integration rule requires the number of subintervals (n) to be a multiple of 3?",
       "options": [
         "Trapezoidal Rule",
@@ -2942,7 +2942,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-27-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Numerical Methods)",
       "question": "What is the global truncation error order of the composite Simpson's 1/3 Rule?",
       "options": [
         "O(h)",
@@ -3152,7 +3152,7 @@ MIXED_DAYS_16_30 = {
   "28": [
     {
       "id": "TEST-28-01",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In Euler's method for solving the initial value problem dy/dx = f(x, y), what is the iterative formula to find y_{n+1}?",
       "options": [
         "y_{n+1} = y_n + h * f(x_n, y_n)",
@@ -3165,7 +3165,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-28-02",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "What is the order of accuracy of the classical Runge-Kutta Fourth Order Method (RK4)?",
       "options": [
         "First order O(h)",
@@ -3178,7 +3178,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-28-03",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "How many slope evaluations (k_1, k_2, k_3, k_4) are required at each step in the Runge-Kutta 4th Order (RK4) method?",
       "options": [
         "1 evaluation",
@@ -3191,7 +3191,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-28-04",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "Why is Euler's method rarely used in production engineering simulations despite its mathematical simplicity?",
       "options": [
         "It cannot be programmed in Java",
@@ -3204,7 +3204,7 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-28-05",
-      "category": "Academic (Academic Theory)",
+      "category": "Academic (Knowledge Management)",
       "question": "In the RK4 method, what is the formula combining the four slopes k_1, k_2, k_3, k_4 to calculate the displacement Delta y?",
       "options": [
         "Delta y = (h / 6) * (k_1 + 2*k_2 + 2*k_3 + k_4)",
@@ -3648,29 +3648,29 @@ MIXED_DAYS_16_30 = {
     },
     {
       "id": "TEST-29-19",
-      "category": "Projects (TerraStract)",
-      "question": "In Sarthak's project 'TerraStract', what is the core architectural principle regarding 'Benchmarking OCR Accuracy: Levenshtein Distance & Word Error Rate (WER)'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Offline Polling Booth Architecture & Air-Gapped System Hardening'?",
       "options": [
-        "Word Error Rate (WER) = (Substitutions + Deletions + Insertions) / Total Reference Words.",
+        "Air-gapped deployment eliminates remote network vulnerabilities, DDoS vectors, and cloud dependency entirely.",
         "Using unencrypted HTTP requests over public ports.",
         "Storing passwords in plaintext inside localStorage.",
         "Restarting the production server on every user request."
       ],
       "correct_answer": "A",
-      "explanation": "For TerraStract, the architectural invariant is: Word Error Rate (WER) = (Substitutions + Deletions + Insertions) / Total Reference Words.."
+      "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Air-gapped deployment eliminates remote network vulnerabilities, DDoS vectors, and cloud dependency entirely.."
     },
     {
       "id": "TEST-29-20",
-      "category": "Projects (TerraStract)",
-      "question": "Regarding 'TerraStract', how should you defend this design decision in a technical interview: 'How do you evaluate and benchmark the accuracy of TerraStract's extraction pipeline?'?",
+      "category": "Projects (Biometric Electronic Voting System (BEVM))",
+      "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'Why design BEVM as an offline air-gapped application rather than a cloud-hosted web portal?'?",
       "options": [
-        "We maintain a benchmark dataset of 50 ground-truth legal documents with verified text transcriptions. After running extraction, an automated evaluation script c...",
+        "Online internet voting platforms are vulnerable to DDoS attacks, DNS hijacking, credential stuffing, and remote zero-day exploits. Air-gapping the terminal elim...",
         "Claim that standard frameworks are obsolete and write custom assembly.",
         "State that testing was skipped to ship faster.",
         "Acknowledge that security was ignored."
       ],
       "correct_answer": "A",
-      "explanation": "In technical interviews, anchor your defense in engineering metrics: We maintain a benchmark dataset of 50 ground-truth legal documents with verified text transcriptions. After running extraction, an automated."
+      "explanation": "In technical interviews, anchor your defense in engineering metrics: Online internet voting platforms are vulnerable to DDoS attacks, DNS hijacking, credential stuffing, and remote zero-day exploits. Air-gappi."
     }
   ],
   "30": [
@@ -3911,7 +3911,7 @@ MIXED_DAYS_16_30 = {
     {
       "id": "TEST-30-19",
       "category": "Projects (College Student Management System (CSMS))",
-      "question": "In Sarthak's project portfolio synthesis (CSMS, SmartGalla, BulkBeat TV, Caloriv, TerraStract), which architectural invariant governs multi-service data consistency?",
+      "question": "In Sarthak's project portfolio synthesis (CSMS, SmartGalla, BulkBeat TV, Caloriv, BEVM), which architectural invariant governs multi-service data consistency?",
       "options": [
         "Database transactions with ACID guarantees, role-based access control, and asynchronous queue decoupling.",
         "Using unencrypted HTTP requests over public ports.",
@@ -3919,7 +3919,7 @@ MIXED_DAYS_16_30 = {
         "Restarting the production server on every user request."
       ],
       "correct_answer": "A",
-      "explanation": "Across CSMS, SmartGalla, BulkBeat TV, Caloriv, and TerraStract, data integrity is preserved using ACID transactions, strict schema migrations, and decoupled background worker queues."
+      "explanation": "Across CSMS, SmartGalla, BulkBeat TV, Caloriv, and BEVM, data integrity is preserved using ACID transactions, strict schema migrations, and decoupled background worker queues."
     },
     {
       "id": "TEST-30-20",
@@ -3938,4 +3938,4 @@ MIXED_DAYS_16_30 = {
 }
 
 def get_mixed_mcqs_half2(day: int) -> list:
-    return MIXED_DAYS_16_30.get(day, MIXED_DAYS_16_30.get(str(day), []))
+    return MIXED_DAYS_16_30.get(day, [])

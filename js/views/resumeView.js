@@ -1,5 +1,6 @@
 /**
  * Professional ATS-Optimized 1-Page Resume Hub View
+ * Isolated print container: .resume-print-container
  */
 
 import { Storage } from '../storage.js';
@@ -34,37 +35,42 @@ function buildResumePage(container, resumesData, daysIndex) {
   let activeProfile = 'python_backend';
 
   container.innerHTML = `
-    <div class="resume-header no-print" style="margin-bottom: var(--space-6);">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
+    <div class="resume-screen-wrapper">
+      <div class="resume-toolbar no-print">
         <div>
-          <div class="badge badge-primary" style="margin-bottom: var(--space-2);">ATS-OPTIMIZED RESUME ENGINE</div>
-          <h1 style="margin-bottom: var(--space-1);">Professional 1-Page Resume Package</h1>
-          <p style="font-size: var(--font-size-base); color: var(--text-secondary); max-width: 800px;">
-            Targeted for campus placements and off-campus backend engineering roles. Formatted with high ATS parseability, XYZ action verbs, and verified metrics.
+          <div class="badge badge-primary" style="margin-bottom: var(--space-2);">ATS-OPTIMIZED 1-PAGE RESUME ENGINE</div>
+          <h1 style="margin-bottom: var(--space-1); font-size: var(--font-size-2xl);">Professional 1-Page Resume Package</h1>
+          <p style="font-size: var(--font-size-sm); color: var(--text-secondary); margin: 0; max-width: 650px;">
+            Single-column, ATS-parseable, verified project portfolio tailored for campus placements and off-campus roles. Strictly calibrated to print on <strong>exactly 1 A4 page</strong>.
           </p>
         </div>
 
-        <div style="display: flex; gap: var(--space-2); align-items: center;">
+        <div class="resume-actions-group">
           <button id="resume-print-btn" class="btn btn-primary" style="box-shadow: var(--shadow-glow);">
-            🖨️ Print / Save as PDF
+            🖨️ Print / Save as PDF (A4)
           </button>
         </div>
       </div>
-    </div>
 
-    <!-- Profile Switcher Tabs -->
-    <div class="no-print" style="display: flex; gap: var(--space-2); margin-bottom: var(--space-5);">
-      <button class="btn btn-primary resume-tab-btn" data-profile="python_backend">
-        🐍 Python Backend Developer Profile
-      </button>
-      <button class="btn btn-secondary resume-tab-btn" data-profile="software_engineer">
-        💻 General Software Engineer Profile
-      </button>
-    </div>
+      <!-- Profile Switcher Tabs -->
+      <div class="no-print" style="margin-bottom: var(--space-5);">
+        <div class="resume-tabs-group">
+          <button class="btn btn-primary resume-tab-btn" data-profile="python_backend">
+            🐍 Python Backend Developer
+          </button>
+          <button class="btn btn-secondary resume-tab-btn" data-profile="software_engineer">
+            💻 Software Engineer (SDE)
+          </button>
+          <button class="btn btn-secondary resume-tab-btn" data-profile="data_ai">
+            🤖 Data & AI Systems Engineer
+          </button>
+        </div>
+      </div>
 
-    <!-- Resume Sheet Workspace -->
-    <div id="resume-sheet-container">
-      <!-- Rendered dynamically -->
+      <!-- Resume Sheet Workspace (Isolated Print Container) -->
+      <div id="resume-sheet-container">
+        <!-- Rendered dynamically -->
+      </div>
     </div>
   `;
 
@@ -81,118 +87,99 @@ function buildResumePage(container, resumesData, daysIndex) {
     if (!r) return;
 
     containerEl.innerHTML = `
-      <div class="card resume-paper" style="max-width: 850px; margin: 0 auto; background: var(--bg-surface); padding: var(--space-6); border: 1px solid var(--border-color); box-shadow: var(--shadow-lg);">
+      <div class="resume-print-container">
         
         <!-- Header / Contact -->
-        <div style="text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: var(--space-4); margin-bottom: var(--space-4);">
-          <h1 style="font-size: 1.8rem; margin: 0 0 4px 0; letter-spacing: 0.5px; color: var(--text-primary); text-transform: uppercase;">
-            ${r.contact.name}
-          </h1>
-          ${r.contact.tagline ? `<div style="font-size: var(--font-size-xs); font-weight: 700; color: var(--color-primary); margin-bottom: 6px; letter-spacing: 0.5px;">${r.contact.tagline}</div>` : ''}
-          <div style="font-size: var(--font-size-sm); color: var(--text-secondary); display: flex; justify-content: center; flex-wrap: wrap; gap: var(--space-3);">
+        <div class="resume-header-block">
+          <h1 class="resume-name">${r.contact.name}</h1>
+          ${r.contact.tagline ? `<div class="resume-tagline">${r.contact.tagline}</div>` : ''}
+          <div class="resume-contact-line">
             <span>📍 ${r.contact.location}</span>
-            <span>✉️ ${r.contact.email}</span>
+            <span>✉️ <a href="mailto:${r.contact.email}">${r.contact.email}</a></span>
             <span>📞 ${r.contact.phone}</span>
-            ${r.contact.website ? `<span>🌐 <a href="${r.contact.website}" target="_blank" style="color: var(--color-primary);">${r.contact.website.replace('https://', '')}</a></span>` : ''}
-            <span>🔗 <a href="${r.contact.github}" target="_blank" style="color: var(--color-primary);">${r.contact.github.replace('https://', '')}</a></span>
-            <span>🔗 <a href="${r.contact.linkedin}" target="_blank" style="color: var(--color-primary);">${r.contact.linkedin.replace('https://', '')}</a></span>
+            ${r.contact.website ? `<span>🌐 <a href="${r.contact.website}" target="_blank">${r.contact.website.replace('https://', '')}</a></span>` : ''}
+            <span>🔗 <a href="${r.contact.github}" target="_blank">${r.contact.github.replace('https://', '')}</a></span>
+            <span>🔗 <a href="${r.contact.linkedin}" target="_blank">${r.contact.linkedin.replace('https://', '')}</a></span>
           </div>
         </div>
 
-        <!-- Summary -->
-        <div style="margin-bottom: var(--space-4);">
-          <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
-            PROFESSIONAL SUMMARY
-          </div>
-          <p style="font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.6; margin: 0;">
-            ${r.summary}
-          </p>
+        <!-- Professional Summary -->
+        <div class="resume-section">
+          <div class="resume-section-heading">PROFESSIONAL SUMMARY</div>
+          <p class="resume-summary-text">${r.summary}</p>
         </div>
 
         <!-- Technical Skills -->
-        <div style="margin-bottom: var(--space-4);">
-          <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
-            TECHNICAL SKILLS
-          </div>
-          <div style="display: flex; flex-direction: column; gap: 4px; font-size: var(--font-size-sm); color: var(--text-secondary);">
+        <div class="resume-section">
+          <div class="resume-section-heading">TECHNICAL SKILLS</div>
+          <div class="resume-skills-grid">
             ${Object.entries(r.skills).map(([cat, sk]) => `
-              <div><strong style="color: var(--text-primary);">${cat}:</strong> ${sk}</div>
+              <div class="resume-skills-row">
+                <span class="resume-skills-label">${cat}:</span>
+                <span class="resume-skills-val">${sk}</span>
+              </div>
             `).join('')}
           </div>
         </div>
 
-        <!-- Work Experience (if available) -->
-        ${r.work_experience ? `
-        <div style="margin-bottom: var(--space-4);">
-          <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
-            WORK EXPERIENCE
-          </div>
-          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-            ${r.work_experience.map(exp => `
-              <div>
-                <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px;">
-                  <div>
-                    <strong style="font-size: var(--font-size-base); color: var(--text-primary);">${exp.role}</strong>
-                    <span style="font-size: var(--font-size-sm); color: var(--color-primary); margin-left: 6px;">@ ${exp.company}</span>
-                  </div>
-                  <span style="font-size: var(--font-size-xs); font-weight: 700; color: var(--text-muted);">${exp.duration} (${exp.location})</span>
+        <!-- Work Experience -->
+        ${r.work_experience && r.work_experience.length > 0 ? `
+        <div class="resume-section">
+          <div class="resume-section-heading">WORK EXPERIENCE</div>
+          ${r.work_experience.map(exp => `
+            <div class="resume-item">
+              <div class="resume-item-header">
+                <div>
+                  <span class="resume-item-title">${exp.role}</span>
+                  <span class="resume-item-subtitle">· ${exp.company}</span>
                 </div>
-                <ul style="margin: 4px 0 0 0; padding-left: var(--space-4); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.5;">
-                  ${exp.bullets.map(b => `<li style="margin-bottom: 4px;">${b}</li>`).join('')}
-                </ul>
+                <span class="resume-item-meta">${exp.duration} | ${exp.location}</span>
               </div>
-            `).join('')}
-          </div>
+              <ul class="resume-bullet-list">
+                ${exp.bullets.map(b => `<li>${b}</li>`).join('')}
+              </ul>
+            </div>
+          `).join('')}
         </div>
         ` : ''}
 
-        <!-- Key Projects -->
-        <div style="margin-bottom: var(--space-4);">
-          <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
-            KEY ENGINEERING PROJECTS
-          </div>
-          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-            ${r.experience_and_projects.map(proj => `
-              <div>
-                <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px;">
-                  <strong style="font-size: var(--font-size-base); color: var(--text-primary);">${proj.name}</strong>
-                  <span style="font-size: var(--font-size-xs); font-weight: 700; color: var(--text-muted);">${proj.role}</span>
+        <!-- Key Engineering Projects -->
+        <div class="resume-section">
+          <div class="resume-section-heading">KEY ENGINEERING PROJECTS</div>
+          ${r.experience_and_projects.map(proj => `
+            <div class="resume-item">
+              <div class="resume-item-header">
+                <div>
+                  <span class="resume-item-title">${proj.name}</span>
                 </div>
-                <ul style="margin: 4px 0 0 0; padding-left: var(--space-4); font-size: var(--font-size-sm); color: var(--text-secondary); line-height: 1.5;">
-                  ${proj.bullets.map(b => `<li style="margin-bottom: 4px;">${b}</li>`).join('')}
-                </ul>
+                <span class="resume-item-meta">${proj.role}</span>
               </div>
-            `).join('')}
-          </div>
+              <ul class="resume-bullet-list">
+                ${proj.bullets.map(b => `<li>${b}</li>`).join('')}
+              </ul>
+            </div>
+          `).join('')}
         </div>
 
         <!-- Education -->
-        <div style="margin-bottom: var(--space-4);">
-          <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
-            EDUCATION
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px;">
+        <div class="resume-section">
+          <div class="resume-section-heading">EDUCATION</div>
+          <div class="resume-edu-row">
             <div>
-              <strong style="color: var(--text-primary); font-size: var(--font-size-sm);">${r.education.degree}</strong><br>
-              <span style="font-size: var(--font-size-xs); color: var(--text-muted);">${r.education.institution}</span>
+              <strong style="color: inherit;">${r.education.degree}</strong> — ${r.education.institution}
             </div>
-            <div style="text-align: right;">
-              <span style="font-size: var(--font-size-xs); color: var(--text-muted);">${r.education.duration}</span><br>
-              <span class="badge badge-primary" style="font-size: 0.7rem;">${r.education.academic_standing}</span>
+            <div style="font-weight: 600;">
+              ${r.education.duration} · ${r.education.academic_standing}
             </div>
           </div>
         </div>
 
         <!-- Certifications & Honors -->
-        ${r.certifications ? `
-        <div>
-          <div style="font-size: var(--font-size-xs); font-weight: 800; color: var(--color-primary); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border-color); padding-bottom: 2px; margin-bottom: 6px;">
-            CERTIFICATIONS & HONORS
-          </div>
-          <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: 4px;">
-            ${r.certifications.map(c => `
-              <span class="badge badge-secondary" style="font-size: var(--font-size-xs);">${c}</span>
-            `).join('')}
+        ${r.certifications && r.certifications.length > 0 ? `
+        <div class="resume-section">
+          <div class="resume-section-heading">CERTIFICATIONS & HONORS</div>
+          <div class="resume-certs-line">
+            ${r.certifications.join('  •  ')}
           </div>
         </div>
         ` : ''}
@@ -204,7 +191,7 @@ function buildResumePage(container, resumesData, daysIndex) {
   // Initial render
   renderResume('python_backend');
 
-  // Tab button listeners
+  // Tab switcher
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       tabBtns.forEach(b => {
