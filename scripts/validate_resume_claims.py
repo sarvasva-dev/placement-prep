@@ -53,7 +53,12 @@ def validate_resume_claims():
         (r"12\s*million\s*kirana", "Forbidden exaggerated metric: 12 million Kirana"),
         (r"\bdealership\b", "Forbidden misinterpretation of CSMS as car dealership"),
         (r"\bcar showroom\b", "Forbidden misinterpretation of CSMS as car showroom"),
-        (r"35%\s*accuracy\s*boost", "Forbidden unmeasured benchmark claim for DocRoute")
+        (r"35%\s*accuracy\s*boost", "Forbidden unmeasured benchmark claim for DocRoute"),
+        (r"\breact\b", "Forbidden unlearned framework: React"),
+        (r"\bnext\.js\b", "Forbidden unlearned framework: Next.js"),
+        (r"\bzustand\b", "Forbidden unlearned library: Zustand"),
+        (r"\bwebsockets?\b", "Forbidden unlearned technology: WebSocket"),
+        (r"target\s*sgpa", "Forbidden unprofessional target phrasing: Target SGPA")
     ]
 
     REQUIRED_VARIANTS = ["python_backend", "software_engineer", "data_ai"]

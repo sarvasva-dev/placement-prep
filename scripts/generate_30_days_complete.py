@@ -80,65 +80,63 @@ def get_base_projects():
             key = "smartgalla"
             category = "Hyper-Local Kirana Retail SaaS & Logistics"
             metrics = {
-                "users": "Local Kirana & Retail Merchant Pilots",
-                "revenue": "B2B SaaS Subscription + Razorpay Transaction Fees",
-                "verified_technical": "Next.js 16 + React 19 + Supabase RLS + Serwist PWA + Razorpay Webhook Idempotency + Leaflet/Google Maps"
+                "users": "Piloted with 4–5 Local Kirana Stores in Kanpur",
+                "revenue": "B2B SaaS Subscription (Sunset due to hosting infrastructure costs)",
+                "verified_technical": "Python + PostgreSQL + HTML5 / CSS3 / Vanilla JavaScript • 4–5 Shops Pilot in Kanpur"
             }
             flow = [
-                "1. Merchant Store Hydration: Next.js 16 App Router streams server components with zero client JS overhead for catalog views.",
-                "2. Multi-Tenant Isolation: PostgreSQL Row-Level Security (RLS) policies enforce store isolation at the database layer.",
-                "3. Payment Webhook Ingestion: Razorpay webhooks verify HMAC-SHA256 signatures with unique payment ID deduplication.",
-                "4. COD Ledger Reconciliation: Double-entry delivery agent cash bags reconcile collected physical cash with OTP merchant handover.",
-                "5. Geospatial Dispatch: Haversine distance ranking dispatches orders to nearest active delivery partners within a 5km geofence.",
-                "6. Offline PWA Sync: Serwist service workers cache retail catalogs for uninterrupted order entry during wholesale market network drops."
+                "1. Merchant Store Hydration: Responsive web portal loads merchant catalog, item prices, and daily inventory states.",
+                "2. Multi-Tenant Schema: PostgreSQL tables organize stores, categories, product variants, and active stock quantities.",
+                "3. Cart & Order Placement: Local customers browse store items, add products to cart, and submit orders for home delivery or pickup.",
+                "4. COD Ledger Tracking: Cash on Delivery status tracking records cash collected by delivery agents before merchant reconciliation.",
+                "5. Real-World Pilot: Deployed and tested across 4–5 neighbourhood Kirana grocery stores in Kanpur to evaluate operational workflows.",
+                "6. Infrastructure Cost Sunset: Evaluated server hosting costs vs merchant willingness to pay, responsibly sunsetting after pilot completion."
             ]
             resume = [
-                "Engineered SmartGalla multi-tenant retail SaaS using Next.js 16, React 19, Supabase RLS, and Tailwind CSS PostCSS 4.",
-                "Implemented secure Razorpay payment gateway integration with HMAC-SHA256 signature verification and idempotent webhook event handlers.",
-                "Designed double-entry Cash-on-Delivery (COD) reconciliation ledger and dispatch engine with 5km Haversine geofenced order routing.",
-                "Developed offline-first PWA caching with Serwist service workers and automated competitive price intelligence worker with Playwright."
+                "Developed a hyperlocal store management and ordering web portal for local Kirana merchants using Python, HTML5, CSS3, JavaScript, and PostgreSQL.",
+                "Built product catalog management, real-time inventory tracking, and customer order placement workflows with Cash on Delivery (COD) tracking.",
+                "Successfully piloted across 4–5 local Kirana grocery stores in Kanpur to validate real-world ordering before sunsetting due to hosting infrastructure costs."
             ]
         elif "NSE" in p_id or "BulkBeat" in p_name:
             key = "nse2"
-            category = "Financial Ingestion & Regulatory Surveillance"
+            category = "Financial Ingestion & Market Intelligence Platform"
             metrics = {
-                "users": "Algorithmic Traders & HNI Portfolio Managers",
-                "revenue": "Commercial Software Contract (Sitekraft.dev / Ref: SKD-2026-BLK-001)",
-                "verified_technical": "Python 3.10+ AsyncIO (aiohttp) + SQLite WAL Concurrency + Dhan API v2 + Telegram Webhook Worker"
+                "users": "6,000+ Active Subscribers & Intraday Traders",
+                "revenue": "₹1.11 Lakhs Revenue (Commercial Subscription Platform)",
+                "verified_technical": "Python 3.10+ AsyncIO + SQLite WAL Concurrency + 20+ Rule Engine + Telegram Webhook Worker"
             }
             flow = [
-                "1. Market Feed Ingestion: Asynchronous aiohttp client continuously polls NSE circulars, corporate announcements, and bulk deals.",
+                "1. Market Feed Ingestion: Asynchronous Python client continuously polls 5+ financial announcement feeds and exchange disclosures.",
                 "2. Concurrency Isolation: SQLite configured with Write-Ahead Logging (WAL) and busy_timeout=5000ms enables concurrent writes without database lock contention.",
-                "3. Signal Filtering: NLP keywords and corporate filing regex extract high-impact catalysts (mergers, buybacks, board meetings).",
-                "4. Dhan Broker Bridge: Order execution gateway integrates Dhan API v2 for rapid position entry upon verified regulatory disclosures.",
-                "5. Real-Time Telegram Broadcast: Async webhook dispatcher sends formatted alerts with direct exchange document links to subscriber channels."
+                "3. Deterministic Signal Filtering: 20+ keyword rule engine inspects disclosures in under 2ms to detect order wins, splits, dividends, and results.",
+                "4. Automated Telegram Broadcast: Asynchronous webhook dispatcher delivers formatted alert cards with direct document links to subscribers.",
+                "5. Subscription & Payment Tracking: Managed paid subscriber access and automated renewal tracking using SQLite database."
             ]
             resume = [
-                "Developed high-throughput market intelligence platform (NSE2 / BulkBeat TV) monitoring real-time regulatory filings and corporate actions.",
-                "Architected asynchronous ingestion pipeline in Python using aiohttp, polling NSE feeds with resilient exponential backoff retry policies.",
-                "Configured SQLite Write-Ahead Logging (WAL) mode with busy timeout handling, achieving concurrent reader-writer operations without locking.",
-                "Integrated Dhan Broker API v2 for automated trade execution and built Telegram webhook worker delivering real-time filing intelligence."
+                "Engineered a Python-based real-time market news and alert system, scanning 5+ live exchange and financial news feeds with automated parsing.",
+                "Implemented a deterministic 20+ keyword filtering engine to eliminate market noise and highlight high-impact corporate announcements.",
+                "Integrated automated Telegram Bot alerts for instant subscriber notifications; managed user subscriptions and payment tracking with SQLite database.",
+                "Scaled platform to 6,000+ active users and generated ₹1.11 Lakhs in subscription revenue within months, running 24/7 on an Ubuntu Linux VPS."
             ]
-        elif "CALORIV" in p_id or "Caloriv" in p_name:
-            key = "caloriv"
-            category = "Mobile Nutrition Intelligence & Offline Analytics"
+        elif "DOCROUTE" in p_id or "DocRoute" in p_name:
+            key = "docroute"
+            category = "Document Processing & Extraction Pipeline"
             metrics = {
-                "users": "Android Health & Fitness Beta Users",
-                "revenue": "Freemium Mobile App Architecture",
-                "verified_technical": "React Native Expo + Gradle Build Toolchain + SQLite WatermelonDB Offline Sync + Macro Nutrient Analytics"
+                "users": "Python Developers & Data Pipelines",
+                "revenue": "Open Source Utility (Under Development)",
+                "verified_technical": "Python 3.10+ • PyMuPDF Vector Text • Tesseract OCR Fallback • Structured JSON Output"
             }
             flow = [
-                "1. User Intake Logging: React Native Expo interface captures daily caloric, macronutrient, and micronutrient intake.",
-                "2. Local-First Storage: WatermelonDB / SQLite local storage records intake events instantly with zero network latency.",
-                "3. Delta Sync Engine: Background synchronization worker pushes batched meal logs to cloud API when network connectivity resumes.",
-                "4. Nutrition Derivation: Automated macro engine computes Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE).",
-                "5. Native Build Orchestration: Custom Gradle build pipeline compiles hermetic Android APKs with ProGuard code shrinking."
+                "1. Document Ingestion: Accepts PDF files and image documents via CLI or Python module.",
+                "2. Format Inspection: Inspects character streams to determine if pages contain digital text or raster images.",
+                "3. Digital Vector Extraction: Extracts selectable text and bounding blocks in milliseconds using PyMuPDF.",
+                "4. OCR Fallback: Converts scanned pages to 300 DPI images and extracts text via Tesseract OCR.",
+                "5. Structured Output: Formats extracted content into clean JSON with page numbers and document metadata."
             ]
             resume = [
-                "Developed Caloriv cross-platform mobile nutrition analytics application using React Native Expo and TypeScript.",
-                "Implemented offline-first data persistence using local SQLite storage with background delta synchronization for cloud backup.",
-                "Engineered automated macronutrient derivation algorithms calculating BMR, TDEE, and daily target calorie distributions.",
-                "Configured production Android Gradle build orchestration with ProGuard optimization and hermetic asset bundling."
+                "Developing a modular Python utility for extracting text from PDF documents and image files with automated fallback handling.",
+                "Utilizes PyMuPDF for high-speed digital text extraction, automatically routing scanned or image-based pages to Tesseract OCR.",
+                "Generates clean structured JSON output containing extracted text, page numbers, and document metadata for downstream analysis."
             ]
         elif "CFTN" in p_id or "Code for the Nation" in p_name:
             key = "cftn"

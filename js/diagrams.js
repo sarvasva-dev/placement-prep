@@ -42,7 +42,7 @@ export function renderSvgDiagram(diagramType, rawText = '') {
   }
 
   // 4. Check Project Defense specialized SVG generators
-  if (typeKey.includes('csms') || typeKey.includes('smartgalla') || typeKey.includes('bulkbeat') || typeKey.includes('nse2') || typeKey.includes('bevm') || typeKey.includes('voting') || typeKey.includes('caloriv')) {
+  if (typeKey.includes('csms') || typeKey.includes('smartgalla') || typeKey.includes('bulkbeat') || typeKey.includes('nse2') || typeKey.includes('bevm') || typeKey.includes('voting') || typeKey.includes('docroute') || typeKey.includes('django')) {
     return renderProjectDefenseSvg(diagramType, rawText);
   }
 

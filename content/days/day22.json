@@ -4,7 +4,7 @@
   "streams": {
     "academic": {
       "unit": 3,
-      "topic": "Unit III \u2014 Transport Layer: TCP 3-Way Handshake, Connection Teardown & Congestion Control (AIMD)",
+      "topic": "Unit III — Transport Layer: TCP 3-Way Handshake, Connection Teardown & Congestion Control (AIMD)",
       "objectives": [
         "Understand TCP connection lifecycle.",
         "Master TCP Congestion Control algorithms: Slow Start, Congestion Avoidance, AIMD, Fast Retransmit."
@@ -84,7 +84,7 @@
           "marks": 15,
           "question": "Explain TCP 3-Way Handshake connection establishment and connection release. Describe the TCP Congestion Control mechanism (Slow Start, Congestion Avoidance, AIMD) with a neat graph. (15 Marks)",
           "rubric": "3-Way Handshake Diagram & Sequence Numbers (4 marks) + Connection Release & TIME_WAIT (3 marks) + Congestion Control Sawtooth Graph (4 marks) + Slow Start & AIMD explanation (4 marks) = 15 Marks.",
-          "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n\u2022 Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n\u2022 Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n\u2022 Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
+          "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n• Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n• Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n• Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
           "answer_structure": "3-Way Handshake Diagram -> Teardown & TIME_WAIT -> Congestion Control Sawtooth Graph -> Detailed Algorithms",
           "important_points": [
             "SYN, SYN-ACK, ACK sequence numbers",
@@ -187,7 +187,7 @@
         "marks": 15,
         "question": "Explain TCP 3-Way Handshake connection establishment and connection release. Describe the TCP Congestion Control mechanism (Slow Start, Congestion Avoidance, AIMD) with a neat graph. (15 Marks)",
         "rubric": "3-Way Handshake Diagram & Sequence Numbers (4 marks) + Connection Release & TIME_WAIT (3 marks) + Congestion Control Sawtooth Graph (4 marks) + Slow Start & AIMD explanation (4 marks) = 15 Marks.",
-        "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n\u2022 Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n\u2022 Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n\u2022 Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
+        "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n• Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n• Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n• Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
         "answer_structure": "3-Way Handshake Diagram -> Teardown & TIME_WAIT -> Congestion Control Sawtooth Graph -> Detailed Algorithms",
         "important_points": [
           "SYN, SYN-ACK, ACK sequence numbers",
@@ -291,122 +291,133 @@
     "aptitude_solved": [
       {
         "example_no": 1,
-        "title": "Foundational Placement Problem (Day 22)",
+        "title": "Foundation Problem on Cube & Dice",
         "tier": "Tier 1: Foundation Concept",
-        "difficulty": "Foundation",
-        "source": "TCS NQT Pattern",
+        "difficulty": "Tier 1",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "Standard high-frequency assessment question for Day 22.",
-        "problem": "Standard high-frequency assessment question for Day 22.",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
         "step_by_step_solution": [
-          "Step 1: Problem deconstruction and parameter mapping.",
-          "Step 2: Application of core topic principles.",
-          "Step 3: Calculation and logical deduction."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
         "solution": [
-          "Step 1: Problem deconstruction and parameter mapping.",
-          "Step 2: Application of core topic principles.",
-          "Step 3: Calculation and logical deduction."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
-        "formula": "Standard Model",
-        "shortcut": "Direct mental math shortcut",
-        "trap": "Misreading problem constraints.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "180 marks (90%)",
+        "answer": "180 marks (90%)"
       },
       {
         "example_no": 2,
-        "title": "Standard Technical Placement Problem (Day 22)",
+        "title": "Standard Placement Problem on Cube & Dice",
         "tier": "Tier 2: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Infosys Pattern",
+        "difficulty": "Tier 2",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "Quantitative and logical pattern problem for Day 22.",
-        "problem": "Quantitative and logical pattern problem for Day 22.",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
         "step_by_step_solution": [
-          "Step 1: Identify variable relationships.",
-          "Step 2: Formulate equations and solve.",
-          "Step 3: Verify boundary conditions."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
         "solution": [
-          "Step 1: Identify variable relationships.",
-          "Step 2: Formulate equations and solve.",
-          "Step 3: Verify boundary conditions."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
-        "formula": "Topic Principle",
-        "shortcut": "Eliminate extreme answer choices",
-        "trap": "Premature rounding.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "Rs. 864",
+        "answer": "Rs. 864"
       },
       {
         "example_no": 3,
-        "title": "Company Pattern Question (Day 22)",
+        "title": "Efficiency & Work Ratio Problem on Cube & Dice",
         "tier": "Tier 3: Company Exam Pattern",
-        "difficulty": "Placement",
-        "source": "Wipro Pattern",
-        "target_time_seconds": 50,
-        "question": "Placement exam pattern scenario for Day 22.",
-        "problem": "Placement exam pattern scenario for Day 22.",
+        "difficulty": "Tier 3",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
         "step_by_step_solution": [
-          "Step 1: Map scenario to analytical framework.",
-          "Step 2: Execute step-by-step resolution."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
         "solution": [
-          "Step 1: Map scenario to analytical framework.",
-          "Step 2: Execute step-by-step resolution."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
-        "formula": "Analytical Formula",
-        "shortcut": "Pattern recognition clue",
-        "trap": "Ignoring edge cases.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "14 1/3 days",
+        "answer": "14 1/3 days"
       },
       {
         "example_no": 4,
-        "title": "Time-Pressure Diagnostic (Day 22)",
+        "title": "Speed & Relative Distance Problem on Cube & Dice",
         "tier": "Tier 4: Time-Pressure Challenge",
-        "difficulty": "Tricky",
-        "source": "Accenture Pattern",
-        "target_time_seconds": 50,
-        "question": "Speed and accuracy test problem for Day 22.",
-        "problem": "Speed and accuracy test problem for Day 22.",
+        "difficulty": "Tier 4",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
         "step_by_step_solution": [
-          "Step 1: Quick elimination of distractor choices.",
-          "Step 2: Fast calculation."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
         "solution": [
-          "Step 1: Quick elimination of distractor choices.",
-          "Step 2: Fast calculation."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
-        "formula": "Speed Formula",
-        "shortcut": "Direct calculation shortcut",
-        "trap": "Spending over 60 seconds on initial setup.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "2:15 PM",
+        "answer": "2:15 PM"
       },
       {
         "example_no": 5,
-        "title": "Advanced Placement Variant (Day 22)",
-        "tier": "Tier 5: Advanced Placement Variant",
-        "difficulty": "Advanced",
-        "source": "Cognizant Pattern",
-        "target_time_seconds": 60,
-        "question": "Multi-step challenge problem for Day 22.",
-        "problem": "Multi-step challenge problem for Day 22.",
+        "title": "Combinatorics & Probability Problem on Cube & Dice",
+        "tier": "Tier 5: Time-Pressure Challenge",
+        "difficulty": "Tier 5",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "problem": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
         "step_by_step_solution": [
-          "Step 1: Deconstruct multi-layer problem.",
-          "Step 2: Execute synthesis and final verification."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
         "solution": [
-          "Step 1: Deconstruct multi-layer problem.",
-          "Step 2: Execute synthesis and final verification."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
-        "formula": "Advanced Formula",
-        "shortcut": "Factorization shortcut",
-        "trap": "Calculation error in intermediate arithmetic.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "10/21",
+        "answer": "10/21"
       }
     ],
     "aptitude_mcqs": [
@@ -600,7 +611,7 @@
     "dsa_pattern": {
       "pattern_name": "Disjoint Set Union (Union-Find)",
       "pattern": "Disjoint Set Union (Union-Find)",
-      "title": "Disjoint Set Union (Union-Find) \u2014 Algorithmic Invariants & Implementation",
+      "title": "Disjoint Set Union (Union-Find) — Algorithmic Invariants & Implementation",
       "category": "Graph / DSU",
       "concept": "Maintains disjoint sets supporting near O(1) find and union operations using Path Compression and Union by Rank.",
       "why_it_works": "Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).",
@@ -721,9 +732,9 @@
     "core_cs": {
       "subject": "Python Internals",
       "topic": "Python Memory Model: Reference Counting, Generational Garbage Collection & Object Model",
-      "lesson": "In CPython, EVERYTHING is an object\u2014integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
-      "concept_lesson": "In CPython, EVERYTHING is an object\u2014integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
-      "lecture": "In CPython, EVERYTHING is an object\u2014integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
+      "lesson": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
+      "concept_lesson": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
+      "lecture": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
       "key_definitions": [
         {
           "term": "PyObject",
@@ -846,36 +857,36 @@
       ]
     },
     "project_preparation": {
-      "project_name": "NSE2 / BulkBeat TV",
-      "name": "NSE2 / BulkBeat TV",
-      "repo_path": "D:\\Projects\\nse2",
-      "topic": "Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines",
-      "feature_focus": "Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines",
-      "what_to_understand": "Connecting market data providers, parsing live quotes, and technical momentum filtering.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nConnecting market data providers, parsing live quotes, and technical momentum filtering.\n\nWHAT TO MEMORIZE:\nDhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.\n\n60-SECOND INTERVIEW PITCH:\nTo provide actionable context on news alerts, I integrated the Dhan REST API to pull live market quotes and volume multipliers the instant a disclosure hits the wire. The system parses Chartink breakout screeners to append technical momentum indicators to corporate announcement cards in real time.",
-      "what_to_memorize": "Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.",
+      "project_name": "College Student Management System (CSMS)",
+      "name": "College Student Management System (CSMS)",
+      "repo_path": "D:\\Projects\\College Student Management System",
+      "topic": "Academic Grading Engine & Semester Fee Ledger Management",
+      "feature_focus": "Academic Grading Engine & Semester Fee Ledger Management",
+      "what_to_understand": "Automating letter grade calculation from continuous test marks and tracking Paid, Pending, and Partial fee states.",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nAutomating letter grade calculation from continuous test marks and tracking Paid, Pending, and Partial fee states.\n\nWHAT TO MEMORIZE:\nGrade mapping: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F. Fee balance = Total Fee - Paid Fee.\n\n60-SECOND INTERVIEW PITCH:\nIn CSMS, I built an automated grading module and semester fee ledger. The grading engine calculates letter grades from continuous internal marks, while the fee ledger maintains dynamic Paid, Partial, and Pending payment balances, giving faculty and administrators instant oversight of student academic and financial status.",
+      "what_to_memorize": "Grade mapping: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F. Fee balance = Total Fee - Paid Fee.",
       "interview_questions": [
         {
-          "q": "How did you integrate Dhan API and Chartink screeners into the news alert flow?",
-          "a": "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to capture current market price, volume surge factor, and day's range. It cross-references this with Chartink breakout screeners, allowing the alert card to display whether the stock is breaking its 52-week high at the exact moment of the announcement."
+          "q": "How does the academic grading engine calculate student performance in CSMS?",
+          "a": "Faculty enter internal test marks and assignment scores in `/api/grades/entry`. The backend aggregates marks into a percentage score and deterministically maps it to letter grades (A, B, C, D, or F). Results are stored in the `grades` table with a unique constraint on `(student_id, course_id, semester)`, preventing duplicate conflicting grade entries."
         },
         {
-          "q": "How do you filter noise from thousands of daily routine corporate filings?",
-          "a": "We use a multi-stage classification pipeline: 1. Keyword regex filters out standard compliance filings (e.g., loss of share certificates); 2. A sentiment and impact scoring heuristic evaluates financial magnitude; 3. Only announcements scoring above threshold are queued for push delivery."
+          "q": "How does the semester fee management module handle partial payments?",
+          "a": "The `fees` table stores `total_amount`, `amount_paid`, and `status`. When an admin logs a fee payment, the system computes `balance = total_amount - amount_paid`. If balance is 0, status is set to 'Paid'; if amount_paid > 0 but balance > 0, status is 'Partial'; if amount_paid is 0, status is 'Pending'. This enables the college accounts desk to filter all fee-defaulter students in seconds."
         }
       ],
       "interview_qa": [
         {
-          "q": "How did you integrate Dhan API and Chartink screeners into the news alert flow?",
-          "a": "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to capture current market price, volume surge factor, and day's range. It cross-references this with Chartink breakout screeners, allowing the alert card to display whether the stock is breaking its 52-week high at the exact moment of the announcement."
+          "q": "How does the academic grading engine calculate student performance in CSMS?",
+          "a": "Faculty enter internal test marks and assignment scores in `/api/grades/entry`. The backend aggregates marks into a percentage score and deterministically maps it to letter grades (A, B, C, D, or F). Results are stored in the `grades` table with a unique constraint on `(student_id, course_id, semester)`, preventing duplicate conflicting grade entries."
         },
         {
-          "q": "How do you filter noise from thousands of daily routine corporate filings?",
-          "a": "We use a multi-stage classification pipeline: 1. Keyword regex filters out standard compliance filings (e.g., loss of share certificates); 2. A sentiment and impact scoring heuristic evaluates financial magnitude; 3. Only announcements scoring above threshold are queued for push delivery."
+          "q": "How does the semester fee management module handle partial payments?",
+          "a": "The `fees` table stores `total_amount`, `amount_paid`, and `status`. When an admin logs a fee payment, the system computes `balance = total_amount - amount_paid`. If balance is 0, status is set to 'Paid'; if amount_paid > 0 but balance > 0, status is 'Partial'; if amount_paid is 0, status is 'Pending'. This enables the college accounts desk to filter all fee-defaulter students in seconds."
         }
       ],
-      "interview_pitch_exercise": "To provide actionable context on news alerts, I integrated the Dhan REST API to pull live market quotes and volume multipliers the instant a disclosure hits the wire. The system parses Chartink breakout screeners to append technical momentum indicators to corporate announcement cards in real time.",
-      "pitch": "To provide actionable context on news alerts, I integrated the Dhan REST API to pull live market quotes and volume multipliers the instant a disclosure hits the wire. The system parses Chartink breakout screeners to append technical momentum indicators to corporate announcement cards in real time."
+      "interview_pitch_exercise": "In CSMS, I built an automated grading module and semester fee ledger. The grading engine calculates letter grades from continuous internal marks, while the fee ledger maintains dynamic Paid, Partial, and Pending payment balances, giving faculty and administrators instant oversight of student academic and financial status.",
+      "pitch": "In CSMS, I built an automated grading module and semester fee ledger. The grading engine calculates letter grades from continuous internal marks, while the fee ledger maintains dynamic Paid, Partial, and Pending payment balances, giving faculty and administrators instant oversight of student academic and financial status."
     },
     "placement_interview": [
       {
@@ -902,10 +913,10 @@
       },
       {
         "category": "Project Experience",
-        "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
-        "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "question": "In your project 'DocRoute', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In DocRoute (Python, PyMuPDF Vector Text, Tesseract OCR Fallback), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
         "key_talking_points": [
-          "Contextualize the architecture of Caloriv.",
+          "Contextualize the architecture of DocRoute.",
           "Highlight concurrency, data integrity, and error recovery.",
           "Quantify reliability outcomes and graceful failure handling."
         ],
@@ -926,7 +937,7 @@
       {
         "category": "HR & Cultural Fit",
         "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
         "key_talking_points": [
           "Disciplined reading of official docs and engineering blogs.",
           "Hands-on prototype building to validate theory.",
@@ -936,12 +947,12 @@
       }
     ],
     "daily_revision": {
-      "yesterday_recall": "\u2022 Reviewed Day 21 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
-      "today_recall": "\u2022 Mastered BCA-5002 \u2014 Java Servlet Lifecycle, Request Dispatching & Sessions.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
-      "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI.",
-      "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Java Servlet Lifecycle, Request Dispatching & Sessions.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-      "dsa_recall": "\u2022 Pattern: Disjoint Set Union (Union-Find with Rank).\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-      "project_recall": "\u2022 Project: Code for the Nation 2026.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "yesterday_recall": "• Reviewed Day 21 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n• Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Servlet Lifecycle, Request Dispatching & Sessions.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Disjoint Set Union (Union-Find with Rank).\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Code for the Nation 2026.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
       "rapid_fire_questions": [
         {
           "q": "Day 22 Q1: What is the primary academic thesis of Java Servlet Lifecycle, Request Dispatching & Sessions?",
@@ -953,7 +964,7 @@
         },
         {
           "q": "Day 22 Q3: What is the time complexity of Disjoint Set Union (Union-Find with Rank)?",
-          "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
         },
         {
           "q": "Day 22 Q4: What is the central architectural principle of Network Security: AES, RSA & Public Key PKI?",
@@ -984,26 +995,26 @@
           "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
         }
       ],
-      "today_summary": "\u2022 Mastered BCA-5002 \u2014 Java Servlet Lifecycle, Request Dispatching & Sessions.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+      "today_summary": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
       "formulas_and_shortcuts": [
-        "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI."
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n• Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI."
       ],
       "must_know_definitions": [
         {
           "term": "Daily Core Concept 1",
-          "definition": "\u2022 Mastered BCA-5002 \u2014 Java Servlet Lifecycle, Request Dispatching & Sessions."
+          "definition": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions."
         },
         {
           "term": "Daily Core Concept 2",
-          "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning."
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning."
         },
         {
           "term": "Daily Core Concept 3",
-          "definition": "\u2022 Pattern: Disjoint Set Union (Union-Find with Rank)."
+          "definition": "• Pattern: Disjoint Set Union (Union-Find with Rank)."
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "\u2022 Project: Code for the Nation 2026."
+          "definition": "• Project: Code for the Nation 2026."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1014,7 +1025,7 @@
     "mixed_test": [
       {
         "id": "TEST-22-01",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
         "options": [
           "service()",
@@ -1027,7 +1038,7 @@
       },
       {
         "id": "TEST-22-02",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
         "options": [
           "service(ServletRequest, ServletResponse)",
@@ -1040,7 +1051,7 @@
       },
       {
         "id": "TEST-22-03",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
         "options": [
           "Cookies cannot store more than 1 byte of data",
@@ -1053,7 +1064,7 @@
       },
       {
         "id": "TEST-22-04",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
         "options": [
           "pom.xml",
@@ -1066,7 +1077,7 @@
       },
       {
         "id": "TEST-22-05",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
         "options": [
           "@WebServlet",
@@ -1080,67 +1091,67 @@
       {
         "id": "TEST-22-06",
         "category": "Placement Aptitude",
-        "question": "A solid wooden cube of side 4 cm is painted red on all faces and cut into smaller cubes of side 1 cm. How many smaller cubes have exactly two faces painted red?",
+        "question": "Two positions of a dice are shown. In position 1: top 1, front 2, right 3. In position 2: top 1, front 5, right 6. Which number is opposite 1?",
         "options": [
-          "24",
-          "16",
-          "32",
-          "8"
+          "4",
+          "2",
+          "3",
+          "5"
         ],
         "correct_answer": "A",
-        "explanation": "For a cube of n = 4/1 = 4: Two-face painted cubes lie on edges = 12 * (n - 2) = 12 * (4 - 2) = 24 cubes."
+        "explanation": "The numbers adjacent to 1 are 2, 3, 5, 6. The only remaining number that can be opposite 1 is 4."
       },
       {
         "id": "TEST-22-07",
         "category": "Placement Aptitude",
-        "question": "How many smaller cubes in the 4 cm cube cut into 1 cm cubes have NO faces painted?",
+        "question": "A cube painted yellow on all faces is cut into 125 small cubes of equal size. How many cubes have at least one face painted?",
         "options": [
-          "8",
-          "16",
-          "24",
-          "4"
+          "98",
+          "64",
+          "117",
+          "125"
         ],
-        "correct_answer": "A",
-        "explanation": "Zero painted faces = (n - 2)^3 = (4 - 2)^3 = 2^3 = 8 cubes."
+        "correct_answer": "C",
+        "explanation": "n = 125^(1/3) = 5. Unpainted cubes = (5 - 2)^3 = 3^3 = 27. Cubes with at least one painted face = Total - Unpainted = 125 - 27 = 98."
       },
       {
         "id": "TEST-22-08",
         "category": "Placement Aptitude",
-        "question": "In a standard die, what is the sum of numbers on any two opposite faces?",
+        "question": "If a dice is rolled, what is the probability of rolling a composite number?",
         "options": [
-          "7",
-          "6",
-          "8",
-          "14"
+          "1/3",
+          "1/2",
+          "2/3",
+          "1/6"
         ],
         "correct_answer": "A",
-        "explanation": "By definition, opposite faces of standard dice always sum to 7 (1-6, 2-5, 3-4)."
+        "explanation": "Faces are {1, 2, 3, 4, 5, 6}. Composite numbers are 4 and 6 (2 outcomes). Probability = 2/6 = 1/3."
       },
       {
         "id": "TEST-22-09",
         "category": "Placement Aptitude",
-        "question": "Two positions of a dice are shown. When 4 is at the bottom, what number will be on the top face?",
+        "question": "When a flat cardboard pattern is folded into a cube, if opposite faces never touch, which face is opposite face A in layout A-B-C-D in a row with E on top of B and F below B?",
         "options": [
-          "3",
-          "1",
-          "2",
-          "5"
+          "C",
+          "D",
+          "B",
+          "E"
         ],
         "correct_answer": "A",
-        "explanation": "On standard fair dice, the face opposite to 4 is always 7 - 4 = 3."
+        "explanation": "In linear strip of faces, alternate faces are opposite: A is opposite C, B is opposite D, and flap E is opposite flap F."
       },
       {
         "id": "TEST-22-10",
         "category": "Placement Aptitude",
-        "question": "How many smaller cubes have exactly 3 faces painted when a large cube is cut into 27 identical small cubes?",
+        "question": "A cube has six faces marked 1 to 6. If 1 is opposite 6, and 2 is opposite 5, which numbers are adjacent to 3?",
         "options": [
-          "8",
-          "6",
-          "12",
-          "1"
+          "1, 2, 5, 6",
+          "1, 2, 4, 5",
+          "2, 4, 5, 6",
+          "None"
         ],
         "correct_answer": "A",
-        "explanation": "Three-face painted cubes always occupy the 8 corners of the cube regardless of n (for n >= 2)."
+        "explanation": "3 must be opposite 4. Therefore, the four faces adjacent to 3 are 1, 6, 2, and 5."
       },
       {
         "id": "TEST-22-11",
@@ -1248,29 +1259,29 @@
       },
       {
         "id": "TEST-22-19",
-        "category": "Projects (NSE2 / BulkBeat TV)",
-        "question": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines'?",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Academic Grading Engine & Semester Fee Ledger Management'?",
         "options": [
-          "Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.",
+          "Grade mapping: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F. Fee balance = Total Fee - Paid Fee.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For NSE2 / BulkBeat TV, the architectural invariant is: Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.."
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Grade mapping: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F. Fee balance = Total Fee - Paid Fee.."
       },
       {
         "id": "TEST-22-20",
-        "category": "Projects (NSE2 / BulkBeat TV)",
-        "question": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How did you integrate Dhan API and Chartink screeners into the news alert flow?'?",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How does the academic grading engine calculate student performance in CSMS?'?",
         "options": [
-          "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to captur...",
+          "Faculty enter internal test marks and assignment scores in `/api/grades/entry`. The backend aggregates marks into a percentage score and deterministically maps ...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
         "correct_answer": "A",
-        "explanation": "In technical interviews, anchor your defense in engineering metrics: When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v."
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Faculty enter internal test marks and assignment scores in `/api/grades/entry`. The backend aggregates marks into a percentage score and det."
       }
     ],
     "daily_coding_task": {
@@ -1324,7 +1335,7 @@
   "dsa": {
     "pattern_name": "Disjoint Set Union (Union-Find)",
     "pattern": "Disjoint Set Union (Union-Find)",
-    "title": "Disjoint Set Union (Union-Find) \u2014 Algorithmic Invariants & Implementation",
+    "title": "Disjoint Set Union (Union-Find) — Algorithmic Invariants & Implementation",
     "category": "Graph / DSU",
     "concept": "Maintains disjoint sets supporting near O(1) find and union operations using Path Compression and Union by Rank.",
     "why_it_works": "Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).",
@@ -1481,7 +1492,7 @@
     "subject": "Computer Networks",
     "subject_code": "BCA-5003",
     "unit": 3,
-    "topic": "Unit III \u2014 Transport Layer: TCP 3-Way Handshake, Connection Teardown & Congestion Control (AIMD)",
+    "topic": "Unit III — Transport Layer: TCP 3-Way Handshake, Connection Teardown & Congestion Control (AIMD)",
     "objectives": [
       "Understand TCP connection lifecycle.",
       "Master TCP Congestion Control algorithms: Slow Start, Congestion Avoidance, AIMD, Fast Retransmit."
@@ -1538,7 +1549,7 @@
         "marks": 15,
         "question": "Explain TCP 3-Way Handshake connection establishment and connection release. Describe the TCP Congestion Control mechanism (Slow Start, Congestion Avoidance, AIMD) with a neat graph. (15 Marks)",
         "rubric": "3-Way Handshake Diagram & Sequence Numbers (4 marks) + Connection Release & TIME_WAIT (3 marks) + Congestion Control Sawtooth Graph (4 marks) + Slow Start & AIMD explanation (4 marks) = 15 Marks.",
-        "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n\u2022 Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n\u2022 Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n\u2022 Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
+        "model_answer": "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n• Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n• Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n• Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve.",
         "answer_structure": "3-Way Handshake Diagram -> Teardown & TIME_WAIT -> Congestion Control Sawtooth Graph -> Detailed Algorithms",
         "important_points": [
           "SYN, SYN-ACK, ACK sequence numbers",
@@ -1636,7 +1647,7 @@
     "model_answer_paragraphs": [
       [
         "1. Model Answer & Technical Presentation",
-        "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n\u2022 Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n\u2022 Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n\u2022 Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve."
+        "1. TCP 3-Way Handshake Connection Establishment:\nTCP establishes a reliable full-duplex connection using a 3-way handshake: Step 1 (SYN): The client selects an Initial Sequence Number (ISN=x) and sends a segment with SYN=1, seq=x; Step 2 (SYN-ACK): The server allocates socket resources, selects its own sequence number y, and replies with SYN=1, ACK=1, seq=y, ack=x+1; Step 3 (ACK): The client completes establishment by sending ACK=1, seq=x+1, ack=y+1.\n\n2. Connection Teardown:\nConnection termination uses a 4-way handshake (FIN -> ACK -> FIN -> ACK). The terminating host enters the TIME_WAIT state, waiting for 2 * Maximum Segment Lifetime (2*MSL, typically 2 minutes) to ensure the final ACK reached the peer and to drain any lingering duplicate packets from the network.\n\n3. TCP Congestion Control Mechanisms:\n• Slow Start: Upon connection initiation, cwnd is set to 1 MSS. For every ACK received, cwnd increases by 1 MSS, causing cwnd to double exponentially every RTT (1 -> 2 -> 4 -> 8...) until reaching ssthresh.\n• Congestion Avoidance: Once cwnd >= ssthresh, exponential growth transitions to linear growth (Additive Increase), adding 1 MSS per RTT (`cwnd = cwnd + 1/cwnd` per ACK) to conservatively probe for available bandwidth.\n• Multiplicative Decrease (AIMD): If packet loss occurs via timeout, ssthresh is set to half of current cwnd (`ssthresh = cwnd / 2`), and cwnd collapses to 1 MSS. If 3 duplicate ACKs arrive, Fast Retransmit immediately sends the missing packet and Fast Recovery sets `cwnd = ssthresh`, avoiding the collapse to 1 MSS. This dynamic produces the classic TCP sawtooth bandwidth curve."
       ],
       [
         "2. Expected Examiner Criteria",
@@ -1656,14 +1667,14 @@
     "tutorial": [
       "Spatial reasoning questions evaluate mental 3D rotation. Practice identifying opposite pairs directly from unfolded net diagrams before attempting complex multi-cut cube volume questions."
     ],
-    "tier1_problem": "Standard high-frequency assessment question for Day 22.",
-    "tier1_solution": "Step 1: Problem deconstruction and parameter mapping.\\nStep 2: Application of core topic principles.\\nStep 3: Calculation and logical deduction.",
-    "tier2_problem": "Quantitative and logical pattern problem for Day 22.",
-    "tier2_solution": "Step 1: Identify variable relationships.\\nStep 2: Formulate equations and solve.\\nStep 3: Verify boundary conditions.",
-    "tier3_problem": "Placement exam pattern scenario for Day 22.",
-    "tier3_solution": "Step 1: Map scenario to analytical framework.\\nStep 2: Execute step-by-step resolution.",
-    "tier4_problem": "Speed and accuracy test problem for Day 22.",
-    "tier4_solution": "Step 1: Quick elimination of distractor choices.\\nStep 2: Fast calculation.",
+    "tier1_problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+    "tier1_solution": "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.\nStep 2: Improvement factor = 20% increase on initial score.\nStep 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.\nStep 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).\nSpeed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks.",
+    "tier2_problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+    "tier2_solution": "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.\nStep 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).\nStep 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.\nVerification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864.",
+    "tier3_problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+    "tier3_solution": "Step 1: Assume Total Work = LCM(12, 18) = 36 units.\nStep 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.\nStep 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.\nStep 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.\nStep 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.\nStep 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days).",
+    "tier4_problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+    "tier4_solution": "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.\nStep 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.\nStep 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.\nStep 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.\nStep 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM.",
     "speed_drills": [
       {
         "q": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
@@ -2005,9 +2016,7 @@
           "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
         }
       ]
-    },
-    "tier5_problem": "Multi-step challenge problem for Day 22.",
-    "tier5_solution": "Step 1: Deconstruct multi-layer problem.\\nStep 2: Execute synthesis and final verification."
+    }
   },
   "dsa_problems": [
     {
@@ -2082,7 +2091,7 @@
   "dsa_pattern": {
     "pattern_name": "Disjoint Set Union (Union-Find)",
     "pattern": "Disjoint Set Union (Union-Find)",
-    "title": "Disjoint Set Union (Union-Find) \u2014 Algorithmic Invariants & Implementation",
+    "title": "Disjoint Set Union (Union-Find) — Algorithmic Invariants & Implementation",
     "category": "Graph / DSU",
     "concept": "Maintains disjoint sets supporting near O(1) find and union operations using Path Compression and Union by Rank.",
     "why_it_works": "Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).",
@@ -2133,9 +2142,9 @@
   "cs_core": {
     "subject": "Python Internals",
     "topic": "Python Memory Model: Reference Counting, Generational Garbage Collection & Object Model",
-    "lesson": "In CPython, EVERYTHING is an object\u2014integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
-    "concept_lesson": "In CPython, EVERYTHING is an object\u2014integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
-    "lecture": "In CPython, EVERYTHING is an object\u2014integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
+    "lesson": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
+    "concept_lesson": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
+    "lecture": "In CPython, EVERYTHING is an object—integers, strings, functions, classes, and modules all allocate a PyObject structure.\n\nPyObject Structure:\nDefined in CPython C headers (`object.h`), every PyObject contains:\n1. `ob_refcnt`: 64-bit integer tracking active references pointing to this object.\n2. `ob_type`: Pointer to the object's type descriptor (`PyTypeObject`), which defines behavior, method tables, and memory size.\nVariable-length objects (like strings, lists, dicts) use `PyVarObject`, adding an `ob_size` field.\n\nMemory Management & Garbage Collection:\n- Primary Mechanism (Reference Counting): When an object's reference count drops to 0, its memory is deallocated INSTANTLY. Incremented on variable assignment, passing to function, or appending to container. Decremented on `del`, scope exit, or overwriting.\n- Cyclical Garbage Collection (The `gc` module):\nReference counting CANNOT reclaim self-referencing reference cycles (e.g., `a.child = b; b.parent = a; del a; del b`). CPython adds a cyclic garbage collector using three Generations (Gen 0, Gen 1, Gen 2). New objects enter Gen 0. If they survive a GC cycle, they are promoted to Gen 1, then Gen 2 (Generation Hypothesis: most objects die young). The cyclic GC traverses container object pointers, identifies isolated subgraphs whose external reference count is 0, and frees them.\n\nSmall Object Allocator (PyMalloc):\nCPython allocates small memory blocks (<= 512 bytes) using a dedicated 3-tier memory pool (Arenas = 256KB, Pools = 4KB, Blocks = 8 to 512 bytes) to avoid kernel `malloc()` overhead and mitigate OS-level fragmentation.",
     "key_definitions": [
       {
         "term": "PyObject",
@@ -2258,36 +2267,36 @@
     ]
   },
   "project_defense": {
-    "project_name": "NSE2 / BulkBeat TV",
-    "name": "NSE2 / BulkBeat TV",
-    "repo_path": "D:\\Projects\\nse2",
-    "topic": "Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines",
-    "feature_focus": "Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines",
-    "what_to_understand": "Connecting market data providers, parsing live quotes, and technical momentum filtering.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nConnecting market data providers, parsing live quotes, and technical momentum filtering.\n\nWHAT TO MEMORIZE:\nDhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.\n\n60-SECOND INTERVIEW PITCH:\nTo provide actionable context on news alerts, I integrated the Dhan REST API to pull live market quotes and volume multipliers the instant a disclosure hits the wire. The system parses Chartink breakout screeners to append technical momentum indicators to corporate announcement cards in real time.",
-    "what_to_memorize": "Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.",
+    "project_name": "College Student Management System (CSMS)",
+    "name": "College Student Management System (CSMS)",
+    "repo_path": "D:\\Projects\\College Student Management System",
+    "topic": "Academic Grading Engine & Semester Fee Ledger Management",
+    "feature_focus": "Academic Grading Engine & Semester Fee Ledger Management",
+    "what_to_understand": "Automating letter grade calculation from continuous test marks and tracking Paid, Pending, and Partial fee states.",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nAutomating letter grade calculation from continuous test marks and tracking Paid, Pending, and Partial fee states.\n\nWHAT TO MEMORIZE:\nGrade mapping: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F. Fee balance = Total Fee - Paid Fee.\n\n60-SECOND INTERVIEW PITCH:\nIn CSMS, I built an automated grading module and semester fee ledger. The grading engine calculates letter grades from continuous internal marks, while the fee ledger maintains dynamic Paid, Partial, and Pending payment balances, giving faculty and administrators instant oversight of student academic and financial status.",
+    "what_to_memorize": "Grade mapping: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F. Fee balance = Total Fee - Paid Fee.",
     "interview_questions": [
       {
-        "q": "How did you integrate Dhan API and Chartink screeners into the news alert flow?",
-        "a": "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to capture current market price, volume surge factor, and day's range. It cross-references this with Chartink breakout screeners, allowing the alert card to display whether the stock is breaking its 52-week high at the exact moment of the announcement."
+        "q": "How does the academic grading engine calculate student performance in CSMS?",
+        "a": "Faculty enter internal test marks and assignment scores in `/api/grades/entry`. The backend aggregates marks into a percentage score and deterministically maps it to letter grades (A, B, C, D, or F). Results are stored in the `grades` table with a unique constraint on `(student_id, course_id, semester)`, preventing duplicate conflicting grade entries."
       },
       {
-        "q": "How do you filter noise from thousands of daily routine corporate filings?",
-        "a": "We use a multi-stage classification pipeline: 1. Keyword regex filters out standard compliance filings (e.g., loss of share certificates); 2. A sentiment and impact scoring heuristic evaluates financial magnitude; 3. Only announcements scoring above threshold are queued for push delivery."
+        "q": "How does the semester fee management module handle partial payments?",
+        "a": "The `fees` table stores `total_amount`, `amount_paid`, and `status`. When an admin logs a fee payment, the system computes `balance = total_amount - amount_paid`. If balance is 0, status is set to 'Paid'; if amount_paid > 0 but balance > 0, status is 'Partial'; if amount_paid is 0, status is 'Pending'. This enables the college accounts desk to filter all fee-defaulter students in seconds."
       }
     ],
     "interview_qa": [
       {
-        "q": "How did you integrate Dhan API and Chartink screeners into the news alert flow?",
-        "a": "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to capture current market price, volume surge factor, and day's range. It cross-references this with Chartink breakout screeners, allowing the alert card to display whether the stock is breaking its 52-week high at the exact moment of the announcement."
+        "q": "How does the academic grading engine calculate student performance in CSMS?",
+        "a": "Faculty enter internal test marks and assignment scores in `/api/grades/entry`. The backend aggregates marks into a percentage score and deterministically maps it to letter grades (A, B, C, D, or F). Results are stored in the `grades` table with a unique constraint on `(student_id, course_id, semester)`, preventing duplicate conflicting grade entries."
       },
       {
-        "q": "How do you filter noise from thousands of daily routine corporate filings?",
-        "a": "We use a multi-stage classification pipeline: 1. Keyword regex filters out standard compliance filings (e.g., loss of share certificates); 2. A sentiment and impact scoring heuristic evaluates financial magnitude; 3. Only announcements scoring above threshold are queued for push delivery."
+        "q": "How does the semester fee management module handle partial payments?",
+        "a": "The `fees` table stores `total_amount`, `amount_paid`, and `status`. When an admin logs a fee payment, the system computes `balance = total_amount - amount_paid`. If balance is 0, status is set to 'Paid'; if amount_paid > 0 but balance > 0, status is 'Partial'; if amount_paid is 0, status is 'Pending'. This enables the college accounts desk to filter all fee-defaulter students in seconds."
       }
     ],
-    "interview_pitch_exercise": "To provide actionable context on news alerts, I integrated the Dhan REST API to pull live market quotes and volume multipliers the instant a disclosure hits the wire. The system parses Chartink breakout screeners to append technical momentum indicators to corporate announcement cards in real time.",
-    "pitch": "To provide actionable context on news alerts, I integrated the Dhan REST API to pull live market quotes and volume multipliers the instant a disclosure hits the wire. The system parses Chartink breakout screeners to append technical momentum indicators to corporate announcement cards in real time."
+    "interview_pitch_exercise": "In CSMS, I built an automated grading module and semester fee ledger. The grading engine calculates letter grades from continuous internal marks, while the fee ledger maintains dynamic Paid, Partial, and Pending payment balances, giving faculty and administrators instant oversight of student academic and financial status.",
+    "pitch": "In CSMS, I built an automated grading module and semester fee ledger. The grading engine calculates letter grades from continuous internal marks, while the fee ledger maintains dynamic Paid, Partial, and Pending payment balances, giving faculty and administrators instant oversight of student academic and financial status."
   },
   "placement_interview": [
     {
@@ -2314,10 +2323,10 @@
     },
     {
       "category": "Project Experience",
-      "question": "In your project 'Caloriv', what was the most difficult technical challenge you personally solved?",
-      "model_answer": "In Caloriv (React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "question": "In your project 'DocRoute', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In DocRoute (Python, PyMuPDF Vector Text, Tesseract OCR Fallback), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
       "key_talking_points": [
-        "Contextualize the architecture of Caloriv.",
+        "Contextualize the architecture of DocRoute.",
         "Highlight concurrency, data integrity, and error recovery.",
         "Quantify reliability outcomes and graceful failure handling."
       ],
@@ -2338,7 +2347,7 @@
     {
       "category": "HR & Cultural Fit",
       "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
       "key_talking_points": [
         "Disciplined reading of official docs and engineering blogs.",
         "Hands-on prototype building to validate theory.",
@@ -2348,12 +2357,12 @@
     }
   ],
   "daily_revision": {
-    "yesterday_recall": "\u2022 Reviewed Day 21 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
-    "today_recall": "\u2022 Mastered BCA-5002 \u2014 Java Servlet Lifecycle, Request Dispatching & Sessions.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
-    "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI.",
-    "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Java Servlet Lifecycle, Request Dispatching & Sessions.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-    "dsa_recall": "\u2022 Pattern: Disjoint Set Union (Union-Find with Rank).\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-    "project_recall": "\u2022 Project: Code for the Nation 2026.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "yesterday_recall": "• Reviewed Day 21 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n• Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Servlet Lifecycle, Request Dispatching & Sessions.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Disjoint Set Union (Union-Find with Rank).\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Code for the Nation 2026.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
     "rapid_fire_questions": [
       {
         "q": "Day 22 Q1: What is the primary academic thesis of Java Servlet Lifecycle, Request Dispatching & Sessions?",
@@ -2365,7 +2374,7 @@
       },
       {
         "q": "Day 22 Q3: What is the time complexity of Disjoint Set Union (Union-Find with Rank)?",
-        "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
       },
       {
         "q": "Day 22 Q4: What is the central architectural principle of Network Security: AES, RSA & Public Key PKI?",
@@ -2396,26 +2405,26 @@
         "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
       }
     ],
-    "today_summary": "\u2022 Mastered BCA-5002 \u2014 Java Servlet Lifecycle, Request Dispatching & Sessions.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+    "today_summary": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
     "formulas_and_shortcuts": [
-      "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI."
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning.\n• Algorithmic Invariant: Optimal time and space complexity rules for Disjoint Set Union (Union-Find with Rank).\n• Systems Law: Architectural equations, protocols, and complexity bounds for Network Security: AES, RSA & Public Key PKI."
     ],
     "must_know_definitions": [
       {
         "term": "Daily Core Concept 1",
-        "definition": "\u2022 Mastered BCA-5002 \u2014 Java Servlet Lifecycle, Request Dispatching & Sessions."
+        "definition": "• Mastered BCA-5002 — Java Servlet Lifecycle, Request Dispatching & Sessions."
       },
       {
         "term": "Daily Core Concept 2",
-        "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning."
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Cube & Dice Reasoning."
       },
       {
         "term": "Daily Core Concept 3",
-        "definition": "\u2022 Pattern: Disjoint Set Union (Union-Find with Rank)."
+        "definition": "• Pattern: Disjoint Set Union (Union-Find with Rank)."
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "\u2022 Project: Code for the Nation 2026."
+        "definition": "• Project: Code for the Nation 2026."
       },
       {
         "term": "Daily Core Concept 5",
@@ -2424,227 +2433,301 @@
     ]
   },
   "daily_test": {
-    "title": "Day 22 Comprehensive 20-Question Daily Mastery Test",
+    "title": "Day 22 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "no": 1,
         "q": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
+        "a": "Answer: B\n\nThe container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
+      },
+      {
+        "q": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
+        "a": "Answer: A\n\nThe `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
+      },
+      {
+        "q": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
+        "a": "Answer: B\n\nHttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
+      },
+      {
+        "q": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
+        "a": "Answer: B\n\nThe `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
+      },
+      {
+        "q": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
+        "a": "Answer: A\n\nServlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
+      },
+      {
+        "q": "Two positions of a dice are shown. In position 1: top 1, front 2, right 3. In position 2: top 1, front 5, right 6. Which number is opposite 1?",
+        "a": "Answer: A\n\nThe numbers adjacent to 1 are 2, 3, 5, 6. The only remaining number that can be opposite 1 is 4."
+      },
+      {
+        "q": "A cube painted yellow on all faces is cut into 125 small cubes of equal size. How many cubes have at least one face painted?",
+        "a": "Answer: C\n\nn = 125^(1/3) = 5. Unpainted cubes = (5 - 2)^3 = 3^3 = 27. Cubes with at least one painted face = Total - Unpainted = 125 - 27 = 98."
+      },
+      {
+        "q": "If a dice is rolled, what is the probability of rolling a composite number?",
+        "a": "Answer: A\n\nFaces are {1, 2, 3, 4, 5, 6}. Composite numbers are 4 and 6 (2 outcomes). Probability = 2/6 = 1/3."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-22-01",
+        "category": "Academic (Computer Networks)",
+        "question": "Which lifecycle method of a Java Servlet is invoked exactly once by the servlet container when the servlet is first instantiated?",
         "options": [
           "service()",
           "init()",
           "doGet()",
           "destroy()"
         ],
-        "a": "Answer: B \u2014 The container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
+        "correct_answer": "B",
+        "explanation": "The container calls `init(ServletConfig config)` once during initialization to allocate resources before servicing client requests."
       },
       {
-        "no": 2,
-        "q": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
+        "id": "TEST-22-02",
+        "category": "Academic (Computer Networks)",
+        "question": "In the Java Servlet lifecycle, which method dispatches incoming HTTP requests to doGet(), doPost(), doPut(), etc., based on the request method?",
         "options": [
           "service(ServletRequest, ServletResponse)",
           "init()",
           "start()",
           "run()"
         ],
-        "a": "Answer: A \u2014 The `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
+        "correct_answer": "A",
+        "explanation": "The `service()` method reads HTTP method headers and delegates the request to the corresponding specialized `doGet/doPost` handler."
       },
       {
-        "no": 3,
-        "q": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
+        "id": "TEST-22-03",
+        "category": "Academic (Computer Networks)",
+        "question": "Why is HttpServletSession preferred over plain Cookies for storing sensitive user authentication tokens?",
         "options": [
           "Cookies cannot store more than 1 byte of data",
           "Session data is stored securely on the server-side, with only an opaque session identifier (JSESSIONID) sent to the client browser",
           "Cookies expire immediately when a tab is refreshed",
           "Sessions do not consume server RAM"
         ],
-        "a": "Answer: B \u2014 HttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
+        "correct_answer": "B",
+        "explanation": "HttpSession stores state in server memory, transmitting only an arbitrary cookie ID, protecting sensitive attributes from client tampering."
       },
       {
-        "no": 4,
-        "q": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
+        "id": "TEST-22-04",
+        "category": "Academic (Computer Networks)",
+        "question": "What deployment descriptor file traditionally configured servlet mappings and initialization parameters in Java EE applications before annotations?",
         "options": [
           "pom.xml",
           "web.xml (located in WEB-INF)",
           "server.xml",
           "context.xml"
         ],
-        "a": "Answer: B \u2014 The `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
+        "correct_answer": "B",
+        "explanation": "The `WEB-INF/web.xml` deployment descriptor historically configured servlet classes, URL patterns, context params, and filters."
       },
       {
-        "no": 5,
-        "q": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
+        "id": "TEST-22-05",
+        "category": "Academic (Computer Networks)",
+        "question": "Which modern annotation replaces the need for `<servlet>` and `<servlet-mapping>` declarations in `web.xml` in Servlet 3.0+?",
         "options": [
           "@WebServlet",
           "@Controller",
           "@Service",
           "@WebEndpoint"
         ],
-        "a": "Answer: A \u2014 Servlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
+        "correct_answer": "A",
+        "explanation": "Servlet 3.0 introduced `@WebServlet(urlPatterns = \"/path\")`, allowing declarative configuration directly in Java source code."
       },
       {
-        "no": 6,
-        "q": "A solid wooden cube of side 4 cm is painted red on all faces and cut into smaller cubes of side 1 cm. How many smaller cubes have exactly two faces painted red?",
+        "id": "TEST-22-06",
+        "category": "Placement Aptitude",
+        "question": "Two positions of a dice are shown. In position 1: top 1, front 2, right 3. In position 2: top 1, front 5, right 6. Which number is opposite 1?",
         "options": [
-          "24",
-          "16",
-          "32",
-          "8"
-        ],
-        "a": "Answer: A \u2014 For a cube of n = 4/1 = 4: Two-face painted cubes lie on edges = 12 * (n - 2) = 12 * (4 - 2) = 24 cubes."
-      },
-      {
-        "no": 7,
-        "q": "How many smaller cubes in the 4 cm cube cut into 1 cm cubes have NO faces painted?",
-        "options": [
-          "8",
-          "16",
-          "24",
-          "4"
-        ],
-        "a": "Answer: A \u2014 Zero painted faces = (n - 2)^3 = (4 - 2)^3 = 2^3 = 8 cubes."
-      },
-      {
-        "no": 8,
-        "q": "In a standard die, what is the sum of numbers on any two opposite faces?",
-        "options": [
-          "7",
-          "6",
-          "8",
-          "14"
-        ],
-        "a": "Answer: A \u2014 By definition, opposite faces of standard dice always sum to 7 (1-6, 2-5, 3-4)."
-      },
-      {
-        "no": 9,
-        "q": "Two positions of a dice are shown. When 4 is at the bottom, what number will be on the top face?",
-        "options": [
-          "3",
-          "1",
+          "4",
           "2",
+          "3",
           "5"
         ],
-        "a": "Answer: A \u2014 On standard fair dice, the face opposite to 4 is always 7 - 4 = 3."
+        "correct_answer": "A",
+        "explanation": "The numbers adjacent to 1 are 2, 3, 5, 6. The only remaining number that can be opposite 1 is 4."
       },
       {
-        "no": 10,
-        "q": "How many smaller cubes have exactly 3 faces painted when a large cube is cut into 27 identical small cubes?",
+        "id": "TEST-22-07",
+        "category": "Placement Aptitude",
+        "question": "A cube painted yellow on all faces is cut into 125 small cubes of equal size. How many cubes have at least one face painted?",
         "options": [
-          "8",
-          "6",
-          "12",
-          "1"
+          "98",
+          "64",
+          "117",
+          "125"
         ],
-        "a": "Answer: A \u2014 Three-face painted cubes always occupy the 8 corners of the cube regardless of n (for n >= 2)."
+        "correct_answer": "C",
+        "explanation": "n = 125^(1/3) = 5. Unpainted cubes = (5 - 2)^3 = 3^3 = 27. Cubes with at least one painted face = Total - Unpainted = 125 - 27 = 98."
       },
       {
-        "no": 11,
-        "q": "What is the primary, real-time memory management mechanism in standard CPython?",
+        "id": "TEST-22-08",
+        "category": "Placement Aptitude",
+        "question": "If a dice is rolled, what is the probability of rolling a composite number?",
+        "options": [
+          "1/3",
+          "1/2",
+          "2/3",
+          "1/6"
+        ],
+        "correct_answer": "A",
+        "explanation": "Faces are {1, 2, 3, 4, 5, 6}. Composite numbers are 4 and 6 (2 outcomes). Probability = 2/6 = 1/3."
+      },
+      {
+        "id": "TEST-22-09",
+        "category": "Placement Aptitude",
+        "question": "When a flat cardboard pattern is folded into a cube, if opposite faces never touch, which face is opposite face A in layout A-B-C-D in a row with E on top of B and F below B?",
+        "options": [
+          "C",
+          "D",
+          "B",
+          "E"
+        ],
+        "correct_answer": "A",
+        "explanation": "In linear strip of faces, alternate faces are opposite: A is opposite C, B is opposite D, and flap E is opposite flap F."
+      },
+      {
+        "id": "TEST-22-10",
+        "category": "Placement Aptitude",
+        "question": "A cube has six faces marked 1 to 6. If 1 is opposite 6, and 2 is opposite 5, which numbers are adjacent to 3?",
+        "options": [
+          "1, 2, 5, 6",
+          "1, 2, 4, 5",
+          "2, 4, 5, 6",
+          "None"
+        ],
+        "correct_answer": "A",
+        "explanation": "3 must be opposite 4. Therefore, the four faces adjacent to 3 are 1, 6, 2, and 5."
+      },
+      {
+        "id": "TEST-22-11",
+        "category": "Core CS (Python Internals)",
+        "question": "What is the primary, real-time memory management mechanism in standard CPython?",
         "options": [
           "Mark and Sweep GC",
           "Reference Counting",
           "Manual free() calls",
           "Stop-the-World Tracing"
         ],
-        "a": "Answer: B \u2014 CPython uses reference counting as its immediate real-time memory reclamation mechanism."
+        "correct_answer": "B",
+        "explanation": "CPython uses reference counting as its immediate real-time memory reclamation mechanism."
       },
       {
-        "no": 12,
-        "q": "Which range of integer values is pre-allocated and interned as global singletons in CPython?",
+        "id": "TEST-22-12",
+        "category": "Core CS (Python Internals)",
+        "question": "Which range of integer values is pre-allocated and interned as global singletons in CPython?",
         "options": [
           "0 to 100",
           "-128 to 127",
           "-5 to 256",
           "0 to 65535"
         ],
-        "a": "Answer: C \u2014 CPython interns small integers between -5 and 256 inclusive."
+        "correct_answer": "C",
+        "explanation": "CPython interns small integers between -5 and 256 inclusive."
       },
       {
-        "no": 13,
-        "q": "Defining `__slots__` on a Python class achieves memory optimization by:",
+        "id": "TEST-22-13",
+        "category": "Core CS (Python Internals)",
+        "question": "Defining `__slots__` on a Python class achieves memory optimization by:",
         "options": [
           "Bypassing the GIL",
           "Preventing the creation of the dynamic `__dict__` attribute dictionary",
           "Compressing strings using gzip",
           "Converting integers to C floats"
         ],
-        "a": "Answer: B \u2014 `__slots__` eliminates instance `__dict__` overhead, using fixed-size C arrays instead."
+        "correct_answer": "B",
+        "explanation": "`__slots__` eliminates instance `__dict__` overhead, using fixed-size C arrays instead."
       },
       {
-        "no": 14,
-        "q": "Circular reference cycles that escape reference counting are detected and collected by:",
+        "id": "TEST-22-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Circular reference cycles that escape reference counting are detected and collected by:",
         "options": [
           "PyMalloc",
           "The generational cyclic garbage collector (`gc` module)",
           "The OS kernel scheduler",
           "The Global Interpreter Lock"
         ],
-        "a": "Answer: B \u2014 The cyclic garbage collector specifically identifies and breaks isolated circular reference cycles."
+        "correct_answer": "B",
+        "explanation": "The cyclic garbage collector specifically identifies and breaks isolated circular reference cycles."
       },
       {
-        "no": 15,
-        "q": "In Python, which operator evaluates to True only if both variables reference the identical memory address?",
+        "id": "TEST-22-15",
+        "category": "Core CS (Python Internals)",
+        "question": "In Python, which operator evaluates to True only if both variables reference the identical memory address?",
         "options": [
           "==",
           "!=",
           "is",
           "in"
         ],
-        "a": "Answer: C \u2014 The `is` keyword checks pointer identity (`id(a) == id(b)`)."
+        "correct_answer": "C",
+        "explanation": "The `is` keyword checks pointer identity (`id(a) == id(b)`)."
       },
       {
-        "no": 16,
-        "q": "In Java 17+, how is the 'Disjoint Set Union (Union-Find)' algorithmic pattern optimal for placement coding problems?",
+        "id": "TEST-22-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Disjoint Set Union (Union-Find)' algorithmic pattern optimal for placement coding problems?",
         "options": [
           "It satisfies optimal asymptotic complexity: O(N * alpha(N)) Time, O(N) Auxiliary Space.",
           "It uses recursion with infinite call stack depth.",
           "It allocates O(N^2) dynamic heap memory unnecessarily.",
           "It requires native C++ pointer arithmetic."
         ],
-        "a": "Answer: A \u2014 The 'Disjoint Set Union (Union-Find)' pattern operates with O(N * alpha(N)) Time, O(N) Auxiliary Space: Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).."
+        "correct_answer": "A",
+        "explanation": "The 'Disjoint Set Union (Union-Find)' pattern operates with O(N * alpha(N)) Time, O(N) Auxiliary Space: Path compression flattens tree structure on lookup, keeping tree depth effectively constant (Ackermann inverse alpha(N) < 5).."
       },
       {
-        "no": 17,
-        "q": "When implementing 'Disjoint Set Union (Union-Find)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "id": "TEST-22-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Disjoint Set Union (Union-Find)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
         "options": [
           "Handling boundary conditions such as: Tree with single redundant edge.",
           "Using only primitive floats instead of double.",
           "Declaring all methods native.",
           "Disabling JVM garbage collection."
         ],
-        "a": "Answer: A \u2014 Critical edge cases for Disjoint Set Union (Union-Find) include Tree with single redundant edge, which must be validated with guard clauses before executing loop pointers."
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Disjoint Set Union (Union-Find) include Tree with single redundant edge, which must be validated with guard clauses before executing loop pointers."
       },
       {
-        "no": 18,
-        "q": "For 'Problem 1: Number of Provinces', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "id": "TEST-22-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Number of Provinces', what Java collection or data structure provides the optimal auxiliary space bounds?",
         "options": [
           "Standard array or standard collection adhering to O(N) Auxiliary Space.",
           "A nested 3D LinkedList.",
           "External disk-backed SQL table.",
           "Unbounded blocking queue."
         ],
-        "a": "Answer: A \u2014 The optimal Java 17+ implementation achieves O(N * alpha(N)) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N * alpha(N)) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
       },
       {
-        "no": 19,
-        "q": "In Sarthak's project 'NSE2 / BulkBeat TV', what is the core architectural principle regarding 'Dhan REST API Integration, Chartink Screeners & Technical Analysis Pipelines'?",
+        "id": "TEST-22-19",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Academic Grading Engine & Semester Fee Ledger Management'?",
         "options": [
-          "Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.",
+          "Grade mapping: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F. Fee balance = Total Fee - Paid Fee.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For NSE2 / BulkBeat TV, the architectural invariant is: Dhan API provides real-time market depth and Level 2 quote data via authenticated HTTP endpoints.."
+        "correct_answer": "A",
+        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Grade mapping: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F. Fee balance = Total Fee - Paid Fee.."
       },
       {
-        "no": 20,
-        "q": "Regarding 'NSE2 / BulkBeat TV', how should you defend this design decision in a technical interview: 'How did you integrate Dhan API and Chartink screeners into the news alert flow?'?",
+        "id": "TEST-22-20",
+        "category": "Projects (College Student Management System (CSMS))",
+        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How does the academic grading engine calculate student performance in CSMS?'?",
         "options": [
-          "When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v2/quotes`) to captur...",
+          "Faculty enter internal test marks and assignment scores in `/api/grades/entry`. The backend aggregates marks into a percentage score and deterministically maps ...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
-        "a": "Answer: A \u2014 In technical interviews, anchor your defense in engineering metrics: When a corporate disclosure is published for a stock (e.g., RELIANCE), the pipeline triggers an immediate quote fetch via Dhan REST API (`/v."
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Faculty enter internal test marks and assignment scores in `/api/grades/entry`. The backend aggregates marks into a percentage score and det."
       }
     ]
   },

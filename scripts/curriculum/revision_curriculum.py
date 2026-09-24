@@ -18,12 +18,12 @@ For EVERY Day 1 to Day 30:
 
 REVISION_CATALOG = {
     "1": {
-        "yesterday_recall": "\u2022 Program Launch & Orientation: Established 30-day roadmap targeting SGPA >= 9.0 and top-tier placement readiness.\n\u2022 Portfolio baseline: Verified D:\\Projects codebase inventory across SmartGalla, BulkBeat TV, Caloriv, CSMS, and BEVM.",
+        "yesterday_recall": "\u2022 Program Launch and Orientation: Established 30-day roadmap targeting top-tier placement readiness.\n\u2022 Portfolio baseline: Verified D:\\Projects codebase inventory across BulkBeat TV, CSMS, SmartGalla, and DocRoute.",
         "today_recall": "\u2022 Mastered Herbert Simon's 4-Stage Decision Making Model: Intelligence -> Design -> Choice -> Implementation.\n\u2022 Understood Bounded Rationality and the vital distinction between Satisficing (adequate threshold) vs Optimizing (global maximum).\n\u2022 Explored Business Intelligence (BI) operational cycle and data warehouse integration.",
         "formula_recall": "\u2022 Percentage Change = [(New - Old) / Old] * 100%\n\u2022 Base Inversion: If A is r% more than B, B is [r / (100 + r)] * 100% less than A.\n\u2022 Price & Consumption: If price rises by 1/x, consumption must decrease by 1/(x+1) to maintain constant expenditure.\n\u2022 Two Pointers Time Complexity: O(N) linear time with O(1) auxiliary space.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section B, 15 Marks) \u2014 'Explain Herbert Simon's Decision Making Process with suitable diagram and real-world IT examples.'\n\u2022 Blueprint: 1. Definition (2m) -> 2. 4-Stage Diagram (4m) -> 3. Explanation of Phases (5m) -> 4. Satisficing Table (2m) -> 5. Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Two Pointers (Opposite Direction).\n\u2022 Invariant: Left pointer starts at 0, Right pointer starts at n-1. Advance left if sum is too small, decrement right if sum is too large.\n\u2022 Edge Cases: Sorted array requirement, duplicate values, empty or single-element arrays.",
-        "project_recall": "\u2022 Project: SmartGalla (Geospatial Kirana Supply Chain).\n\u2022 Architecture: Next.js 16 frontend + PostgreSQL backend with Point-in-Polygon geofencing and in-memory LRU cache.\n\u2022 Defense Pitch: 'Engineered sub-100ms inventory hydration and atomic ledgers piloted with 4-5 local Kirana stores, slashing DB compute by 60% with Supabase delta replication before sunsetting due to hosting infrastructure costs.'",
+        "project_recall": "\u2022 Project: BulkBeat TV (Financial Market Ingestion and Alert Platform).\n\u2022 Architecture: Python AsyncIO + SQLite WAL + 20+ Rule Engine + Telegram Webhook broadcast.\n\u2022 Defense Pitch: 'Engineered real-time market disclosure ingestion scanning 5+ live feeds with sub-5s Telegram alerts, scaling to 6,000+ active users and INR 1.11L revenue.'",
         "rapid_fire": [
             [
                 "What are the 4 phases of Herbert Simon's decision-making model?",
@@ -123,7 +123,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Simple Interest: SI = (P * R * T) / 100\n\u2022 Compound Interest: A = P * (1 + R/100)^T\n\u2022 2-Year Difference (CI - SI) = P * (R / 100)^2\n\u2022 3-Year Difference (CI - SI) = P * (R / 100)^2 * [(300 + R) / 100]\n\u2022 Rule of 72: Doubling time in years approx 72 / R.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 2023 (Section C, 15 Marks) \u2014 'Explain the internal architecture of JVM with neat diagram. Differentiate between JVM, JRE, and JDK.'\n\u2022 Blueprint: 1. Definition (2m) -> 2. Complete JVM Diagram (4m) -> 3. Memory Areas Detailed (5m) -> 4. JVM vs JRE vs JDK Table (2m) -> 5. Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Sliding Window (Dynamic / Variable Size).\n\u2022 Invariant: Right pointer expands window to satisfy condition; left pointer contracts window when condition is violated. Use hash table / set to track character frequencies.\n\u2022 Edge Cases: String with all identical characters, empty string, string with no duplicates.",
-        "project_recall": "\u2022 Project: Caloriv (Nutrition Tracking & Health Analytics).\n\u2022 Architecture: Mobile client with offline-first SQLite synchronization, local caching, and conflict resolution.\n\u2022 Defense Pitch: 'Engineered an offline-first nutrition engine with local-first SQLite logging, background synchronization, and sub-10ms macro calculation.'",
+        "project_recall": "\u2022 Project: SmartGalla (Hyperlocal Kirana Store and Order Management).\n\u2022 Architecture: Python backend + PostgreSQL + responsive HTML5/CSS3/JavaScript frontend.\n\u2022 Defense Pitch: 'Developed a store management and ordering portal for local Kirana merchants, piloted with 4-5 Kanpur grocery stores to test inventory tracking and COD workflows before sunsetting due to hosting infrastructure costs.'",
         "rapid_fire": [
             [
                 "What are the 3 phases of the JVM ClassLoader subsystem?",
@@ -162,7 +162,7 @@ REVISION_CATALOG = {
                 "O(N) time with O(min(N, alphabet_size)) auxiliary space."
             ],
             [
-                "In Caloriv, how are offline database records reconciled with the cloud backend?",
+                "In SmartGalla, why was the platform sunset after the 4-5 store pilot?",
                 "Via incremental timestamped change logs and conflict-free delta sync."
             ]
         ]
@@ -373,7 +373,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Time, Speed & Distance.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Linked List In-Place Reversal.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for File Systems: Inodes & Disk Scheduling.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Knowledge Capture Systems & SECI Model.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Linked List In-Place Reversal.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-        "project_recall": "\u2022 Project: Caloriv.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+        "project_recall": "\u2022 Project: SmartGalla.\n\u2022 Architecture: Store catalog management, atomic checkout transactions, and PostgreSQL schema design.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting local retail workflows, 4-5 shop pilot validation, and economic sunsetting.",
         "rapid_fire": [
             [
                 "Day 8 Q1: What is the primary academic thesis of Knowledge Capture Systems & SECI Model?",
@@ -400,7 +400,7 @@ REVISION_CATALOG = {
                 "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
             ],
             [
-                "Day 8 Q7: What is the verified technical foundation of Caloriv?",
+                "Day 8 Q7: What is the verified technical foundation of SmartGalla?",
                 "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
             ],
             [
@@ -723,7 +723,7 @@ REVISION_CATALOG = {
         "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
         "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
         "dsa_recall": "\u2022 Pattern: Tree Traversals: BFS Level-Order.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-        "project_recall": "\u2022 Project: Caloriv.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+        "project_recall": "\u2022 Project: Django Backend and SQL Architecture.\n\u2022 Architecture: Django MVT pattern, ORM querysets, relational schema design, and ACID transactions.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting Python backend mastery, database normalization, and secure RESTful API engineering.",
         "rapid_fire": [
             [
                 "Day 15 Q1: What is the primary academic thesis of Network Layer: IPv4 Addressing, Subnetting & CIDR?",
@@ -750,7 +750,7 @@ REVISION_CATALOG = {
                 "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
             ],
             [
-                "Day 15 Q7: What is the verified technical foundation of Caloriv?",
+                "Day 15 Q7: What is the verified technical foundation of Django Backend & SQL Architecture?",
                 "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
             ],
             [

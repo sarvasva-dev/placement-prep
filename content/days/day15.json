@@ -4,12 +4,12 @@
   "streams": {
     "academic": {
       "unit": 2,
-      "topic": "Unit II \u2014 Solutions of Linear Systems: Gauss Elimination with Partial Pivoting & Gauss-Jordan Method",
+      "topic": "Unit II — Solutions of Linear Systems: Gauss Elimination with Partial Pivoting & Gauss-Jordan Method",
       "objectives": [
         "Master Gauss Elimination with Partial Pivoting.",
         "Understand Upper Triangular Matrix conversion and back substitution."
       ],
-      "explanation": "Solving systems of simultaneous linear equations `A * X = B` is fundamental in numerical linear algebra. Direct methods include:\n1. Gauss Elimination:\n   \u2022 Forward Elimination: System `[A | B]` is transformed into an equivalent Upper Triangular Matrix `[U | B']` using elementary row operations: `R_i -> R_i - (a_{ik} / a_{kk}) * R_k`.\n   \u2022 Partial Pivoting: In each step k, search column k from row k to n for the element with the maximum absolute value `|a_{ik}|`, and swap row k with that row. This prevents division by near-zero pivot elements and eliminates catastrophic round-off error!\n   \u2022 Back Substitution: Solve for unknowns starting from the bottom equation `x_n = b'_n / u_{nn}`, substituting back upwards to find `x_{n-1} ... x_1`.\n2. Gauss-Jordan Method:\n   Extends forward elimination to transform matrix A completely into the Identity Matrix `I`. The solution vector is obtained directly without requiring back substitution.",
+      "explanation": "Solving systems of simultaneous linear equations `A * X = B` is fundamental in numerical linear algebra. Direct methods include:\n1. Gauss Elimination:\n   • Forward Elimination: System `[A | B]` is transformed into an equivalent Upper Triangular Matrix `[U | B']` using elementary row operations: `R_i -> R_i - (a_{ik} / a_{kk}) * R_k`.\n   • Partial Pivoting: In each step k, search column k from row k to n for the element with the maximum absolute value `|a_{ik}|`, and swap row k with that row. This prevents division by near-zero pivot elements and eliminates catastrophic round-off error!\n   • Back Substitution: Solve for unknowns starting from the bottom equation `x_n = b'_n / u_{nn}`, substituting back upwards to find `x_{n-1} ... x_1`.\n2. Gauss-Jordan Method:\n   Extends forward elimination to transform matrix A completely into the Identity Matrix `I`. The solution vector is obtained directly without requiring back substitution.",
       "definitions": [
         {
           "term": "Partial Pivoting",
@@ -79,7 +79,7 @@
           "marks": 15,
           "question": "Solve the following system of linear equations using Gauss Elimination with partial pivoting:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\nExplain why partial pivoting is essential. (15 Marks)",
           "rubric": "Why partial pivoting is essential (3 marks) + Augmented matrix & Pivot swap (4 marks) + Forward elimination to Upper Triangular (5 marks) + Back substitution & Final answer (3 marks) = 15 Marks.",
-          "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n\u2022 R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n\u2022 R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n\u2022 R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n\u2022 From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n\u2022 From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n\u2022 From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
+          "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n• R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n• R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n• R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n• From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n• From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n• From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
           "answer_structure": "Pivoting Rationale -> Augmented Matrix -> Pivoting Steps -> Upper Triangular Form -> Back Substitution -> Verification",
           "important_points": [
             "Partial pivoting swaps rows",
@@ -171,506 +171,7 @@
           "correct_answer": "B",
           "explanation": "A /27 subnet has block size 2^(32-27) = 32. Subnet starts at .32 and ends at .63 (broadcast address is .63)."
         }
-      ],
-      "worked_numerical_problems": [
-        {
-          "problem_id": "NM-U4-GE-01",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss Elimination",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the linear system using Gauss Elimination: 3x + 2y + z = 10; 2x + 3y + 2z = 14; x + 2y + 3z = 14. Show forward elimination to upper triangular matrix and back substitution.",
-          "data": {
-            "augmented_matrix": [
-              [
-                3,
-                2,
-                1,
-                10
-              ],
-              [
-                2,
-                3,
-                2,
-                14
-              ],
-              [
-                1,
-                2,
-                3,
-                14
-              ]
-            ]
-          },
-          "method": "Gauss Elimination with Back Substitution",
-          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b]. Verify pivot is non-zero (apply partial pivoting if needed).",
-            "Step 2: Eliminate x from row 2 and row 3 using multipliers m_i1 = a_i1 / a_11.",
-            "Step 3: Eliminate y from row 3 using multiplier m_32 = a_32 / a_22 to obtain upper triangular system.",
-            "Step 4: Execute back-substitution: {'x': 1.0, 'y': 2.0, 'z': 3.0}."
-          ],
-          "intermediate_values": {
-            "solution": {
-              "x": 1.0,
-              "y": 2.0,
-              "z": 3.0
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Initial",
-              "matrix": "[[3, 2, 1, 10], [2, 3, 2, 14], [1, 2, 3, 14]]"
-            },
-            {
-              "step": "Upper_Triangular",
-              "solution": "{'x': 1.0, 'y': 2.0, 'z': 3.0}"
-            }
-          ],
-          "final_answer": "Solution: {'x': 1.0, 'y': 2.0, 'z': 3.0}",
-          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-        },
-        {
-          "problem_id": "NM-U4-GE-02",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss Elimination",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the linear system using Gauss Elimination: 2x + y + z = 10; 3x + 2y + 3z = 18; x + 4y + 9z = 16. Show forward elimination to upper triangular matrix and back substitution.",
-          "data": {
-            "augmented_matrix": [
-              [
-                2,
-                1,
-                1,
-                10
-              ],
-              [
-                3,
-                2,
-                3,
-                18
-              ],
-              [
-                1,
-                4,
-                9,
-                16
-              ]
-            ]
-          },
-          "method": "Gauss Elimination with Back Substitution",
-          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b]. Verify pivot is non-zero (apply partial pivoting if needed).",
-            "Step 2: Eliminate x from row 2 and row 3 using multipliers m_i1 = a_i1 / a_11.",
-            "Step 3: Eliminate y from row 3 using multiplier m_32 = a_32 / a_22 to obtain upper triangular system.",
-            "Step 4: Execute back-substitution: {'x': 7.0, 'y': -9.0, 'z': 5.0}."
-          ],
-          "intermediate_values": {
-            "solution": {
-              "x": 7.0,
-              "y": -9.0,
-              "z": 5.0
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Initial",
-              "matrix": "[[2, 1, 1, 10], [3, 2, 3, 18], [1, 4, 9, 16]]"
-            },
-            {
-              "step": "Upper_Triangular",
-              "solution": "{'x': 7.0, 'y': -9.0, 'z': 5.0}"
-            }
-          ],
-          "final_answer": "Solution: {'x': 7.0, 'y': -9.0, 'z': 5.0}",
-          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-        },
-        {
-          "problem_id": "NM-U4-GE-03",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss Elimination",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the linear system using Gauss Elimination: x + y + z = 6; 3x + 3y + 4z = 20; 2x + y + 3z = 13. Show forward elimination to upper triangular matrix and back substitution.",
-          "data": {
-            "augmented_matrix": [
-              [
-                1,
-                1,
-                1,
-                6
-              ],
-              [
-                3,
-                3,
-                4,
-                20
-              ],
-              [
-                2,
-                1,
-                3,
-                13
-              ]
-            ]
-          },
-          "method": "Gauss Elimination with Back Substitution",
-          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b]. Verify pivot is non-zero (apply partial pivoting if needed).",
-            "Step 2: Eliminate x from row 2 and row 3 using multipliers m_i1 = a_i1 / a_11.",
-            "Step 3: Eliminate y from row 3 using multiplier m_32 = a_32 / a_22 to obtain upper triangular system.",
-            "Step 4: Execute back-substitution: {'x': 3.0, 'y': 1.0, 'z': 2.0}."
-          ],
-          "intermediate_values": {
-            "solution": {
-              "x": 3.0,
-              "y": 1.0,
-              "z": 2.0
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Initial",
-              "matrix": "[[1, 1, 1, 6], [3, 3, 4, 20], [2, 1, 3, 13]]"
-            },
-            {
-              "step": "Upper_Triangular",
-              "solution": "{'x': 3.0, 'y': 1.0, 'z': 2.0}"
-            }
-          ],
-          "final_answer": "Solution: {'x': 3.0, 'y': 1.0, 'z': 2.0}",
-          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-        },
-        {
-          "problem_id": "NM-U4-GE-04",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss Elimination",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the linear system using Gauss Elimination: 0.0003x + 1.566y = 1.569; 0.3454x - 2.436y = 1.018 (Partial Pivoting). Show forward elimination to upper triangular matrix and back substitution.",
-          "data": {
-            "augmented_matrix": [
-              [
-                0.0003,
-                1.566,
-                1.569
-              ],
-              [
-                0.3454,
-                -2.436,
-                1.018
-              ]
-            ]
-          },
-          "method": "Gauss Elimination with Back Substitution",
-          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b]. Verify pivot is non-zero (apply partial pivoting if needed).",
-            "Step 2: Eliminate x from row 2 and row 3 using multipliers m_i1 = a_i1 / a_11.",
-            "Step 3: Eliminate y from row 3 using multiplier m_32 = a_32 / a_22 to obtain upper triangular system.",
-            "Step 4: Execute back-substitution: {'x': 10.0, 'y': 1.0}."
-          ],
-          "intermediate_values": {
-            "solution": {
-              "x": 10.0,
-              "y": 1.0
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Initial",
-              "matrix": "[[0.0003, 1.566, 1.569], [0.3454, -2.436, 1.018]]"
-            },
-            {
-              "step": "Upper_Triangular",
-              "solution": "{'x': 10.0, 'y': 1.0}"
-            }
-          ],
-          "final_answer": "Solution: {'x': 10.0, 'y': 1.0}",
-          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-        }
-      ],
-      "expanded_numerical_practice": [
-        {
-          "problem_id": "NM-U4-GE-05",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss Elimination",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the linear system using Gauss Elimination: 4x - y + z = 8; -x + 4y - 2z = -1; x - 2y + 4z = 5. Show forward elimination to upper triangular matrix and back substitution.",
-          "data": {
-            "augmented_matrix": [
-              [
-                4,
-                -1,
-                1,
-                8
-              ],
-              [
-                -1,
-                4,
-                -2,
-                -1
-              ],
-              [
-                1,
-                -2,
-                4,
-                5
-              ]
-            ]
-          },
-          "method": "Gauss Elimination with Back Substitution",
-          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b]. Verify pivot is non-zero (apply partial pivoting if needed).",
-            "Step 2: Eliminate x from row 2 and row 3 using multipliers m_i1 = a_i1 / a_11.",
-            "Step 3: Eliminate y from row 3 using multiplier m_32 = a_32 / a_22 to obtain upper triangular system.",
-            "Step 4: Execute back-substitution: {'x': 2.0, 'y': 1.0, 'z': 1.0}."
-          ],
-          "intermediate_values": {
-            "solution": {
-              "x": 2.0,
-              "y": 1.0,
-              "z": 1.0
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Initial",
-              "matrix": "[[4, -1, 1, 8], [-1, 4, -2, -1], [1, -2, 4, 5]]"
-            },
-            {
-              "step": "Upper_Triangular",
-              "solution": "{'x': 2.0, 'y': 1.0, 'z': 1.0}"
-            }
-          ],
-          "final_answer": "Solution: {'x': 2.0, 'y': 1.0, 'z': 1.0}",
-          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-        },
-        {
-          "problem_id": "NM-U4-GE-06",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss Elimination",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the linear system using Gauss Elimination: 2x - 3y + 4z = 8; 5x - 2y + z = 7; x + 6y + 3z = 6. Show forward elimination to upper triangular matrix and back substitution.",
-          "data": {
-            "augmented_matrix": [
-              [
-                5,
-                -2,
-                1,
-                7
-              ],
-              [
-                2,
-                -3,
-                4,
-                8
-              ],
-              [
-                1,
-                6,
-                3,
-                6
-              ]
-            ]
-          },
-          "method": "Gauss Elimination with Back Substitution",
-          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b]. Verify pivot is non-zero (apply partial pivoting if needed).",
-            "Step 2: Eliminate x from row 2 and row 3 using multipliers m_i1 = a_i1 / a_11.",
-            "Step 3: Eliminate y from row 3 using multiplier m_32 = a_32 / a_22 to obtain upper triangular system.",
-            "Step 4: Execute back-substitution: {'x': 1.0, 'y': 0.0, 'z': 1.5}."
-          ],
-          "intermediate_values": {
-            "solution": {
-              "x": 1.0,
-              "y": 0.0,
-              "z": 1.5
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Initial",
-              "matrix": "[[5, -2, 1, 7], [2, -3, 4, 8], [1, 6, 3, 6]]"
-            },
-            {
-              "step": "Upper_Triangular",
-              "solution": "{'x': 1.0, 'y': 0.0, 'z': 1.5}"
-            }
-          ],
-          "final_answer": "Solution: {'x': 1.0, 'y': 0.0, 'z': 1.5}",
-          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-        },
-        {
-          "problem_id": "NM-U4-GE-07",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss Elimination",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the linear system using Gauss Elimination: 2x + 3y = 8; 5x + 4y = 13. Show forward elimination to upper triangular matrix and back substitution.",
-          "data": {
-            "augmented_matrix": [
-              [
-                2,
-                3,
-                8
-              ],
-              [
-                5,
-                4,
-                13
-              ]
-            ]
-          },
-          "method": "Gauss Elimination with Back Substitution",
-          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b]. Verify pivot is non-zero (apply partial pivoting if needed).",
-            "Step 2: Eliminate x from row 2 and row 3 using multipliers m_i1 = a_i1 / a_11.",
-            "Step 3: Eliminate y from row 3 using multiplier m_32 = a_32 / a_22 to obtain upper triangular system.",
-            "Step 4: Execute back-substitution: {'x': 1.0, 'y': 2.0}."
-          ],
-          "intermediate_values": {
-            "solution": {
-              "x": 1.0,
-              "y": 2.0
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Initial",
-              "matrix": "[[2, 3, 8], [5, 4, 13]]"
-            },
-            {
-              "step": "Upper_Triangular",
-              "solution": "{'x': 1.0, 'y': 2.0}"
-            }
-          ],
-          "final_answer": "Solution: {'x': 1.0, 'y': 2.0}",
-          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-        },
-        {
-          "problem_id": "NM-U4-GE-08",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss Elimination",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the linear system using Gauss Elimination: Flops Operation Count for n x n Gauss Elimination. Show forward elimination to upper triangular matrix and back substitution.",
-          "data": {
-            "augmented_matrix": "Forward: 2n^3/3 flops; Back-sub: n^2 flops"
-          },
-          "method": "Gauss Elimination with Back Substitution",
-          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b]. Verify pivot is non-zero (apply partial pivoting if needed).",
-            "Step 2: Eliminate x from row 2 and row 3 using multipliers m_i1 = a_i1 / a_11.",
-            "Step 3: Eliminate y from row 3 using multiplier m_32 = a_32 / a_22 to obtain upper triangular system.",
-            "Step 4: Execute back-substitution: {'complexity': 'O(n^3/3) multiplications'}."
-          ],
-          "intermediate_values": {
-            "solution": {
-              "complexity": "O(n^3/3) multiplications"
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Initial",
-              "matrix": "Forward: 2n^3/3 flops; Back-sub: n^2 flops"
-            },
-            {
-              "step": "Upper_Triangular",
-              "solution": "{'complexity': 'O(n^3/3) multiplications'}"
-            }
-          ],
-          "final_answer": "Solution: {'complexity': 'O(n^3/3) multiplications'}",
-          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-        },
-        {
-          "problem_id": "NM-U4-GJ-01",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Jordan Method",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the system completely to reduced row echelon form using Gauss-Jordan: x + 2y + z = 8; 2x + 3y + 4z = 20; 4x + 3y + 2z = 16.",
-          "data": {
-            "system": "x + 2y + z = 8; 2x + 3y + 4z = 20; 4x + 3y + 2z = 16"
-          },
-          "method": "Gauss-Jordan Method",
-          "formula": "[A | b] -> row operations -> [I | x*]",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b].",
-            "Step 2: Normalize pivot row and eliminate pivot column in ALL other rows (both above and below).",
-            "Step 3: Continue across all columns until left matrix is Identity I: solution vector = {'x': 1.0, 'y': 2.0, 'z': 3.0}."
-          ],
-          "intermediate_values": {
-            "final_vector": {
-              "x": 1.0,
-              "y": 2.0,
-              "z": 3.0
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Reduced_Echelon",
-              "vector": "{'x': 1.0, 'y': 2.0, 'z': 3.0}"
-            }
-          ],
-          "final_answer": "Direct solution: {'x': 1.0, 'y': 2.0, 'z': 3.0}",
-          "verification": "Direct multiplication A * x matches vector b exactly.",
-          "common_mistake": "Eliminating only below the diagonal (that is Gauss elimination, not Gauss-Jordan)."
-        },
-        {
-          "problem_id": "NM-U4-GJ-02",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Jordan Method",
-          "difficulty": "Exam-Level",
-          "problem": "Solve the system completely to reduced row echelon form using Gauss-Jordan: 2x + 4y - 6z = -8; x + 3y + z = 10; 2x - 4y - 2z = -12.",
-          "data": {
-            "system": "2x + 4y - 6z = -8; x + 3y + z = 10; 2x - 4y - 2z = -12"
-          },
-          "method": "Gauss-Jordan Method",
-          "formula": "[A | b] -> row operations -> [I | x*]",
-          "step_by_step_calculation": [
-            "Step 1: Write augmented matrix [A | b].",
-            "Step 2: Normalize pivot row and eliminate pivot column in ALL other rows (both above and below).",
-            "Step 3: Continue across all columns until left matrix is Identity I: solution vector = {'x': 2.0, 'y': 3.0, 'z': 4.0}."
-          ],
-          "intermediate_values": {
-            "final_vector": {
-              "x": 2.0,
-              "y": 3.0,
-              "z": 4.0
-            }
-          },
-          "iteration_table": [
-            {
-              "step": "Reduced_Echelon",
-              "vector": "{'x': 2.0, 'y': 3.0, 'z': 4.0}"
-            }
-          ],
-          "final_answer": "Direct solution: {'x': 2.0, 'y': 3.0, 'z': 4.0}",
-          "verification": "Direct multiplication A * x matches vector b exactly.",
-          "common_mistake": "Eliminating only below the diagonal (that is Gauss elimination, not Gauss-Jordan)."
-        }
-      ],
-      "timed_numerical_drill": {
-        "problem_id": "NM-U4-GE-04",
-        "title": "Timed Exam Drill: Gauss Elimination",
-        "time_limit_minutes": 15,
-        "marks": 15,
-        "problem": "Solve the linear system using Gauss Elimination: 0.0003x + 1.566y = 1.569; 0.3454x - 2.436y = 1.018 (Partial Pivoting). Show forward elimination to upper triangular matrix and back substitution.",
-        "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
-        "final_answer": "Solution: {'x': 10.0, 'y': 1.0}",
-        "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly (Ax \u2248 b).",
-        "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
-      },
-      "formula_recall": "Gauss Elimination: Forward elimination to upper triangular matrix U, then backward substitution. Partial pivoting swaps row with max |a_ik| to avoid division by small pivots."
+      ]
     },
     "academic_pyqs": [
       {
@@ -681,7 +182,7 @@
         "marks": 15,
         "question": "Solve the following system of linear equations using Gauss Elimination with partial pivoting:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\nExplain why partial pivoting is essential. (15 Marks)",
         "rubric": "Why partial pivoting is essential (3 marks) + Augmented matrix & Pivot swap (4 marks) + Forward elimination to Upper Triangular (5 marks) + Back substitution & Final answer (3 marks) = 15 Marks.",
-        "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n\u2022 R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n\u2022 R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n\u2022 R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n\u2022 From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n\u2022 From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n\u2022 From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
+        "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n• R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n• R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n• R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n• From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n• From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n• From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
         "answer_structure": "Pivoting Rationale -> Augmented Matrix -> Pivoting Steps -> Upper Triangular Form -> Back Substitution -> Verification",
         "important_points": [
           "Partial pivoting swaps rows",
@@ -785,128 +286,133 @@
     "aptitude_solved": [
       {
         "example_no": 1,
-        "title": "Multi-Turn Distance from Origin",
-        "tier": "Tier 1: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Company Exam Pattern",
+        "title": "Foundation Problem on Direction Sense",
+        "tier": "Tier 1: Foundation Concept",
+        "difficulty": "Tier 1",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "A person walks 10m North, turns Right and walks 15m, turns Right and walks 10m, and finally turns Left and walks 5m. How far and in what direction is he from the starting point?",
-        "problem": "A person walks 10m North, turns Right and walks 15m, turns Right and walks 10m, and finally turns Left and walks 5m. How far and in what direction is he from the starting point?",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
         "step_by_step_solution": [
-          "Step 1: North 10m (+y=10). Right -> East 15m (+x=15).",
-          "Step 2: Right -> South 10m (-y=10, net y = 0).",
-          "Step 3: Left -> East 5m (+x = 15 + 5 = 20m).",
-          "Step 4: Net position: (20m East, 0m North). Distance = 20m East."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
         "solution": [
-          "Step 1: North 10m (+y=10). Right -> East 15m (+x=15).",
-          "Step 2: Right -> South 10m (-y=10, net y = 0).",
-          "Step 3: Left -> East 5m (+x = 15 + 5 = 20m).",
-          "Step 4: Net position: (20m East, 0m North). Distance = 20m East."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
-        "formula": "Cartesian displacement and shadow geometry",
-        "shortcut": "Standard topic shortcut",
-        "trap": "Common arithmetic miscalculation",
-        "final_answer": "20 meters East",
-        "answer": "20 meters East"
+        "final_answer": "180 marks (90%)",
+        "answer": "180 marks (90%)"
       },
       {
         "example_no": 2,
-        "title": "Pythagorean Shortest Displacement",
+        "title": "Standard Placement Problem on Direction Sense",
         "tier": "Tier 2: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Company Exam Pattern",
+        "difficulty": "Tier 2",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "A cyclist travels 12 km West, then turns South and travels 5 km. What is the shortest straight-line distance to his starting point?",
-        "problem": "A cyclist travels 12 km West, then turns South and travels 5 km. What is the shortest straight-line distance to his starting point?",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
         "step_by_step_solution": [
-          "Step 1: Displacement components: \u0394x = -12, \u0394y = -5.",
-          "Step 2: Shortest distance = \u221a(12^2 + 5^2) = \u221a(144 + 25) = \u221a169 = 13 km."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
         "solution": [
-          "Step 1: Displacement components: \u0394x = -12, \u0394y = -5.",
-          "Step 2: Shortest distance = \u221a(12^2 + 5^2) = \u221a(144 + 25) = \u221a169 = 13 km."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
-        "formula": "Cartesian displacement and shadow geometry",
-        "shortcut": "Standard topic shortcut",
-        "trap": "Common arithmetic miscalculation",
-        "final_answer": "13 km South-West",
-        "answer": "13 km South-West"
+        "final_answer": "Rs. 864",
+        "answer": "Rs. 864"
       },
       {
         "example_no": 3,
-        "title": "Morning Sunrise Shadow Geometry",
-        "tier": "Tier 3: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Company Exam Pattern",
+        "title": "Efficiency & Work Ratio Problem on Direction Sense",
+        "tier": "Tier 3: Company Exam Pattern",
+        "difficulty": "Tier 3",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "One morning after sunrise, Suresh was standing facing a pole. The shadow of the pole fell exactly to his right. Which direction was Suresh facing?",
-        "problem": "One morning after sunrise, Suresh was standing facing a pole. The shadow of the pole fell exactly to his right. Which direction was Suresh facing?",
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
         "step_by_step_solution": [
-          "Step 1: In the morning, sun is in the East, so all shadows fall towards the West.",
-          "Step 2: Shadow is to Suresh's Right. Therefore, West is to his Right.",
-          "Step 3: If West is Right, Suresh must be facing South."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
         "solution": [
-          "Step 1: In the morning, sun is in the East, so all shadows fall towards the West.",
-          "Step 2: Shadow is to Suresh's Right. Therefore, West is to his Right.",
-          "Step 3: If West is Right, Suresh must be facing South."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
-        "formula": "Cartesian displacement and shadow geometry",
-        "shortcut": "Standard topic shortcut",
-        "trap": "Common arithmetic miscalculation",
-        "final_answer": "South",
-        "answer": "South"
+        "final_answer": "14 1/3 days",
+        "answer": "14 1/3 days"
       },
       {
         "example_no": 4,
-        "title": "Evening Sunset Shadow Orientation",
-        "tier": "Tier 4: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Company Exam Pattern",
+        "title": "Speed & Relative Distance Problem on Direction Sense",
+        "tier": "Tier 4: Time-Pressure Challenge",
+        "difficulty": "Tier 4",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "At sunset, two friends Ram and Shyam are talking face to face. If Shyam's shadow is directly to his left, which direction is Ram facing?",
-        "problem": "At sunset, two friends Ram and Shyam are talking face to face. If Shyam's shadow is directly to his left, which direction is Ram facing?",
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
         "step_by_step_solution": [
-          "Step 1: At sunset, sun is in West, so shadows fall East.",
-          "Step 2: Shadow is to Shyam's Left => East is to Shyam's Left => Shyam is facing North.",
-          "Step 3: Since Ram faces Shyam, Ram must be facing South."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
         "solution": [
-          "Step 1: At sunset, sun is in West, so shadows fall East.",
-          "Step 2: Shadow is to Shyam's Left => East is to Shyam's Left => Shyam is facing North.",
-          "Step 3: Since Ram faces Shyam, Ram must be facing South."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
-        "formula": "Cartesian displacement and shadow geometry",
-        "shortcut": "Standard topic shortcut",
-        "trap": "Common arithmetic miscalculation",
-        "final_answer": "South",
-        "answer": "South"
+        "final_answer": "2:15 PM",
+        "answer": "2:15 PM"
       },
       {
         "example_no": 5,
-        "title": "Compass Angle Rotation",
-        "tier": "Tier 5: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Company Exam Pattern",
+        "title": "Combinatorics & Probability Problem on Direction Sense",
+        "tier": "Tier 5: Time-Pressure Challenge",
+        "difficulty": "Tier 5",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "A man facing North-West turns 90\u00b0 clockwise, then 180\u00b0 anti-clockwise, and then another 90\u00b0 anti-clockwise. Which direction is he facing now?",
-        "problem": "A man facing North-West turns 90\u00b0 clockwise, then 180\u00b0 anti-clockwise, and then another 90\u00b0 anti-clockwise. Which direction is he facing now?",
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "problem": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
         "step_by_step_solution": [
-          "Step 1: Net rotation = +90\u00b0 (CW) - 180\u00b0 (ACW) - 90\u00b0 (ACW) = -180\u00b0.",
-          "Step 2: Rotating 180\u00b0 from North-West points directly opposite.",
-          "Step 3: Opposite of North-West is South-East."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
         "solution": [
-          "Step 1: Net rotation = +90\u00b0 (CW) - 180\u00b0 (ACW) - 90\u00b0 (ACW) = -180\u00b0.",
-          "Step 2: Rotating 180\u00b0 from North-West points directly opposite.",
-          "Step 3: Opposite of North-West is South-East."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
-        "formula": "Cartesian displacement and shadow geometry",
-        "shortcut": "Standard topic shortcut",
-        "trap": "Common arithmetic miscalculation",
-        "final_answer": "South-East",
-        "answer": "South-East"
+        "final_answer": "10/21",
+        "answer": "10/21"
       }
     ],
     "aptitude_mcqs": [
@@ -1100,7 +606,7 @@
     "dsa_pattern": {
       "pattern_name": "Tree Traversals: BFS Level-Order",
       "pattern": "Tree Traversals: BFS Level-Order",
-      "title": "Tree Traversals: BFS Level-Order \u2014 Algorithmic Invariants & Implementation",
+      "title": "Tree Traversals: BFS Level-Order — Algorithmic Invariants & Implementation",
       "category": "Tree / BFS",
       "concept": "Explores tree nodes level by level using a FIFO Queue. In each iteration, records all nodes at the current level before expanding children.",
       "why_it_works": "The queue size at the start of each level loop reflects exactly the count of nodes present on that level.",
@@ -1350,36 +856,44 @@
       ]
     },
     "project_preparation": {
-      "project_name": "College Student Management System (CSMS)",
-      "name": "College Student Management System (CSMS)",
-      "repo_path": "D:\\Projects\\College Student Management System",
-      "topic": "Academic Grading Engine & Semester Fee Ledger Management",
-      "feature_focus": "Academic Grading Engine & Semester Fee Ledger Management",
-      "what_to_understand": "Automating grade derivation (A, B, C, D, F) from composite scores and tracking Paid, Pending, and Partial fee states.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nAutomating grade derivation (A, B, C, D, F) from composite scores and tracking Paid, Pending, and Partial fee states.\n\nWHAT TO MEMORIZE:\nComposite scores translate deterministically: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F.\n\n60-SECOND INTERVIEW PITCH:\nIn CSMS, I built an automated academic grading engine and semester fee ledger. The grading module aggregates continuous test scores into deterministic letter grades, while the fee tracker dynamically maintains pending balances across semesters, giving faculty instantaneous visibility into academic performance and fee compliance.",
-      "what_to_memorize": "Composite scores translate deterministically: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F.",
+      "project_name": "Django Backend & SQL Architecture",
+      "name": "Django Backend & SQL Architecture",
+      "repo_path": "D:\\Projects",
+      "topic": "Django Authentication, Sessions & Security Best Practices",
+      "feature_focus": "Django Authentication, Sessions & Security Best Practices",
+      "what_to_understand": "Utilizing Django's built-in user model, password hashing (PBKDF2), CSRF tokens, and security defenses.",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nUtilizing Django's built-in user model, password hashing (PBKDF2), CSRF tokens, and security defenses.\n\nWHAT TO MEMORIZE:\nDjango protects against Top OWASP vulnerabilities out-of-the-box: CSRF via `{% csrf_token %}`, SQL Injection via ORM parameterization, and XSS via automatic template escaping.\n\n60-SECOND INTERVIEW PITCH:\nSecurity is where Django truly excels. It provides battle-tested defenses against CSRF, XSS, and SQL injection by default. I leverage Django's built-in authentication system with PBKDF2 password hashing to build secure user management workflows.",
+      "what_to_memorize": "Django protects against Top OWASP vulnerabilities out-of-the-box: CSRF via `{% csrf_token %}`, SQL Injection via ORM parameterization, and XSS via automatic template escaping.",
       "interview_questions": [
         {
-          "q": "How does the academic grading engine calculate student performance in CSMS?",
-          "a": "In `backend/routers/grades.py`, scores across class tests, assignments, and mid-terms from `test_marks` are aggregated into a composite percentage. A deterministic evaluation function maps numerical percentages to academic grades (A through F). Results are stored in the `grades` table with a unique constraint on `(student_id, course_id)`, preventing contradictory grade entries."
+          "q": "How does Django handle user authentication and password security?",
+          "a": "Django provides a built-in `User` model with session-based authentication functions (`authenticate()`, `login()`, `logout()`). Passwords are never saved in plaintext; Django automatically uses the PBKDF2 algorithm with a SHA-256 hash and thousands of salt rounds, providing robust cryptographic resistance against brute-force attacks."
         },
         {
-          "q": "How does the semester fee management system handle partial payments?",
-          "a": "The `fees` table tracks `total_amount`, `amount_paid`, and `status` ('Paid', 'Pending', 'Partial') constrained across `(student_id, semester)`. When a payment is recorded via `/api/hod/fees`, the system calculates `total_amount - amount_paid`. If the balance is zero, the status transitions to 'Paid'; if positive, it is marked 'Partial', enabling the HOD to generate instant fee-defaulter rosters."
+          "q": "What is CSRF and how does Django protect against it?",
+          "a": "Cross-Site Request Forgery (CSRF) is an attack where a malicious website tricks a user's browser into executing an unwanted action on a site where the user is authenticated. Django protects against this using the CSRF middleware and `{% csrf_token %}` tag. Every POST form includes a unique, cryptographically generated token that the server validates before processing the request; if the token is missing or invalid, the request is blocked with HTTP 403."
+        },
+        {
+          "q": "How does Django protect against SQL Injection?",
+          "a": "Django's ORM automatically constructs parameterized SQL queries. Instead of directly concatenating user input into SQL strings, query parameters are passed separately to the database engine, ensuring user input is always treated as literal data, never executable SQL commands."
         }
       ],
       "interview_qa": [
         {
-          "q": "How does the academic grading engine calculate student performance in CSMS?",
-          "a": "In `backend/routers/grades.py`, scores across class tests, assignments, and mid-terms from `test_marks` are aggregated into a composite percentage. A deterministic evaluation function maps numerical percentages to academic grades (A through F). Results are stored in the `grades` table with a unique constraint on `(student_id, course_id)`, preventing contradictory grade entries."
+          "q": "How does Django handle user authentication and password security?",
+          "a": "Django provides a built-in `User` model with session-based authentication functions (`authenticate()`, `login()`, `logout()`). Passwords are never saved in plaintext; Django automatically uses the PBKDF2 algorithm with a SHA-256 hash and thousands of salt rounds, providing robust cryptographic resistance against brute-force attacks."
         },
         {
-          "q": "How does the semester fee management system handle partial payments?",
-          "a": "The `fees` table tracks `total_amount`, `amount_paid`, and `status` ('Paid', 'Pending', 'Partial') constrained across `(student_id, semester)`. When a payment is recorded via `/api/hod/fees`, the system calculates `total_amount - amount_paid`. If the balance is zero, the status transitions to 'Paid'; if positive, it is marked 'Partial', enabling the HOD to generate instant fee-defaulter rosters."
+          "q": "What is CSRF and how does Django protect against it?",
+          "a": "Cross-Site Request Forgery (CSRF) is an attack where a malicious website tricks a user's browser into executing an unwanted action on a site where the user is authenticated. Django protects against this using the CSRF middleware and `{% csrf_token %}` tag. Every POST form includes a unique, cryptographically generated token that the server validates before processing the request; if the token is missing or invalid, the request is blocked with HTTP 403."
+        },
+        {
+          "q": "How does Django protect against SQL Injection?",
+          "a": "Django's ORM automatically constructs parameterized SQL queries. Instead of directly concatenating user input into SQL strings, query parameters are passed separately to the database engine, ensuring user input is always treated as literal data, never executable SQL commands."
         }
       ],
-      "interview_pitch_exercise": "In CSMS, I built an automated academic grading engine and semester fee ledger. The grading module aggregates continuous test scores into deterministic letter grades, while the fee tracker dynamically maintains pending balances across semesters, giving faculty instantaneous visibility into academic performance and fee compliance.",
-      "pitch": "In CSMS, I built an automated academic grading engine and semester fee ledger. The grading module aggregates continuous test scores into deterministic letter grades, while the fee tracker dynamically maintains pending balances across semesters, giving faculty instantaneous visibility into academic performance and fee compliance."
+      "interview_pitch_exercise": "Security is where Django truly excels. It provides battle-tested defenses against CSRF, XSS, and SQL injection by default. I leverage Django's built-in authentication system with PBKDF2 password hashing to build secure user management workflows.",
+      "pitch": "Security is where Django truly excels. It provides battle-tested defenses against CSRF, XSS, and SQL injection by default. I leverage Django's built-in authentication system with PBKDF2 password hashing to build secure user management workflows."
     },
     "placement_interview": [
       {
@@ -1406,10 +920,10 @@
       },
       {
         "category": "Project Experience",
-        "question": "In your project 'NSE2 / BulkBeat TV', what was the most difficult technical challenge you personally solved?",
-        "model_answer": "In NSE2 / BulkBeat TV (Python aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Dhan API), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In SmartGalla (Python, PostgreSQL, HTML5/CSS3/JavaScript, Kirana Store Portal), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
         "key_talking_points": [
-          "Contextualize the architecture of NSE2 / BulkBeat TV.",
+          "Contextualize the architecture of SmartGalla.",
           "Highlight concurrency, data integrity, and error recovery.",
           "Quantify reliability outcomes and graceful failure handling."
         ],
@@ -1430,7 +944,7 @@
       {
         "category": "HR & Cultural Fit",
         "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
         "key_talking_points": [
           "Disciplined reading of official docs and engineering blogs.",
           "Hands-on prototype building to validate theory.",
@@ -1440,12 +954,12 @@
       }
     ],
     "daily_revision": {
-      "yesterday_recall": "\u2022 Reviewed Day 14 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
-      "today_recall": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
-      "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
-      "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-      "dsa_recall": "\u2022 Pattern: Tree Traversals: BFS Level-Order.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-      "project_recall": "\u2022 Project: Caloriv.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "yesterday_recall": "• Reviewed Day 14 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Tree Traversals: BFS Level-Order.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: Django Backend and SQL Architecture.\n• Architecture: Django MVT pattern, ORM querysets, relational schema design, and ACID transactions.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting Python backend mastery, database normalization, and secure RESTful API engineering.",
       "rapid_fire_questions": [
         {
           "q": "Day 15 Q1: What is the primary academic thesis of Network Layer: IPv4 Addressing, Subnetting & CIDR?",
@@ -1457,7 +971,7 @@
         },
         {
           "q": "Day 15 Q3: What is the time complexity of Tree Traversals: BFS Level-Order?",
-          "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
         },
         {
           "q": "Day 15 Q4: What is the central architectural principle of Physical & Data Link Layers: Nyquist/Shannon?",
@@ -1472,7 +986,7 @@
           "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
         },
         {
-          "q": "Day 15 Q7: What is the verified technical foundation of Caloriv?",
+          "q": "Day 15 Q7: What is the verified technical foundation of Django Backend & SQL Architecture?",
           "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
         },
         {
@@ -1488,26 +1002,26 @@
           "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
         }
       ],
-      "today_summary": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+      "today_summary": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
       "formulas_and_shortcuts": [
-        "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon."
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon."
       ],
       "must_know_definitions": [
         {
           "term": "Daily Core Concept 1",
-          "definition": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR."
+          "definition": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR."
         },
         {
           "term": "Daily Core Concept 2",
-          "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement."
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement."
         },
         {
           "term": "Daily Core Concept 3",
-          "definition": "\u2022 Pattern: Tree Traversals: BFS Level-Order."
+          "definition": "• Pattern: Tree Traversals: BFS Level-Order."
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "\u2022 Project: Caloriv."
+          "definition": "• Project: Django Backend and SQL Architecture."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1518,7 +1032,7 @@
     "mixed_test": [
       {
         "id": "TEST-15-01",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "How many host addresses can be assigned to devices on a subnetwork configured with a `/26` CIDR prefix?",
         "options": [
           "64 hosts",
@@ -1531,7 +1045,7 @@
       },
       {
         "id": "TEST-15-02",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "What is the default subnet mask for an IPv4 Class B network address?",
         "options": [
           "255.0.0.0 (/8)",
@@ -1544,7 +1058,7 @@
       },
       {
         "id": "TEST-15-03",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "What is the primary purpose of Classless Inter-Domain Routing (CIDR)?",
         "options": [
           "To encrypt IP packets on public Wi-Fi",
@@ -1557,7 +1071,7 @@
       },
       {
         "id": "TEST-15-04",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "Which of the following IP addresses represents a private IPv4 address defined in RFC 1918?",
         "options": [
           "8.8.8.8",
@@ -1570,7 +1084,7 @@
       },
       {
         "id": "TEST-15-05",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "What is the broadcast address for the subnet `192.168.1.32/27`?",
         "options": [
           "192.168.1.32",
@@ -1584,67 +1098,67 @@
       {
         "id": "TEST-15-06",
         "category": "Placement Aptitude",
-        "question": "A man walks 6 km South, turns left and walks 4 km, then turns left again and walks 6 km. How far is he from his starting point?",
+        "question": "A clock shows 4:30. If the minute hand points towards East, in which direction will the hour hand point?",
         "options": [
-          "4 km",
-          "6 km",
-          "8 km",
-          "2 km"
+          "North-East",
+          "South-East",
+          "North-West",
+          "South-West"
         ],
         "correct_answer": "A",
-        "explanation": "Walking 6 km South and 6 km North cancel out vertically, leaving a net displacement of 4 km East."
+        "explanation": "At 4:30, minute hand is at 6 (normally South). If South is designated East (90 deg counter-clockwise), then the hour hand between 4 and 5 (normally South-East) rotates to North-East."
       },
       {
         "id": "TEST-15-07",
         "category": "Placement Aptitude",
-        "question": "One morning after sunrise, Vimal was standing in front of a pole. The shadow of the pole fell directly to his left. In which direction was Vimal facing?",
+        "question": "Starting from point X, Jayant walked 15 m West. He turned left and walked 20 m. He then turned left and walked 15 m. How far is he from X?",
         "options": [
-          "North",
-          "South",
-          "East",
-          "West"
+          "20 m",
+          "15 m",
+          "35 m",
+          "25 m"
         ],
         "correct_answer": "A",
-        "explanation": "In the morning, shadows point West. If West is to his left, Vimal is facing North."
+        "explanation": "The West 15 m and East 15 m cancel, leaving a direct distance of 20 m South of X."
       },
       {
         "id": "TEST-15-08",
         "category": "Placement Aptitude",
-        "question": "A child is looking for his father. He went 90 m in the East before turning to his right. He went 20 m before turning to his right again to look for his father at his uncle's place 30 m from this point. How far is he from the starting point?",
+        "question": "A car travels 8 km North, turns right and drives 6 km. What is the shortest Euclidean distance from the starting position?",
         "options": [
-          "100 m",
-          "80 m",
-          "120 m",
-          "90 m"
+          "10 km",
+          "14 km",
+          "12 km",
+          "8 km"
         ],
         "correct_answer": "A",
-        "explanation": "Displacement: x = 90 - 30 = 60 m; y = -20 m (Wait, if he turns right again and goes 60m more North: Euclidean distance = sqrt(60^2 + 80^2) = 100 m)."
+        "explanation": "Shortest distance = sqrt(8^2 + 6^2) = sqrt(64 + 36) = sqrt(100) = 10 km."
       },
       {
         "id": "TEST-15-09",
         "category": "Placement Aptitude",
-        "question": "If South-East becomes North, North-East becomes West and so on, what will West become?",
+        "question": "K is 40 m South-West of L. M is 40 m South-East of L. What is the direction of M with respect to K?",
         "options": [
-          "South-East",
-          "North-East",
-          "South-West",
-          "North-West"
+          "East",
+          "West",
+          "North",
+          "South"
         ],
         "correct_answer": "A",
-        "explanation": "The compass is rotated 135 degrees counter-clockwise. West rotated 135 degrees CCW becomes South-East."
+        "explanation": "K is at (-40/sqrt2, -40/sqrt2) and M is at (+40/sqrt2, -40/sqrt2). Both have equal negative y-coordinates, so M is directly East of K."
       },
       {
         "id": "TEST-15-10",
         "category": "Placement Aptitude",
-        "question": "A clock is so placed that at 12 noon its minute hand points towards North-East. In which direction does its hour hand point at 1:30 PM?",
+        "question": "If North-East becomes North, and North-West becomes West, what will South become?",
         "options": [
-          "East",
           "South-East",
-          "North",
-          "North-East"
+          "South-West",
+          "North-West",
+          "East"
         ],
         "correct_answer": "A",
-        "explanation": "At 12:00, minute hand normally points North. Here it is rotated 45 deg clockwise to NE. At 1:30 PM, hour hand is at 45 deg (normally NE). Rotated 45 deg CW, it points East."
+        "explanation": "The entire compass rotates 45 degrees counter-clockwise. South rotates 45 degrees CCW to South-East."
       },
       {
         "id": "TEST-15-11",
@@ -1752,29 +1266,29 @@
       },
       {
         "id": "TEST-15-19",
-        "category": "Projects (College Student Management System (CSMS))",
-        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Academic Grading Engine & Semester Fee Ledger Management'?",
+        "category": "Projects (Django Backend & SQL Architecture)",
+        "question": "In Sarthak's project 'Django Backend & SQL Architecture', what is the core architectural principle regarding 'Django Authentication, Sessions & Security Best Practices'?",
         "options": [
-          "Composite scores translate deterministically: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F.",
+          "Django protects against Top OWASP vulnerabilities out-of-the-box: CSRF via `{% csrf_token %}`, SQL Injection via ORM parameterization, and XSS via automatic template escaping.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Composite scores translate deterministically: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F.."
+        "explanation": "For Django Backend & SQL Architecture, the architectural invariant is: Django protects against Top OWASP vulnerabilities out-of-the-box: CSRF via `{% csrf_token %}`, SQL Injection via ORM parameterization, and XSS via automatic template escaping.."
       },
       {
         "id": "TEST-15-20",
-        "category": "Projects (College Student Management System (CSMS))",
-        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How does the academic grading engine calculate student performance in CSMS?'?",
+        "category": "Projects (Django Backend & SQL Architecture)",
+        "question": "Regarding 'Django Backend & SQL Architecture', how should you defend this design decision in a technical interview: 'How does Django handle user authentication and password security?'?",
         "options": [
-          "In `backend/routers/grades.py`, scores across class tests, assignments, and mid-terms from `test_marks` are aggregated into a composite percentage. A determinis...",
+          "Django provides a built-in `User` model with session-based authentication functions (`authenticate()`, `login()`, `logout()`). Passwords are never saved in plai...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
         "correct_answer": "A",
-        "explanation": "In technical interviews, anchor your defense in engineering metrics: In `backend/routers/grades.py`, scores across class tests, assignments, and mid-terms from `test_marks` are aggregated into a composite perc."
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Django provides a built-in `User` model with session-based authentication functions (`authenticate()`, `login()`, `logout()`). Passwords are."
       }
     ],
     "daily_coding_task": {
@@ -1828,7 +1342,7 @@
   "dsa": {
     "pattern_name": "Tree Traversals: BFS Level-Order",
     "pattern": "Tree Traversals: BFS Level-Order",
-    "title": "Tree Traversals: BFS Level-Order \u2014 Algorithmic Invariants & Implementation",
+    "title": "Tree Traversals: BFS Level-Order — Algorithmic Invariants & Implementation",
     "category": "Tree / BFS",
     "concept": "Explores tree nodes level by level using a FIFO Queue. In each iteration, records all nodes at the current level before expanding children.",
     "why_it_works": "The queue size at the start of each level loop reflects exactly the count of nodes present on that level.",
@@ -1989,13 +1503,13 @@
     "subject": "Numerical Methods",
     "subject_code": "BCA-5004",
     "unit": 2,
-    "topic": "Unit II \u2014 Solutions of Linear Systems: Gauss Elimination with Partial Pivoting & Gauss-Jordan Method",
+    "topic": "Unit II — Solutions of Linear Systems: Gauss Elimination with Partial Pivoting & Gauss-Jordan Method",
     "objectives": [
       "Master Gauss Elimination with Partial Pivoting.",
       "Understand Upper Triangular Matrix conversion and back substitution."
     ],
     "detailed_notes": [
-      "Solving systems of simultaneous linear equations `A * X = B` is fundamental in numerical linear algebra. Direct methods include:\n1. Gauss Elimination:\n   \u2022 Forward Elimination: System `[A | B]` is transformed into an equivalent Upper Triangular Matrix `[U | B']` using elementary row operations: `R_i -> R_i - (a_{ik} / a_{kk}) * R_k`.\n   \u2022 Partial Pivoting: In each step k, search column k from row k to n for the element with the maximum absolute value `|a_{ik}|`, and swap row k with that row. This prevents division by near-zero pivot elements and eliminates catastrophic round-off error!\n   \u2022 Back Substitution: Solve for unknowns starting from the bottom equation `x_n = b'_n / u_{nn}`, substituting back upwards to find `x_{n-1} ... x_1`.\n2. Gauss-Jordan Method:\n   Extends forward elimination to transform matrix A completely into the Identity Matrix `I`. The solution vector is obtained directly without requiring back substitution.",
+      "Solving systems of simultaneous linear equations `A * X = B` is fundamental in numerical linear algebra. Direct methods include:\n1. Gauss Elimination:\n   • Forward Elimination: System `[A | B]` is transformed into an equivalent Upper Triangular Matrix `[U | B']` using elementary row operations: `R_i -> R_i - (a_{ik} / a_{kk}) * R_k`.\n   • Partial Pivoting: In each step k, search column k from row k to n for the element with the maximum absolute value `|a_{ik}|`, and swap row k with that row. This prevents division by near-zero pivot elements and eliminates catastrophic round-off error!\n   • Back Substitution: Solve for unknowns starting from the bottom equation `x_n = b'_n / u_{nn}`, substituting back upwards to find `x_{n-1} ... x_1`.\n2. Gauss-Jordan Method:\n   Extends forward elimination to transform matrix A completely into the Identity Matrix `I`. The solution vector is obtained directly without requiring back substitution.",
       "If a pivot a_kk is near zero, dividing by it magnifies round-off errors exponentially, producing completely erroneous solutions.",
       "Gauss elimination requires O(n^3 / 3) arithmetic operations; Gauss-Jordan requires O(n^3 / 2) operations (50% more calculations)."
     ],
@@ -2041,7 +1555,7 @@
         "marks": 15,
         "question": "Solve the following system of linear equations using Gauss Elimination with partial pivoting:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\nExplain why partial pivoting is essential. (15 Marks)",
         "rubric": "Why partial pivoting is essential (3 marks) + Augmented matrix & Pivot swap (4 marks) + Forward elimination to Upper Triangular (5 marks) + Back substitution & Final answer (3 marks) = 15 Marks.",
-        "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n\u2022 R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n\u2022 R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n\u2022 R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n\u2022 From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n\u2022 From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n\u2022 From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
+        "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n• R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n• R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n• R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n• From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n• From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n• From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
         "answer_structure": "Pivoting Rationale -> Augmented Matrix -> Pivoting Steps -> Upper Triangular Form -> Back Substitution -> Verification",
         "important_points": [
           "Partial pivoting swaps rows",
@@ -2139,7 +1653,7 @@
     "model_answer_paragraphs": [
       [
         "1. Model Answer & Technical Presentation",
-        "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n\u2022 R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n\u2022 R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n\u2022 R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n\u2022 From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n\u2022 From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n\u2022 From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5."
+        "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n• R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n• R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n• R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n• From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n• From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n• From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5."
       ],
       [
         "2. Expected Examiner Criteria",
@@ -2160,14 +1674,14 @@
     "tutorial": [
       "Direction questions frequently involve shadow movements at sunrise (shadow falls West) and sunset (shadow falls East). At 12 noon, shadows are negligible. Always track the final facing orientation separately from the net displacement vector."
     ],
-    "tier1_problem": "A person walks 10m North, turns Right and walks 15m, turns Right and walks 10m, and finally turns Left and walks 5m. How far and in what direction is he from the starting point?",
-    "tier1_solution": "Step 1: North 10m (+y=10). Right -> East 15m (+x=15).\\nStep 2: Right -> South 10m (-y=10, net y = 0).\\nStep 3: Left -> East 5m (+x = 15 + 5 = 20m).\\nStep 4: Net position: (20m East, 0m North). Distance = 20m East.",
-    "tier2_problem": "A cyclist travels 12 km West, then turns South and travels 5 km. What is the shortest straight-line distance to his starting point?",
-    "tier2_solution": "Step 1: Displacement components: \u0394x = -12, \u0394y = -5.\\nStep 2: Shortest distance = \u221a(12^2 + 5^2) = \u221a(144 + 25) = \u221a169 = 13 km.",
-    "tier3_problem": "One morning after sunrise, Suresh was standing facing a pole. The shadow of the pole fell exactly to his right. Which direction was Suresh facing?",
-    "tier3_solution": "Step 1: In the morning, sun is in the East, so all shadows fall towards the West.\\nStep 2: Shadow is to Suresh's Right. Therefore, West is to his Right.\\nStep 3: If West is Right, Suresh must be facing South.",
-    "tier4_problem": "At sunset, two friends Ram and Shyam are talking face to face. If Shyam's shadow is directly to his left, which direction is Ram facing?",
-    "tier4_solution": "Step 1: At sunset, sun is in West, so shadows fall East.\\nStep 2: Shadow is to Shyam's Left => East is to Shyam's Left => Shyam is facing North.\\nStep 3: Since Ram faces Shyam, Ram must be facing South.",
+    "tier1_problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+    "tier1_solution": "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.\nStep 2: Improvement factor = 20% increase on initial score.\nStep 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.\nStep 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).\nSpeed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks.",
+    "tier2_problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+    "tier2_solution": "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.\nStep 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).\nStep 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.\nVerification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864.",
+    "tier3_problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+    "tier3_solution": "Step 1: Assume Total Work = LCM(12, 18) = 36 units.\nStep 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.\nStep 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.\nStep 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.\nStep 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.\nStep 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days).",
+    "tier4_problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+    "tier4_solution": "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.\nStep 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.\nStep 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.\nStep 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.\nStep 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM.",
     "speed_drills": [
       {
         "q": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
@@ -2509,9 +2023,7 @@
           "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
         }
       ]
-    },
-    "tier5_problem": "A man facing North-West turns 90\u00b0 clockwise, then 180\u00b0 anti-clockwise, and then another 90\u00b0 anti-clockwise. Which direction is he facing now?",
-    "tier5_solution": "Step 1: Net rotation = +90\u00b0 (CW) - 180\u00b0 (ACW) - 90\u00b0 (ACW) = -180\u00b0.\\nStep 2: Rotating 180\u00b0 from North-West points directly opposite.\\nStep 3: Opposite of North-West is South-East."
+    }
   },
   "dsa_problems": [
     {
@@ -2586,7 +2098,7 @@
   "dsa_pattern": {
     "pattern_name": "Tree Traversals: BFS Level-Order",
     "pattern": "Tree Traversals: BFS Level-Order",
-    "title": "Tree Traversals: BFS Level-Order \u2014 Algorithmic Invariants & Implementation",
+    "title": "Tree Traversals: BFS Level-Order — Algorithmic Invariants & Implementation",
     "category": "Tree / BFS",
     "concept": "Explores tree nodes level by level using a FIFO Queue. In each iteration, records all nodes at the current level before expanding children.",
     "why_it_works": "The queue size at the start of each level loop reflects exactly the count of nodes present on that level.",
@@ -2766,36 +2278,44 @@
     ]
   },
   "project_defense": {
-    "project_name": "College Student Management System (CSMS)",
-    "name": "College Student Management System (CSMS)",
-    "repo_path": "D:\\Projects\\College Student Management System",
-    "topic": "Academic Grading Engine & Semester Fee Ledger Management",
-    "feature_focus": "Academic Grading Engine & Semester Fee Ledger Management",
-    "what_to_understand": "Automating grade derivation (A, B, C, D, F) from composite scores and tracking Paid, Pending, and Partial fee states.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nAutomating grade derivation (A, B, C, D, F) from composite scores and tracking Paid, Pending, and Partial fee states.\n\nWHAT TO MEMORIZE:\nComposite scores translate deterministically: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F.\n\n60-SECOND INTERVIEW PITCH:\nIn CSMS, I built an automated academic grading engine and semester fee ledger. The grading module aggregates continuous test scores into deterministic letter grades, while the fee tracker dynamically maintains pending balances across semesters, giving faculty instantaneous visibility into academic performance and fee compliance.",
-    "what_to_memorize": "Composite scores translate deterministically: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F.",
+    "project_name": "Django Backend & SQL Architecture",
+    "name": "Django Backend & SQL Architecture",
+    "repo_path": "D:\\Projects",
+    "topic": "Django Authentication, Sessions & Security Best Practices",
+    "feature_focus": "Django Authentication, Sessions & Security Best Practices",
+    "what_to_understand": "Utilizing Django's built-in user model, password hashing (PBKDF2), CSRF tokens, and security defenses.",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nUtilizing Django's built-in user model, password hashing (PBKDF2), CSRF tokens, and security defenses.\n\nWHAT TO MEMORIZE:\nDjango protects against Top OWASP vulnerabilities out-of-the-box: CSRF via `{% csrf_token %}`, SQL Injection via ORM parameterization, and XSS via automatic template escaping.\n\n60-SECOND INTERVIEW PITCH:\nSecurity is where Django truly excels. It provides battle-tested defenses against CSRF, XSS, and SQL injection by default. I leverage Django's built-in authentication system with PBKDF2 password hashing to build secure user management workflows.",
+    "what_to_memorize": "Django protects against Top OWASP vulnerabilities out-of-the-box: CSRF via `{% csrf_token %}`, SQL Injection via ORM parameterization, and XSS via automatic template escaping.",
     "interview_questions": [
       {
-        "q": "How does the academic grading engine calculate student performance in CSMS?",
-        "a": "In `backend/routers/grades.py`, scores across class tests, assignments, and mid-terms from `test_marks` are aggregated into a composite percentage. A deterministic evaluation function maps numerical percentages to academic grades (A through F). Results are stored in the `grades` table with a unique constraint on `(student_id, course_id)`, preventing contradictory grade entries."
+        "q": "How does Django handle user authentication and password security?",
+        "a": "Django provides a built-in `User` model with session-based authentication functions (`authenticate()`, `login()`, `logout()`). Passwords are never saved in plaintext; Django automatically uses the PBKDF2 algorithm with a SHA-256 hash and thousands of salt rounds, providing robust cryptographic resistance against brute-force attacks."
       },
       {
-        "q": "How does the semester fee management system handle partial payments?",
-        "a": "The `fees` table tracks `total_amount`, `amount_paid`, and `status` ('Paid', 'Pending', 'Partial') constrained across `(student_id, semester)`. When a payment is recorded via `/api/hod/fees`, the system calculates `total_amount - amount_paid`. If the balance is zero, the status transitions to 'Paid'; if positive, it is marked 'Partial', enabling the HOD to generate instant fee-defaulter rosters."
+        "q": "What is CSRF and how does Django protect against it?",
+        "a": "Cross-Site Request Forgery (CSRF) is an attack where a malicious website tricks a user's browser into executing an unwanted action on a site where the user is authenticated. Django protects against this using the CSRF middleware and `{% csrf_token %}` tag. Every POST form includes a unique, cryptographically generated token that the server validates before processing the request; if the token is missing or invalid, the request is blocked with HTTP 403."
+      },
+      {
+        "q": "How does Django protect against SQL Injection?",
+        "a": "Django's ORM automatically constructs parameterized SQL queries. Instead of directly concatenating user input into SQL strings, query parameters are passed separately to the database engine, ensuring user input is always treated as literal data, never executable SQL commands."
       }
     ],
     "interview_qa": [
       {
-        "q": "How does the academic grading engine calculate student performance in CSMS?",
-        "a": "In `backend/routers/grades.py`, scores across class tests, assignments, and mid-terms from `test_marks` are aggregated into a composite percentage. A deterministic evaluation function maps numerical percentages to academic grades (A through F). Results are stored in the `grades` table with a unique constraint on `(student_id, course_id)`, preventing contradictory grade entries."
+        "q": "How does Django handle user authentication and password security?",
+        "a": "Django provides a built-in `User` model with session-based authentication functions (`authenticate()`, `login()`, `logout()`). Passwords are never saved in plaintext; Django automatically uses the PBKDF2 algorithm with a SHA-256 hash and thousands of salt rounds, providing robust cryptographic resistance against brute-force attacks."
       },
       {
-        "q": "How does the semester fee management system handle partial payments?",
-        "a": "The `fees` table tracks `total_amount`, `amount_paid`, and `status` ('Paid', 'Pending', 'Partial') constrained across `(student_id, semester)`. When a payment is recorded via `/api/hod/fees`, the system calculates `total_amount - amount_paid`. If the balance is zero, the status transitions to 'Paid'; if positive, it is marked 'Partial', enabling the HOD to generate instant fee-defaulter rosters."
+        "q": "What is CSRF and how does Django protect against it?",
+        "a": "Cross-Site Request Forgery (CSRF) is an attack where a malicious website tricks a user's browser into executing an unwanted action on a site where the user is authenticated. Django protects against this using the CSRF middleware and `{% csrf_token %}` tag. Every POST form includes a unique, cryptographically generated token that the server validates before processing the request; if the token is missing or invalid, the request is blocked with HTTP 403."
+      },
+      {
+        "q": "How does Django protect against SQL Injection?",
+        "a": "Django's ORM automatically constructs parameterized SQL queries. Instead of directly concatenating user input into SQL strings, query parameters are passed separately to the database engine, ensuring user input is always treated as literal data, never executable SQL commands."
       }
     ],
-    "interview_pitch_exercise": "In CSMS, I built an automated academic grading engine and semester fee ledger. The grading module aggregates continuous test scores into deterministic letter grades, while the fee tracker dynamically maintains pending balances across semesters, giving faculty instantaneous visibility into academic performance and fee compliance.",
-    "pitch": "In CSMS, I built an automated academic grading engine and semester fee ledger. The grading module aggregates continuous test scores into deterministic letter grades, while the fee tracker dynamically maintains pending balances across semesters, giving faculty instantaneous visibility into academic performance and fee compliance."
+    "interview_pitch_exercise": "Security is where Django truly excels. It provides battle-tested defenses against CSRF, XSS, and SQL injection by default. I leverage Django's built-in authentication system with PBKDF2 password hashing to build secure user management workflows.",
+    "pitch": "Security is where Django truly excels. It provides battle-tested defenses against CSRF, XSS, and SQL injection by default. I leverage Django's built-in authentication system with PBKDF2 password hashing to build secure user management workflows."
   },
   "placement_interview": [
     {
@@ -2822,10 +2342,10 @@
     },
     {
       "category": "Project Experience",
-      "question": "In your project 'NSE2 / BulkBeat TV', what was the most difficult technical challenge you personally solved?",
-      "model_answer": "In NSE2 / BulkBeat TV (Python aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Dhan API), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In SmartGalla (Python, PostgreSQL, HTML5/CSS3/JavaScript, Kirana Store Portal), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
       "key_talking_points": [
-        "Contextualize the architecture of NSE2 / BulkBeat TV.",
+        "Contextualize the architecture of SmartGalla.",
         "Highlight concurrency, data integrity, and error recovery.",
         "Quantify reliability outcomes and graceful failure handling."
       ],
@@ -2846,7 +2366,7 @@
     {
       "category": "HR & Cultural Fit",
       "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
       "key_talking_points": [
         "Disciplined reading of official docs and engineering blogs.",
         "Hands-on prototype building to validate theory.",
@@ -2856,12 +2376,12 @@
     }
   ],
   "daily_revision": {
-    "yesterday_recall": "\u2022 Reviewed Day 14 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
-    "today_recall": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
-    "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
-    "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-    "dsa_recall": "\u2022 Pattern: Tree Traversals: BFS Level-Order.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-    "project_recall": "\u2022 Project: Caloriv.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "yesterday_recall": "• Reviewed Day 14 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Tree Traversals: BFS Level-Order.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: Django Backend and SQL Architecture.\n• Architecture: Django MVT pattern, ORM querysets, relational schema design, and ACID transactions.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting Python backend mastery, database normalization, and secure RESTful API engineering.",
     "rapid_fire_questions": [
       {
         "q": "Day 15 Q1: What is the primary academic thesis of Network Layer: IPv4 Addressing, Subnetting & CIDR?",
@@ -2873,7 +2393,7 @@
       },
       {
         "q": "Day 15 Q3: What is the time complexity of Tree Traversals: BFS Level-Order?",
-        "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
       },
       {
         "q": "Day 15 Q4: What is the central architectural principle of Physical & Data Link Layers: Nyquist/Shannon?",
@@ -2888,7 +2408,7 @@
         "a": "'is' tests whether two variables point to identical memory addresses; '==' tests whether values are equivalent."
       },
       {
-        "q": "Day 15 Q7: What is the verified technical foundation of Caloriv?",
+        "q": "Day 15 Q7: What is the verified technical foundation of Django Backend & SQL Architecture?",
         "a": "Production-grade engineering implementation documented in Sarthak's verified project portfolio."
       },
       {
@@ -2904,26 +2424,26 @@
         "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
       }
     ],
-    "today_summary": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+    "today_summary": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
     "formulas_and_shortcuts": [
-      "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon."
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon."
     ],
     "must_know_definitions": [
       {
         "term": "Daily Core Concept 1",
-        "definition": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR."
+        "definition": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR."
       },
       {
         "term": "Daily Core Concept 2",
-        "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement."
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement."
       },
       {
         "term": "Daily Core Concept 3",
-        "definition": "\u2022 Pattern: Tree Traversals: BFS Level-Order."
+        "definition": "• Pattern: Tree Traversals: BFS Level-Order."
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "\u2022 Project: Caloriv."
+        "definition": "• Project: Django Backend and SQL Architecture."
       },
       {
         "term": "Daily Core Concept 5",
@@ -2932,227 +2452,301 @@
     ]
   },
   "daily_test": {
-    "title": "Day 15 Comprehensive 20-Question Daily Mastery Test",
+    "title": "Day 15 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "no": 1,
         "q": "How many host addresses can be assigned to devices on a subnetwork configured with a `/26` CIDR prefix?",
+        "a": "Answer: B\n\nA /26 mask leaves 32 - 26 = 6 host bits. Total addresses = 2^6 = 64. Subtracting network and broadcast addresses leaves 62 usable hosts."
+      },
+      {
+        "q": "What is the default subnet mask for an IPv4 Class B network address?",
+        "a": "Answer: B\n\nClass B addresses (first octet 128-191) use a 16-bit network prefix: 255.255.0.0 (/16)."
+      },
+      {
+        "q": "What is the primary purpose of Classless Inter-Domain Routing (CIDR)?",
+        "a": "Answer: B\n\nCIDR eliminates rigid A/B/C classes, allowing arbitrary prefix lengths (/n) and hierarchical route summarization."
+      },
+      {
+        "q": "Which of the following IP addresses represents a private IPv4 address defined in RFC 1918?",
+        "a": "Answer: B\n\nRFC 1918 private ranges: 10.0.0.0/8, 172.16.0.0/12 (172.16 - 172.31), and 192.168.0.0/16. 172.20.14.5 is private."
+      },
+      {
+        "q": "What is the broadcast address for the subnet `192.168.1.32/27`?",
+        "a": "Answer: B\n\nA /27 subnet has block size 2^(32-27) = 32. Subnet starts at .32 and ends at .63 (broadcast address is .63)."
+      },
+      {
+        "q": "A clock shows 4:30. If the minute hand points towards East, in which direction will the hour hand point?",
+        "a": "Answer: A\n\nAt 4:30, minute hand is at 6 (normally South). If South is designated East (90 deg counter-clockwise), then the hour hand between 4 and 5 (normally South-East) rotates to North-East."
+      },
+      {
+        "q": "Starting from point X, Jayant walked 15 m West. He turned left and walked 20 m. He then turned left and walked 15 m. How far is he from X?",
+        "a": "Answer: A\n\nThe West 15 m and East 15 m cancel, leaving a direct distance of 20 m South of X."
+      },
+      {
+        "q": "A car travels 8 km North, turns right and drives 6 km. What is the shortest Euclidean distance from the starting position?",
+        "a": "Answer: A\n\nShortest distance = sqrt(8^2 + 6^2) = sqrt(64 + 36) = sqrt(100) = 10 km."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-15-01",
+        "category": "Academic (Numerical Methods)",
+        "question": "How many host addresses can be assigned to devices on a subnetwork configured with a `/26` CIDR prefix?",
         "options": [
           "64 hosts",
           "62 hosts (2^6 - 2)",
           "32 hosts",
           "30 hosts"
         ],
-        "a": "Answer: B \u2014 A /26 mask leaves 32 - 26 = 6 host bits. Total addresses = 2^6 = 64. Subtracting network and broadcast addresses leaves 62 usable hosts."
+        "correct_answer": "B",
+        "explanation": "A /26 mask leaves 32 - 26 = 6 host bits. Total addresses = 2^6 = 64. Subtracting network and broadcast addresses leaves 62 usable hosts."
       },
       {
-        "no": 2,
-        "q": "What is the default subnet mask for an IPv4 Class B network address?",
+        "id": "TEST-15-02",
+        "category": "Academic (Numerical Methods)",
+        "question": "What is the default subnet mask for an IPv4 Class B network address?",
         "options": [
           "255.0.0.0 (/8)",
           "255.255.0.0 (/16)",
           "255.255.255.0 (/24)",
           "255.255.255.240 (/28)"
         ],
-        "a": "Answer: B \u2014 Class B addresses (first octet 128-191) use a 16-bit network prefix: 255.255.0.0 (/16)."
+        "correct_answer": "B",
+        "explanation": "Class B addresses (first octet 128-191) use a 16-bit network prefix: 255.255.0.0 (/16)."
       },
       {
-        "no": 3,
-        "q": "What is the primary purpose of Classless Inter-Domain Routing (CIDR)?",
+        "id": "TEST-15-03",
+        "category": "Academic (Numerical Methods)",
+        "question": "What is the primary purpose of Classless Inter-Domain Routing (CIDR)?",
         "options": [
           "To encrypt IP packets on public Wi-Fi",
           "To slow the exhaustion of IPv4 addresses and reduce global router routing table size via route aggregation (supernetting)",
           "To replace MAC addresses with domain names",
           "To convert IPv4 packets directly into IPv6"
         ],
-        "a": "Answer: B \u2014 CIDR eliminates rigid A/B/C classes, allowing arbitrary prefix lengths (/n) and hierarchical route summarization."
+        "correct_answer": "B",
+        "explanation": "CIDR eliminates rigid A/B/C classes, allowing arbitrary prefix lengths (/n) and hierarchical route summarization."
       },
       {
-        "no": 4,
-        "q": "Which of the following IP addresses represents a private IPv4 address defined in RFC 1918?",
+        "id": "TEST-15-04",
+        "category": "Academic (Numerical Methods)",
+        "question": "Which of the following IP addresses represents a private IPv4 address defined in RFC 1918?",
         "options": [
           "8.8.8.8",
           "172.20.14.5",
           "198.51.100.1",
           "127.0.0.1"
         ],
-        "a": "Answer: B \u2014 RFC 1918 private ranges: 10.0.0.0/8, 172.16.0.0/12 (172.16 - 172.31), and 192.168.0.0/16. 172.20.14.5 is private."
+        "correct_answer": "B",
+        "explanation": "RFC 1918 private ranges: 10.0.0.0/8, 172.16.0.0/12 (172.16 - 172.31), and 192.168.0.0/16. 172.20.14.5 is private."
       },
       {
-        "no": 5,
-        "q": "What is the broadcast address for the subnet `192.168.1.32/27`?",
+        "id": "TEST-15-05",
+        "category": "Academic (Numerical Methods)",
+        "question": "What is the broadcast address for the subnet `192.168.1.32/27`?",
         "options": [
           "192.168.1.32",
           "192.168.1.63",
           "192.168.1.64",
           "192.168.1.255"
         ],
-        "a": "Answer: B \u2014 A /27 subnet has block size 2^(32-27) = 32. Subnet starts at .32 and ends at .63 (broadcast address is .63)."
+        "correct_answer": "B",
+        "explanation": "A /27 subnet has block size 2^(32-27) = 32. Subnet starts at .32 and ends at .63 (broadcast address is .63)."
       },
       {
-        "no": 6,
-        "q": "A man walks 6 km South, turns left and walks 4 km, then turns left again and walks 6 km. How far is he from his starting point?",
+        "id": "TEST-15-06",
+        "category": "Placement Aptitude",
+        "question": "A clock shows 4:30. If the minute hand points towards East, in which direction will the hour hand point?",
         "options": [
-          "4 km",
-          "6 km",
-          "8 km",
-          "2 km"
-        ],
-        "a": "Answer: A \u2014 Walking 6 km South and 6 km North cancel out vertically, leaving a net displacement of 4 km East."
-      },
-      {
-        "no": 7,
-        "q": "One morning after sunrise, Vimal was standing in front of a pole. The shadow of the pole fell directly to his left. In which direction was Vimal facing?",
-        "options": [
-          "North",
-          "South",
-          "East",
-          "West"
-        ],
-        "a": "Answer: A \u2014 In the morning, shadows point West. If West is to his left, Vimal is facing North."
-      },
-      {
-        "no": 8,
-        "q": "A child is looking for his father. He went 90 m in the East before turning to his right. He went 20 m before turning to his right again to look for his father at his uncle's place 30 m from this point. How far is he from the starting point?",
-        "options": [
-          "100 m",
-          "80 m",
-          "120 m",
-          "90 m"
-        ],
-        "a": "Answer: A \u2014 Displacement: x = 90 - 30 = 60 m; y = -20 m (Wait, if he turns right again and goes 60m more North: Euclidean distance = sqrt(60^2 + 80^2) = 100 m)."
-      },
-      {
-        "no": 9,
-        "q": "If South-East becomes North, North-East becomes West and so on, what will West become?",
-        "options": [
-          "South-East",
           "North-East",
-          "South-West",
-          "North-West"
+          "South-East",
+          "North-West",
+          "South-West"
         ],
-        "a": "Answer: A \u2014 The compass is rotated 135 degrees counter-clockwise. West rotated 135 degrees CCW becomes South-East."
+        "correct_answer": "A",
+        "explanation": "At 4:30, minute hand is at 6 (normally South). If South is designated East (90 deg counter-clockwise), then the hour hand between 4 and 5 (normally South-East) rotates to North-East."
       },
       {
-        "no": 10,
-        "q": "A clock is so placed that at 12 noon its minute hand points towards North-East. In which direction does its hour hand point at 1:30 PM?",
+        "id": "TEST-15-07",
+        "category": "Placement Aptitude",
+        "question": "Starting from point X, Jayant walked 15 m West. He turned left and walked 20 m. He then turned left and walked 15 m. How far is he from X?",
+        "options": [
+          "20 m",
+          "15 m",
+          "35 m",
+          "25 m"
+        ],
+        "correct_answer": "A",
+        "explanation": "The West 15 m and East 15 m cancel, leaving a direct distance of 20 m South of X."
+      },
+      {
+        "id": "TEST-15-08",
+        "category": "Placement Aptitude",
+        "question": "A car travels 8 km North, turns right and drives 6 km. What is the shortest Euclidean distance from the starting position?",
+        "options": [
+          "10 km",
+          "14 km",
+          "12 km",
+          "8 km"
+        ],
+        "correct_answer": "A",
+        "explanation": "Shortest distance = sqrt(8^2 + 6^2) = sqrt(64 + 36) = sqrt(100) = 10 km."
+      },
+      {
+        "id": "TEST-15-09",
+        "category": "Placement Aptitude",
+        "question": "K is 40 m South-West of L. M is 40 m South-East of L. What is the direction of M with respect to K?",
         "options": [
           "East",
-          "South-East",
+          "West",
           "North",
-          "North-East"
+          "South"
         ],
-        "a": "Answer: A \u2014 At 12:00, minute hand normally points North. Here it is rotated 45 deg clockwise to NE. At 1:30 PM, hour hand is at 45 deg (normally NE). Rotated 45 deg CW, it points East."
+        "correct_answer": "A",
+        "explanation": "K is at (-40/sqrt2, -40/sqrt2) and M is at (+40/sqrt2, -40/sqrt2). Both have equal negative y-coordinates, so M is directly East of K."
       },
       {
-        "no": 11,
-        "q": "What is the Protocol Data Unit (PDU) at the Network layer of the OSI model?",
+        "id": "TEST-15-10",
+        "category": "Placement Aptitude",
+        "question": "If North-East becomes North, and North-West becomes West, what will South become?",
+        "options": [
+          "South-East",
+          "South-West",
+          "North-West",
+          "East"
+        ],
+        "correct_answer": "A",
+        "explanation": "The entire compass rotates 45 degrees counter-clockwise. South rotates 45 degrees CCW to South-East."
+      },
+      {
+        "id": "TEST-15-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is the Protocol Data Unit (PDU) at the Network layer of the OSI model?",
         "options": [
           "Frame",
           "Segment",
           "Packet",
           "Bit"
         ],
-        "a": "Answer: C \u2014 Network layer units are called Packets (or Datagrams)."
+        "correct_answer": "C",
+        "explanation": "Network layer units are called Packets (or Datagrams)."
       },
       {
-        "no": 12,
-        "q": "Which layer of the OSI model is responsible for encryption, compression, and character syntax translation?",
+        "id": "TEST-15-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which layer of the OSI model is responsible for encryption, compression, and character syntax translation?",
         "options": [
           "Application layer",
           "Presentation layer",
           "Session layer",
           "Transport layer"
         ],
-        "a": "Answer: B \u2014 The Presentation layer handles data formatting, compression, and cryptography."
+        "correct_answer": "B",
+        "explanation": "The Presentation layer handles data formatting, compression, and cryptography."
       },
       {
-        "no": 13,
-        "q": "What is the standard port number for secure HTTPS communication?",
+        "id": "TEST-15-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is the standard port number for secure HTTPS communication?",
         "options": [
           "80",
           "8080",
           "443",
           "22"
         ],
-        "a": "Answer: C \u2014 HTTPS runs over well-known port 443."
+        "correct_answer": "C",
+        "explanation": "HTTPS runs over well-known port 443."
       },
       {
-        "no": 14,
-        "q": "At which layer of the OSI model do network switches primarily operate?",
+        "id": "TEST-15-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "At which layer of the OSI model do network switches primarily operate?",
         "options": [
           "Physical (Layer 1)",
           "Data Link (Layer 2)",
           "Network (Layer 3)",
           "Transport (Layer 4)"
         ],
-        "a": "Answer: B \u2014 Standard network switches operate at Layer 2 (Data Link), forwarding frames by MAC address."
+        "correct_answer": "B",
+        "explanation": "Standard network switches operate at Layer 2 (Data Link), forwarding frames by MAC address."
       },
       {
-        "no": 15,
-        "q": "In the TCP/IP 4-layer model, the Internet layer corresponds to which OSI layer?",
+        "id": "TEST-15-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "In the TCP/IP 4-layer model, the Internet layer corresponds to which OSI layer?",
         "options": [
           "Data Link layer",
           "Network layer",
           "Transport layer",
           "Session layer"
         ],
-        "a": "Answer: B \u2014 The TCP/IP Internet layer maps directly to the OSI Network layer."
+        "correct_answer": "B",
+        "explanation": "The TCP/IP Internet layer maps directly to the OSI Network layer."
       },
       {
-        "no": 16,
-        "q": "In Java 17+, how is the 'Tree Traversals: BFS Level-Order' algorithmic pattern optimal for placement coding problems?",
+        "id": "TEST-15-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Tree Traversals: BFS Level-Order' algorithmic pattern optimal for placement coding problems?",
         "options": [
           "It satisfies optimal asymptotic complexity: O(N) Time, O(W) Auxiliary Space (W = maximum width of tree).",
           "It uses recursion with infinite call stack depth.",
           "It allocates O(N^2) dynamic heap memory unnecessarily.",
           "It requires native C++ pointer arithmetic."
         ],
-        "a": "Answer: A \u2014 The 'Tree Traversals: BFS Level-Order' pattern operates with O(N) Time, O(W) Auxiliary Space (W = maximum width of tree): The queue size at the start of each level loop reflects exactly the count of nodes present on that level.."
+        "correct_answer": "A",
+        "explanation": "The 'Tree Traversals: BFS Level-Order' pattern operates with O(N) Time, O(W) Auxiliary Space (W = maximum width of tree): The queue size at the start of each level loop reflects exactly the count of nodes present on that level.."
       },
       {
-        "no": 17,
-        "q": "When implementing 'Tree Traversals: BFS Level-Order' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "id": "TEST-15-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Tree Traversals: BFS Level-Order' in Java, which edge case must be guarded against to avoid runtime exceptions?",
         "options": [
           "Handling boundary conditions such as: Null root.",
           "Using only primitive floats instead of double.",
           "Declaring all methods native.",
           "Disabling JVM garbage collection."
         ],
-        "a": "Answer: A \u2014 Critical edge cases for Tree Traversals: BFS Level-Order include Null root, which must be validated with guard clauses before executing loop pointers."
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Tree Traversals: BFS Level-Order include Null root, which must be validated with guard clauses before executing loop pointers."
       },
       {
-        "no": 18,
-        "q": "For 'Problem 1: Binary Tree Level Order Traversal', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "id": "TEST-15-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Binary Tree Level Order Traversal', what Java collection or data structure provides the optimal auxiliary space bounds?",
         "options": [
           "Standard array or standard collection adhering to O(W) Auxiliary Space (W = maximum width of tree).",
           "A nested 3D LinkedList.",
           "External disk-backed SQL table.",
           "Unbounded blocking queue."
         ],
-        "a": "Answer: A \u2014 The optimal Java 17+ implementation achieves O(N) Time, O(W) Auxiliary Space (W = maximum width of tree) by avoiding unneeded object allocations."
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(W) Auxiliary Space (W = maximum width of tree) by avoiding unneeded object allocations."
       },
       {
-        "no": 19,
-        "q": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Academic Grading Engine & Semester Fee Ledger Management'?",
+        "id": "TEST-15-19",
+        "category": "Projects (Django Backend & SQL Architecture)",
+        "question": "In Sarthak's project 'Django Backend & SQL Architecture', what is the core architectural principle regarding 'Django Authentication, Sessions & Security Best Practices'?",
         "options": [
-          "Composite scores translate deterministically: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F.",
+          "Django protects against Top OWASP vulnerabilities out-of-the-box: CSRF via `{% csrf_token %}`, SQL Injection via ORM parameterization, and XSS via automatic template escaping.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For College Student Management System (CSMS), the architectural invariant is: Composite scores translate deterministically: >=90% -> A, 80-89% -> B, 70-79% -> C, 60-69% -> D, <60% -> F.."
+        "correct_answer": "A",
+        "explanation": "For Django Backend & SQL Architecture, the architectural invariant is: Django protects against Top OWASP vulnerabilities out-of-the-box: CSRF via `{% csrf_token %}`, SQL Injection via ORM parameterization, and XSS via automatic template escaping.."
       },
       {
-        "no": 20,
-        "q": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How does the academic grading engine calculate student performance in CSMS?'?",
+        "id": "TEST-15-20",
+        "category": "Projects (Django Backend & SQL Architecture)",
+        "question": "Regarding 'Django Backend & SQL Architecture', how should you defend this design decision in a technical interview: 'How does Django handle user authentication and password security?'?",
         "options": [
-          "In `backend/routers/grades.py`, scores across class tests, assignments, and mid-terms from `test_marks` are aggregated into a composite percentage. A determinis...",
+          "Django provides a built-in `User` model with session-based authentication functions (`authenticate()`, `login()`, `logout()`). Passwords are never saved in plai...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
-        "a": "Answer: A \u2014 In technical interviews, anchor your defense in engineering metrics: In `backend/routers/grades.py`, scores across class tests, assignments, and mid-terms from `test_marks` are aggregated into a composite perc."
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Django provides a built-in `User` model with session-based authentication functions (`authenticate()`, `login()`, `logout()`). Passwords are."
       }
     ]
   },

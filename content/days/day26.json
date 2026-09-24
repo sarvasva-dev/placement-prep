@@ -4,12 +4,12 @@
   "streams": {
     "academic": {
       "unit": 4,
-      "topic": "Unit IV \u2014 Network Security & Cryptography: Symmetric (AES/DES) vs Asymmetric (RSA) & Digital Signatures",
+      "topic": "Unit IV — Network Security & Cryptography: Symmetric (AES/DES) vs Asymmetric (RSA) & Digital Signatures",
       "objectives": [
         "Understand cryptographic security principles (Confidentiality, Integrity, Authentication, Non-repudiation).",
         "Master Symmetric vs Asymmetric encryption and RSA mathematical algorithm."
       ],
-      "explanation": "Network Security ensures CIA: Confidentiality, Integrity, and Availability. Cryptography transforms plaintext into unintelligible ciphertext:\n1. Symmetric Key Cryptography: Both sender and receiver share a single identical secret key for encryption and decryption. Algorithms: AES (Advanced Encryption Standard - 128/192/256-bit keys, Feistel/SPN network), DES, 3DES. High encryption speed, but faces secure key distribution challenges.\n2. Asymmetric (Public Key) Cryptography: Employs a mathematically linked key pair: a Public Key (widely distributed for encryption) and a Private Key (kept strictly confidential for decryption). Solves key distribution. Algorithm: RSA (Rivest-Shamir-Adleman).\n3. RSA Algorithm Steps:\n   \u2022 Select two large distinct primes `p` and `q`;\n   \u2022 Compute modulus `n = p * q` and Euler's totient `\u03c6(n) = (p - 1) * (q - 1)`;\n   \u2022 Choose public exponent `e` such that `1 < e < \u03c6(n)` and `gcd(e, \u03c6(n)) = 1`;\n   \u2022 Calculate private key `d` such that `d * e \u2261 1 (mod \u03c6(n))` (modular multiplicative inverse);\n   \u2022 Encryption: `Ciphertext C = M^e mod n`;\n   \u2022 Decryption: `Plaintext M = C^d mod n`.\n4. Digital Signatures: The sender encrypts a message hash using their private key. The receiver decrypts the signature using the sender's public key, verifying authenticity and non-repudiation.",
+      "explanation": "Network Security ensures CIA: Confidentiality, Integrity, and Availability. Cryptography transforms plaintext into unintelligible ciphertext:\n1. Symmetric Key Cryptography: Both sender and receiver share a single identical secret key for encryption and decryption. Algorithms: AES (Advanced Encryption Standard - 128/192/256-bit keys, Feistel/SPN network), DES, 3DES. High encryption speed, but faces secure key distribution challenges.\n2. Asymmetric (Public Key) Cryptography: Employs a mathematically linked key pair: a Public Key (widely distributed for encryption) and a Private Key (kept strictly confidential for decryption). Solves key distribution. Algorithm: RSA (Rivest-Shamir-Adleman).\n3. RSA Algorithm Steps:\n   • Select two large distinct primes `p` and `q`;\n   • Compute modulus `n = p * q` and Euler's totient `φ(n) = (p - 1) * (q - 1)`;\n   • Choose public exponent `e` such that `1 < e < φ(n)` and `gcd(e, φ(n)) = 1`;\n   • Calculate private key `d` such that `d * e ≡ 1 (mod φ(n))` (modular multiplicative inverse);\n   • Encryption: `Ciphertext C = M^e mod n`;\n   • Decryption: `Plaintext M = C^d mod n`.\n4. Digital Signatures: The sender encrypts a message hash using their private key. The receiver decrypts the signature using the sender's public key, verifying authenticity and non-repudiation.",
       "definitions": [
         {
           "term": "Symmetric vs Asymmetric",
@@ -73,7 +73,7 @@
       "common_mistakes": "Saying public key decrypts private key messages in confidential encryption (public encrypts, private decrypts).",
       "exam_writing_guidance": "Compare Symmetric and Asymmetric in a table, write out all 5 steps of the RSA algorithm with a numeric walkthrough, and explain Digital Signatures.",
       "mini_practice": [
-        "In RSA, given p=3, q=11, and e=7, calculate n, \u03c6(n), and private key d."
+        "In RSA, given p=3, q=11, and e=7, calculate n, φ(n), and private key d."
       ],
       "pyqs": [
         {
@@ -84,12 +84,12 @@
           "marks": 15,
           "question": "Differentiate between Symmetric and Asymmetric Key Cryptography. Explain the RSA Algorithm step-by-step with a mathematical example. What is a Digital Signature? (15 Marks)",
           "rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA Algorithm steps (4 marks) + Numerical RSA Walkthrough (4 marks) + Digital Signature concept (3 marks) = 15 Marks.",
-          "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n\u2022 Step 1: Choose two distinct prime numbers p and q;\n\u2022 Step 2: Compute n = p * q and \u03c6(n) = (p - 1) * (q - 1);\n\u2022 Step 3: Choose integer e such that 1 < e < \u03c6(n) and gcd(e, \u03c6(n)) = 1;\n\u2022 Step 4: Compute private key d such that (d * e) \u2261 1 mod \u03c6(n);\n\u2022 Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n\u2022 Let p = 3, q = 11;\n\u2022 n = 3 * 11 = 33; \u03c6(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n\u2022 Choose e = 7 (gcd(7, 20) = 1);\n\u2022 Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 \u2261 1 mod 20);\n\u2022 Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n\u2022 Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n\u2022 Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
+          "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n• Step 1: Choose two distinct prime numbers p and q;\n• Step 2: Compute n = p * q and φ(n) = (p - 1) * (q - 1);\n• Step 3: Choose integer e such that 1 < e < φ(n) and gcd(e, φ(n)) = 1;\n• Step 4: Compute private key d such that (d * e) ≡ 1 mod φ(n);\n• Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n• Let p = 3, q = 11;\n• n = 3 * 11 = 33; φ(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n• Choose e = 7 (gcd(7, 20) = 1);\n• Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 ≡ 1 mod 20);\n• Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n• Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n• Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
           "answer_structure": "Symmetric vs Asymmetric Table -> RSA Steps -> Numerical Example -> Digital Signature Architecture",
           "important_points": [
             "CIA triad",
             "Symmetric 1 key vs Asymmetric 2 keys",
-            "Euler totient \u03c6(n)",
+            "Euler totient φ(n)",
             "C = M^e mod n",
             "Digital signature uses private key to sign"
           ],
@@ -99,7 +99,7 @@
             "Clear explanation of Digital Signature verification"
           ],
           "common_mistakes": [
-            "Choosing an e that shares common factors with \u03c6(n)"
+            "Choosing an e that shares common factors with φ(n)"
           ]
         },
         {
@@ -187,12 +187,12 @@
         "marks": 15,
         "question": "Differentiate between Symmetric and Asymmetric Key Cryptography. Explain the RSA Algorithm step-by-step with a mathematical example. What is a Digital Signature? (15 Marks)",
         "rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA Algorithm steps (4 marks) + Numerical RSA Walkthrough (4 marks) + Digital Signature concept (3 marks) = 15 Marks.",
-        "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n\u2022 Step 1: Choose two distinct prime numbers p and q;\n\u2022 Step 2: Compute n = p * q and \u03c6(n) = (p - 1) * (q - 1);\n\u2022 Step 3: Choose integer e such that 1 < e < \u03c6(n) and gcd(e, \u03c6(n)) = 1;\n\u2022 Step 4: Compute private key d such that (d * e) \u2261 1 mod \u03c6(n);\n\u2022 Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n\u2022 Let p = 3, q = 11;\n\u2022 n = 3 * 11 = 33; \u03c6(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n\u2022 Choose e = 7 (gcd(7, 20) = 1);\n\u2022 Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 \u2261 1 mod 20);\n\u2022 Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n\u2022 Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n\u2022 Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
+        "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n• Step 1: Choose two distinct prime numbers p and q;\n• Step 2: Compute n = p * q and φ(n) = (p - 1) * (q - 1);\n• Step 3: Choose integer e such that 1 < e < φ(n) and gcd(e, φ(n)) = 1;\n• Step 4: Compute private key d such that (d * e) ≡ 1 mod φ(n);\n• Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n• Let p = 3, q = 11;\n• n = 3 * 11 = 33; φ(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n• Choose e = 7 (gcd(7, 20) = 1);\n• Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 ≡ 1 mod 20);\n• Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n• Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n• Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
         "answer_structure": "Symmetric vs Asymmetric Table -> RSA Steps -> Numerical Example -> Digital Signature Architecture",
         "important_points": [
           "CIA triad",
           "Symmetric 1 key vs Asymmetric 2 keys",
-          "Euler totient \u03c6(n)",
+          "Euler totient φ(n)",
           "C = M^e mod n",
           "Digital signature uses private key to sign"
         ],
@@ -202,7 +202,7 @@
           "Clear explanation of Digital Signature verification"
         ],
         "common_mistakes": [
-          "Choosing an e that shares common factors with \u03c6(n)"
+          "Choosing an e that shares common factors with φ(n)"
         ]
       },
       {
@@ -291,122 +291,133 @@
     "aptitude_solved": [
       {
         "example_no": 1,
-        "title": "Foundational Placement Problem (Day 26)",
+        "title": "Foundation Problem on Para Jumbles",
         "tier": "Tier 1: Foundation Concept",
-        "difficulty": "Foundation",
-        "source": "TCS NQT Pattern",
+        "difficulty": "Tier 1",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "Standard high-frequency assessment question for Day 26.",
-        "problem": "Standard high-frequency assessment question for Day 26.",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
         "step_by_step_solution": [
-          "Step 1: Problem deconstruction and parameter mapping.",
-          "Step 2: Application of core topic principles.",
-          "Step 3: Calculation and logical deduction."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
         "solution": [
-          "Step 1: Problem deconstruction and parameter mapping.",
-          "Step 2: Application of core topic principles.",
-          "Step 3: Calculation and logical deduction."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
-        "formula": "Standard Model",
-        "shortcut": "Direct mental math shortcut",
-        "trap": "Misreading problem constraints.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "180 marks (90%)",
+        "answer": "180 marks (90%)"
       },
       {
         "example_no": 2,
-        "title": "Standard Technical Placement Problem (Day 26)",
+        "title": "Standard Placement Problem on Para Jumbles",
         "tier": "Tier 2: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Infosys Pattern",
+        "difficulty": "Tier 2",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "Quantitative and logical pattern problem for Day 26.",
-        "problem": "Quantitative and logical pattern problem for Day 26.",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
         "step_by_step_solution": [
-          "Step 1: Identify variable relationships.",
-          "Step 2: Formulate equations and solve.",
-          "Step 3: Verify boundary conditions."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
         "solution": [
-          "Step 1: Identify variable relationships.",
-          "Step 2: Formulate equations and solve.",
-          "Step 3: Verify boundary conditions."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
-        "formula": "Topic Principle",
-        "shortcut": "Eliminate extreme answer choices",
-        "trap": "Premature rounding.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "Rs. 864",
+        "answer": "Rs. 864"
       },
       {
         "example_no": 3,
-        "title": "Company Pattern Question (Day 26)",
+        "title": "Efficiency & Work Ratio Problem on Para Jumbles",
         "tier": "Tier 3: Company Exam Pattern",
-        "difficulty": "Placement",
-        "source": "Wipro Pattern",
-        "target_time_seconds": 50,
-        "question": "Placement exam pattern scenario for Day 26.",
-        "problem": "Placement exam pattern scenario for Day 26.",
+        "difficulty": "Tier 3",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
         "step_by_step_solution": [
-          "Step 1: Map scenario to analytical framework.",
-          "Step 2: Execute step-by-step resolution."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
         "solution": [
-          "Step 1: Map scenario to analytical framework.",
-          "Step 2: Execute step-by-step resolution."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
-        "formula": "Analytical Formula",
-        "shortcut": "Pattern recognition clue",
-        "trap": "Ignoring edge cases.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "14 1/3 days",
+        "answer": "14 1/3 days"
       },
       {
         "example_no": 4,
-        "title": "Time-Pressure Diagnostic (Day 26)",
+        "title": "Speed & Relative Distance Problem on Para Jumbles",
         "tier": "Tier 4: Time-Pressure Challenge",
-        "difficulty": "Tricky",
-        "source": "Accenture Pattern",
-        "target_time_seconds": 50,
-        "question": "Speed and accuracy test problem for Day 26.",
-        "problem": "Speed and accuracy test problem for Day 26.",
+        "difficulty": "Tier 4",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
         "step_by_step_solution": [
-          "Step 1: Quick elimination of distractor choices.",
-          "Step 2: Fast calculation."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
         "solution": [
-          "Step 1: Quick elimination of distractor choices.",
-          "Step 2: Fast calculation."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
-        "formula": "Speed Formula",
-        "shortcut": "Direct calculation shortcut",
-        "trap": "Spending over 60 seconds on initial setup.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "2:15 PM",
+        "answer": "2:15 PM"
       },
       {
         "example_no": 5,
-        "title": "Advanced Placement Variant (Day 26)",
-        "tier": "Tier 5: Advanced Placement Variant",
-        "difficulty": "Advanced",
-        "source": "Cognizant Pattern",
-        "target_time_seconds": 60,
-        "question": "Multi-step challenge problem for Day 26.",
-        "problem": "Multi-step challenge problem for Day 26.",
+        "title": "Combinatorics & Probability Problem on Para Jumbles",
+        "tier": "Tier 5: Time-Pressure Challenge",
+        "difficulty": "Tier 5",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "problem": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
         "step_by_step_solution": [
-          "Step 1: Deconstruct multi-layer problem.",
-          "Step 2: Execute synthesis and final verification."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
         "solution": [
-          "Step 1: Deconstruct multi-layer problem.",
-          "Step 2: Execute synthesis and final verification."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
-        "formula": "Advanced Formula",
-        "shortcut": "Factorization shortcut",
-        "trap": "Calculation error in intermediate arithmetic.",
-        "final_answer": "Verified Solution",
-        "answer": "Verified Solution"
+        "final_answer": "10/21",
+        "answer": "10/21"
       }
     ],
     "aptitude_mcqs": [
@@ -600,7 +611,7 @@
     "dsa_pattern": {
       "pattern_name": "Dynamic Programming: Longest Common Subsequence (LCS)",
       "pattern": "Dynamic Programming: Longest Common Subsequence (LCS)",
-      "title": "Dynamic Programming: Longest Common Subsequence (LCS) \u2014 Algorithmic Invariants & Implementation",
+      "title": "Dynamic Programming: Longest Common Subsequence (LCS) — Algorithmic Invariants & Implementation",
       "category": "Dynamic Programming",
       "concept": "Finds the length of the longest subsequence present in both strings in the same relative order using a 2D matrix.",
       "why_it_works": "If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).",
@@ -850,36 +861,36 @@
       ]
     },
     "project_preparation": {
-      "project_name": "SmartGalla",
-      "name": "SmartGalla",
-      "repo_path": "D:\\Projects\\SmartGalla",
-      "topic": "Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)",
-      "feature_focus": "Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)",
-      "what_to_understand": "Programmatic vector PDF composition, GST tax breakdowns, and thermal printer formatting.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nProgrammatic vector PDF composition, GST tax breakdowns, and thermal printer formatting.\n\nWHAT TO MEMORIZE:\n`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.\n\n60-SECOND INTERVIEW PITCH:\nFor SmartGalla's billing pipeline, I replaced slow Puppeteer PDF rendering with high-speed programmatic vector generation using `pdf-lib`. It produces compliant GST invoices and 80mm thermal receipts in under 100ms on serverless endpoints with minimal memory overhead.",
-      "what_to_memorize": "`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.",
+      "project_name": "BulkBeat TV",
+      "name": "BulkBeat TV",
+      "repo_path": "D:\\Projects\\nse2",
+      "topic": "Commercial Traction: Scaling to 6,000+ Users & ₹1.11 Lakhs Revenue",
+      "feature_focus": "Commercial Traction: Scaling to 6,000+ Users & ₹1.11 Lakhs Revenue",
+      "what_to_understand": "Validating real-world product-market fit, subscription payment integration, and engineering under real user load.",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nValidating real-world product-market fit, subscription payment integration, and engineering under real user load.\n\nWHAT TO MEMORIZE:\nReal traction requires reliable automated billing, quick customer support, and system stability during market trading hours (9:15 AM - 3:30 PM IST).\n\n60-SECOND INTERVIEW PITCH:\nBulkBeat TV was my most commercially successful project to date. I validated market demand by growing the user base to over 6,000 active subscribers and generating ₹1.11 Lakhs in subscription revenue within months. Running a live financial platform taught me the importance of fault tolerance, rate limiting, and reliable payment reconciliation.",
+      "what_to_memorize": "Real traction requires reliable automated billing, quick customer support, and system stability during market trading hours (9:15 AM - 3:30 PM IST).",
       "interview_questions": [
         {
-          "q": "Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?",
-          "a": "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeouts. `pdf-lib` is a pure JavaScript low-overhead library that compiles vector PDF streams directly into memory in under 80 milliseconds with only 15MB RAM, supporting custom 80mm thermal receipt formats and A4 GST invoices."
+          "q": "How did BulkBeat TV achieve ₹1.11 Lakhs in revenue and 6,000+ active users?",
+          "a": "We targeted active retail traders who trade corporate action breakouts on NSE. By offering a free 7-day trial through our Telegram bot, we allowed users to experience the speed of the alerts firsthand. Traders found immediate value because our alerts arrived before mainstream financial news portals published articles. We converted trial users into paid subscribers at affordable monthly pricing, collecting payments through Razorpay payment links."
         },
         {
-          "q": "How do you handle Indian GST invoice compliance in the generated document?",
-          "a": "The PDF generator splits total sales into CGST and SGST for intra-state sales (50-50 split of the GST rate) or IGST for inter-state transactions. It automatically formats the merchant's GSTIN, customer details, HSN/SAC codes per item, reverse charge indicators, and converts total numeric amounts to words per Indian banking standards."
+          "q": "What was the biggest technical lesson you learned from running BulkBeat TV in production?",
+          "a": "The biggest lesson was defensive engineering around third-party network failures. During volatile market events (budget day, election results), exchange endpoints frequently rate-limit, timeout, or return 502 Bad Gateway responses. I implemented exponential backoff retries, request timeouts, and error isolation so that a failure in one news feed never crashed the entire alert broadcast pipeline."
         }
       ],
       "interview_qa": [
         {
-          "q": "Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?",
-          "a": "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeouts. `pdf-lib` is a pure JavaScript low-overhead library that compiles vector PDF streams directly into memory in under 80 milliseconds with only 15MB RAM, supporting custom 80mm thermal receipt formats and A4 GST invoices."
+          "q": "How did BulkBeat TV achieve ₹1.11 Lakhs in revenue and 6,000+ active users?",
+          "a": "We targeted active retail traders who trade corporate action breakouts on NSE. By offering a free 7-day trial through our Telegram bot, we allowed users to experience the speed of the alerts firsthand. Traders found immediate value because our alerts arrived before mainstream financial news portals published articles. We converted trial users into paid subscribers at affordable monthly pricing, collecting payments through Razorpay payment links."
         },
         {
-          "q": "How do you handle Indian GST invoice compliance in the generated document?",
-          "a": "The PDF generator splits total sales into CGST and SGST for intra-state sales (50-50 split of the GST rate) or IGST for inter-state transactions. It automatically formats the merchant's GSTIN, customer details, HSN/SAC codes per item, reverse charge indicators, and converts total numeric amounts to words per Indian banking standards."
+          "q": "What was the biggest technical lesson you learned from running BulkBeat TV in production?",
+          "a": "The biggest lesson was defensive engineering around third-party network failures. During volatile market events (budget day, election results), exchange endpoints frequently rate-limit, timeout, or return 502 Bad Gateway responses. I implemented exponential backoff retries, request timeouts, and error isolation so that a failure in one news feed never crashed the entire alert broadcast pipeline."
         }
       ],
-      "interview_pitch_exercise": "For SmartGalla's billing pipeline, I replaced slow Puppeteer PDF rendering with high-speed programmatic vector generation using `pdf-lib`. It produces compliant GST invoices and 80mm thermal receipts in under 100ms on serverless endpoints with minimal memory overhead.",
-      "pitch": "For SmartGalla's billing pipeline, I replaced slow Puppeteer PDF rendering with high-speed programmatic vector generation using `pdf-lib`. It produces compliant GST invoices and 80mm thermal receipts in under 100ms on serverless endpoints with minimal memory overhead."
+      "interview_pitch_exercise": "BulkBeat TV was my most commercially successful project to date. I validated market demand by growing the user base to over 6,000 active subscribers and generating ₹1.11 Lakhs in subscription revenue within months. Running a live financial platform taught me the importance of fault tolerance, rate limiting, and reliable payment reconciliation.",
+      "pitch": "BulkBeat TV was my most commercially successful project to date. I validated market demand by growing the user base to over 6,000 active subscribers and generating ₹1.11 Lakhs in subscription revenue within months. Running a live financial platform taught me the importance of fault tolerance, rate limiting, and reliable payment reconciliation."
     },
     "placement_interview": [
       {
@@ -906,10 +917,10 @@
       },
       {
         "category": "Project Experience",
-        "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
-        "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "question": "In your project 'College Student Management System (CSMS)', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In College Student Management System (CSMS) (FastAPI, PostgreSQL, Vanilla HTML/CSS/JS), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
         "key_talking_points": [
-          "Contextualize the architecture of SmartGalla.",
+          "Contextualize the architecture of College Student Management System (CSMS).",
           "Highlight concurrency, data integrity, and error recovery.",
           "Quantify reliability outcomes and graceful failure handling."
         ],
@@ -930,7 +941,7 @@
       {
         "category": "HR & Cultural Fit",
         "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
         "key_talking_points": [
           "Disciplined reading of official docs and engineering blogs.",
           "Hands-on prototype building to validate theory.",
@@ -940,12 +951,12 @@
       }
     ],
     "daily_revision": {
-      "yesterday_recall": "\u2022 Reviewed Day 25 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
-      "today_recall": "\u2022 Mastered BCA-5003 \u2014 Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
-      "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency.",
-      "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-      "dsa_recall": "\u2022 Pattern: Dynamic Programming: Longest Common Subsequence.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-      "project_recall": "\u2022 Project: BulkBeat TV.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "yesterday_recall": "• Reviewed Day 25 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Dynamic Programming: Longest Common Subsequence.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: BulkBeat TV.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
       "rapid_fire_questions": [
         {
           "q": "Day 26 Q1: What is the primary academic thesis of Application Layer: DNS Hierarchy, HTTP/2/3 & TLS?",
@@ -957,7 +968,7 @@
         },
         {
           "q": "Day 26 Q3: What is the time complexity of Dynamic Programming: Longest Common Subsequence?",
-          "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
         },
         {
           "q": "Day 26 Q4: What is the central architectural principle of Python Decorators, @wraps & Concurrency?",
@@ -988,26 +999,26 @@
           "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
         }
       ],
-      "today_summary": "\u2022 Mastered BCA-5003 \u2014 Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+      "today_summary": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
       "formulas_and_shortcuts": [
-        "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency."
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency."
       ],
       "must_know_definitions": [
         {
           "term": "Daily Core Concept 1",
-          "definition": "\u2022 Mastered BCA-5003 \u2014 Application Layer: DNS Hierarchy, HTTP/2/3 & TLS."
+          "definition": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS."
         },
         {
           "term": "Daily Core Concept 2",
-          "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement."
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement."
         },
         {
           "term": "Daily Core Concept 3",
-          "definition": "\u2022 Pattern: Dynamic Programming: Longest Common Subsequence."
+          "definition": "• Pattern: Dynamic Programming: Longest Common Subsequence."
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "\u2022 Project: BulkBeat TV."
+          "definition": "• Project: BulkBeat TV."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1018,7 +1029,7 @@
     "mixed_test": [
       {
         "id": "TEST-26-01",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
         "options": [
           "A Record",
@@ -1031,7 +1042,7 @@
       },
       {
         "id": "TEST-26-02",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
         "options": [
           "By removing TCP completely",
@@ -1044,7 +1055,7 @@
       },
       {
         "id": "TEST-26-03",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
         "options": [
           "TCP port 80",
@@ -1057,7 +1068,7 @@
       },
       {
         "id": "TEST-26-04",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
         "options": [
           "Transport Layer Security (TLS / SSL)",
@@ -1070,7 +1081,7 @@
       },
       {
         "id": "TEST-26-05",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Computer Networks)",
         "question": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
         "options": [
           "POP3 downloads and removes emails from the server locally; IMAP synchronizes folders bidirectionally, keeping emails stored on the server",
@@ -1084,67 +1095,67 @@
       {
         "id": "TEST-26-06",
         "category": "Placement Aptitude",
-        "question": "Rearrange sentences (1-4) into a coherent paragraph: 1. However, solar energy adoption is accelerating. 2. Traditional fossil fuels are finite. 3. This transition is essential for sustainability. 4. Global energy demands are rising continuously.",
+        "question": "Rearrange the sentences: A. Clean code serves as its own documentation. B. When variable names and method boundaries reflect business domains, comments become secondary. C. Excessive comments often disguise poorly factored spaghetti logic. D. Prioritizing expressive readability is therefore a primary engineering virtue.",
         "options": [
-          "4 - 2 - 1 - 3",
-          "2 - 1 - 4 - 3",
-          "1 - 3 - 2 - 4",
-          "4 - 1 - 2 - 3"
+          "A - B - C - D",
+          "B - A - C - D",
+          "C - B - A - D",
+          "D - A - B - C"
         ],
         "correct_answer": "A",
-        "explanation": "4 introduces energy demand, 2 states fossil fuel limitation, 1 introduces solar contrast ('However'), 3 concludes with transition necessity."
+        "explanation": "A asserts the clean code thesis, B elaborates on expressive naming, C warns against comment crutches, and D concludes with the engineering takeaway."
       },
       {
         "id": "TEST-26-07",
         "category": "Placement Aptitude",
-        "question": "Identify the mandatory opening sentence among these: A. Consequently, profits surged. B. Acme Corp launched a new logistics model in 2023. C. This automation reduced delays. D. Customers responded positively.",
+        "question": "Rearrange the sentences: A. Containerization revolutionized software deployment. B. Docker encapsulated code and dependencies into immutable images. C. Developers could finally eliminate the 'works on my machine' syndrome. D. Kubernetes later emerged to orchestrate these containers across clusters.",
         "options": [
-          "B",
-          "A",
-          "C",
-          "D"
+          "A - B - C - D",
+          "B - C - A - D",
+          "A - C - B - D",
+          "D - A - B - C"
         ],
         "correct_answer": "A",
-        "explanation": "Sentence B introduces the central subject ('Acme Corp') and setting without relying on pronouns or conjunctions."
+        "explanation": "A introduces containerization impact, B details Docker mechanism, C explains the problem solved, and D presents subsequent orchestration evolution."
       },
       {
         "id": "TEST-26-08",
         "category": "Placement Aptitude",
-        "question": "In para jumble analysis, which transition word typically signals a causal effect or conclusion?",
+        "question": "Rearrange the sentences: A. Cryptographic hashing creates a fixed-size deterministic digest. B. Even a single bit change in the input produces an entirely different hash. C. This property, known as the avalanche effect, makes tampering immediately detectable. D. Blockchains utilize this mechanism to guarantee immutable ledgers.",
         "options": [
-          "Therefore",
-          "Although",
-          "Furthermore",
-          "Whereas"
+          "A - B - C - D",
+          "B - C - A - D",
+          "A - C - B - D",
+          "C - A - B - D"
         ],
         "correct_answer": "A",
-        "explanation": "'Therefore' and 'Consequently' indicate logical outcome, effect, or conclusion."
+        "explanation": "A defines hashing, B explains sensitivity to changes, C names the avalanche effect, and D maps to blockchain ledger immutability."
       },
       {
         "id": "TEST-26-09",
         "category": "Placement Aptitude",
-        "question": "Rearrange: 1. He opened the file. 2. Rohan arrived at his desk. 3. He noticed the signature was missing. 4. He sat down and booted his laptop.",
+        "question": "Rearrange the sentences: A. Asynchronous programming avoids blocking CPU threads on network I/O. B. Traditional synchronous servers dedicate a separate thread per socket connection. C. Under massive traffic, thread context-switching overhead exhausts operating system RAM. D. Event-driven architectures solve this by running thousands of concurrent requests on a single event loop.",
         "options": [
-          "2 - 4 - 1 - 3",
-          "1 - 2 - 4 - 3",
-          "4 - 2 - 1 - 3",
-          "2 - 1 - 4 - 3"
+          "B - C - A - D",
+          "A - B - C - D",
+          "D - A - B - C",
+          "C - B - A - D"
         ],
         "correct_answer": "A",
-        "explanation": "Chronological flow: Arrives at desk (2) -> sits down and boots laptop (4) -> opens file (1) -> notices missing signature (3)."
+        "explanation": "B introduces synchronous thread model, C explains the OS exhaustion risk, A introduces async non-blocking I/O, and D concludes with event loop scalability."
       },
       {
         "id": "TEST-26-10",
         "category": "Placement Aptitude",
-        "question": "Which sentence cannot be the opening sentence of a paragraph?",
+        "question": "Rearrange the sentences: A. Automated unit tests provide a safety net for continuous integration. B. Without tests, developers operate with constant fear of introducing regression bugs. C. This psychological fear slows down feature delivery and discourages refactoring. D. A comprehensive test suite empowers engineers to ship code with fearless velocity.",
         "options": [
-          "'Nevertheless, the experimental trials proved inconclusive.'",
-          "'Artificial Intelligence is transforming medical diagnostic systems.'",
-          "'Renewable energy investment expanded significantly last quarter.'",
-          "'Microservices decouple monolithic web applications.'"
+          "A - B - C - D",
+          "B - C - A - D",
+          "C - B - A - D",
+          "D - A - B - C"
         ],
         "correct_answer": "A",
-        "explanation": "Sentences opening with contrastive conjunctions like 'Nevertheless' require preceding context."
+        "explanation": "A introduces unit testing safety, B explains fear of regressions without tests, C details impact on delivery, and D highlights resulting deployment velocity."
       },
       {
         "id": "TEST-26-11",
@@ -1252,29 +1263,29 @@
       },
       {
         "id": "TEST-26-19",
-        "category": "Projects (SmartGalla)",
-        "question": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)'?",
+        "category": "Projects (BulkBeat TV)",
+        "question": "In Sarthak's project 'BulkBeat TV', what is the core architectural principle regarding 'Commercial Traction: Scaling to 6,000+ Users & ₹1.11 Lakhs Revenue'?",
         "options": [
-          "`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.",
+          "Real traction requires reliable automated billing, quick customer support, and system stability during market trading hours (9:15 AM - 3:30 PM IST).",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For SmartGalla, the architectural invariant is: `pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.."
+        "explanation": "For BulkBeat TV, the architectural invariant is: Real traction requires reliable automated billing, quick customer support, and system stability during market trading hours (9:15 AM - 3:30 PM IST).."
       },
       {
         "id": "TEST-26-20",
-        "category": "Projects (SmartGalla)",
-        "question": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?'?",
+        "category": "Projects (BulkBeat TV)",
+        "question": "Regarding 'BulkBeat TV', how should you defend this design decision in a technical interview: 'How did BulkBeat TV achieve ₹1.11 Lakhs in revenue and 6,000+ active users?'?",
         "options": [
-          "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeou...",
+          "We targeted active retail traders who trade corporate action breakouts on NSE. By offering a free 7-day trial through our Telegram bot, we allowed users to expe...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
         "correct_answer": "A",
-        "explanation": "In technical interviews, anchor your defense in engineering metrics: Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and caus."
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: We targeted active retail traders who trade corporate action breakouts on NSE. By offering a free 7-day trial through our Telegram bot, we a."
       }
     ],
     "daily_coding_task": {
@@ -1328,7 +1339,7 @@
   "dsa": {
     "pattern_name": "Dynamic Programming: Longest Common Subsequence (LCS)",
     "pattern": "Dynamic Programming: Longest Common Subsequence (LCS)",
-    "title": "Dynamic Programming: Longest Common Subsequence (LCS) \u2014 Algorithmic Invariants & Implementation",
+    "title": "Dynamic Programming: Longest Common Subsequence (LCS) — Algorithmic Invariants & Implementation",
     "category": "Dynamic Programming",
     "concept": "Finds the length of the longest subsequence present in both strings in the same relative order using a 2D matrix.",
     "why_it_works": "If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).",
@@ -1489,13 +1500,13 @@
     "subject": "Computer Networks",
     "subject_code": "BCA-5003",
     "unit": 4,
-    "topic": "Unit IV \u2014 Network Security & Cryptography: Symmetric (AES/DES) vs Asymmetric (RSA) & Digital Signatures",
+    "topic": "Unit IV — Network Security & Cryptography: Symmetric (AES/DES) vs Asymmetric (RSA) & Digital Signatures",
     "objectives": [
       "Understand cryptographic security principles (Confidentiality, Integrity, Authentication, Non-repudiation).",
       "Master Symmetric vs Asymmetric encryption and RSA mathematical algorithm."
     ],
     "detailed_notes": [
-      "Network Security ensures CIA: Confidentiality, Integrity, and Availability. Cryptography transforms plaintext into unintelligible ciphertext:\n1. Symmetric Key Cryptography: Both sender and receiver share a single identical secret key for encryption and decryption. Algorithms: AES (Advanced Encryption Standard - 128/192/256-bit keys, Feistel/SPN network), DES, 3DES. High encryption speed, but faces secure key distribution challenges.\n2. Asymmetric (Public Key) Cryptography: Employs a mathematically linked key pair: a Public Key (widely distributed for encryption) and a Private Key (kept strictly confidential for decryption). Solves key distribution. Algorithm: RSA (Rivest-Shamir-Adleman).\n3. RSA Algorithm Steps:\n   \u2022 Select two large distinct primes `p` and `q`;\n   \u2022 Compute modulus `n = p * q` and Euler's totient `\u03c6(n) = (p - 1) * (q - 1)`;\n   \u2022 Choose public exponent `e` such that `1 < e < \u03c6(n)` and `gcd(e, \u03c6(n)) = 1`;\n   \u2022 Calculate private key `d` such that `d * e \u2261 1 (mod \u03c6(n))` (modular multiplicative inverse);\n   \u2022 Encryption: `Ciphertext C = M^e mod n`;\n   \u2022 Decryption: `Plaintext M = C^d mod n`.\n4. Digital Signatures: The sender encrypts a message hash using their private key. The receiver decrypts the signature using the sender's public key, verifying authenticity and non-repudiation.",
+      "Network Security ensures CIA: Confidentiality, Integrity, and Availability. Cryptography transforms plaintext into unintelligible ciphertext:\n1. Symmetric Key Cryptography: Both sender and receiver share a single identical secret key for encryption and decryption. Algorithms: AES (Advanced Encryption Standard - 128/192/256-bit keys, Feistel/SPN network), DES, 3DES. High encryption speed, but faces secure key distribution challenges.\n2. Asymmetric (Public Key) Cryptography: Employs a mathematically linked key pair: a Public Key (widely distributed for encryption) and a Private Key (kept strictly confidential for decryption). Solves key distribution. Algorithm: RSA (Rivest-Shamir-Adleman).\n3. RSA Algorithm Steps:\n   • Select two large distinct primes `p` and `q`;\n   • Compute modulus `n = p * q` and Euler's totient `φ(n) = (p - 1) * (q - 1)`;\n   • Choose public exponent `e` such that `1 < e < φ(n)` and `gcd(e, φ(n)) = 1`;\n   • Calculate private key `d` such that `d * e ≡ 1 (mod φ(n))` (modular multiplicative inverse);\n   • Encryption: `Ciphertext C = M^e mod n`;\n   • Decryption: `Plaintext M = C^d mod n`.\n4. Digital Signatures: The sender encrypts a message hash using their private key. The receiver decrypts the signature using the sender's public key, verifying authenticity and non-repudiation.",
       "Relies on the mathematical difficulty of factoring the product of two massive prime numbers (prime factorization problem).",
       "Modern HTTPS uses RSA/Diffie-Hellman asymmetric handshake to securely exchange a one-time session key, then switches to fast AES symmetric encryption for data transfer."
     ],
@@ -1546,12 +1557,12 @@
         "marks": 15,
         "question": "Differentiate between Symmetric and Asymmetric Key Cryptography. Explain the RSA Algorithm step-by-step with a mathematical example. What is a Digital Signature? (15 Marks)",
         "rubric": "Symmetric vs Asymmetric comparison (4 marks) + RSA Algorithm steps (4 marks) + Numerical RSA Walkthrough (4 marks) + Digital Signature concept (3 marks) = 15 Marks.",
-        "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n\u2022 Step 1: Choose two distinct prime numbers p and q;\n\u2022 Step 2: Compute n = p * q and \u03c6(n) = (p - 1) * (q - 1);\n\u2022 Step 3: Choose integer e such that 1 < e < \u03c6(n) and gcd(e, \u03c6(n)) = 1;\n\u2022 Step 4: Compute private key d such that (d * e) \u2261 1 mod \u03c6(n);\n\u2022 Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n\u2022 Let p = 3, q = 11;\n\u2022 n = 3 * 11 = 33; \u03c6(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n\u2022 Choose e = 7 (gcd(7, 20) = 1);\n\u2022 Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 \u2261 1 mod 20);\n\u2022 Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n\u2022 Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n\u2022 Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
+        "model_answer": "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n• Step 1: Choose two distinct prime numbers p and q;\n• Step 2: Compute n = p * q and φ(n) = (p - 1) * (q - 1);\n• Step 3: Choose integer e such that 1 < e < φ(n) and gcd(e, φ(n)) = 1;\n• Step 4: Compute private key d such that (d * e) ≡ 1 mod φ(n);\n• Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n• Let p = 3, q = 11;\n• n = 3 * 11 = 33; φ(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n• Choose e = 7 (gcd(7, 20) = 1);\n• Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 ≡ 1 mod 20);\n• Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n• Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n• Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with.",
         "answer_structure": "Symmetric vs Asymmetric Table -> RSA Steps -> Numerical Example -> Digital Signature Architecture",
         "important_points": [
           "CIA triad",
           "Symmetric 1 key vs Asymmetric 2 keys",
-          "Euler totient \u03c6(n)",
+          "Euler totient φ(n)",
           "C = M^e mod n",
           "Digital signature uses private key to sign"
         ],
@@ -1561,7 +1572,7 @@
           "Clear explanation of Digital Signature verification"
         ],
         "common_mistakes": [
-          "Choosing an e that shares common factors with \u03c6(n)"
+          "Choosing an e that shares common factors with φ(n)"
         ]
       },
       {
@@ -1644,7 +1655,7 @@
     "model_answer_paragraphs": [
       [
         "1. Model Answer & Technical Presentation",
-        "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n\u2022 Step 1: Choose two distinct prime numbers p and q;\n\u2022 Step 2: Compute n = p * q and \u03c6(n) = (p - 1) * (q - 1);\n\u2022 Step 3: Choose integer e such that 1 < e < \u03c6(n) and gcd(e, \u03c6(n)) = 1;\n\u2022 Step 4: Compute private key d such that (d * e) \u2261 1 mod \u03c6(n);\n\u2022 Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n\u2022 Let p = 3, q = 11;\n\u2022 n = 3 * 11 = 33; \u03c6(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n\u2022 Choose e = 7 (gcd(7, 20) = 1);\n\u2022 Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 \u2261 1 mod 20);\n\u2022 Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n\u2022 Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n\u2022 Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with."
+        "1. Symmetric vs Asymmetric Cryptography:\nSymmetric encryption uses a single shared secret key for both encryption and decryption (e.g., AES). It is computationally fast but suffers from key distribution vulnerabilities. Asymmetric encryption uses a key pair: a Public Key (known to everyone for encryption) and a Private Key (kept secret by the owner for decryption). It solves key distribution but is computationally intensive.\n\n2. The RSA Algorithm Steps:\n• Step 1: Choose two distinct prime numbers p and q;\n• Step 2: Compute n = p * q and φ(n) = (p - 1) * (q - 1);\n• Step 3: Choose integer e such that 1 < e < φ(n) and gcd(e, φ(n)) = 1;\n• Step 4: Compute private key d such that (d * e) ≡ 1 mod φ(n);\n• Step 5: Encryption: C = M^e mod n; Decryption: M = C^d mod n.\n\n3. Mathematical Numerical Walkthrough:\n• Let p = 3, q = 11;\n• n = 3 * 11 = 33; φ(n) = (3 - 1) * (11 - 1) = 2 * 10 = 20;\n• Choose e = 7 (gcd(7, 20) = 1);\n• Calculate d: (d * 7) mod 20 = 1 -> d = 3 (since 3 * 7 = 21 ≡ 1 mod 20);\n• Public Key = (e=7, n=33); Private Key = (d=3, n=33);\n• Encrypt message M = 2: C = 2^7 mod 33 = 128 mod 33 = 29;\n• Decrypt ciphertext C = 29: M = 29^3 mod 33 = 24389 mod 33 = 2. Verified perfectly!\n\n4. Digital Signatures: A digital signature provides authentication, data integrity, and non-repudiation. The sender generates a cryptographic hash of the message and encrypts the hash using their PRIVATE key. The receiver decrypts the signature using the sender's PUBLIC key and compares it against a fresh hash of the received message. If they match, it proves the message was authored by the sender and was not tampered with."
       ],
       [
         "2. Expected Examiner Criteria",
@@ -1664,14 +1675,14 @@
     "tutorial": [
       "Para Jumbles test logical cohesion and discourse flow. Never test all 24 permutations. Find one mandatory pair (e.g. BC), then check which of the 4 options contains BC together."
     ],
-    "tier1_problem": "Standard high-frequency assessment question for Day 26.",
-    "tier1_solution": "Step 1: Problem deconstruction and parameter mapping.\\nStep 2: Application of core topic principles.\\nStep 3: Calculation and logical deduction.",
-    "tier2_problem": "Quantitative and logical pattern problem for Day 26.",
-    "tier2_solution": "Step 1: Identify variable relationships.\\nStep 2: Formulate equations and solve.\\nStep 3: Verify boundary conditions.",
-    "tier3_problem": "Placement exam pattern scenario for Day 26.",
-    "tier3_solution": "Step 1: Map scenario to analytical framework.\\nStep 2: Execute step-by-step resolution.",
-    "tier4_problem": "Speed and accuracy test problem for Day 26.",
-    "tier4_solution": "Step 1: Quick elimination of distractor choices.\\nStep 2: Fast calculation.",
+    "tier1_problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+    "tier1_solution": "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.\nStep 2: Improvement factor = 20% increase on initial score.\nStep 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.\nStep 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).\nSpeed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks.",
+    "tier2_problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+    "tier2_solution": "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.\nStep 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).\nStep 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.\nVerification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864.",
+    "tier3_problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+    "tier3_solution": "Step 1: Assume Total Work = LCM(12, 18) = 36 units.\nStep 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.\nStep 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.\nStep 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.\nStep 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.\nStep 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days).",
+    "tier4_problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+    "tier4_solution": "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.\nStep 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.\nStep 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.\nStep 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.\nStep 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM.",
     "speed_drills": [
       {
         "q": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
@@ -2013,9 +2024,7 @@
           "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
         }
       ]
-    },
-    "tier5_problem": "Multi-step challenge problem for Day 26.",
-    "tier5_solution": "Step 1: Deconstruct multi-layer problem.\\nStep 2: Execute synthesis and final verification."
+    }
   },
   "dsa_problems": [
     {
@@ -2090,7 +2099,7 @@
   "dsa_pattern": {
     "pattern_name": "Dynamic Programming: Longest Common Subsequence (LCS)",
     "pattern": "Dynamic Programming: Longest Common Subsequence (LCS)",
-    "title": "Dynamic Programming: Longest Common Subsequence (LCS) \u2014 Algorithmic Invariants & Implementation",
+    "title": "Dynamic Programming: Longest Common Subsequence (LCS) — Algorithmic Invariants & Implementation",
     "category": "Dynamic Programming",
     "concept": "Finds the length of the longest subsequence present in both strings in the same relative order using a 2D matrix.",
     "why_it_works": "If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).",
@@ -2270,36 +2279,36 @@
     ]
   },
   "project_defense": {
-    "project_name": "SmartGalla",
-    "name": "SmartGalla",
-    "repo_path": "D:\\Projects\\SmartGalla",
-    "topic": "Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)",
-    "feature_focus": "Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)",
-    "what_to_understand": "Programmatic vector PDF composition, GST tax breakdowns, and thermal printer formatting.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nProgrammatic vector PDF composition, GST tax breakdowns, and thermal printer formatting.\n\nWHAT TO MEMORIZE:\n`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.\n\n60-SECOND INTERVIEW PITCH:\nFor SmartGalla's billing pipeline, I replaced slow Puppeteer PDF rendering with high-speed programmatic vector generation using `pdf-lib`. It produces compliant GST invoices and 80mm thermal receipts in under 100ms on serverless endpoints with minimal memory overhead.",
-    "what_to_memorize": "`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.",
+    "project_name": "BulkBeat TV",
+    "name": "BulkBeat TV",
+    "repo_path": "D:\\Projects\\nse2",
+    "topic": "Commercial Traction: Scaling to 6,000+ Users & ₹1.11 Lakhs Revenue",
+    "feature_focus": "Commercial Traction: Scaling to 6,000+ Users & ₹1.11 Lakhs Revenue",
+    "what_to_understand": "Validating real-world product-market fit, subscription payment integration, and engineering under real user load.",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nValidating real-world product-market fit, subscription payment integration, and engineering under real user load.\n\nWHAT TO MEMORIZE:\nReal traction requires reliable automated billing, quick customer support, and system stability during market trading hours (9:15 AM - 3:30 PM IST).\n\n60-SECOND INTERVIEW PITCH:\nBulkBeat TV was my most commercially successful project to date. I validated market demand by growing the user base to over 6,000 active subscribers and generating ₹1.11 Lakhs in subscription revenue within months. Running a live financial platform taught me the importance of fault tolerance, rate limiting, and reliable payment reconciliation.",
+    "what_to_memorize": "Real traction requires reliable automated billing, quick customer support, and system stability during market trading hours (9:15 AM - 3:30 PM IST).",
     "interview_questions": [
       {
-        "q": "Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?",
-        "a": "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeouts. `pdf-lib` is a pure JavaScript low-overhead library that compiles vector PDF streams directly into memory in under 80 milliseconds with only 15MB RAM, supporting custom 80mm thermal receipt formats and A4 GST invoices."
+        "q": "How did BulkBeat TV achieve ₹1.11 Lakhs in revenue and 6,000+ active users?",
+        "a": "We targeted active retail traders who trade corporate action breakouts on NSE. By offering a free 7-day trial through our Telegram bot, we allowed users to experience the speed of the alerts firsthand. Traders found immediate value because our alerts arrived before mainstream financial news portals published articles. We converted trial users into paid subscribers at affordable monthly pricing, collecting payments through Razorpay payment links."
       },
       {
-        "q": "How do you handle Indian GST invoice compliance in the generated document?",
-        "a": "The PDF generator splits total sales into CGST and SGST for intra-state sales (50-50 split of the GST rate) or IGST for inter-state transactions. It automatically formats the merchant's GSTIN, customer details, HSN/SAC codes per item, reverse charge indicators, and converts total numeric amounts to words per Indian banking standards."
+        "q": "What was the biggest technical lesson you learned from running BulkBeat TV in production?",
+        "a": "The biggest lesson was defensive engineering around third-party network failures. During volatile market events (budget day, election results), exchange endpoints frequently rate-limit, timeout, or return 502 Bad Gateway responses. I implemented exponential backoff retries, request timeouts, and error isolation so that a failure in one news feed never crashed the entire alert broadcast pipeline."
       }
     ],
     "interview_qa": [
       {
-        "q": "Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?",
-        "a": "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeouts. `pdf-lib` is a pure JavaScript low-overhead library that compiles vector PDF streams directly into memory in under 80 milliseconds with only 15MB RAM, supporting custom 80mm thermal receipt formats and A4 GST invoices."
+        "q": "How did BulkBeat TV achieve ₹1.11 Lakhs in revenue and 6,000+ active users?",
+        "a": "We targeted active retail traders who trade corporate action breakouts on NSE. By offering a free 7-day trial through our Telegram bot, we allowed users to experience the speed of the alerts firsthand. Traders found immediate value because our alerts arrived before mainstream financial news portals published articles. We converted trial users into paid subscribers at affordable monthly pricing, collecting payments through Razorpay payment links."
       },
       {
-        "q": "How do you handle Indian GST invoice compliance in the generated document?",
-        "a": "The PDF generator splits total sales into CGST and SGST for intra-state sales (50-50 split of the GST rate) or IGST for inter-state transactions. It automatically formats the merchant's GSTIN, customer details, HSN/SAC codes per item, reverse charge indicators, and converts total numeric amounts to words per Indian banking standards."
+        "q": "What was the biggest technical lesson you learned from running BulkBeat TV in production?",
+        "a": "The biggest lesson was defensive engineering around third-party network failures. During volatile market events (budget day, election results), exchange endpoints frequently rate-limit, timeout, or return 502 Bad Gateway responses. I implemented exponential backoff retries, request timeouts, and error isolation so that a failure in one news feed never crashed the entire alert broadcast pipeline."
       }
     ],
-    "interview_pitch_exercise": "For SmartGalla's billing pipeline, I replaced slow Puppeteer PDF rendering with high-speed programmatic vector generation using `pdf-lib`. It produces compliant GST invoices and 80mm thermal receipts in under 100ms on serverless endpoints with minimal memory overhead.",
-    "pitch": "For SmartGalla's billing pipeline, I replaced slow Puppeteer PDF rendering with high-speed programmatic vector generation using `pdf-lib`. It produces compliant GST invoices and 80mm thermal receipts in under 100ms on serverless endpoints with minimal memory overhead."
+    "interview_pitch_exercise": "BulkBeat TV was my most commercially successful project to date. I validated market demand by growing the user base to over 6,000 active subscribers and generating ₹1.11 Lakhs in subscription revenue within months. Running a live financial platform taught me the importance of fault tolerance, rate limiting, and reliable payment reconciliation.",
+    "pitch": "BulkBeat TV was my most commercially successful project to date. I validated market demand by growing the user base to over 6,000 active subscribers and generating ₹1.11 Lakhs in subscription revenue within months. Running a live financial platform taught me the importance of fault tolerance, rate limiting, and reliable payment reconciliation."
   },
   "placement_interview": [
     {
@@ -2326,10 +2335,10 @@
     },
     {
       "category": "Project Experience",
-      "question": "In your project 'SmartGalla', what was the most difficult technical challenge you personally solved?",
-      "model_answer": "In SmartGalla (Next.js 16, React 19, Supabase RLS, Razorpay, PWA), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "question": "In your project 'College Student Management System (CSMS)', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In College Student Management System (CSMS) (FastAPI, PostgreSQL, Vanilla HTML/CSS/JS), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
       "key_talking_points": [
-        "Contextualize the architecture of SmartGalla.",
+        "Contextualize the architecture of College Student Management System (CSMS).",
         "Highlight concurrency, data integrity, and error recovery.",
         "Quantify reliability outcomes and graceful failure handling."
       ],
@@ -2350,7 +2359,7 @@
     {
       "category": "HR & Cultural Fit",
       "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
       "key_talking_points": [
         "Disciplined reading of official docs and engineering blogs.",
         "Hands-on prototype building to validate theory.",
@@ -2360,12 +2369,12 @@
     }
   ],
   "daily_revision": {
-    "yesterday_recall": "\u2022 Reviewed Day 25 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
-    "today_recall": "\u2022 Mastered BCA-5003 \u2014 Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
-    "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency.",
-    "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-    "dsa_recall": "\u2022 Pattern: Dynamic Programming: Longest Common Subsequence.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-    "project_recall": "\u2022 Project: BulkBeat TV.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "yesterday_recall": "• Reviewed Day 25 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Dynamic Programming: Longest Common Subsequence.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: BulkBeat TV.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
     "rapid_fire_questions": [
       {
         "q": "Day 26 Q1: What is the primary academic thesis of Application Layer: DNS Hierarchy, HTTP/2/3 & TLS?",
@@ -2377,7 +2386,7 @@
       },
       {
         "q": "Day 26 Q3: What is the time complexity of Dynamic Programming: Longest Common Subsequence?",
-        "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
       },
       {
         "q": "Day 26 Q4: What is the central architectural principle of Python Decorators, @wraps & Concurrency?",
@@ -2408,26 +2417,26 @@
         "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
       }
     ],
-    "today_summary": "\u2022 Mastered BCA-5003 \u2014 Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+    "today_summary": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
     "formulas_and_shortcuts": [
-      "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency."
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Dynamic Programming: Longest Common Subsequence.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Python Decorators, @wraps & Concurrency."
     ],
     "must_know_definitions": [
       {
         "term": "Daily Core Concept 1",
-        "definition": "\u2022 Mastered BCA-5003 \u2014 Application Layer: DNS Hierarchy, HTTP/2/3 & TLS."
+        "definition": "• Mastered BCA-5003 — Application Layer: DNS Hierarchy, HTTP/2/3 & TLS."
       },
       {
         "term": "Daily Core Concept 2",
-        "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement."
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Para Jumbles & Sentence Rearrangement."
       },
       {
         "term": "Daily Core Concept 3",
-        "definition": "\u2022 Pattern: Dynamic Programming: Longest Common Subsequence."
+        "definition": "• Pattern: Dynamic Programming: Longest Common Subsequence."
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "\u2022 Project: BulkBeat TV."
+        "definition": "• Project: BulkBeat TV."
       },
       {
         "term": "Daily Core Concept 5",
@@ -2436,227 +2445,301 @@
     ]
   },
   "daily_test": {
-    "title": "Day 26 Comprehensive 20-Question Daily Mastery Test",
+    "title": "Day 26 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "no": 1,
         "q": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
+        "a": "Answer: A\n\nAn 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
+      },
+      {
+        "q": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
+        "a": "Answer: B\n\nHTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
+      },
+      {
+        "q": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
+        "a": "Answer: B\n\nStandard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
+      },
+      {
+        "q": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
+        "a": "Answer: A\n\nHTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
+      },
+      {
+        "q": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
+        "a": "Answer: A\n\nPOP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
+      },
+      {
+        "q": "Rearrange the sentences: A. Clean code serves as its own documentation. B. When variable names and method boundaries reflect business domains, comments become secondary. C. Excessive comments often disguise poorly factored spaghetti logic. D. Prioritizing expressive readability is therefore a primary engineering virtue.",
+        "a": "Answer: A\n\nA asserts the clean code thesis, B elaborates on expressive naming, C warns against comment crutches, and D concludes with the engineering takeaway."
+      },
+      {
+        "q": "Rearrange the sentences: A. Containerization revolutionized software deployment. B. Docker encapsulated code and dependencies into immutable images. C. Developers could finally eliminate the 'works on my machine' syndrome. D. Kubernetes later emerged to orchestrate these containers across clusters.",
+        "a": "Answer: A\n\nA introduces containerization impact, B details Docker mechanism, C explains the problem solved, and D presents subsequent orchestration evolution."
+      },
+      {
+        "q": "Rearrange the sentences: A. Cryptographic hashing creates a fixed-size deterministic digest. B. Even a single bit change in the input produces an entirely different hash. C. This property, known as the avalanche effect, makes tampering immediately detectable. D. Blockchains utilize this mechanism to guarantee immutable ledgers.",
+        "a": "Answer: A\n\nA defines hashing, B explains sensitivity to changes, C names the avalanche effect, and D maps to blockchain ledger immutability."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-26-01",
+        "category": "Academic (Computer Networks)",
+        "question": "In the Domain Name System (DNS), which DNS resource record type maps a domain hostname directly to its corresponding 32-bit IPv4 address?",
         "options": [
           "A Record",
           "AAAA Record",
           "CNAME Record",
           "MX Record"
         ],
-        "a": "Answer: A \u2014 An 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
+        "correct_answer": "A",
+        "explanation": "An 'A' record maps a hostname to an IPv4 address; 'AAAA' maps to IPv6; 'CNAME' aliases one name to another; 'MX' specifies mail servers."
       },
       {
-        "no": 2,
-        "q": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
+        "id": "TEST-26-02",
+        "category": "Academic (Computer Networks)",
+        "question": "How does HTTP/2 achieve superior multiplexing and latency reduction compared to HTTP/1.1?",
         "options": [
           "By removing TCP completely",
           "By using a binary framing layer over a single persistent TCP connection, interleaving multiple bidirectional streams without Head-of-Line blocking",
           "By compressing images with lossy algorithms",
           "By limiting requests to 10 per second"
         ],
-        "a": "Answer: B \u2014 HTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
+        "correct_answer": "B",
+        "explanation": "HTTP/2 introduces binary framing and stream multiplexing over a single connection, eliminating HTTP-level head-of-line pipelining delays."
       },
       {
-        "no": 3,
-        "q": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
+        "id": "TEST-26-03",
+        "category": "Academic (Computer Networks)",
+        "question": "Which transport protocol and port does DNS primarily use for standard client domain name resolution queries?",
         "options": [
           "TCP port 80",
           "UDP port 53",
           "TCP port 443",
           "UDP port 67"
         ],
-        "a": "Answer: B \u2014 Standard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
+        "correct_answer": "B",
+        "explanation": "Standard DNS queries use lightweight UDP on port 53 for speed. Zone transfers and replies exceeding 512 bytes fallback to TCP port 53."
       },
       {
-        "no": 4,
-        "q": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
+        "id": "TEST-26-04",
+        "category": "Academic (Computer Networks)",
+        "question": "What cryptographic protocol secures HTTP traffic (HTTPS), providing data encryption, server authentication, and message integrity?",
         "options": [
           "Transport Layer Security (TLS / SSL)",
           "Point-to-Point Protocol (PPP)",
           "Border Gateway Protocol (BGP)",
           "Simple Mail Transfer Protocol (SMTP)"
         ],
-        "a": "Answer: A \u2014 HTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
+        "correct_answer": "A",
+        "explanation": "HTTPS runs standard HTTP over an encrypted TLS channel established via public-key cryptography and symmetric session ciphers."
       },
       {
-        "no": 5,
-        "q": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
+        "id": "TEST-26-05",
+        "category": "Academic (Computer Networks)",
+        "question": "What is the fundamental difference between POP3 and IMAP mail access protocols?",
         "options": [
           "POP3 downloads and removes emails from the server locally; IMAP synchronizes folders bidirectionally, keeping emails stored on the server",
           "IMAP cannot read attachments",
           "POP3 requires TLS while IMAP is unencrypted",
           "POP3 is used to send emails while IMAP receives them"
         ],
-        "a": "Answer: A \u2014 POP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
+        "correct_answer": "A",
+        "explanation": "POP3 downloads mail to a single local device. IMAP maintains server-side mailboxes, allowing seamless synchronization across multiple devices."
       },
       {
-        "no": 6,
-        "q": "Rearrange sentences (1-4) into a coherent paragraph: 1. However, solar energy adoption is accelerating. 2. Traditional fossil fuels are finite. 3. This transition is essential for sustainability. 4. Global energy demands are rising continuously.",
+        "id": "TEST-26-06",
+        "category": "Placement Aptitude",
+        "question": "Rearrange the sentences: A. Clean code serves as its own documentation. B. When variable names and method boundaries reflect business domains, comments become secondary. C. Excessive comments often disguise poorly factored spaghetti logic. D. Prioritizing expressive readability is therefore a primary engineering virtue.",
         "options": [
-          "4 - 2 - 1 - 3",
-          "2 - 1 - 4 - 3",
-          "1 - 3 - 2 - 4",
-          "4 - 1 - 2 - 3"
+          "A - B - C - D",
+          "B - A - C - D",
+          "C - B - A - D",
+          "D - A - B - C"
         ],
-        "a": "Answer: A \u2014 4 introduces energy demand, 2 states fossil fuel limitation, 1 introduces solar contrast ('However'), 3 concludes with transition necessity."
+        "correct_answer": "A",
+        "explanation": "A asserts the clean code thesis, B elaborates on expressive naming, C warns against comment crutches, and D concludes with the engineering takeaway."
       },
       {
-        "no": 7,
-        "q": "Identify the mandatory opening sentence among these: A. Consequently, profits surged. B. Acme Corp launched a new logistics model in 2023. C. This automation reduced delays. D. Customers responded positively.",
+        "id": "TEST-26-07",
+        "category": "Placement Aptitude",
+        "question": "Rearrange the sentences: A. Containerization revolutionized software deployment. B. Docker encapsulated code and dependencies into immutable images. C. Developers could finally eliminate the 'works on my machine' syndrome. D. Kubernetes later emerged to orchestrate these containers across clusters.",
         "options": [
-          "B",
-          "A",
-          "C",
-          "D"
+          "A - B - C - D",
+          "B - C - A - D",
+          "A - C - B - D",
+          "D - A - B - C"
         ],
-        "a": "Answer: A \u2014 Sentence B introduces the central subject ('Acme Corp') and setting without relying on pronouns or conjunctions."
+        "correct_answer": "A",
+        "explanation": "A introduces containerization impact, B details Docker mechanism, C explains the problem solved, and D presents subsequent orchestration evolution."
       },
       {
-        "no": 8,
-        "q": "In para jumble analysis, which transition word typically signals a causal effect or conclusion?",
+        "id": "TEST-26-08",
+        "category": "Placement Aptitude",
+        "question": "Rearrange the sentences: A. Cryptographic hashing creates a fixed-size deterministic digest. B. Even a single bit change in the input produces an entirely different hash. C. This property, known as the avalanche effect, makes tampering immediately detectable. D. Blockchains utilize this mechanism to guarantee immutable ledgers.",
         "options": [
-          "Therefore",
-          "Although",
-          "Furthermore",
-          "Whereas"
+          "A - B - C - D",
+          "B - C - A - D",
+          "A - C - B - D",
+          "C - A - B - D"
         ],
-        "a": "Answer: A \u2014 'Therefore' and 'Consequently' indicate logical outcome, effect, or conclusion."
+        "correct_answer": "A",
+        "explanation": "A defines hashing, B explains sensitivity to changes, C names the avalanche effect, and D maps to blockchain ledger immutability."
       },
       {
-        "no": 9,
-        "q": "Rearrange: 1. He opened the file. 2. Rohan arrived at his desk. 3. He noticed the signature was missing. 4. He sat down and booted his laptop.",
+        "id": "TEST-26-09",
+        "category": "Placement Aptitude",
+        "question": "Rearrange the sentences: A. Asynchronous programming avoids blocking CPU threads on network I/O. B. Traditional synchronous servers dedicate a separate thread per socket connection. C. Under massive traffic, thread context-switching overhead exhausts operating system RAM. D. Event-driven architectures solve this by running thousands of concurrent requests on a single event loop.",
         "options": [
-          "2 - 4 - 1 - 3",
-          "1 - 2 - 4 - 3",
-          "4 - 2 - 1 - 3",
-          "2 - 1 - 4 - 3"
+          "B - C - A - D",
+          "A - B - C - D",
+          "D - A - B - C",
+          "C - B - A - D"
         ],
-        "a": "Answer: A \u2014 Chronological flow: Arrives at desk (2) -> sits down and boots laptop (4) -> opens file (1) -> notices missing signature (3)."
+        "correct_answer": "A",
+        "explanation": "B introduces synchronous thread model, C explains the OS exhaustion risk, A introduces async non-blocking I/O, and D concludes with event loop scalability."
       },
       {
-        "no": 10,
-        "q": "Which sentence cannot be the opening sentence of a paragraph?",
+        "id": "TEST-26-10",
+        "category": "Placement Aptitude",
+        "question": "Rearrange the sentences: A. Automated unit tests provide a safety net for continuous integration. B. Without tests, developers operate with constant fear of introducing regression bugs. C. This psychological fear slows down feature delivery and discourages refactoring. D. A comprehensive test suite empowers engineers to ship code with fearless velocity.",
         "options": [
-          "'Nevertheless, the experimental trials proved inconclusive.'",
-          "'Artificial Intelligence is transforming medical diagnostic systems.'",
-          "'Renewable energy investment expanded significantly last quarter.'",
-          "'Microservices decouple monolithic web applications.'"
+          "A - B - C - D",
+          "B - C - A - D",
+          "C - B - A - D",
+          "D - A - B - C"
         ],
-        "a": "Answer: A \u2014 Sentences opening with contrastive conjunctions like 'Nevertheless' require preceding context."
+        "correct_answer": "A",
+        "explanation": "A introduces unit testing safety, B explains fear of regressions without tests, C details impact on delivery, and D highlights resulting deployment velocity."
       },
       {
-        "no": 11,
-        "q": "Which of the following HTTP methods is NOT idempotent?",
+        "id": "TEST-26-11",
+        "category": "Core CS (Python Internals)",
+        "question": "Which of the following HTTP methods is NOT idempotent?",
         "options": [
           "GET",
           "PUT",
           "DELETE",
           "POST"
         ],
-        "a": "Answer: D \u2014 POST is non-idempotent because multiple identical calls create duplicate records."
+        "correct_answer": "D",
+        "explanation": "POST is non-idempotent because multiple identical calls create duplicate records."
       },
       {
-        "no": 12,
-        "q": "The asynchronous standard that superseded WSGI for modern Python web servers like Uvicorn is:",
+        "id": "TEST-26-12",
+        "category": "Core CS (Python Internals)",
+        "question": "The asynchronous standard that superseded WSGI for modern Python web servers like Uvicorn is:",
         "options": [
           "CGI",
           "ASGI",
           "FAST-CGI",
           "HTTPD"
         ],
-        "a": "Answer: B \u2014 ASGI (Asynchronous Server Gateway Interface) is the modern async Python standard."
+        "correct_answer": "B",
+        "explanation": "ASGI (Asynchronous Server Gateway Interface) is the modern async Python standard."
       },
       {
-        "no": 13,
-        "q": "In FastAPI, what happens when a route handler is declared with standard `def` instead of `async def`?",
+        "id": "TEST-26-13",
+        "category": "Core CS (Python Internals)",
+        "question": "In FastAPI, what happens when a route handler is declared with standard `def` instead of `async def`?",
         "options": [
           "It raises a TypeError",
           "FastAPI automatically executes it in an external thread pool",
           "It blocks the server permanently",
           "It runs on the GPU"
         ],
-        "a": "Answer: B \u2014 FastAPI offloads standard def routes to background worker threads to avoid event loop stalls."
+        "correct_answer": "B",
+        "explanation": "FastAPI offloads standard def routes to background worker threads to avoid event loop stalls."
       },
       {
-        "no": 14,
-        "q": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
+        "id": "TEST-26-14",
+        "category": "Core CS (Python Internals)",
+        "question": "Which HTTP status code signifies that a requested resource was successfully created on the server?",
         "options": [
           "200 OK",
           "201 Created",
           "204 No Content",
           "304 Not Modified"
         ],
-        "a": "Answer: B \u2014 HTTP 201 Created is the standard response code for successful resource creation."
+        "correct_answer": "B",
+        "explanation": "HTTP 201 Created is the standard response code for successful resource creation."
       },
       {
-        "no": 15,
-        "q": "Which RESTful constraint states that every request must contain all necessary data without server-stored session state?",
+        "id": "TEST-26-15",
+        "category": "Core CS (Python Internals)",
+        "question": "Which RESTful constraint states that every request must contain all necessary data without server-stored session state?",
         "options": [
           "Uniform Interface",
           "Statelessness",
           "Cacheability",
           "Layered System"
         ],
-        "a": "Answer: B \u2014 Statelessness requires that no client session context is retained on the server."
+        "correct_answer": "B",
+        "explanation": "Statelessness requires that no client session context is retained on the server."
       },
       {
-        "no": 16,
-        "q": "In Java 17+, how is the 'Dynamic Programming: Longest Common Subsequence (LCS)' algorithmic pattern optimal for placement coding problems?",
+        "id": "TEST-26-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Dynamic Programming: Longest Common Subsequence (LCS)' algorithmic pattern optimal for placement coding problems?",
         "options": [
           "It satisfies optimal asymptotic complexity: O(M * N) Time, O(M * N) Auxiliary Space.",
           "It uses recursion with infinite call stack depth.",
           "It allocates O(N^2) dynamic heap memory unnecessarily.",
           "It requires native C++ pointer arithmetic."
         ],
-        "a": "Answer: A \u2014 The 'Dynamic Programming: Longest Common Subsequence (LCS)' pattern operates with O(M * N) Time, O(M * N) Auxiliary Space: If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).."
+        "correct_answer": "A",
+        "explanation": "The 'Dynamic Programming: Longest Common Subsequence (LCS)' pattern operates with O(M * N) Time, O(M * N) Auxiliary Space: If characters match (s1[i-1] == s2[j-1]), dp[i][j] = 1 + dp[i-1][j-1]; otherwise take max of excluding one character: max(dp[i-1][j], dp[i][j-1]).."
       },
       {
-        "no": 17,
-        "q": "When implementing 'Dynamic Programming: Longest Common Subsequence (LCS)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "id": "TEST-26-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Dynamic Programming: Longest Common Subsequence (LCS)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
         "options": [
           "Handling boundary conditions such as: Identical strings (returns length).",
           "Using only primitive floats instead of double.",
           "Declaring all methods native.",
           "Disabling JVM garbage collection."
         ],
-        "a": "Answer: A \u2014 Critical edge cases for Dynamic Programming: Longest Common Subsequence (LCS) include Identical strings (returns length), which must be validated with guard clauses before executing loop pointers."
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Dynamic Programming: Longest Common Subsequence (LCS) include Identical strings (returns length), which must be validated with guard clauses before executing loop pointers."
       },
       {
-        "no": 18,
-        "q": "For 'Problem 1: Longest Common Subsequence', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "id": "TEST-26-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Longest Common Subsequence', what Java collection or data structure provides the optimal auxiliary space bounds?",
         "options": [
           "Standard array or standard collection adhering to O(M * N) Auxiliary Space.",
           "A nested 3D LinkedList.",
           "External disk-backed SQL table.",
           "Unbounded blocking queue."
         ],
-        "a": "Answer: A \u2014 The optimal Java 17+ implementation achieves O(M * N) Time, O(M * N) Auxiliary Space by avoiding unneeded object allocations."
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(M * N) Time, O(M * N) Auxiliary Space by avoiding unneeded object allocations."
       },
       {
-        "no": 19,
-        "q": "In Sarthak's project 'SmartGalla', what is the core architectural principle regarding 'Dynamic PDF Invoice & Thermal Receipt Generation (pdf-lib & Serverless)'?",
+        "id": "TEST-26-19",
+        "category": "Projects (BulkBeat TV)",
+        "question": "In Sarthak's project 'BulkBeat TV', what is the core architectural principle regarding 'Commercial Traction: Scaling to 6,000+ Users & ₹1.11 Lakhs Revenue'?",
         "options": [
-          "`pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.",
+          "Real traction requires reliable automated billing, quick customer support, and system stability during market trading hours (9:15 AM - 3:30 PM IST).",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For SmartGalla, the architectural invariant is: `pdf-lib` allows pure JavaScript PDF document creation with zero reliance on heavy headless Chrome / Puppeteer instances.."
+        "correct_answer": "A",
+        "explanation": "For BulkBeat TV, the architectural invariant is: Real traction requires reliable automated billing, quick customer support, and system stability during market trading hours (9:15 AM - 3:30 PM IST).."
       },
       {
-        "no": 20,
-        "q": "Regarding 'SmartGalla', how should you defend this design decision in a technical interview: 'Why generate invoices with pdf-lib instead of rendering HTML to PDF via Puppeteer?'?",
+        "id": "TEST-26-20",
+        "category": "Projects (BulkBeat TV)",
+        "question": "Regarding 'BulkBeat TV', how should you defend this design decision in a technical interview: 'How did BulkBeat TV achieve ₹1.11 Lakhs in revenue and 6,000+ active users?'?",
         "options": [
-          "Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and causes cold-start timeou...",
+          "We targeted active retail traders who trade corporate action breakouts on NSE. By offering a free 7-day trial through our Telegram bot, we allowed users to expe...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
-        "a": "Answer: A \u2014 In technical interviews, anchor your defense in engineering metrics: Spawning a headless Chrome instance via Puppeteer on serverless infrastructure requires 300MB+ RAM, takes 2-4 seconds per document, and caus."
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: We targeted active retail traders who trade corporate action breakouts on NSE. By offering a free 7-day trial through our Telegram bot, we a."
       }
     ]
   },

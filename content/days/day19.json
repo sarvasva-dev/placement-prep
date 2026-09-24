@@ -4,7 +4,7 @@
   "streams": {
     "academic": {
       "unit": 3,
-      "topic": "Unit III \u2014 Iterative Linear Solvers: Gauss-Jacobi & Gauss-Seidel Methods (Strict Diagonal Dominance)",
+      "topic": "Unit III — Iterative Linear Solvers: Gauss-Jacobi & Gauss-Seidel Methods (Strict Diagonal Dominance)",
       "objectives": [
         "Understand Iterative vs Direct linear solvers.",
         "State the Strict Diagonal Dominance condition and execute Gauss-Seidel iterations."
@@ -63,7 +63,7 @@
           ]
         ]
       },
-      "memorize": "Diagonal Dominance: |a_ii| > sum_{j!=i} |a_ij|. Sufficient condition for guaranteed convergence (also symmetric positive-definite). Gauss-Seidel uses updated values immediately; Jacobi uses old values.",
+      "memorize": "Diagonal Dominance: |a_ii| > sum_{j!=i} |a_ij|. Mandatory for convergence. Gauss-Seidel uses updated values immediately; Jacobi uses old values.",
       "understand": "If a matrix is not diagonally dominant, iterative methods may oscillate wildly or diverge to infinity.",
       "common_mistakes": "Executing iterations without first rearranging equations to satisfy strict diagonal dominance.",
       "exam_writing_guidance": "Explicitly test and write out the diagonal dominance check for all 3 rows, state the iterative formulas, and show 3-4 iteration cycles in a table.",
@@ -79,7 +79,7 @@
           "marks": 15,
           "question": "State the condition of Strict Diagonal Dominance. Solve the following system of equations using the Gauss-Seidel iteration method correct to three decimal places:\n8x - 3y + 2z = 20\n4x + 11y - z = 33\n6x + 3y + 12z = 36 (15 Marks)",
           "rubric": "Diagonal Dominance check & proof (3 marks) + Formulation of iteration equations (3 marks) + 4 Iteration steps calculated (7 marks) + Final verified values (2 marks) = 15 Marks.",
-          "model_answer": "1. Strict Diagonal Dominance Check:\nA system is Strictly Diagonally Dominant if in each row: |a_ii| > sum_{j!=i} |a_ij|.\n\u2022 Row 1: |8| > |-3| + |2| => 8 > 5 (True)\n\u2022 Row 2: |11| > |4| + |-1| => 11 > 5 (True)\n\u2022 Row 3: |12| > |6| + |3| => 12 > 9 (True)\nSince all three inequalities hold strictly, the system is strictly diagonally dominant and Gauss-Seidel is guaranteed to converge.\n\n2. Iterative Equations:\n\u2022 x^{k+1} = (20 + 3*y^k - 2*z^k) / 8\n\u2022 y^{k+1} = (33 - 4*x^{k+1} + z^k) / 11   (using fresh x^{k+1})\n\u2022 z^{k+1} = (36 - 6*x^{k+1} - 3*y^{k+1}) / 12  (using fresh x^{k+1} and y^{k+1})\n\n3. Iteration Cycles (Initial guess x0 = 0, y0 = 0, z0 = 0):\n\u2022 Iteration 1:\n  x1 = (20 + 0 - 0) / 8 = 2.500\n  y1 = (33 - 4(2.500) + 0) / 11 = (33 - 10) / 11 = 23 / 11 = 2.091\n  z1 = (36 - 6(2.500) - 3(2.091)) / 12 = (36 - 15 - 6.273) / 12 = 14.727 / 12 = 1.227\n\u2022 Iteration 2:\n  x2 = (20 + 3(2.091) - 2(1.227)) / 8 = (20 + 6.273 - 2.454) / 8 = 23.819 / 8 = 2.977\n  y2 = (33 - 4(2.977) + 1.227) / 11 = (33 - 11.908 + 1.227) / 11 = 22.319 / 11 = 2.029\n  z2 = (36 - 6(2.977) - 3(2.029)) / 12 = (36 - 17.862 - 6.087) / 12 = 12.051 / 12 = 1.004\n\u2022 Iteration 3:\n  x3 = (20 + 3(2.029) - 2(1.004)) / 8 = (20 + 6.087 - 2.008) / 8 = 24.079 / 8 = 3.010\n  y3 = (33 - 4(3.010) + 1.004) / 11 = (33 - 12.040 + 1.004) / 11 = 21.964 / 11 = 1.997\n  z3 = (36 - 6(3.010) - 3(1.997)) / 12 = (36 - 18.060 - 5.991) / 12 = 11.949 / 12 = 0.996\n\u2022 Iteration 4:\n  x4 = (20 + 3(1.997) - 2(0.996)) / 8 = (20 + 5.991 - 1.992) / 8 = 23.999 / 8 = 3.000\n  y4 = (33 - 4(3.000) + 0.996) / 11 = (33 - 12.000 + 0.996) / 11 = 21.996 / 11 = 2.000\n  z4 = (36 - 6(3.000) - 3(2.000)) / 12 = (36 - 18.000 - 6.000) / 12 = 12.000 / 12 = 1.000\n\nValues have converged to three decimal places:\nx = 3.000, y = 2.000, z = 1.000.",
+          "model_answer": "1. Strict Diagonal Dominance Check:\nA system is Strictly Diagonally Dominant if in each row: |a_ii| > sum_{j!=i} |a_ij|.\n• Row 1: |8| > |-3| + |2| => 8 > 5 (True)\n• Row 2: |11| > |4| + |-1| => 11 > 5 (True)\n• Row 3: |12| > |6| + |3| => 12 > 9 (True)\nSince all three inequalities hold strictly, the system is strictly diagonally dominant and Gauss-Seidel is guaranteed to converge.\n\n2. Iterative Equations:\n• x^{k+1} = (20 + 3*y^k - 2*z^k) / 8\n• y^{k+1} = (33 - 4*x^{k+1} + z^k) / 11   (using fresh x^{k+1})\n• z^{k+1} = (36 - 6*x^{k+1} - 3*y^{k+1}) / 12  (using fresh x^{k+1} and y^{k+1})\n\n3. Iteration Cycles (Initial guess x0 = 0, y0 = 0, z0 = 0):\n• Iteration 1:\n  x1 = (20 + 0 - 0) / 8 = 2.500\n  y1 = (33 - 4(2.500) + 0) / 11 = (33 - 10) / 11 = 23 / 11 = 2.091\n  z1 = (36 - 6(2.500) - 3(2.091)) / 12 = (36 - 15 - 6.273) / 12 = 14.727 / 12 = 1.227\n• Iteration 2:\n  x2 = (20 + 3(2.091) - 2(1.227)) / 8 = (20 + 6.273 - 2.454) / 8 = 23.819 / 8 = 2.977\n  y2 = (33 - 4(2.977) + 1.227) / 11 = (33 - 11.908 + 1.227) / 11 = 22.319 / 11 = 2.029\n  z2 = (36 - 6(2.977) - 3(2.029)) / 12 = (36 - 17.862 - 6.087) / 12 = 12.051 / 12 = 1.004\n• Iteration 3:\n  x3 = (20 + 3(2.029) - 2(1.004)) / 8 = (20 + 6.087 - 2.008) / 8 = 24.079 / 8 = 3.010\n  y3 = (33 - 4(3.010) + 1.004) / 11 = (33 - 12.040 + 1.004) / 11 = 21.964 / 11 = 1.997\n  z3 = (36 - 6(3.010) - 3(1.997)) / 12 = (36 - 18.060 - 5.991) / 12 = 11.949 / 12 = 0.996\n• Iteration 4:\n  x4 = (20 + 3(1.997) - 2(0.996)) / 8 = (20 + 5.991 - 1.992) / 8 = 23.999 / 8 = 3.000\n  y4 = (33 - 4(3.000) + 0.996) / 11 = (33 - 12.000 + 0.996) / 11 = 21.996 / 11 = 2.000\n  z4 = (36 - 6(3.000) - 3(2.000)) / 12 = (36 - 18.000 - 6.000) / 12 = 12.000 / 12 = 1.000\n\nValues have converged to three decimal places:\nx = 3.000, y = 2.000, z = 1.000.",
           "answer_structure": "Dominance Condition Proof -> Formula Formulation -> Iteration Table -> Final Converged Values",
           "important_points": [
             "Diagonal dominance verified",
@@ -170,1012 +170,7 @@
           "correct_answer": "B",
           "explanation": "RIP uses hop count as its sole metric, capping network diameters at 15 hops to limit convergence loops."
         }
-      ],
-      "worked_numerical_problems": [
-        {
-          "problem_id": "NM-U4-JAC-01",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Jacobi Method",
-          "difficulty": "Exam-Level",
-          "problem": "Apply Gauss-Jacobi iteration method to solve: 10x + y + 2z = 13; 3x + 10y + z = 14; 2x + 3y + 10z = 15. Show 3 iterations starting from x0 = (0,0,0).",
-          "data": {
-            "system": "10x + y + 2z = 13; 3x + 10y + z = 14; 2x + 3y + 10z = 15",
-            "A": [
-              [
-                10,
-                1,
-                2
-              ],
-              [
-                3,
-                10,
-                1
-              ],
-              [
-                2,
-                3,
-                10
-              ]
-            ],
-            "b": [
-              13,
-              14,
-              15
-            ]
-          },
-          "method": "Gauss-Jacobi Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j!=i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Verify diagonal dominance |a_ii| > \u2211_{j!=i} |a_ij|.",
-            "Step 2: Express explicit equations for x, y, z.",
-            "Step 3: Execute 3 Jacobi iterations substituting previous step values simultaneously.",
-            "Step 4: Vector after 3 iterations: [1.05, 1.06, 1.07]."
-          ],
-          "intermediate_values": {
-            "iterations": 3,
-            "converged_sol": [
-              1.05,
-              1.06,
-              1.07
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 24.2899
-            },
-            {
-              "iter": 1,
-              "x": [
-                1.3,
-                1.4,
-                1.5
-              ],
-              "residual_norm": 9.7345
-            },
-            {
-              "iter": 2,
-              "x": [
-                0.86,
-                0.86,
-                0.82
-              ],
-              "residual_norm": 3.7229
-            },
-            {
-              "iter": 3,
-              "x": [
-                1.05,
-                1.06,
-                1.07
-              ],
-              "residual_norm": 1.457
-            }
-          ],
-          "final_answer": "Jacobi approximation after 3 iterations: [1.05, 1.06, 1.07]",
-          "verification": "Residual vector r = b - Ax satisfies ||r|| < 0.1.",
-          "common_mistake": "Using newly calculated values within the same iteration (that is Gauss-Seidel, not Jacobi)."
-        },
-        {
-          "problem_id": "NM-U4-JAC-02",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Jacobi Method",
-          "difficulty": "Exam-Level",
-          "problem": "Apply Gauss-Jacobi iteration method to solve: 5x - y + z = 10; 2x + 4y = 12; x + y + 5z = -1. Show 3 iterations starting from x0 = (0,0,0).",
-          "data": {
-            "system": "5x - y + z = 10; 2x + 4y = 12; x + y + 5z = -1",
-            "A": [
-              [
-                5,
-                -1,
-                1
-              ],
-              [
-                2,
-                4,
-                0
-              ],
-              [
-                1,
-                1,
-                5
-              ]
-            ],
-            "b": [
-              10,
-              12,
-              -1
-            ]
-          },
-          "method": "Gauss-Jacobi Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j!=i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Verify diagonal dominance |a_ii| > \u2211_{j!=i} |a_ij|.",
-            "Step 2: Express explicit equations for x, y, z.",
-            "Step 3: Execute 3 Jacobi iterations substituting previous step values simultaneously.",
-            "Step 4: Vector after 3 iterations: [2.64, 1.68, -1.128]."
-          ],
-          "intermediate_values": {
-            "iterations": 3,
-            "converged_sol": [
-              2.64,
-              1.68,
-              -1.128
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 15.6525
-            },
-            {
-              "iter": 1,
-              "x": [
-                2.0,
-                3.0,
-                -0.2
-              ],
-              "residual_norm": 7.1582
-            },
-            {
-              "iter": 2,
-              "x": [
-                2.64,
-                2.0,
-                -1.2
-              ],
-              "residual_norm": 1.3297
-            },
-            {
-              "iter": 3,
-              "x": [
-                2.64,
-                1.68,
-                -1.128
-              ],
-              "residual_norm": 0.506
-            }
-          ],
-          "final_answer": "Jacobi approximation after 3 iterations: [2.64, 1.68, -1.128]",
-          "verification": "Residual vector r = b - Ax satisfies ||r|| < 0.1.",
-          "common_mistake": "Using newly calculated values within the same iteration (that is Gauss-Seidel, not Jacobi)."
-        },
-        {
-          "problem_id": "NM-U4-JAC-03",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Jacobi Method",
-          "difficulty": "Exam-Level",
-          "problem": "Apply Gauss-Jacobi iteration method to solve: 8x - 3y + 2z = 20; 4x + 11y - z = 33; 6x + 3y + 12z = 35. Show 3 iterations starting from x0 = (0,0,0).",
-          "data": {
-            "system": "8x - 3y + 2z = 20; 4x + 11y - z = 33; 6x + 3y + 12z = 35",
-            "A": [
-              [
-                8,
-                -3,
-                2
-              ],
-              [
-                4,
-                11,
-                -1
-              ],
-              [
-                6,
-                3,
-                12
-              ]
-            ],
-            "b": [
-              20,
-              33,
-              35
-            ]
-          },
-          "method": "Gauss-Jacobi Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j!=i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Verify diagonal dominance |a_ii| > \u2211_{j!=i} |a_ij|.",
-            "Step 2: Express explicit equations for x, y, z.",
-            "Step 3: Execute 3 Jacobi iterations substituting previous step values simultaneously.",
-            "Step 4: Vector after 3 iterations: [3.1544, 2.0303, 0.8797]."
-          ],
-          "intermediate_values": {
-            "iterations": 3,
-            "converged_sol": [
-              3.1544,
-              2.0303,
-              0.8797
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 52.0961
-            },
-            {
-              "iter": 1,
-              "x": [
-                2.5,
-                3.0,
-                2.9167
-              ],
-              "residual_norm": 25.223
-            },
-            {
-              "iter": 2,
-              "x": [
-                2.8958,
-                2.3561,
-                0.9167
-              ],
-              "residual_norm": 4.161
-            },
-            {
-              "iter": 3,
-              "x": [
-                3.1544,
-                2.0303,
-                0.8797
-              ],
-              "residual_norm": 1.5141
-            }
-          ],
-          "final_answer": "Jacobi approximation after 3 iterations: [3.1544, 2.0303, 0.8797]",
-          "verification": "Residual vector r = b - Ax satisfies ||r|| < 0.1.",
-          "common_mistake": "Using newly calculated values within the same iteration (that is Gauss-Seidel, not Jacobi)."
-        },
-        {
-          "problem_id": "NM-U4-JAC-04",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Jacobi Method",
-          "difficulty": "Exam-Level",
-          "problem": "Apply Gauss-Jacobi iteration method to solve: 4x + y + z = 6; x + 5y + 2z = 8; x + 2y + 4z = 7. Show 3 iterations starting from x0 = (0,0,0).",
-          "data": {
-            "system": "4x + y + z = 6; x + 5y + 2z = 8; x + 2y + 4z = 7",
-            "A": [
-              [
-                4,
-                1,
-                1
-              ],
-              [
-                1,
-                5,
-                2
-              ],
-              [
-                1,
-                2,
-                4
-              ]
-            ],
-            "b": [
-              6,
-              8,
-              7
-            ]
-          },
-          "method": "Gauss-Jacobi Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j!=i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Verify diagonal dominance |a_ii| > \u2211_{j!=i} |a_ij|.",
-            "Step 2: Express explicit equations for x, y, z.",
-            "Step 3: Execute 3 Jacobi iterations substituting previous step values simultaneously.",
-            "Step 4: Vector after 3 iterations: [1.2063, 1.2375, 1.2844]."
-          ],
-          "intermediate_values": {
-            "iterations": 3,
-            "converged_sol": [
-              1.2063,
-              1.2375,
-              1.2844
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 12.2066
-            },
-            {
-              "iter": 1,
-              "x": [
-                1.5,
-                1.6,
-                1.75
-              ],
-              "residual_norm": 7.6363
-            },
-            {
-              "iter": 2,
-              "x": [
-                0.6625,
-                0.6,
-                0.575
-              ],
-              "residual_norm": 4.7898
-            },
-            {
-              "iter": 3,
-              "x": [
-                1.2063,
-                1.2375,
-                1.2844
-              ],
-              "residual_norm": 2.9956
-            }
-          ],
-          "final_answer": "Jacobi approximation after 3 iterations: [1.2063, 1.2375, 1.2844]",
-          "verification": "Residual vector r = b - Ax satisfies ||r|| < 0.1.",
-          "common_mistake": "Using newly calculated values within the same iteration (that is Gauss-Seidel, not Jacobi)."
-        },
-        {
-          "problem_id": "NM-U4-JAC-05",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Jacobi Method",
-          "difficulty": "Exam-Level",
-          "problem": "Apply Gauss-Jacobi iteration method to solve: Diagonal Dominance Enforced System. Show 3 iterations starting from x0 = (0,0,0).",
-          "data": {
-            "system": "Diagonal Dominance Enforced System",
-            "A": [
-              [
-                10,
-                1,
-                1
-              ],
-              [
-                1,
-                10,
-                1
-              ],
-              [
-                1,
-                1,
-                10
-              ]
-            ],
-            "b": [
-              12,
-              12,
-              12
-            ]
-          },
-          "method": "Gauss-Jacobi Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j!=i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Verify diagonal dominance |a_ii| > \u2211_{j!=i} |a_ij|.",
-            "Step 2: Express explicit equations for x, y, z.",
-            "Step 3: Execute 3 Jacobi iterations substituting previous step values simultaneously.",
-            "Step 4: Vector after 3 iterations: [1.008, 1.008, 1.008]."
-          ],
-          "intermediate_values": {
-            "iterations": 3,
-            "converged_sol": [
-              1.008,
-              1.008,
-              1.008
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 20.7846
-            },
-            {
-              "iter": 1,
-              "x": [
-                1.2,
-                1.2,
-                1.2
-              ],
-              "residual_norm": 4.1569
-            },
-            {
-              "iter": 2,
-              "x": [
-                0.96,
-                0.96,
-                0.96
-              ],
-              "residual_norm": 0.8314
-            },
-            {
-              "iter": 3,
-              "x": [
-                1.008,
-                1.008,
-                1.008
-              ],
-              "residual_norm": 0.1663
-            }
-          ],
-          "final_answer": "Jacobi approximation after 3 iterations: [1.008, 1.008, 1.008]",
-          "verification": "Residual vector r = b - Ax satisfies ||r|| < 0.1.",
-          "common_mistake": "Using newly calculated values within the same iteration (that is Gauss-Seidel, not Jacobi)."
-        }
-      ],
-      "expanded_numerical_practice": [
-        {
-          "problem_id": "NM-U4-GS-01",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Seidel Method",
-          "difficulty": "Exam-Level",
-          "problem": "Solve using Gauss-Seidel iteration method: 10x + y + 2z = 13; 3x + 10y + z = 14; 2x + 3y + 10z = 15. Show step-by-step updating from x0=(0,0,0).",
-          "data": {
-            "system": "10x + y + 2z = 13; 3x + 10y + z = 14; 2x + 3y + 10z = 15",
-            "A": [
-              [
-                10,
-                1,
-                2
-              ],
-              [
-                3,
-                10,
-                1
-              ],
-              [
-                2,
-                3,
-                10
-              ]
-            ],
-            "b": [
-              13,
-              14,
-              15
-            ]
-          },
-          "method": "Gauss-Seidel Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j < i} a_ij x_j^{(k+1)} - \u2211_{j > i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Check diagonal dominance or symmetric positive-definiteness.",
-            "Step 2: Set up iterative formulas: newly calculated values are used immediately.",
-            "Step 3: Execute 3 iterations: vector converges to [1.0004, 1.0002, 0.9999]."
-          ],
-          "intermediate_values": {
-            "solution": [
-              1.0004,
-              1.0002,
-              0.9999
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 24.2899
-            },
-            {
-              "iter": 1,
-              "x": [
-                1.3,
-                1.01,
-                0.937
-              ],
-              "residual_norm": 3.0324
-            },
-            {
-              "iter": 2,
-              "x": [
-                1.0116,
-                1.0028,
-                0.9968
-              ],
-              "residual_norm": 0.1274
-            },
-            {
-              "iter": 3,
-              "x": [
-                1.0004,
-                1.0002,
-                0.9999
-              ],
-              "residual_norm": 0.0046
-            }
-          ],
-          "final_answer": "Gauss-Seidel converged solution: [1.0004, 1.0002, 0.9999]",
-          "verification": "Residual substitution Ax - b yields near zero vector; converges ~2x faster than Jacobi.",
-          "common_mistake": "Waiting until next iteration to update values (failing to use latest computed values immediately)."
-        },
-        {
-          "problem_id": "NM-U4-GS-02",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Seidel Method",
-          "difficulty": "Exam-Level",
-          "problem": "Solve using Gauss-Seidel iteration method: 27x + 6y - z = 85; 6x + 15y + 2z = 72; x + y + 54z = 110 (CSJMU 15-mark classic). Show step-by-step updating from x0=(0,0,0).",
-          "data": {
-            "system": "27x + 6y - z = 85; 6x + 15y + 2z = 72; x + y + 54z = 110 (CSJMU 15-mark classic)",
-            "A": [
-              [
-                27,
-                6,
-                -1
-              ],
-              [
-                6,
-                15,
-                2
-              ],
-              [
-                1,
-                1,
-                54
-              ]
-            ],
-            "b": [
-              85,
-              72,
-              110
-            ]
-          },
-          "method": "Gauss-Seidel Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j < i} a_ij x_j^{(k+1)} - \u2211_{j > i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Check diagonal dominance or symmetric positive-definiteness.",
-            "Step 2: Set up iterative formulas: newly calculated values are used immediately.",
-            "Step 3: Execute 3 iterations: vector converges to [2.4257, 3.5729, 1.926]."
-          ],
-          "intermediate_values": {
-            "solution": [
-              2.4257,
-              3.5729,
-              1.926
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 156.5535
-            },
-            {
-              "iter": 1,
-              "x": [
-                3.1481,
-                3.5407,
-                1.9132
-              ],
-              "residual_norm": 19.7063
-            },
-            {
-              "iter": 2,
-              "x": [
-                2.4322,
-                3.572,
-                1.9258
-              ],
-              "residual_norm": 0.1769
-            },
-            {
-              "iter": 3,
-              "x": [
-                2.4257,
-                3.5729,
-                1.926
-              ],
-              "residual_norm": 0.0053
-            }
-          ],
-          "final_answer": "Gauss-Seidel converged solution: [2.4257, 3.5729, 1.926]",
-          "verification": "Residual substitution Ax - b yields near zero vector; converges ~2x faster than Jacobi.",
-          "common_mistake": "Waiting until next iteration to update values (failing to use latest computed values immediately)."
-        },
-        {
-          "problem_id": "NM-U4-GS-03",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Seidel Method",
-          "difficulty": "Exam-Level",
-          "problem": "Solve using Gauss-Seidel iteration method: 20x + y - 2z = 17; 3x + 20y - z = -18; 2x - 3y + 20z = 25. Show step-by-step updating from x0=(0,0,0).",
-          "data": {
-            "system": "20x + y - 2z = 17; 3x + 20y - z = -18; 2x - 3y + 20z = 25",
-            "A": [
-              [
-                20,
-                1,
-                -2
-              ],
-              [
-                3,
-                20,
-                -1
-              ],
-              [
-                2,
-                -3,
-                20
-              ]
-            ],
-            "b": [
-              17,
-              -18,
-              25
-            ]
-          },
-          "method": "Gauss-Seidel Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j < i} a_ij x_j^{(k+1)} - \u2211_{j > i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Check diagonal dominance or symmetric positive-definiteness.",
-            "Step 2: Set up iterative formulas: newly calculated values are used immediately.",
-            "Step 3: Execute 3 iterations: vector converges to [1.0, -1.0, 1.0]."
-          ],
-          "intermediate_values": {
-            "solution": [
-              1.0,
-              -1.0,
-              1.0
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 35.1852
-            },
-            {
-              "iter": 1,
-              "x": [
-                0.85,
-                -1.0275,
-                1.0109
-              ],
-              "residual_norm": 3.2124
-            },
-            {
-              "iter": 2,
-              "x": [
-                1.0025,
-                -0.9998,
-                0.9998
-              ],
-              "residual_norm": 0.0511
-            },
-            {
-              "iter": 3,
-              "x": [
-                1.0,
-                -1.0,
-                1.0
-              ],
-              "residual_norm": 0.0007
-            }
-          ],
-          "final_answer": "Gauss-Seidel converged solution: [1.0, -1.0, 1.0]",
-          "verification": "Residual substitution Ax - b yields near zero vector; converges ~2x faster than Jacobi.",
-          "common_mistake": "Waiting until next iteration to update values (failing to use latest computed values immediately)."
-        },
-        {
-          "problem_id": "NM-U4-GS-04",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Seidel Method",
-          "difficulty": "Exam-Level",
-          "problem": "Solve using Gauss-Seidel iteration method: 4x + y + z = 2; x + 5y + 2z = -6; x + 2y + 3z = -4. Show step-by-step updating from x0=(0,0,0).",
-          "data": {
-            "system": "4x + y + z = 2; x + 5y + 2z = -6; x + 2y + 3z = -4",
-            "A": [
-              [
-                4,
-                1,
-                1
-              ],
-              [
-                1,
-                5,
-                2
-              ],
-              [
-                1,
-                2,
-                3
-              ]
-            ],
-            "b": [
-              2,
-              -6,
-              -4
-            ]
-          },
-          "method": "Gauss-Seidel Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j < i} a_ij x_j^{(k+1)} - \u2211_{j > i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Check diagonal dominance or symmetric positive-definiteness.",
-            "Step 2: Set up iterative formulas: newly calculated values are used immediately.",
-            "Step 3: Execute 3 iterations: vector converges to [1.0106, -1.0426, -0.9751]."
-          ],
-          "intermediate_values": {
-            "solution": [
-              1.0106,
-              -1.0426,
-              -0.9751
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0,
-                0.0
-              ],
-              "residual_norm": 7.4833
-            },
-            {
-              "iter": 1,
-              "x": [
-                0.5,
-                -1.3,
-                -0.6333
-              ],
-              "residual_norm": 2.3113
-            },
-            {
-              "iter": 2,
-              "x": [
-                0.9833,
-                -1.1433,
-                -0.8989
-              ],
-              "residual_norm": 0.5422
-            },
-            {
-              "iter": 3,
-              "x": [
-                1.0106,
-                -1.0426,
-                -0.9751
-              ],
-              "residual_norm": 0.1545
-            }
-          ],
-          "final_answer": "Gauss-Seidel converged solution: [1.0106, -1.0426, -0.9751]",
-          "verification": "Residual substitution Ax - b yields near zero vector; converges ~2x faster than Jacobi.",
-          "common_mistake": "Waiting until next iteration to update values (failing to use latest computed values immediately)."
-        },
-        {
-          "problem_id": "NM-U4-GS-05",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Seidel Method",
-          "difficulty": "Exam-Level",
-          "problem": "Solve using Gauss-Seidel iteration method: Gauss-Seidel Symmetric Positive-Definite. Show step-by-step updating from x0=(0,0,0).",
-          "data": {
-            "system": "Gauss-Seidel Symmetric Positive-Definite",
-            "A": [
-              [
-                4,
-                2
-              ],
-              [
-                2,
-                3
-              ]
-            ],
-            "b": [
-              6,
-              5
-            ]
-          },
-          "method": "Gauss-Seidel Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j < i} a_ij x_j^{(k+1)} - \u2211_{j > i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Check diagonal dominance or symmetric positive-definiteness.",
-            "Step 2: Set up iterative formulas: newly calculated values are used immediately.",
-            "Step 3: Execute 3 iterations: vector converges to [1.0556, 0.963]."
-          ],
-          "intermediate_values": {
-            "solution": [
-              1.0556,
-              0.963
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0
-              ],
-              "residual_norm": 7.8102
-            },
-            {
-              "iter": 1,
-              "x": [
-                1.5,
-                0.6667
-              ],
-              "residual_norm": 1.3333
-            },
-            {
-              "iter": 2,
-              "x": [
-                1.1667,
-                0.8889
-              ],
-              "residual_norm": 0.4444
-            },
-            {
-              "iter": 3,
-              "x": [
-                1.0556,
-                0.963
-              ],
-              "residual_norm": 0.1481
-            }
-          ],
-          "final_answer": "Gauss-Seidel converged solution: [1.0556, 0.963]",
-          "verification": "Residual substitution Ax - b yields near zero vector; converges ~2x faster than Jacobi.",
-          "common_mistake": "Waiting until next iteration to update values (failing to use latest computed values immediately)."
-        },
-        {
-          "problem_id": "NM-U4-GS-06",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Gauss-Seidel Method",
-          "difficulty": "Exam-Level",
-          "problem": "Solve using Gauss-Seidel iteration method: Comparison of Jacobi vs Gauss-Seidel Rates. Show step-by-step updating from x0=(0,0,0).",
-          "data": {
-            "system": "Comparison of Jacobi vs Gauss-Seidel Rates",
-            "A": [
-              [
-                10,
-                1
-              ],
-              [
-                1,
-                10
-              ]
-            ],
-            "b": [
-              11,
-              11
-            ]
-          },
-          "method": "Gauss-Seidel Iteration",
-          "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j < i} a_ij x_j^{(k+1)} - \u2211_{j > i} a_ij x_j^{(k)} ]",
-          "step_by_step_calculation": [
-            "Step 1: Check diagonal dominance or symmetric positive-definiteness.",
-            "Step 2: Set up iterative formulas: newly calculated values are used immediately.",
-            "Step 3: Execute 3 iterations: vector converges to [1.0, 1.0]."
-          ],
-          "intermediate_values": {
-            "solution": [
-              1.0,
-              1.0
-            ]
-          },
-          "iteration_table": [
-            {
-              "iter": 0,
-              "x": [
-                0.0,
-                0.0
-              ],
-              "residual_norm": 15.5563
-            },
-            {
-              "iter": 1,
-              "x": [
-                1.1,
-                0.99
-              ],
-              "residual_norm": 0.99
-            },
-            {
-              "iter": 2,
-              "x": [
-                1.001,
-                0.9999
-              ],
-              "residual_norm": 0.0099
-            },
-            {
-              "iter": 3,
-              "x": [
-                1.0,
-                1.0
-              ],
-              "residual_norm": 0.0001
-            }
-          ],
-          "final_answer": "Gauss-Seidel converged solution: [1.0, 1.0]",
-          "verification": "Residual substitution Ax - b yields near zero vector; converges ~2x faster than Jacobi.",
-          "common_mistake": "Waiting until next iteration to update values (failing to use latest computed values immediately)."
-        },
-        {
-          "problem_id": "NM-U4-CONV-01",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Linear Systems Convergence",
-          "difficulty": "Exam-Level",
-          "problem": "Given system: x + 2y + 10z = 26; 10x + y + 2z = 13; 2x + 10y + z = 27. Show how to reorder equations for convergence.",
-          "data": {
-            "topic": "Diagonal Dominance Row Reordering"
-          },
-          "method": "Matrix Convergence Analysis",
-          "formula": "\u03c1(T) < 1; |a_ii| > \u2211_{j!=i} |a_ij|",
-          "step_by_step_calculation": [
-            "Step 1: Original matrix is not dominant in row 1 (|1| < 2+10).",
-            "Step 2: Reorder: Equation 2 as Row 1 (10 > 1+2), Equation 3 as Row 2 (10 > 2+1), Equation 1 as Row 3 (10 > 1+2).",
-            "Step 3: Reordered matrix is strictly diagonally dominant."
-          ],
-          "intermediate_values": {
-            "analysis": "Row reordering: [Eq 2, Eq 3, Eq 1]. Convergence guaranteed."
-          },
-          "iteration_table": [],
-          "final_answer": "Row reordering: [Eq 2, Eq 3, Eq 1]. Convergence guaranteed.",
-          "verification": "Verified through numerical linear algebra theorems.",
-          "common_mistake": "Claiming diagonal dominance is mandatory (it is sufficient, but SPD also guarantees convergence)."
-        },
-        {
-          "problem_id": "NM-U4-CONV-02",
-          "unit": "Unit 4: Systems of Linear Equations",
-          "topic": "Linear Systems Convergence",
-          "difficulty": "Exam-Level",
-          "problem": "Explain why the Gauss-Seidel method is guaranteed to converge for the matrix A = [[4, 2], [2, 3]] even without diagonal dominance checking.",
-          "data": {
-            "topic": "Ostrowski-Reich Theorem Application"
-          },
-          "method": "Matrix Convergence Analysis",
-          "formula": "\u03c1(T) < 1; |a_ii| > \u2211_{j!=i} |a_ij|",
-          "step_by_step_calculation": [
-            "Step 1: State governing definitions, mathematical assumptions, and boundary conditions.",
-            "Step 2: Execute analytical derivation / numerical substitution: Matrix A is symmetric (A^T = A) and positive-definite (eigenvalues \u03bb1 = 5.56 > 0, \u03bb2 = 1.44 > 0). By the Ostrowski-Reich theorem, the Gauss-Seidel (SOR with \u03c9 = 1) method converges unconditionally for any symmetric positive-definite matrix.",
-            "Step 3: Verify consistency and formulate final result: Ostrowski-Reich theorem guarantees convergence because A is symmetric positive-definite.."
-          ],
-          "intermediate_values": {
-            "analysis": "Ostrowski-Reich theorem guarantees convergence because A is symmetric positive-definite."
-          },
-          "iteration_table": [],
-          "final_answer": "Ostrowski-Reich theorem guarantees convergence because A is symmetric positive-definite.",
-          "verification": "Verified through numerical linear algebra theorems.",
-          "common_mistake": "Claiming diagonal dominance is mandatory (it is sufficient, but SPD also guarantees convergence)."
-        }
-      ],
-      "timed_numerical_drill": {
-        "problem_id": "NM-U4-JAC-02",
-        "title": "Timed Exam Drill: Gauss-Jacobi Method",
-        "time_limit_minutes": 15,
-        "marks": 15,
-        "problem": "Apply Gauss-Jacobi iteration method to solve: 5x - y + z = 10; 2x + 4y = 12; x + y + 5z = -1. Show 3 iterations starting from x0 = (0,0,0).",
-        "formula": "x_i^{(k+1)} = (1/a_ii) [ b_i - \u2211_{j!=i} a_ij x_j^{(k)} ]",
-        "final_answer": "Jacobi approximation after 3 iterations: [2.64, 1.68, -1.128]",
-        "verification": "Residual vector r = b - Ax satisfies ||r|| < 0.1.",
-        "common_mistake": "Using newly calculated values within the same iteration (that is Gauss-Seidel, not Jacobi)."
-      },
-      "formula_recall": "Gauss-Seidel: x_i^{(k+1)} = (1/a_ii)[b_i - \u2211_{j<i} a_ij x_j^{(k+1)} - \u2211_{j>i} a_ij x_j^{(k)}]. Strictly diagonally dominant (|a_ii| > \u2211_{j!=i}|a_ij|) OR symmetric positive-definite (Ostrowski-Reich) guarantees convergence."
+      ]
     },
     "academic_pyqs": [
       {
@@ -1186,7 +181,7 @@
         "marks": 15,
         "question": "State the condition of Strict Diagonal Dominance. Solve the following system of equations using the Gauss-Seidel iteration method correct to three decimal places:\n8x - 3y + 2z = 20\n4x + 11y - z = 33\n6x + 3y + 12z = 36 (15 Marks)",
         "rubric": "Diagonal Dominance check & proof (3 marks) + Formulation of iteration equations (3 marks) + 4 Iteration steps calculated (7 marks) + Final verified values (2 marks) = 15 Marks.",
-        "model_answer": "1. Strict Diagonal Dominance Check:\nA system is Strictly Diagonally Dominant if in each row: |a_ii| > sum_{j!=i} |a_ij|.\n\u2022 Row 1: |8| > |-3| + |2| => 8 > 5 (True)\n\u2022 Row 2: |11| > |4| + |-1| => 11 > 5 (True)\n\u2022 Row 3: |12| > |6| + |3| => 12 > 9 (True)\nSince all three inequalities hold strictly, the system is strictly diagonally dominant and Gauss-Seidel is guaranteed to converge.\n\n2. Iterative Equations:\n\u2022 x^{k+1} = (20 + 3*y^k - 2*z^k) / 8\n\u2022 y^{k+1} = (33 - 4*x^{k+1} + z^k) / 11   (using fresh x^{k+1})\n\u2022 z^{k+1} = (36 - 6*x^{k+1} - 3*y^{k+1}) / 12  (using fresh x^{k+1} and y^{k+1})\n\n3. Iteration Cycles (Initial guess x0 = 0, y0 = 0, z0 = 0):\n\u2022 Iteration 1:\n  x1 = (20 + 0 - 0) / 8 = 2.500\n  y1 = (33 - 4(2.500) + 0) / 11 = (33 - 10) / 11 = 23 / 11 = 2.091\n  z1 = (36 - 6(2.500) - 3(2.091)) / 12 = (36 - 15 - 6.273) / 12 = 14.727 / 12 = 1.227\n\u2022 Iteration 2:\n  x2 = (20 + 3(2.091) - 2(1.227)) / 8 = (20 + 6.273 - 2.454) / 8 = 23.819 / 8 = 2.977\n  y2 = (33 - 4(2.977) + 1.227) / 11 = (33 - 11.908 + 1.227) / 11 = 22.319 / 11 = 2.029\n  z2 = (36 - 6(2.977) - 3(2.029)) / 12 = (36 - 17.862 - 6.087) / 12 = 12.051 / 12 = 1.004\n\u2022 Iteration 3:\n  x3 = (20 + 3(2.029) - 2(1.004)) / 8 = (20 + 6.087 - 2.008) / 8 = 24.079 / 8 = 3.010\n  y3 = (33 - 4(3.010) + 1.004) / 11 = (33 - 12.040 + 1.004) / 11 = 21.964 / 11 = 1.997\n  z3 = (36 - 6(3.010) - 3(1.997)) / 12 = (36 - 18.060 - 5.991) / 12 = 11.949 / 12 = 0.996\n\u2022 Iteration 4:\n  x4 = (20 + 3(1.997) - 2(0.996)) / 8 = (20 + 5.991 - 1.992) / 8 = 23.999 / 8 = 3.000\n  y4 = (33 - 4(3.000) + 0.996) / 11 = (33 - 12.000 + 0.996) / 11 = 21.996 / 11 = 2.000\n  z4 = (36 - 6(3.000) - 3(2.000)) / 12 = (36 - 18.000 - 6.000) / 12 = 12.000 / 12 = 1.000\n\nValues have converged to three decimal places:\nx = 3.000, y = 2.000, z = 1.000.",
+        "model_answer": "1. Strict Diagonal Dominance Check:\nA system is Strictly Diagonally Dominant if in each row: |a_ii| > sum_{j!=i} |a_ij|.\n• Row 1: |8| > |-3| + |2| => 8 > 5 (True)\n• Row 2: |11| > |4| + |-1| => 11 > 5 (True)\n• Row 3: |12| > |6| + |3| => 12 > 9 (True)\nSince all three inequalities hold strictly, the system is strictly diagonally dominant and Gauss-Seidel is guaranteed to converge.\n\n2. Iterative Equations:\n• x^{k+1} = (20 + 3*y^k - 2*z^k) / 8\n• y^{k+1} = (33 - 4*x^{k+1} + z^k) / 11   (using fresh x^{k+1})\n• z^{k+1} = (36 - 6*x^{k+1} - 3*y^{k+1}) / 12  (using fresh x^{k+1} and y^{k+1})\n\n3. Iteration Cycles (Initial guess x0 = 0, y0 = 0, z0 = 0):\n• Iteration 1:\n  x1 = (20 + 0 - 0) / 8 = 2.500\n  y1 = (33 - 4(2.500) + 0) / 11 = (33 - 10) / 11 = 23 / 11 = 2.091\n  z1 = (36 - 6(2.500) - 3(2.091)) / 12 = (36 - 15 - 6.273) / 12 = 14.727 / 12 = 1.227\n• Iteration 2:\n  x2 = (20 + 3(2.091) - 2(1.227)) / 8 = (20 + 6.273 - 2.454) / 8 = 23.819 / 8 = 2.977\n  y2 = (33 - 4(2.977) + 1.227) / 11 = (33 - 11.908 + 1.227) / 11 = 22.319 / 11 = 2.029\n  z2 = (36 - 6(2.977) - 3(2.029)) / 12 = (36 - 17.862 - 6.087) / 12 = 12.051 / 12 = 1.004\n• Iteration 3:\n  x3 = (20 + 3(2.029) - 2(1.004)) / 8 = (20 + 6.087 - 2.008) / 8 = 24.079 / 8 = 3.010\n  y3 = (33 - 4(3.010) + 1.004) / 11 = (33 - 12.040 + 1.004) / 11 = 21.964 / 11 = 1.997\n  z3 = (36 - 6(3.010) - 3(1.997)) / 12 = (36 - 18.060 - 5.991) / 12 = 11.949 / 12 = 0.996\n• Iteration 4:\n  x4 = (20 + 3(1.997) - 2(0.996)) / 8 = (20 + 5.991 - 1.992) / 8 = 23.999 / 8 = 3.000\n  y4 = (33 - 4(3.000) + 0.996) / 11 = (33 - 12.000 + 0.996) / 11 = 21.996 / 11 = 2.000\n  z4 = (36 - 6(3.000) - 3(2.000)) / 12 = (36 - 18.000 - 6.000) / 12 = 12.000 / 12 = 1.000\n\nValues have converged to three decimal places:\nx = 3.000, y = 2.000, z = 1.000.",
         "answer_structure": "Dominance Condition Proof -> Formula Formulation -> Iteration Table -> Final Converged Values",
         "important_points": [
           "Diagonal dominance verified",
@@ -1289,130 +284,133 @@
     "aptitude_solved": [
       {
         "example_no": 1,
-        "title": "Clock Hand Angle Formula",
+        "title": "Foundation Problem on Clocks & Calendars",
         "tier": "Tier 1: Foundation Concept",
-        "difficulty": "Foundation",
-        "source": "TCS NQT Pattern",
+        "difficulty": "Tier 1",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "Find the angle between the hour hand and the minute hand of a clock at 3:40.",
-        "problem": "Find the angle between the hour hand and the minute hand of a clock at 3:40.",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
         "step_by_step_solution": [
-          "Step 1: Formula \u03b8 = |(11/2)*M - 30*H| where M = 40, H = 3.",
-          "Step 2: \u03b8 = |(11/2)*40 - 30*3| = |220 - 90| = 130\u00b0."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
         "solution": [
-          "Step 1: Formula \u03b8 = |(11/2)*M - 30*H| where M = 40, H = 3.",
-          "Step 2: \u03b8 = |(11/2)*40 - 30*3| = |220 - 90| = 130\u00b0."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
-        "formula": "130\u00b0",
-        "shortcut": "\u03b8 = |(11/2)M - 30H|",
-        "trap": "Calculating 30*H without accounting for hour hand movement.",
-        "final_answer": "130\u00b0",
-        "answer": "130\u00b0"
+        "final_answer": "180 marks (90%)",
+        "answer": "180 marks (90%)"
       },
       {
         "example_no": 2,
-        "title": "Clock Hands Coincidence Time",
+        "title": "Standard Placement Problem on Clocks & Calendars",
         "tier": "Tier 2: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Infosys Pattern",
+        "difficulty": "Tier 2",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "At what time between 4 and 5 o'clock will the hands of a clock be together (coincide)?",
-        "problem": "At what time between 4 and 5 o'clock will the hands of a clock be together (coincide)?",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
         "step_by_step_solution": [
-          "Step 1: At H = 4, angle is 0\u00b0. 0 = (11/2)*M - 30*4 => (11/2)*M = 120.",
-          "Step 2: M = 240 / 11 = 21 9/11 minutes.",
-          "Step 3: Time = 21 9/11 minutes past 4."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
         "solution": [
-          "Step 1: At H = 4, angle is 0\u00b0. 0 = (11/2)*M - 30*4 => (11/2)*M = 120.",
-          "Step 2: M = 240 / 11 = 21 9/11 minutes.",
-          "Step 3: Time = 21 9/11 minutes past 4."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
-        "formula": "21 9/11 minutes past 4",
-        "shortcut": "M = (60/11) * H",
-        "trap": "Using 20 minutes (ignoring hour hand creep).",
-        "final_answer": "21 9/11 minutes past 4",
-        "answer": "21 9/11 minutes past 4"
+        "final_answer": "Rs. 864",
+        "answer": "Rs. 864"
       },
       {
         "example_no": 3,
-        "title": "Calendar Day of the Week Calculation",
+        "title": "Efficiency & Work Ratio Problem on Clocks & Calendars",
         "tier": "Tier 3: Company Exam Pattern",
-        "difficulty": "Placement",
-        "source": "Wipro Pattern",
-        "target_time_seconds": 50,
-        "question": "What day of the week was 15th August 1947?",
-        "problem": "What day of the week was 15th August 1947?",
+        "difficulty": "Tier 3",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
         "step_by_step_solution": [
-          "Step 1: 1600 years = 0 odd days; 300 years (1900) = 1 odd day.",
-          "Step 2: 46 completed years (1901-1946) = 11 leap years + 35 ordinary years = (11*2 + 35*1) = 57 odd days = 1 odd day (57 % 7).",
-          "Step 3: Days in 1947 up to Aug 15: Jan(3) + Feb(0) + Mar(3) + Apr(2) + May(3) + Jun(2) + Jul(3) + Aug(15 \u2261 1) = 17 odd days = 3 odd days.",
-          "Step 4: Total odd days = 1 (from 1900) + 1 (from 46 yrs) + 3 (from 1947) = 5 odd days. 5 corresponds to Friday."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
         "solution": [
-          "Step 1: 1600 years = 0 odd days; 300 years (1900) = 1 odd day.",
-          "Step 2: 46 completed years (1901-1946) = 11 leap years + 35 ordinary years = (11*2 + 35*1) = 57 odd days = 1 odd day (57 % 7).",
-          "Step 3: Days in 1947 up to Aug 15: Jan(3) + Feb(0) + Mar(3) + Apr(2) + May(3) + Jun(2) + Jul(3) + Aug(15 \u2261 1) = 17 odd days = 3 odd days.",
-          "Step 4: Total odd days = 1 (from 1900) + 1 (from 46 yrs) + 3 (from 1947) = 5 odd days. 5 corresponds to Friday."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
-        "formula": "Friday",
-        "shortcut": "Zeller/Odd days modular arithmetic",
-        "trap": "Counting 1947 as a leap year (it is ordinary).",
-        "final_answer": "Friday",
-        "answer": "Friday"
+        "final_answer": "14 1/3 days",
+        "answer": "14 1/3 days"
       },
       {
         "example_no": 4,
-        "title": "Clock Gaining Time Drift",
+        "title": "Speed & Relative Distance Problem on Clocks & Calendars",
         "tier": "Tier 4: Time-Pressure Challenge",
-        "difficulty": "Tricky",
-        "source": "Accenture Pattern",
-        "target_time_seconds": 50,
-        "question": "A clock is set right at 5 AM. It loses 16 minutes in 24 hours. What will be the true time when the clock indicates 10 PM on the 4th day?",
-        "problem": "A clock is set right at 5 AM. It loses 16 minutes in 24 hours. What will be the true time when the clock indicates 10 PM on the 4th day?",
+        "difficulty": "Tier 4",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
         "step_by_step_solution": [
-          "Step 1: Total time on faulty clock from 5 AM day 1 to 10 PM day 4 = 3 days (72h) + 17h = 89 hours.",
-          "Step 2: Faulty clock runs 23h 44m = 356/15 hours for every 24 true hours.",
-          "Step 3: True time = 89 * (24 / (356/15)) = 89 * (360 / 356) = 90 true hours.",
-          "Step 4: 90 hours from 5 AM Day 1 = 11 PM on the 4th day."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
         "solution": [
-          "Step 1: Total time on faulty clock from 5 AM day 1 to 10 PM day 4 = 3 days (72h) + 17h = 89 hours.",
-          "Step 2: Faulty clock runs 23h 44m = 356/15 hours for every 24 true hours.",
-          "Step 3: True time = 89 * (24 / (356/15)) = 89 * (360 / 356) = 90 true hours.",
-          "Step 4: 90 hours from 5 AM Day 1 = 11 PM on the 4th day."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
-        "formula": "11:00 PM",
-        "shortcut": "True/Faulty proportion equation",
-        "trap": "Applying loss directly to elapsed faulty time.",
-        "final_answer": "11:00 PM",
-        "answer": "11:00 PM"
+        "final_answer": "2:15 PM",
+        "answer": "2:15 PM"
       },
       {
         "example_no": 5,
-        "title": "Identical Calendar Year Repetition",
-        "tier": "Tier 5: Advanced Placement Variant",
-        "difficulty": "Advanced",
-        "source": "Cognizant Pattern",
-        "target_time_seconds": 60,
-        "question": "Which year will have the same calendar as the year 2024?",
-        "problem": "Which year will have the same calendar as the year 2024?",
+        "title": "Combinatorics & Probability Problem on Clocks & Calendars",
+        "tier": "Tier 5: Time-Pressure Challenge",
+        "difficulty": "Tier 5",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "problem": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
         "step_by_step_solution": [
-          "Step 1: 2024 is a LEAP year.",
-          "Step 2: A leap year calendar repeats after 28 years (unless crossing a non-leap century).",
-          "Step 3: 2024 + 28 = 2052."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
         "solution": [
-          "Step 1: 2024 is a LEAP year.",
-          "Step 2: A leap year calendar repeats after 28 years (unless crossing a non-leap century).",
-          "Step 3: 2024 + 28 = 2052."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
-        "formula": "2052",
-        "shortcut": "Leap year repeats in +28 years",
-        "trap": "Assuming it repeats in 6 or 11 years (which only apply to ordinary years).",
-        "final_answer": "2052",
-        "answer": "2052"
+        "final_answer": "10/21",
+        "answer": "10/21"
       }
     ],
     "aptitude_mcqs": [
@@ -1606,7 +604,7 @@
     "dsa_pattern": {
       "pattern_name": "Graph Traversal: Breadth-First Search (BFS)",
       "pattern": "Graph Traversal: Breadth-First Search (BFS)",
-      "title": "Graph Traversal: Breadth-First Search (BFS) \u2014 Algorithmic Invariants & Implementation",
+      "title": "Graph Traversal: Breadth-First Search (BFS) — Algorithmic Invariants & Implementation",
       "category": "Graph / BFS",
       "concept": "Explores graph vertices layer by layer from one or more source vertices using a queue. Guarantees finding the shortest path in unweighted graphs.",
       "why_it_works": "First time a vertex is popped from the queue corresponds to its minimum edge distance from the source.",
@@ -1731,9 +729,9 @@
     "core_cs": {
       "subject": "Computer Networks",
       "topic": "Routing Algorithms: Distance Vector (RIP), Link State (OSPF) & BGP",
-      "lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP \u2014 Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF \u2014 Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
-      "concept_lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP \u2014 Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF \u2014 Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
-      "lecture": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP \u2014 Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF \u2014 Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
+      "lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP — Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF — Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
+      "concept_lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP — Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF — Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
+      "lecture": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP — Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF — Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
       "key_definitions": [
         {
           "term": "Distance Vector",
@@ -1856,36 +854,36 @@
       ]
     },
     "project_preparation": {
-      "project_name": "Biometric Electronic Voting System (BEVM)",
-      "name": "Biometric Electronic Voting System (BEVM)",
-      "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
-      "topic": "Atomic State Locking & SQLite Double-Vote Prevention",
-      "feature_focus": "Atomic State Locking & SQLite Double-Vote Prevention",
-      "what_to_understand": "Preventing duplicate voting attempts through atomic database transactions and strict state flag locking.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nPreventing duplicate voting attempts through atomic database transactions and strict state flag locking.\n\nWHAT TO MEMORIZE:\nAtomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
-      "what_to_memorize": "Atomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
+      "project_name": "DocRoute",
+      "name": "DocRoute",
+      "repo_path": "D:\\Projects\\DocRoute",
+      "topic": "Image Preprocessing for Enhanced OCR Accuracy",
+      "feature_focus": "Image Preprocessing for Enhanced OCR Accuracy",
+      "what_to_understand": "Improving text recognition accuracy on low-quality scans using image filtering (grayscale, thresholding).",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nImproving text recognition accuracy on low-quality scans using image filtering (grayscale, thresholding).\n\nWHAT TO MEMORIZE:\nTesseract performs best on high-contrast black-and-white images with minimal background noise or skew.\n\n60-SECOND INTERVIEW PITCH:\nOCR accuracy depends heavily on image clarity. In DocRoute, I implemented preprocessing filters that convert scanned pages to grayscale and apply adaptive thresholding, removing background shadows and noise before character recognition to ensure clean text output.",
+      "what_to_memorize": "Tesseract performs best on high-contrast black-and-white images with minimal background noise or skew.",
       "interview_questions": [
         {
-          "q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
-          "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."
+          "q": "Why is image preprocessing necessary before running OCR?",
+          "a": "Scanned documents often suffer from uneven lighting, paper shadows, colored backgrounds, or low contrast. Running OCR directly on noisy images causes character substitution errors (like mistaking '8' for 'B' or '1' for 'I'). Preprocessing normalizes the image to clear black text on a pure white background, significantly improving character recognition accuracy."
         },
         {
-          "q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
-          "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."
+          "q": "What preprocessing techniques can be applied in Python using OpenCV or PIL?",
+          "a": "Key preprocessing steps include: 1) Grayscale conversion (`cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)`) to remove color noise, 2) Otsu's binarization / adaptive thresholding (`cv2.threshold`) to produce crisp black-and-white pixels, and 3) Denoising filters (`cv2.medianBlur`) to eliminate speckles and scanner dust."
         }
       ],
       "interview_qa": [
         {
-          "q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
-          "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."
+          "q": "Why is image preprocessing necessary before running OCR?",
+          "a": "Scanned documents often suffer from uneven lighting, paper shadows, colored backgrounds, or low contrast. Running OCR directly on noisy images causes character substitution errors (like mistaking '8' for 'B' or '1' for 'I'). Preprocessing normalizes the image to clear black text on a pure white background, significantly improving character recognition accuracy."
         },
         {
-          "q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
-          "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."
+          "q": "What preprocessing techniques can be applied in Python using OpenCV or PIL?",
+          "a": "Key preprocessing steps include: 1) Grayscale conversion (`cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)`) to remove color noise, 2) Otsu's binarization / adaptive thresholding (`cv2.threshold`) to produce crisp black-and-white pixels, and 3) Denoising filters (`cv2.medianBlur`) to eliminate speckles and scanner dust."
         }
       ],
-      "interview_pitch_exercise": "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots.",
-      "pitch": "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots."
+      "interview_pitch_exercise": "OCR accuracy depends heavily on image clarity. In DocRoute, I implemented preprocessing filters that convert scanned pages to grayscale and apply adaptive thresholding, removing background shadows and noise before character recognition to ensure clean text output.",
+      "pitch": "OCR accuracy depends heavily on image clarity. In DocRoute, I implemented preprocessing filters that convert scanned pages to grayscale and apply adaptive thresholding, removing background shadows and noise before character recognition to ensure clean text output."
     },
     "placement_interview": [
       {
@@ -1912,10 +910,10 @@
       },
       {
         "category": "Project Experience",
-        "question": "In your project 'College Student Management System (CSMS)', what was the most difficult technical challenge you personally solved?",
-        "model_answer": "In College Student Management System (CSMS) (FastAPI, Supabase PostgreSQL, Vanilla JS), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "question": "In your project 'BulkBeat TV', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In BulkBeat TV (Python AsyncIO, SQLite WAL, Telegram Bot, 20+ Rule Engine), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
         "key_talking_points": [
-          "Contextualize the architecture of College Student Management System (CSMS).",
+          "Contextualize the architecture of BulkBeat TV.",
           "Highlight concurrency, data integrity, and error recovery.",
           "Quantify reliability outcomes and graceful failure handling."
         ],
@@ -1936,7 +934,7 @@
       {
         "category": "HR & Cultural Fit",
         "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
         "key_talking_points": [
           "Disciplined reading of official docs and engineering blogs.",
           "Hands-on prototype building to validate theory.",
@@ -1946,12 +944,12 @@
       }
     ],
     "daily_revision": {
-      "yesterday_recall": "\u2022 Reviewed Day 18 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
-      "today_recall": "\u2022 Mastered BCA-5003 \u2014 Routing Algorithms: Distance Vector & Link State.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
-      "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: BFS Shortest Path.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Transport Layer: TCP 3-Way Handshake & UDP.",
-      "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Routing Algorithms: Distance Vector & Link State.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-      "dsa_recall": "\u2022 Pattern: Graph Traversal: BFS Shortest Path.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-      "project_recall": "\u2022 Project: SmartGalla.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "yesterday_recall": "• Reviewed Day 18 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "• Mastered BCA-5003 — Routing Algorithms: Distance Vector & Link State.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics.\n• Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: BFS Shortest Path.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Transport Layer: TCP 3-Way Handshake & UDP.",
+      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Routing Algorithms: Distance Vector & Link State.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "• Pattern: Graph Traversal: BFS Shortest Path.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "• Project: SmartGalla.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
       "rapid_fire_questions": [
         {
           "q": "Day 19 Q1: What is the primary academic thesis of Routing Algorithms: Distance Vector & Link State?",
@@ -1963,7 +961,7 @@
         },
         {
           "q": "Day 19 Q3: What is the time complexity of Graph Traversal: BFS Shortest Path?",
-          "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
+          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
         },
         {
           "q": "Day 19 Q4: What is the central architectural principle of Transport Layer: TCP 3-Way Handshake & UDP?",
@@ -1994,26 +992,26 @@
           "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
         }
       ],
-      "today_summary": "\u2022 Mastered BCA-5003 \u2014 Routing Algorithms: Distance Vector & Link State.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+      "today_summary": "• Mastered BCA-5003 — Routing Algorithms: Distance Vector & Link State.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
       "formulas_and_shortcuts": [
-        "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: BFS Shortest Path.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Transport Layer: TCP 3-Way Handshake & UDP."
+        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics.\n• Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: BFS Shortest Path.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Transport Layer: TCP 3-Way Handshake & UDP."
       ],
       "must_know_definitions": [
         {
           "term": "Daily Core Concept 1",
-          "definition": "\u2022 Mastered BCA-5003 \u2014 Routing Algorithms: Distance Vector & Link State."
+          "definition": "• Mastered BCA-5003 — Routing Algorithms: Distance Vector & Link State."
         },
         {
           "term": "Daily Core Concept 2",
-          "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics."
+          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics."
         },
         {
           "term": "Daily Core Concept 3",
-          "definition": "\u2022 Pattern: Graph Traversal: BFS Shortest Path."
+          "definition": "• Pattern: Graph Traversal: BFS Shortest Path."
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "\u2022 Project: SmartGalla."
+          "definition": "• Project: SmartGalla."
         },
         {
           "term": "Daily Core Concept 5",
@@ -2024,7 +1022,7 @@
     "mixed_test": [
       {
         "id": "TEST-19-01",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "Which shortest path algorithm does the Open Shortest Path First (OSPF) Link-State routing protocol use to build its routing table?",
         "options": [
           "Bellman-Ford Algorithm",
@@ -2037,7 +1035,7 @@
       },
       {
         "id": "TEST-19-02",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "What critical flaw affects the Distance Vector Routing (DVR) algorithm based on Bellman-Ford when a link or destination goes down?",
         "options": [
           "Split Horizon failure",
@@ -2050,7 +1048,7 @@
       },
       {
         "id": "TEST-19-03",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "What two mechanisms are commonly implemented to mitigate the Count-to-Infinity problem in Distance Vector routing?",
         "options": [
           "Split Horizon and Poison Reverse",
@@ -2063,7 +1061,7 @@
       },
       {
         "id": "TEST-19-04",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "In hierarchical routing, what protocol is used to route traffic BETWEEN autonomous systems across the global Internet backbone?",
         "options": [
           "Routing Information Protocol (RIP)",
@@ -2076,7 +1074,7 @@
       },
       {
         "id": "TEST-19-05",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "What is the metric used by the legacy Routing Information Protocol (RIP) to calculate distance?",
         "options": [
           "Bandwidth delay product",
@@ -2090,67 +1088,67 @@
       {
         "id": "TEST-19-06",
         "category": "Placement Aptitude",
-        "question": "What is the angle between the minute hand and the hour hand of a clock at 3:40?",
+        "question": "If today is Monday, what day of the week will it be after 61 days?",
         "options": [
-          "130 degrees",
-          "125 degrees",
-          "140 degrees",
-          "135 degrees"
+          "Saturday",
+          "Tuesday",
+          "Wednesday",
+          "Sunday"
         ],
         "correct_answer": "A",
-        "explanation": "Angle = |30 * H - (11/2) * M| = |30 * 3 - (11/2) * 40| = |90 - 220| = 130 degrees."
+        "explanation": "61 mod 7 = 5 odd days. Monday + 5 days = Saturday."
       },
       {
         "id": "TEST-19-07",
         "category": "Placement Aptitude",
-        "question": "If 1st January 2007 was a Monday, what was the day of the week on 1st January 2008?",
+        "question": "What was the day of the week on 28th May 2006?",
         "options": [
-          "Tuesday",
-          "Wednesday",
           "Sunday",
+          "Saturday",
+          "Friday",
           "Monday"
         ],
         "correct_answer": "A",
-        "explanation": "2007 is an ordinary year with 1 odd day. 1 Jan 2008 = Monday + 1 = Tuesday."
+        "explanation": "2000 yrs = 0 odd days. 5 yrs (1 leap, 4 ord) = 6 odd days. Jan(3)+Feb(0)+Mar(3)+Apr(2)+May(28=0) = 8 = 1 odd day. Total = 6 + 1 = 7 = 0 odd days => Sunday."
       },
       {
         "id": "TEST-19-08",
         "category": "Placement Aptitude",
-        "question": "How many times do the hands of a clock coincide in a 24-hour day?",
+        "question": "At what time between 7 and 8 o'clock will the hands of a clock be at right angles (90 degrees)?",
         "options": [
-          "22 times",
-          "24 times",
-          "20 times",
-          "44 times"
+          "21 9/11 min past 7 and 54 6/11 min past 7",
+          "25 min past 7",
+          "30 min past 7",
+          "20 min past 7"
         ],
         "correct_answer": "A",
-        "explanation": "Hands coincide 11 times in 12 hours, so 11 * 2 = 22 times in 24 hours."
+        "explanation": "Formula M = (2/11) * (30H +/- 90). For H=7: (2/11)*(210 - 90) = 240/11 = 21 9/11 mins; (2/11)*(210 + 90) = 600/11 = 54 6/11 mins."
       },
       {
         "id": "TEST-19-09",
         "category": "Placement Aptitude",
-        "question": "What was the day of the week on 15th August 1947?",
+        "question": "Which of the following years is a leap year?",
         "options": [
-          "Friday",
-          "Thursday",
-          "Saturday",
-          "Sunday"
+          "2000",
+          "1900",
+          "2100",
+          "1800"
         ],
         "correct_answer": "A",
-        "explanation": "1600 yrs = 0, 300 yrs = 1 odd day. 46 yrs (11 leap, 35 ord) = 22 + 35 = 57 = 1 odd day. Jan(3)+Feb(0)+Mar(3)+Apr(2)+May(3)+Jun(2)+Jul(3)+Aug(15=1) = 17 = 3 odd days. Total = 1 + 1 + 3 = 5 odd days => Friday."
+        "explanation": "A century year must be divisible by 400 to be a leap year. 2000 is divisible by 400; 1900, 2100, and 1800 are not."
       },
       {
         "id": "TEST-19-10",
         "category": "Placement Aptitude",
-        "question": "A watch gains 5 seconds in 3 minutes and was set right at 8 AM. What time will it show at 10 PM on the same day?",
+        "question": "A mirror image of a clock shows 3:15. What is the actual time on the clock?",
         "options": [
-          "10:23:20 PM",
-          "10:15:00 PM",
-          "10:30:00 PM",
-          "10:20:00 PM"
+          "8:45",
+          "9:45",
+          "8:15",
+          "9:15"
         ],
         "correct_answer": "A",
-        "explanation": "From 8 AM to 10 PM = 14 hours = 840 minutes. Number of 3-min intervals = 840 / 3 = 280. Gain = 280 * 5 = 1,400 sec = 23 min 20 sec. Time shown = 10:23:20 PM."
+        "explanation": "Mirror time formula: Actual time = 11:60 - Mirror Time = 11:60 - 3:15 = 8:45."
       },
       {
         "id": "TEST-19-11",
@@ -2258,29 +1256,29 @@
       },
       {
         "id": "TEST-19-19",
-        "category": "Projects (Biometric Electronic Voting System (BEVM))",
-        "question": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding'?",
+        "category": "Projects (DocRoute)",
+        "question": "In Sarthak's project 'DocRoute', what is the core architectural principle regarding 'Image Preprocessing for Enhanced OCR Accuracy'?",
         "options": [
-          "Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.",
+          "Tesseract performs best on high-contrast black-and-white images with minimal background noise or skew.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For Biometric Electronic Voting System (BEVM), the architectural invariant is: Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.."
+        "explanation": "For DocRoute, the architectural invariant is: Tesseract performs best on high-contrast black-and-white images with minimal background noise or skew.."
       },
       {
         "id": "TEST-19-20",
-        "category": "Projects (Biometric Electronic Voting System (BEVM))",
-        "question": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does image preprocessing improve Tesseract OCR recognition accuracy in Biometric Electronic Voting System (BEVM)?'?",
+        "category": "Projects (DocRoute)",
+        "question": "Regarding 'DocRoute', how should you defend this design decision in a technical interview: 'Why is image preprocessing necessary before running OCR?'?",
         "options": [
-          "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of t...",
+          "Scanned documents often suffer from uneven lighting, paper shadows, colored backgrounds, or low contrast. Running OCR directly on noisy images causes character ...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
         "correct_answer": "A",
-        "explanation": "In technical interviews, anchor your defense in engineering metrics: Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bou."
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Scanned documents often suffer from uneven lighting, paper shadows, colored backgrounds, or low contrast. Running OCR directly on noisy imag."
       }
     ],
     "daily_coding_task": {
@@ -2334,7 +1332,7 @@
   "dsa": {
     "pattern_name": "Graph Traversal: Breadth-First Search (BFS)",
     "pattern": "Graph Traversal: Breadth-First Search (BFS)",
-    "title": "Graph Traversal: Breadth-First Search (BFS) \u2014 Algorithmic Invariants & Implementation",
+    "title": "Graph Traversal: Breadth-First Search (BFS) — Algorithmic Invariants & Implementation",
     "category": "Graph / BFS",
     "concept": "Explores graph vertices layer by layer from one or more source vertices using a queue. Guarantees finding the shortest path in unweighted graphs.",
     "why_it_works": "First time a vertex is popped from the queue corresponds to its minimum edge distance from the source.",
@@ -2495,7 +1493,7 @@
     "subject": "Numerical Methods",
     "subject_code": "BCA-5004",
     "unit": 3,
-    "topic": "Unit III \u2014 Iterative Linear Solvers: Gauss-Jacobi & Gauss-Seidel Methods (Strict Diagonal Dominance)",
+    "topic": "Unit III — Iterative Linear Solvers: Gauss-Jacobi & Gauss-Seidel Methods (Strict Diagonal Dominance)",
     "objectives": [
       "Understand Iterative vs Direct linear solvers.",
       "State the Strict Diagonal Dominance condition and execute Gauss-Seidel iterations."
@@ -2535,7 +1533,7 @@
         ]
       ]
     },
-    "memorize": "Diagonal Dominance: |a_ii| > sum_{j!=i} |a_ij|. Sufficient condition for guaranteed convergence (also symmetric positive-definite). Gauss-Seidel uses updated values immediately; Jacobi uses old values.",
+    "memorize": "Diagonal Dominance: |a_ii| > sum_{j!=i} |a_ij|. Mandatory for convergence. Gauss-Seidel uses updated values immediately; Jacobi uses old values.",
     "understand": "If a matrix is not diagonally dominant, iterative methods may oscillate wildly or diverge to infinity.",
     "common_mistakes": "Executing iterations without first rearranging equations to satisfy strict diagonal dominance.",
     "pyqs": [
@@ -2547,7 +1545,7 @@
         "marks": 15,
         "question": "State the condition of Strict Diagonal Dominance. Solve the following system of equations using the Gauss-Seidel iteration method correct to three decimal places:\n8x - 3y + 2z = 20\n4x + 11y - z = 33\n6x + 3y + 12z = 36 (15 Marks)",
         "rubric": "Diagonal Dominance check & proof (3 marks) + Formulation of iteration equations (3 marks) + 4 Iteration steps calculated (7 marks) + Final verified values (2 marks) = 15 Marks.",
-        "model_answer": "1. Strict Diagonal Dominance Check:\nA system is Strictly Diagonally Dominant if in each row: |a_ii| > sum_{j!=i} |a_ij|.\n\u2022 Row 1: |8| > |-3| + |2| => 8 > 5 (True)\n\u2022 Row 2: |11| > |4| + |-1| => 11 > 5 (True)\n\u2022 Row 3: |12| > |6| + |3| => 12 > 9 (True)\nSince all three inequalities hold strictly, the system is strictly diagonally dominant and Gauss-Seidel is guaranteed to converge.\n\n2. Iterative Equations:\n\u2022 x^{k+1} = (20 + 3*y^k - 2*z^k) / 8\n\u2022 y^{k+1} = (33 - 4*x^{k+1} + z^k) / 11   (using fresh x^{k+1})\n\u2022 z^{k+1} = (36 - 6*x^{k+1} - 3*y^{k+1}) / 12  (using fresh x^{k+1} and y^{k+1})\n\n3. Iteration Cycles (Initial guess x0 = 0, y0 = 0, z0 = 0):\n\u2022 Iteration 1:\n  x1 = (20 + 0 - 0) / 8 = 2.500\n  y1 = (33 - 4(2.500) + 0) / 11 = (33 - 10) / 11 = 23 / 11 = 2.091\n  z1 = (36 - 6(2.500) - 3(2.091)) / 12 = (36 - 15 - 6.273) / 12 = 14.727 / 12 = 1.227\n\u2022 Iteration 2:\n  x2 = (20 + 3(2.091) - 2(1.227)) / 8 = (20 + 6.273 - 2.454) / 8 = 23.819 / 8 = 2.977\n  y2 = (33 - 4(2.977) + 1.227) / 11 = (33 - 11.908 + 1.227) / 11 = 22.319 / 11 = 2.029\n  z2 = (36 - 6(2.977) - 3(2.029)) / 12 = (36 - 17.862 - 6.087) / 12 = 12.051 / 12 = 1.004\n\u2022 Iteration 3:\n  x3 = (20 + 3(2.029) - 2(1.004)) / 8 = (20 + 6.087 - 2.008) / 8 = 24.079 / 8 = 3.010\n  y3 = (33 - 4(3.010) + 1.004) / 11 = (33 - 12.040 + 1.004) / 11 = 21.964 / 11 = 1.997\n  z3 = (36 - 6(3.010) - 3(1.997)) / 12 = (36 - 18.060 - 5.991) / 12 = 11.949 / 12 = 0.996\n\u2022 Iteration 4:\n  x4 = (20 + 3(1.997) - 2(0.996)) / 8 = (20 + 5.991 - 1.992) / 8 = 23.999 / 8 = 3.000\n  y4 = (33 - 4(3.000) + 0.996) / 11 = (33 - 12.000 + 0.996) / 11 = 21.996 / 11 = 2.000\n  z4 = (36 - 6(3.000) - 3(2.000)) / 12 = (36 - 18.000 - 6.000) / 12 = 12.000 / 12 = 1.000\n\nValues have converged to three decimal places:\nx = 3.000, y = 2.000, z = 1.000.",
+        "model_answer": "1. Strict Diagonal Dominance Check:\nA system is Strictly Diagonally Dominant if in each row: |a_ii| > sum_{j!=i} |a_ij|.\n• Row 1: |8| > |-3| + |2| => 8 > 5 (True)\n• Row 2: |11| > |4| + |-1| => 11 > 5 (True)\n• Row 3: |12| > |6| + |3| => 12 > 9 (True)\nSince all three inequalities hold strictly, the system is strictly diagonally dominant and Gauss-Seidel is guaranteed to converge.\n\n2. Iterative Equations:\n• x^{k+1} = (20 + 3*y^k - 2*z^k) / 8\n• y^{k+1} = (33 - 4*x^{k+1} + z^k) / 11   (using fresh x^{k+1})\n• z^{k+1} = (36 - 6*x^{k+1} - 3*y^{k+1}) / 12  (using fresh x^{k+1} and y^{k+1})\n\n3. Iteration Cycles (Initial guess x0 = 0, y0 = 0, z0 = 0):\n• Iteration 1:\n  x1 = (20 + 0 - 0) / 8 = 2.500\n  y1 = (33 - 4(2.500) + 0) / 11 = (33 - 10) / 11 = 23 / 11 = 2.091\n  z1 = (36 - 6(2.500) - 3(2.091)) / 12 = (36 - 15 - 6.273) / 12 = 14.727 / 12 = 1.227\n• Iteration 2:\n  x2 = (20 + 3(2.091) - 2(1.227)) / 8 = (20 + 6.273 - 2.454) / 8 = 23.819 / 8 = 2.977\n  y2 = (33 - 4(2.977) + 1.227) / 11 = (33 - 11.908 + 1.227) / 11 = 22.319 / 11 = 2.029\n  z2 = (36 - 6(2.977) - 3(2.029)) / 12 = (36 - 17.862 - 6.087) / 12 = 12.051 / 12 = 1.004\n• Iteration 3:\n  x3 = (20 + 3(2.029) - 2(1.004)) / 8 = (20 + 6.087 - 2.008) / 8 = 24.079 / 8 = 3.010\n  y3 = (33 - 4(3.010) + 1.004) / 11 = (33 - 12.040 + 1.004) / 11 = 21.964 / 11 = 1.997\n  z3 = (36 - 6(3.010) - 3(1.997)) / 12 = (36 - 18.060 - 5.991) / 12 = 11.949 / 12 = 0.996\n• Iteration 4:\n  x4 = (20 + 3(1.997) - 2(0.996)) / 8 = (20 + 5.991 - 1.992) / 8 = 23.999 / 8 = 3.000\n  y4 = (33 - 4(3.000) + 0.996) / 11 = (33 - 12.000 + 0.996) / 11 = 21.996 / 11 = 2.000\n  z4 = (36 - 6(3.000) - 3(2.000)) / 12 = (36 - 18.000 - 6.000) / 12 = 12.000 / 12 = 1.000\n\nValues have converged to three decimal places:\nx = 3.000, y = 2.000, z = 1.000.",
         "answer_structure": "Dominance Condition Proof -> Formula Formulation -> Iteration Table -> Final Converged Values",
         "important_points": [
           "Diagonal dominance verified",
@@ -2644,7 +1642,7 @@
     "model_answer_paragraphs": [
       [
         "1. Model Answer & Technical Presentation",
-        "1. Strict Diagonal Dominance Check:\nA system is Strictly Diagonally Dominant if in each row: |a_ii| > sum_{j!=i} |a_ij|.\n\u2022 Row 1: |8| > |-3| + |2| => 8 > 5 (True)\n\u2022 Row 2: |11| > |4| + |-1| => 11 > 5 (True)\n\u2022 Row 3: |12| > |6| + |3| => 12 > 9 (True)\nSince all three inequalities hold strictly, the system is strictly diagonally dominant and Gauss-Seidel is guaranteed to converge.\n\n2. Iterative Equations:\n\u2022 x^{k+1} = (20 + 3*y^k - 2*z^k) / 8\n\u2022 y^{k+1} = (33 - 4*x^{k+1} + z^k) / 11   (using fresh x^{k+1})\n\u2022 z^{k+1} = (36 - 6*x^{k+1} - 3*y^{k+1}) / 12  (using fresh x^{k+1} and y^{k+1})\n\n3. Iteration Cycles (Initial guess x0 = 0, y0 = 0, z0 = 0):\n\u2022 Iteration 1:\n  x1 = (20 + 0 - 0) / 8 = 2.500\n  y1 = (33 - 4(2.500) + 0) / 11 = (33 - 10) / 11 = 23 / 11 = 2.091\n  z1 = (36 - 6(2.500) - 3(2.091)) / 12 = (36 - 15 - 6.273) / 12 = 14.727 / 12 = 1.227\n\u2022 Iteration 2:\n  x2 = (20 + 3(2.091) - 2(1.227)) / 8 = (20 + 6.273 - 2.454) / 8 = 23.819 / 8 = 2.977\n  y2 = (33 - 4(2.977) + 1.227) / 11 = (33 - 11.908 + 1.227) / 11 = 22.319 / 11 = 2.029\n  z2 = (36 - 6(2.977) - 3(2.029)) / 12 = (36 - 17.862 - 6.087) / 12 = 12.051 / 12 = 1.004\n\u2022 Iteration 3:\n  x3 = (20 + 3(2.029) - 2(1.004)) / 8 = (20 + 6.087 - 2.008) / 8 = 24.079 / 8 = 3.010\n  y3 = (33 - 4(3.010) + 1.004) / 11 = (33 - 12.040 + 1.004) / 11 = 21.964 / 11 = 1.997\n  z3 = (36 - 6(3.010) - 3(1.997)) / 12 = (36 - 18.060 - 5.991) / 12 = 11.949 / 12 = 0.996\n\u2022 Iteration 4:\n  x4 = (20 + 3(1.997) - 2(0.996)) / 8 = (20 + 5.991 - 1.992) / 8 = 23.999 / 8 = 3.000\n  y4 = (33 - 4(3.000) + 0.996) / 11 = (33 - 12.000 + 0.996) / 11 = 21.996 / 11 = 2.000\n  z4 = (36 - 6(3.000) - 3(2.000)) / 12 = (36 - 18.000 - 6.000) / 12 = 12.000 / 12 = 1.000\n\nValues have converged to three decimal places:\nx = 3.000, y = 2.000, z = 1.000."
+        "1. Strict Diagonal Dominance Check:\nA system is Strictly Diagonally Dominant if in each row: |a_ii| > sum_{j!=i} |a_ij|.\n• Row 1: |8| > |-3| + |2| => 8 > 5 (True)\n• Row 2: |11| > |4| + |-1| => 11 > 5 (True)\n• Row 3: |12| > |6| + |3| => 12 > 9 (True)\nSince all three inequalities hold strictly, the system is strictly diagonally dominant and Gauss-Seidel is guaranteed to converge.\n\n2. Iterative Equations:\n• x^{k+1} = (20 + 3*y^k - 2*z^k) / 8\n• y^{k+1} = (33 - 4*x^{k+1} + z^k) / 11   (using fresh x^{k+1})\n• z^{k+1} = (36 - 6*x^{k+1} - 3*y^{k+1}) / 12  (using fresh x^{k+1} and y^{k+1})\n\n3. Iteration Cycles (Initial guess x0 = 0, y0 = 0, z0 = 0):\n• Iteration 1:\n  x1 = (20 + 0 - 0) / 8 = 2.500\n  y1 = (33 - 4(2.500) + 0) / 11 = (33 - 10) / 11 = 23 / 11 = 2.091\n  z1 = (36 - 6(2.500) - 3(2.091)) / 12 = (36 - 15 - 6.273) / 12 = 14.727 / 12 = 1.227\n• Iteration 2:\n  x2 = (20 + 3(2.091) - 2(1.227)) / 8 = (20 + 6.273 - 2.454) / 8 = 23.819 / 8 = 2.977\n  y2 = (33 - 4(2.977) + 1.227) / 11 = (33 - 11.908 + 1.227) / 11 = 22.319 / 11 = 2.029\n  z2 = (36 - 6(2.977) - 3(2.029)) / 12 = (36 - 17.862 - 6.087) / 12 = 12.051 / 12 = 1.004\n• Iteration 3:\n  x3 = (20 + 3(2.029) - 2(1.004)) / 8 = (20 + 6.087 - 2.008) / 8 = 24.079 / 8 = 3.010\n  y3 = (33 - 4(3.010) + 1.004) / 11 = (33 - 12.040 + 1.004) / 11 = 21.964 / 11 = 1.997\n  z3 = (36 - 6(3.010) - 3(1.997)) / 12 = (36 - 18.060 - 5.991) / 12 = 11.949 / 12 = 0.996\n• Iteration 4:\n  x4 = (20 + 3(1.997) - 2(0.996)) / 8 = (20 + 5.991 - 1.992) / 8 = 23.999 / 8 = 3.000\n  y4 = (33 - 4(3.000) + 0.996) / 11 = (33 - 12.000 + 0.996) / 11 = 21.996 / 11 = 2.000\n  z4 = (36 - 6(3.000) - 3(2.000)) / 12 = (36 - 18.000 - 6.000) / 12 = 12.000 / 12 = 1.000\n\nValues have converged to three decimal places:\nx = 3.000, y = 2.000, z = 1.000."
       ],
       [
         "2. Expected Examiner Criteria",
@@ -2664,14 +1662,14 @@
     "tutorial": [
       "Hands of a clock coincide 11 times in 12 hours (22 times in 24 hours), because between 11 and 1 they coincide only once at exactly 12:00. In calendar math, 100 years have 5 odd days, 200 years have 3, 300 years have 1, and 400 years have 0."
     ],
-    "tier1_problem": "Find the angle between the hour hand and the minute hand of a clock at 3:40.",
-    "tier1_solution": "Step 1: Formula \u03b8 = |(11/2)*M - 30*H| where M = 40, H = 3.\\nStep 2: \u03b8 = |(11/2)*40 - 30*3| = |220 - 90| = 130\u00b0.",
-    "tier2_problem": "At what time between 4 and 5 o'clock will the hands of a clock be together (coincide)?",
-    "tier2_solution": "Step 1: At H = 4, angle is 0\u00b0. 0 = (11/2)*M - 30*4 => (11/2)*M = 120.\\nStep 2: M = 240 / 11 = 21 9/11 minutes.\\nStep 3: Time = 21 9/11 minutes past 4.",
-    "tier3_problem": "What day of the week was 15th August 1947?",
-    "tier3_solution": "Step 1: 1600 years = 0 odd days; 300 years (1900) = 1 odd day.\\nStep 2: 46 completed years (1901-1946) = 11 leap years + 35 ordinary years = (11*2 + 35*1) = 57 odd days = 1 odd day (57 % 7).\\nStep 3: Days in 1947 up to Aug 15: Jan(3) + Feb(0) + Mar(3) + Apr(2) + May(3) + Jun(2) + Jul(3) + Aug(15 \u2261 1) = 17 odd days = 3 odd days.\\nStep 4: Total odd days = 1 (from 1900) + 1 (from 46 yrs) + 3 (from 1947) = 5 odd days. 5 corresponds to Friday.",
-    "tier4_problem": "A clock is set right at 5 AM. It loses 16 minutes in 24 hours. What will be the true time when the clock indicates 10 PM on the 4th day?",
-    "tier4_solution": "Step 1: Total time on faulty clock from 5 AM day 1 to 10 PM day 4 = 3 days (72h) + 17h = 89 hours.\\nStep 2: Faulty clock runs 23h 44m = 356/15 hours for every 24 true hours.\\nStep 3: True time = 89 * (24 / (356/15)) = 89 * (360 / 356) = 90 true hours.\\nStep 4: 90 hours from 5 AM Day 1 = 11 PM on the 4th day.",
+    "tier1_problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+    "tier1_solution": "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.\nStep 2: Improvement factor = 20% increase on initial score.\nStep 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.\nStep 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).\nSpeed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks.",
+    "tier2_problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+    "tier2_solution": "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.\nStep 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).\nStep 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.\nVerification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864.",
+    "tier3_problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+    "tier3_solution": "Step 1: Assume Total Work = LCM(12, 18) = 36 units.\nStep 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.\nStep 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.\nStep 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.\nStep 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.\nStep 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days).",
+    "tier4_problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+    "tier4_solution": "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.\nStep 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.\nStep 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.\nStep 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.\nStep 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM.",
     "speed_drills": [
       {
         "q": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
@@ -3013,9 +2011,7 @@
           "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
         }
       ]
-    },
-    "tier5_problem": "Which year will have the same calendar as the year 2024?",
-    "tier5_solution": "Step 1: 2024 is a LEAP year.\\nStep 2: A leap year calendar repeats after 28 years (unless crossing a non-leap century).\\nStep 3: 2024 + 28 = 2052."
+    }
   },
   "dsa_problems": [
     {
@@ -3090,7 +2086,7 @@
   "dsa_pattern": {
     "pattern_name": "Graph Traversal: Breadth-First Search (BFS)",
     "pattern": "Graph Traversal: Breadth-First Search (BFS)",
-    "title": "Graph Traversal: Breadth-First Search (BFS) \u2014 Algorithmic Invariants & Implementation",
+    "title": "Graph Traversal: Breadth-First Search (BFS) — Algorithmic Invariants & Implementation",
     "category": "Graph / BFS",
     "concept": "Explores graph vertices layer by layer from one or more source vertices using a queue. Guarantees finding the shortest path in unweighted graphs.",
     "why_it_works": "First time a vertex is popped from the queue corresponds to its minimum edge distance from the source.",
@@ -3145,9 +2141,9 @@
   "cs_core": {
     "subject": "Computer Networks",
     "topic": "Routing Algorithms: Distance Vector (RIP), Link State (OSPF) & BGP",
-    "lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP \u2014 Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF \u2014 Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
-    "concept_lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP \u2014 Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF \u2014 Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
-    "lecture": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP \u2014 Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF \u2014 Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
+    "lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP — Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF — Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
+    "concept_lesson": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP — Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF — Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
+    "lecture": "Routing is the process by which intermediate routers select optimal paths through interconnected networks to forward packets.\n\nIntra-Domain vs Inter-Domain Routing:\n- Autonomous System (AS): A collection of networks and routers under a single administrative domain.\n- Interior Gateway Protocols (IGP): Route within an AS (RIP, OSPF).\n- Exterior Gateway Protocols (EGP): Route between different ASes across the global Internet (BGP).\n\nDistance Vector Routing (RIP — Bellman-Ford Algorithm):\nEach router maintains a vector: (Destination, Cost, Next Hop). Routers periodically share their entire routing table only with immediate neighbors. Distance = hop count (max 15 hops; 16 = infinity). Suffers from the Count-to-Infinity Problem when a link fails, mitigated using Split Horizon (never advertise a route back out the interface it was learned from) and Poison Reverse.\n\nLink State Routing (OSPF — Dijkstra's Shortest Path Algorithm):\nRouters discover neighbors via Hello packets, construct Link State Advertisements (LSAs) containing link costs to neighbors, and flood LSAs to EVERY router in the domain via reliable flooding. Every router builds an identical complete topology map of the AS, then independently executes Dijkstra's algorithm to compute the shortest-path forwarding table. Ultra-fast convergence with zero count-to-infinity.\n\nBorder Gateway Protocol (BGP-4):\nPath Vector protocol governing global Internet transit. Advertises full AS-Paths (e.g., Prefix 1.2.3.0/24 reachable via AS 100 -> AS 200 -> AS 300) to completely eliminate routing loops. Routing decisions are based on business and peering policies rather than pure hop counts.",
     "key_definitions": [
       {
         "term": "Distance Vector",
@@ -3270,36 +2266,36 @@
     ]
   },
   "project_defense": {
-    "project_name": "Biometric Electronic Voting System (BEVM)",
-    "name": "Biometric Electronic Voting System (BEVM)",
-    "repo_path": "D:\\Projects\\FINGERPINT VOTING SYSTEM",
-    "topic": "Atomic State Locking & SQLite Double-Vote Prevention",
-    "feature_focus": "Atomic State Locking & SQLite Double-Vote Prevention",
-    "what_to_understand": "Preventing duplicate voting attempts through atomic database transactions and strict state flag locking.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nPreventing duplicate voting attempts through atomic database transactions and strict state flag locking.\n\nWHAT TO MEMORIZE:\nAtomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
-    "what_to_memorize": "Atomic SQLite transactions with `has_voted` flags guarantee that once a voter casts a ballot, duplicate attempts are rejected instantly.",
+    "project_name": "DocRoute",
+    "name": "DocRoute",
+    "repo_path": "D:\\Projects\\DocRoute",
+    "topic": "Image Preprocessing for Enhanced OCR Accuracy",
+    "feature_focus": "Image Preprocessing for Enhanced OCR Accuracy",
+    "what_to_understand": "Improving text recognition accuracy on low-quality scans using image filtering (grayscale, thresholding).",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nImproving text recognition accuracy on low-quality scans using image filtering (grayscale, thresholding).\n\nWHAT TO MEMORIZE:\nTesseract performs best on high-contrast black-and-white images with minimal background noise or skew.\n\n60-SECOND INTERVIEW PITCH:\nOCR accuracy depends heavily on image clarity. In DocRoute, I implemented preprocessing filters that convert scanned pages to grayscale and apply adaptive thresholding, removing background shadows and noise before character recognition to ensure clean text output.",
+    "what_to_memorize": "Tesseract performs best on high-contrast black-and-white images with minimal background noise or skew.",
     "interview_questions": [
       {
-        "q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
-        "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."
+        "q": "Why is image preprocessing necessary before running OCR?",
+        "a": "Scanned documents often suffer from uneven lighting, paper shadows, colored backgrounds, or low contrast. Running OCR directly on noisy images causes character substitution errors (like mistaking '8' for 'B' or '1' for 'I'). Preprocessing normalizes the image to clear black text on a pure white background, significantly improving character recognition accuracy."
       },
       {
-        "q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
-        "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."
+        "q": "What preprocessing techniques can be applied in Python using OpenCV or PIL?",
+        "a": "Key preprocessing steps include: 1) Grayscale conversion (`cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)`) to remove color noise, 2) Otsu's binarization / adaptive thresholding (`cv2.threshold`) to produce crisp black-and-white pixels, and 3) Denoising filters (`cv2.medianBlur`) to eliminate speckles and scanner dust."
       }
     ],
     "interview_qa": [
       {
-        "q": "How does BEVM mathematically prevent a voter from casting multiple ballots?",
-        "a": "When a voter authenticates, the system opens an atomic SQLite transaction. It checks `SELECT has_voted FROM voters WHERE voter_id = ?`. If `has_voted == 0`, it executes the ballot insertion and updates `has_voted = 1` within the exact same transaction before committing. Any subsequent attempt immediately fails the pre-condition check and triggers a security alert."
+        "q": "Why is image preprocessing necessary before running OCR?",
+        "a": "Scanned documents often suffer from uneven lighting, paper shadows, colored backgrounds, or low contrast. Running OCR directly on noisy images causes character substitution errors (like mistaking '8' for 'B' or '1' for 'I'). Preprocessing normalizes the image to clear black text on a pure white background, significantly improving character recognition accuracy."
       },
       {
-        "q": "How do you ensure power loss during ballot casting does not leave the database in an inconsistent state?",
-        "a": "SQLite's atomic commit protocols guarantee that if a power outage occurs mid-write, the transaction rolls back cleanly upon terminal reboot. Either both the ballot record and the `has_voted` flag persist together, or neither does, preventing orphaned votes or disenfranchised voters."
+        "q": "What preprocessing techniques can be applied in Python using OpenCV or PIL?",
+        "a": "Key preprocessing steps include: 1) Grayscale conversion (`cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)`) to remove color noise, 2) Otsu's binarization / adaptive thresholding (`cv2.threshold`) to produce crisp black-and-white pixels, and 3) Denoising filters (`cv2.medianBlur`) to eliminate speckles and scanner dust."
       }
     ],
-    "interview_pitch_exercise": "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots.",
-    "pitch": "Eliminating double-voting is the fundamental invariant of voting systems. In BEVM, I implemented atomic state locking in SQLite where biometric verification, ballot encryption, and voter status updates commit within a single atomic boundary, guaranteeing zero duplicate ballots."
+    "interview_pitch_exercise": "OCR accuracy depends heavily on image clarity. In DocRoute, I implemented preprocessing filters that convert scanned pages to grayscale and apply adaptive thresholding, removing background shadows and noise before character recognition to ensure clean text output.",
+    "pitch": "OCR accuracy depends heavily on image clarity. In DocRoute, I implemented preprocessing filters that convert scanned pages to grayscale and apply adaptive thresholding, removing background shadows and noise before character recognition to ensure clean text output."
   },
   "placement_interview": [
     {
@@ -3326,10 +2322,10 @@
     },
     {
       "category": "Project Experience",
-      "question": "In your project 'College Student Management System (CSMS)', what was the most difficult technical challenge you personally solved?",
-      "model_answer": "In College Student Management System (CSMS) (FastAPI, Supabase PostgreSQL, Vanilla JS), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "question": "In your project 'BulkBeat TV', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In BulkBeat TV (Python AsyncIO, SQLite WAL, Telegram Bot, 20+ Rule Engine), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
       "key_talking_points": [
-        "Contextualize the architecture of College Student Management System (CSMS).",
+        "Contextualize the architecture of BulkBeat TV.",
         "Highlight concurrency, data integrity, and error recovery.",
         "Quantify reliability outcomes and graceful failure handling."
       ],
@@ -3350,7 +2346,7 @@
     {
       "category": "HR & Cultural Fit",
       "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
       "key_talking_points": [
         "Disciplined reading of official docs and engineering blogs.",
         "Hands-on prototype building to validate theory.",
@@ -3360,12 +2356,12 @@
     }
   ],
   "daily_revision": {
-    "yesterday_recall": "\u2022 Reviewed Day 18 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
-    "today_recall": "\u2022 Mastered BCA-5003 \u2014 Routing Algorithms: Distance Vector & Link State.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
-    "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: BFS Shortest Path.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Transport Layer: TCP 3-Way Handshake & UDP.",
-    "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Routing Algorithms: Distance Vector & Link State.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-    "dsa_recall": "\u2022 Pattern: Graph Traversal: BFS Shortest Path.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-    "project_recall": "\u2022 Project: SmartGalla.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "yesterday_recall": "• Reviewed Day 18 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "• Mastered BCA-5003 — Routing Algorithms: Distance Vector & Link State.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics.\n• Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: BFS Shortest Path.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Transport Layer: TCP 3-Way Handshake & UDP.",
+    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Routing Algorithms: Distance Vector & Link State.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "• Pattern: Graph Traversal: BFS Shortest Path.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "• Project: SmartGalla.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
     "rapid_fire_questions": [
       {
         "q": "Day 19 Q1: What is the primary academic thesis of Routing Algorithms: Distance Vector & Link State?",
@@ -3377,7 +2373,7 @@
       },
       {
         "q": "Day 19 Q3: What is the time complexity of Graph Traversal: BFS Shortest Path?",
-        "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
+        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
       },
       {
         "q": "Day 19 Q4: What is the central architectural principle of Transport Layer: TCP 3-Way Handshake & UDP?",
@@ -3408,26 +2404,26 @@
         "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
       }
     ],
-    "today_summary": "\u2022 Mastered BCA-5003 \u2014 Routing Algorithms: Distance Vector & Link State.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+    "today_summary": "• Mastered BCA-5003 — Routing Algorithms: Distance Vector & Link State.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
     "formulas_and_shortcuts": [
-      "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: BFS Shortest Path.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Transport Layer: TCP 3-Way Handshake & UDP."
+      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics.\n• Algorithmic Invariant: Optimal time and space complexity rules for Graph Traversal: BFS Shortest Path.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Transport Layer: TCP 3-Way Handshake & UDP."
     ],
     "must_know_definitions": [
       {
         "term": "Daily Core Concept 1",
-        "definition": "\u2022 Mastered BCA-5003 \u2014 Routing Algorithms: Distance Vector & Link State."
+        "definition": "• Mastered BCA-5003 — Routing Algorithms: Distance Vector & Link State."
       },
       {
         "term": "Daily Core Concept 2",
-        "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics."
+        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Clocks & Calendar Mathematics."
       },
       {
         "term": "Daily Core Concept 3",
-        "definition": "\u2022 Pattern: Graph Traversal: BFS Shortest Path."
+        "definition": "• Pattern: Graph Traversal: BFS Shortest Path."
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "\u2022 Project: SmartGalla."
+        "definition": "• Project: SmartGalla."
       },
       {
         "term": "Daily Core Concept 5",
@@ -3436,227 +2432,301 @@
     ]
   },
   "daily_test": {
-    "title": "Day 19 Comprehensive 20-Question Daily Mastery Test",
+    "title": "Day 19 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "no": 1,
         "q": "Which shortest path algorithm does the Open Shortest Path First (OSPF) Link-State routing protocol use to build its routing table?",
+        "a": "Answer: B\n\nOSPF is a Link-State protocol; every router floods Link State Advertisements (LSAs) and runs Dijkstra's algorithm locally."
+      },
+      {
+        "q": "What critical flaw affects the Distance Vector Routing (DVR) algorithm based on Bellman-Ford when a link or destination goes down?",
+        "a": "Answer: B\n\nIn DVR, routers advertise distances without full topology paths, causing routing loops and the 'Count-to-Infinity' phenomenon during link failures."
+      },
+      {
+        "q": "What two mechanisms are commonly implemented to mitigate the Count-to-Infinity problem in Distance Vector routing?",
+        "a": "Answer: A\n\nSplit Horizon prevents advertising a route back on the interface from which it was learned; Poison Reverse sets the metric to infinity (16)."
+      },
+      {
+        "q": "In hierarchical routing, what protocol is used to route traffic BETWEEN autonomous systems across the global Internet backbone?",
+        "a": "Answer: C\n\nBGP is the de-facto inter-domain routing protocol (Path Vector) establishing policy and reachability between Autonomous Systems (AS)."
+      },
+      {
+        "q": "What is the metric used by the legacy Routing Information Protocol (RIP) to calculate distance?",
+        "a": "Answer: B\n\nRIP uses hop count as its sole metric, capping network diameters at 15 hops to limit convergence loops."
+      },
+      {
+        "q": "If today is Monday, what day of the week will it be after 61 days?",
+        "a": "Answer: A\n\n61 mod 7 = 5 odd days. Monday + 5 days = Saturday."
+      },
+      {
+        "q": "What was the day of the week on 28th May 2006?",
+        "a": "Answer: A\n\n2000 yrs = 0 odd days. 5 yrs (1 leap, 4 ord) = 6 odd days. Jan(3)+Feb(0)+Mar(3)+Apr(2)+May(28=0) = 8 = 1 odd day. Total = 6 + 1 = 7 = 0 odd days => Sunday."
+      },
+      {
+        "q": "At what time between 7 and 8 o'clock will the hands of a clock be at right angles (90 degrees)?",
+        "a": "Answer: A\n\nFormula M = (2/11) * (30H +/- 90). For H=7: (2/11)*(210 - 90) = 240/11 = 21 9/11 mins; (2/11)*(210 + 90) = 600/11 = 54 6/11 mins."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-19-01",
+        "category": "Academic (Numerical Methods)",
+        "question": "Which shortest path algorithm does the Open Shortest Path First (OSPF) Link-State routing protocol use to build its routing table?",
         "options": [
           "Bellman-Ford Algorithm",
           "Dijkstra's Shortest Path Algorithm",
           "Floyd-Warshall Algorithm",
           "Kruskal's Minimum Spanning Tree Algorithm"
         ],
-        "a": "Answer: B \u2014 OSPF is a Link-State protocol; every router floods Link State Advertisements (LSAs) and runs Dijkstra's algorithm locally."
+        "correct_answer": "B",
+        "explanation": "OSPF is a Link-State protocol; every router floods Link State Advertisements (LSAs) and runs Dijkstra's algorithm locally."
       },
       {
-        "no": 2,
-        "q": "What critical flaw affects the Distance Vector Routing (DVR) algorithm based on Bellman-Ford when a link or destination goes down?",
+        "id": "TEST-19-02",
+        "category": "Academic (Numerical Methods)",
+        "question": "What critical flaw affects the Distance Vector Routing (DVR) algorithm based on Bellman-Ford when a link or destination goes down?",
         "options": [
           "Split Horizon failure",
           "Count-to-Infinity problem and slow convergence loops",
           "Buffer bloat deadlock",
           "Checksum collision"
         ],
-        "a": "Answer: B \u2014 In DVR, routers advertise distances without full topology paths, causing routing loops and the 'Count-to-Infinity' phenomenon during link failures."
+        "correct_answer": "B",
+        "explanation": "In DVR, routers advertise distances without full topology paths, causing routing loops and the 'Count-to-Infinity' phenomenon during link failures."
       },
       {
-        "no": 3,
-        "q": "What two mechanisms are commonly implemented to mitigate the Count-to-Infinity problem in Distance Vector routing?",
+        "id": "TEST-19-03",
+        "category": "Academic (Numerical Methods)",
+        "question": "What two mechanisms are commonly implemented to mitigate the Count-to-Infinity problem in Distance Vector routing?",
         "options": [
           "Split Horizon and Poison Reverse",
           "Dijkstra and Prim algorithms",
           "Three-way handshakes and FIN packets",
           "Parity check and Hamming codes"
         ],
-        "a": "Answer: A \u2014 Split Horizon prevents advertising a route back on the interface from which it was learned; Poison Reverse sets the metric to infinity (16)."
+        "correct_answer": "A",
+        "explanation": "Split Horizon prevents advertising a route back on the interface from which it was learned; Poison Reverse sets the metric to infinity (16)."
       },
       {
-        "no": 4,
-        "q": "In hierarchical routing, what protocol is used to route traffic BETWEEN autonomous systems across the global Internet backbone?",
+        "id": "TEST-19-04",
+        "category": "Academic (Numerical Methods)",
+        "question": "In hierarchical routing, what protocol is used to route traffic BETWEEN autonomous systems across the global Internet backbone?",
         "options": [
           "Routing Information Protocol (RIP)",
           "Open Shortest Path First (OSPF)",
           "Border Gateway Protocol (BGP-4)",
           "Address Resolution Protocol (ARP)"
         ],
-        "a": "Answer: C \u2014 BGP is the de-facto inter-domain routing protocol (Path Vector) establishing policy and reachability between Autonomous Systems (AS)."
+        "correct_answer": "C",
+        "explanation": "BGP is the de-facto inter-domain routing protocol (Path Vector) establishing policy and reachability between Autonomous Systems (AS)."
       },
       {
-        "no": 5,
-        "q": "What is the metric used by the legacy Routing Information Protocol (RIP) to calculate distance?",
+        "id": "TEST-19-05",
+        "category": "Academic (Numerical Methods)",
+        "question": "What is the metric used by the legacy Routing Information Protocol (RIP) to calculate distance?",
         "options": [
           "Bandwidth delay product",
           "Hop count (maximum 15 hops, 16 represents infinity)",
           "Packet drop probability",
           "Link dollar cost"
         ],
-        "a": "Answer: B \u2014 RIP uses hop count as its sole metric, capping network diameters at 15 hops to limit convergence loops."
+        "correct_answer": "B",
+        "explanation": "RIP uses hop count as its sole metric, capping network diameters at 15 hops to limit convergence loops."
       },
       {
-        "no": 6,
-        "q": "What is the angle between the minute hand and the hour hand of a clock at 3:40?",
+        "id": "TEST-19-06",
+        "category": "Placement Aptitude",
+        "question": "If today is Monday, what day of the week will it be after 61 days?",
         "options": [
-          "130 degrees",
-          "125 degrees",
-          "140 degrees",
-          "135 degrees"
-        ],
-        "a": "Answer: A \u2014 Angle = |30 * H - (11/2) * M| = |30 * 3 - (11/2) * 40| = |90 - 220| = 130 degrees."
-      },
-      {
-        "no": 7,
-        "q": "If 1st January 2007 was a Monday, what was the day of the week on 1st January 2008?",
-        "options": [
+          "Saturday",
           "Tuesday",
           "Wednesday",
-          "Sunday",
-          "Monday"
-        ],
-        "a": "Answer: A \u2014 2007 is an ordinary year with 1 odd day. 1 Jan 2008 = Monday + 1 = Tuesday."
-      },
-      {
-        "no": 8,
-        "q": "How many times do the hands of a clock coincide in a 24-hour day?",
-        "options": [
-          "22 times",
-          "24 times",
-          "20 times",
-          "44 times"
-        ],
-        "a": "Answer: A \u2014 Hands coincide 11 times in 12 hours, so 11 * 2 = 22 times in 24 hours."
-      },
-      {
-        "no": 9,
-        "q": "What was the day of the week on 15th August 1947?",
-        "options": [
-          "Friday",
-          "Thursday",
-          "Saturday",
           "Sunday"
         ],
-        "a": "Answer: A \u2014 1600 yrs = 0, 300 yrs = 1 odd day. 46 yrs (11 leap, 35 ord) = 22 + 35 = 57 = 1 odd day. Jan(3)+Feb(0)+Mar(3)+Apr(2)+May(3)+Jun(2)+Jul(3)+Aug(15=1) = 17 = 3 odd days. Total = 1 + 1 + 3 = 5 odd days => Friday."
+        "correct_answer": "A",
+        "explanation": "61 mod 7 = 5 odd days. Monday + 5 days = Saturday."
       },
       {
-        "no": 10,
-        "q": "A watch gains 5 seconds in 3 minutes and was set right at 8 AM. What time will it show at 10 PM on the same day?",
+        "id": "TEST-19-07",
+        "category": "Placement Aptitude",
+        "question": "What was the day of the week on 28th May 2006?",
         "options": [
-          "10:23:20 PM",
-          "10:15:00 PM",
-          "10:30:00 PM",
-          "10:20:00 PM"
+          "Sunday",
+          "Saturday",
+          "Friday",
+          "Monday"
         ],
-        "a": "Answer: A \u2014 From 8 AM to 10 PM = 14 hours = 840 minutes. Number of 3-min intervals = 840 / 3 = 280. Gain = 280 * 5 = 1,400 sec = 23 min 20 sec. Time shown = 10:23:20 PM."
+        "correct_answer": "A",
+        "explanation": "2000 yrs = 0 odd days. 5 yrs (1 leap, 4 ord) = 6 odd days. Jan(3)+Feb(0)+Mar(3)+Apr(2)+May(28=0) = 8 = 1 odd day. Total = 6 + 1 = 7 = 0 odd days => Sunday."
       },
       {
-        "no": 11,
-        "q": "Which algorithm is used by OSPF to compute shortest path routing tables?",
+        "id": "TEST-19-08",
+        "category": "Placement Aptitude",
+        "question": "At what time between 7 and 8 o'clock will the hands of a clock be at right angles (90 degrees)?",
+        "options": [
+          "21 9/11 min past 7 and 54 6/11 min past 7",
+          "25 min past 7",
+          "30 min past 7",
+          "20 min past 7"
+        ],
+        "correct_answer": "A",
+        "explanation": "Formula M = (2/11) * (30H +/- 90). For H=7: (2/11)*(210 - 90) = 240/11 = 21 9/11 mins; (2/11)*(210 + 90) = 600/11 = 54 6/11 mins."
+      },
+      {
+        "id": "TEST-19-09",
+        "category": "Placement Aptitude",
+        "question": "Which of the following years is a leap year?",
+        "options": [
+          "2000",
+          "1900",
+          "2100",
+          "1800"
+        ],
+        "correct_answer": "A",
+        "explanation": "A century year must be divisible by 400 to be a leap year. 2000 is divisible by 400; 1900, 2100, and 1800 are not."
+      },
+      {
+        "id": "TEST-19-10",
+        "category": "Placement Aptitude",
+        "question": "A mirror image of a clock shows 3:15. What is the actual time on the clock?",
+        "options": [
+          "8:45",
+          "9:45",
+          "8:15",
+          "9:15"
+        ],
+        "correct_answer": "A",
+        "explanation": "Mirror time formula: Actual time = 11:60 - Mirror Time = 11:60 - 3:15 = 8:45."
+      },
+      {
+        "id": "TEST-19-11",
+        "category": "Core CS (Computer Networks)",
+        "question": "Which algorithm is used by OSPF to compute shortest path routing tables?",
         "options": [
           "Bellman-Ford",
           "Dijkstra's Algorithm",
           "Floyd-Warshall",
           "Prim's Algorithm"
         ],
-        "a": "Answer: B \u2014 OSPF runs Dijkstra's shortest path algorithm on its link-state database."
+        "correct_answer": "B",
+        "explanation": "OSPF runs Dijkstra's shortest path algorithm on its link-state database."
       },
       {
-        "no": 12,
-        "q": "What is considered 'infinity' (unreachable distance) in the Routing Information Protocol (RIP)?",
+        "id": "TEST-19-12",
+        "category": "Core CS (Computer Networks)",
+        "question": "What is considered 'infinity' (unreachable distance) in the Routing Information Protocol (RIP)?",
         "options": [
           "10 hops",
           "15 hops",
           "16 hops",
           "255 hops"
         ],
-        "a": "Answer: C \u2014 RIP caps valid hop counts at 15; a hop count of 16 signifies an unreachable destination."
+        "correct_answer": "C",
+        "explanation": "RIP caps valid hop counts at 15; a hop count of 16 signifies an unreachable destination."
       },
       {
-        "no": 13,
-        "q": "The primary protocol responsible for routing traffic between different Autonomous Systems on the global Internet is:",
+        "id": "TEST-19-13",
+        "category": "Core CS (Computer Networks)",
+        "question": "The primary protocol responsible for routing traffic between different Autonomous Systems on the global Internet is:",
         "options": [
           "RIP",
           "OSPF",
           "BGP",
           "ICMP"
         ],
-        "a": "Answer: C \u2014 BGP (Border Gateway Protocol) is the de facto inter-domain routing protocol of the Internet."
+        "correct_answer": "C",
+        "explanation": "BGP (Border Gateway Protocol) is the de facto inter-domain routing protocol of the Internet."
       },
       {
-        "no": 14,
-        "q": "Split Horizon is a technique designed to prevent:",
+        "id": "TEST-19-14",
+        "category": "Core CS (Computer Networks)",
+        "question": "Split Horizon is a technique designed to prevent:",
         "options": [
           "Buffer overflow",
           "Count-to-Infinity routing loops in Distance Vector protocols",
           "Packet collisions in CSMA",
           "SYN flood attacks"
         ],
-        "a": "Answer: B \u2014 Split Horizon stops a router from advertising routes back out the interface they were learned from."
+        "correct_answer": "B",
+        "explanation": "Split Horizon stops a router from advertising routes back out the interface they were learned from."
       },
       {
-        "no": 15,
-        "q": "BGP avoids routing loops by examining which route attribute?",
+        "id": "TEST-19-15",
+        "category": "Core CS (Computer Networks)",
+        "question": "BGP avoids routing loops by examining which route attribute?",
         "options": [
           "Next Hop IP",
           "AS-Path list",
           "Subnet Mask",
           "Metric Cost"
         ],
-        "a": "Answer: B \u2014 If a router detects its own ASN inside the incoming AS-Path attribute, it drops the route to prevent loops."
+        "correct_answer": "B",
+        "explanation": "If a router detects its own ASN inside the incoming AS-Path attribute, it drops the route to prevent loops."
       },
       {
-        "no": 16,
-        "q": "In Java 17+, how is the 'Graph Traversal: Breadth-First Search (BFS)' algorithmic pattern optimal for placement coding problems?",
+        "id": "TEST-19-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Graph Traversal: Breadth-First Search (BFS)' algorithmic pattern optimal for placement coding problems?",
         "options": [
           "It satisfies optimal asymptotic complexity: O(R * C) Time, O(R * C) Auxiliary Space.",
           "It uses recursion with infinite call stack depth.",
           "It allocates O(N^2) dynamic heap memory unnecessarily.",
           "It requires native C++ pointer arithmetic."
         ],
-        "a": "Answer: A \u2014 The 'Graph Traversal: Breadth-First Search (BFS)' pattern operates with O(R * C) Time, O(R * C) Auxiliary Space: First time a vertex is popped from the queue corresponds to its minimum edge distance from the source.."
+        "correct_answer": "A",
+        "explanation": "The 'Graph Traversal: Breadth-First Search (BFS)' pattern operates with O(R * C) Time, O(R * C) Auxiliary Space: First time a vertex is popped from the queue corresponds to its minimum edge distance from the source.."
       },
       {
-        "no": 17,
-        "q": "When implementing 'Graph Traversal: Breadth-First Search (BFS)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "id": "TEST-19-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Graph Traversal: Breadth-First Search (BFS)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
         "options": [
           "Handling boundary conditions such as: No fresh oranges initially (return 0).",
           "Using only primitive floats instead of double.",
           "Declaring all methods native.",
           "Disabling JVM garbage collection."
         ],
-        "a": "Answer: A \u2014 Critical edge cases for Graph Traversal: Breadth-First Search (BFS) include No fresh oranges initially (return 0), which must be validated with guard clauses before executing loop pointers."
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Graph Traversal: Breadth-First Search (BFS) include No fresh oranges initially (return 0), which must be validated with guard clauses before executing loop pointers."
       },
       {
-        "no": 18,
-        "q": "For 'Problem 1: Rotting Oranges', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "id": "TEST-19-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Rotting Oranges', what Java collection or data structure provides the optimal auxiliary space bounds?",
         "options": [
           "Standard array or standard collection adhering to O(R * C) Auxiliary Space.",
           "A nested 3D LinkedList.",
           "External disk-backed SQL table.",
           "Unbounded blocking queue."
         ],
-        "a": "Answer: A \u2014 The optimal Java 17+ implementation achieves O(R * C) Time, O(R * C) Auxiliary Space by avoiding unneeded object allocations."
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(R * C) Time, O(R * C) Auxiliary Space by avoiding unneeded object allocations."
       },
       {
-        "no": 19,
-        "q": "In Sarthak's project 'Biometric Electronic Voting System (BEVM)', what is the core architectural principle regarding 'Computer Vision Preprocessing: Deskewing, Binarization & Adaptive Thresholding'?",
+        "id": "TEST-19-19",
+        "category": "Projects (DocRoute)",
+        "question": "In Sarthak's project 'DocRoute', what is the core architectural principle regarding 'Image Preprocessing for Enhanced OCR Accuracy'?",
         "options": [
-          "Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.",
+          "Tesseract performs best on high-contrast black-and-white images with minimal background noise or skew.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For Biometric Electronic Voting System (BEVM), the architectural invariant is: Otsu's thresholding calculates the optimum global threshold separating foreground text from background paper stains.."
+        "correct_answer": "A",
+        "explanation": "For DocRoute, the architectural invariant is: Tesseract performs best on high-contrast black-and-white images with minimal background noise or skew.."
       },
       {
-        "no": 20,
-        "q": "Regarding 'Biometric Electronic Voting System (BEVM)', how should you defend this design decision in a technical interview: 'How does image preprocessing improve Tesseract OCR recognition accuracy in Biometric Electronic Voting System (BEVM)?'?",
+        "id": "TEST-19-20",
+        "category": "Projects (DocRoute)",
+        "question": "Regarding 'DocRoute', how should you defend this design decision in a technical interview: 'Why is image preprocessing necessary before running OCR?'?",
         "options": [
-          "Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bounding rectangle of t...",
+          "Scanned documents often suffer from uneven lighting, paper shadows, colored backgrounds, or low contrast. Running OCR directly on noisy images causes character ...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
-        "a": "Answer: A \u2014 In technical interviews, anchor your defense in engineering metrics: Scanned legal documents often suffer from rotation skew, yellowed paper, and low contrast. Our OpenCV pipeline computes the minimum area bou."
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: Scanned documents often suffer from uneven lighting, paper shadows, colored backgrounds, or low contrast. Running OCR directly on noisy imag."
       }
     ]
   },

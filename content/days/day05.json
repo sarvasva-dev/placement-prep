@@ -4,12 +4,12 @@
   "streams": {
     "academic": {
       "unit": 1,
-      "topic": "Unit I \u2014 Errors in Numerical Computations & Roots of Equations: Bisection Method",
+      "topic": "Unit I — Errors in Numerical Computations & Roots of Equations: Bisection Method",
       "objectives": [
         "Understand Absolute, Relative, and Percentage Errors.",
         "Master the Bisection Method, Bolzano's Theorem, and linear convergence rate O(1/2^n)."
       ],
-      "explanation": "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   \u2022 Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   \u2022 Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   \u2022 Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   \u2022 Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   \u2022 Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
+      "explanation": "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   • Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   • Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   • Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   • Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   • Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
       "definitions": [
         {
           "term": "Bolzano's Theorem",
@@ -89,7 +89,7 @@
           "marks": 15,
           "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
           "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
-          "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n\u2022 Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n\u2022 Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n\u2022 Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n\u2022 Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n\u2022 Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n\u2022 Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n\u2022 Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n\u2022 Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+          "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
           "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
           "important_points": [
             "f(a)*f(b) < 0",
@@ -180,730 +180,7 @@
           "correct_answer": "C",
           "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
         }
-      ],
-      "worked_numerical_problems": [
-        {
-          "problem_id": "NM-U1-BIS-01",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Bisection Method",
-          "difficulty": "Exam-Level",
-          "problem": "Find a real root of f(x) = x^3 - 4x - 9 = 0 on [2, 3] using Bisection method. Show full iteration table.",
-          "data": {
-            "equation": "x^3 - 4x - 9 = 0",
-            "interval": [
-              2.0,
-              3.0
-            ],
-            "steps": 5
-          },
-          "method": "Bisection Method",
-          "formula": "c_k = (a_k + b_k) / 2; root bracket update based on sign of f(a)*f(c)",
-          "step_by_step_calculation": [
-            "Step 1: Check initial bracketing: f(2) = -9.0000 < 0, f(3) = 6.0000 > 0. Opposite signs confirmed.",
-            "Step 2: Iterations 1-5 executed systematically halving the search interval.",
-            "Step 3: After 5 iterations, bracket narrows to [2.6875, 2.71875].",
-            "Step 4: Last computed midpoint c5 = 2.71875 (residual f(c5) = 0.220917). Bracket midpoint = 2.703125 (residual = -0.061077). True root x \u2248 2.7065."
-          ],
-          "intermediate_values": {
-            "last_midpoint_c5": 2.71875,
-            "final_bracket": [
-              2.6875,
-              2.71875
-            ],
-            "bracket_midpoint": 2.703125,
-            "residual": 0.220917
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 2.0,
-              "b": 3.0,
-              "c": 2.5,
-              "f_a": -9.0,
-              "f_c": -3.375,
-              "new_interval": "[2.5, 3.0]"
-            },
-            {
-              "iter": 2,
-              "a": 2.5,
-              "b": 3.0,
-              "c": 2.75,
-              "f_a": -3.375,
-              "f_c": 0.796875,
-              "new_interval": "[2.5, 2.75]"
-            },
-            {
-              "iter": 3,
-              "a": 2.5,
-              "b": 2.75,
-              "c": 2.625,
-              "f_a": -3.375,
-              "f_c": -1.412109,
-              "new_interval": "[2.625, 2.75]"
-            },
-            {
-              "iter": 4,
-              "a": 2.625,
-              "b": 2.75,
-              "c": 2.6875,
-              "f_a": -1.412109,
-              "f_c": -0.339111,
-              "new_interval": "[2.6875, 2.75]"
-            },
-            {
-              "iter": 5,
-              "a": 2.6875,
-              "b": 2.75,
-              "c": 2.71875,
-              "f_a": -0.339111,
-              "f_c": 0.220917,
-              "new_interval": "[2.6875, 2.71875]"
-            }
-          ],
-          "final_answer": "Last midpoint c5 = 2.71875; Final bracket [2.6875, 2.71875]; Reported approximation x \u2248 2.703125",
-          "verification": "Verified: f(2.703125) = -0.061077 is within acceptable tolerance. Exact root \u2248 2.7065.",
-          "common_mistake": "Confusing last calculated midpoint c_k with the center of the updated bracket."
-        },
-        {
-          "problem_id": "NM-U1-BIS-02",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Bisection Method",
-          "difficulty": "Foundation",
-          "problem": "Find the real root of f(x) = x^3 - x - 1 = 0 in [1, 2] performing 4 bisection steps.",
-          "data": {
-            "equation": "x^3 - x - 1 = 0",
-            "interval": [
-              1.0,
-              2.0
-            ],
-            "steps": 4
-          },
-          "method": "Bisection Method",
-          "formula": "c_k = (a_k + b_k) / 2",
-          "step_by_step_calculation": [
-            "Step 1: Verify sign change: f(1) = -1.0000 < 0, f(2) = 5.0000 > 0. Root bracketed.",
-            "Step 2: Compute midpoints c1, c2, c3, c4 and update intervals based on sign of f(c).",
-            "Step 3: 4th iteration yields midpoint c4 = 1.3125 with f(c4) = -0.051514.",
-            "Step 4: Final bracket is [1.3125, 1.375]. Bracket midpoint = 1.34375. True root \u2248 1.3247."
-          ],
-          "intermediate_values": {
-            "last_midpoint_c4": 1.3125,
-            "final_bracket": [
-              1.3125,
-              1.375
-            ],
-            "bracket_midpoint": 1.34375
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 1.0,
-              "b": 2.0,
-              "c": 1.5,
-              "f_a": -1.0,
-              "f_c": 0.875,
-              "new_interval": "[1.0, 1.5]"
-            },
-            {
-              "iter": 2,
-              "a": 1.0,
-              "b": 1.5,
-              "c": 1.25,
-              "f_a": -1.0,
-              "f_c": -0.296875,
-              "new_interval": "[1.25, 1.5]"
-            },
-            {
-              "iter": 3,
-              "a": 1.25,
-              "b": 1.5,
-              "c": 1.375,
-              "f_a": -0.296875,
-              "f_c": 0.224609,
-              "new_interval": "[1.25, 1.375]"
-            },
-            {
-              "iter": 4,
-              "a": 1.25,
-              "b": 1.375,
-              "c": 1.3125,
-              "f_a": -0.296875,
-              "f_c": -0.051514,
-              "new_interval": "[1.3125, 1.375]"
-            }
-          ],
-          "final_answer": "Last midpoint c4 = 1.3125; Final bracket [1.3125, 1.375]; Reported approximation x \u2248 1.34375",
-          "verification": "f(1.34375) = 0.082611 \u2248 0. Narrows interval width from 1.0 to 0.0625.",
-          "common_mistake": "Premature rounding of intermediate midpoints."
-        },
-        {
-          "problem_id": "NM-U1-BIS-03",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Bisection Method",
-          "difficulty": "Standard",
-          "problem": "Find the root of f(x) = x^3 - 2x - 5 = 0 between 2 and 3 using 4 iterations of Bisection. Clearly label last midpoint, final bracket, and final approximation.",
-          "data": {
-            "equation": "x^3 - 2x - 5 = 0",
-            "interval": [
-              2.0,
-              3.0
-            ],
-            "iterations": 4
-          },
-          "method": "Bisection Method",
-          "formula": "c = (a+b)/2",
-          "step_by_step_calculation": [
-            "Step 1: Check initial values: f(2) = -1.0000 < 0, f(3) = 16.0000 > 0. Opposite signs confirm root in [2, 3].",
-            "Step 2: Iteration 1: c1 = 2.5, f(2.5) = 5.625000 > 0 \u2192 New bracket [2.0, 2.5].",
-            "Step 3: Iteration 2: c2 = 2.25, f(2.25) = 1.890625 > 0 \u2192 New bracket [2.0, 2.25].",
-            "Step 4: Iteration 3: c3 = 2.125, f(2.125) = 0.345703 > 0 \u2192 New bracket [2.0, 2.125].",
-            "Step 5: Iteration 4: c4 = 2.0625, f(2.0625) = -0.351318 < 0 \u2192 Final refined bracket [2.0625, 2.125].",
-            "Step 6: Mathematical distinction: Last computed midpoint is c4 = 2.0625 (residual = -0.351318). The midpoint of the final bracket [2.0625, 2.125] is c_bracket = 2.09375 (residual = -0.008942). Actual root x \u2248 2.09455."
-          ],
-          "intermediate_values": {
-            "c1": 2.5,
-            "c2": 2.25,
-            "c3": 2.125,
-            "c4": 2.0625,
-            "final_bracket": [
-              2.0625,
-              2.125
-            ],
-            "bracket_midpoint": 2.09375,
-            "actual_root": 2.09455
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 2.0,
-              "b": 3.0,
-              "c": 2.5,
-              "f_a": -1.0,
-              "f_c": 5.625,
-              "new_interval": "[2.0, 2.5]"
-            },
-            {
-              "iter": 2,
-              "a": 2.0,
-              "b": 2.5,
-              "c": 2.25,
-              "f_a": -1.0,
-              "f_c": 1.890625,
-              "new_interval": "[2.0, 2.25]"
-            },
-            {
-              "iter": 3,
-              "a": 2.0,
-              "b": 2.25,
-              "c": 2.125,
-              "f_a": -1.0,
-              "f_c": 0.345703,
-              "new_interval": "[2.0, 2.125]"
-            },
-            {
-              "iter": 4,
-              "a": 2.0,
-              "b": 2.125,
-              "c": 2.0625,
-              "f_a": -1.0,
-              "f_c": -0.351318,
-              "new_interval": "[2.0625, 2.125]"
-            }
-          ],
-          "final_answer": "Last computed midpoint c4 = 2.0625; Final refined bracket = [2.0625, 2.125]; Bracket midpoint approximation x \u2248 2.09375 (True root x \u2248 2.09455)",
-          "verification": "Verified: f(2.09375) = -0.008942 confirming high accuracy within error bound \u0394x = 0.03125.",
-          "common_mistake": "Conflating last midpoint c4=2.0625 with the center of the newly refined bracket 2.09375 or the true root."
-        },
-        {
-          "problem_id": "NM-U1-BIS-04",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Bisection Method",
-          "difficulty": "Standard",
-          "problem": "Find root of x^3 - x - 4 = 0 in interval [1.0, 2.0] using 4 steps of Bisection. Show complete computed iteration table.",
-          "data": {
-            "equation": "x^3 - x - 4 = 0",
-            "interval": [
-              1.0,
-              2.0
-            ],
-            "iterations": 4
-          },
-          "method": "Bisection Method",
-          "formula": "c = (a+b)/2",
-          "step_by_step_calculation": [
-            "Step 1: Check initial values: f(1.0) = -4.0000, f(2.0) = 2.0000. Opposite signs confirmed.",
-            "Step 2: Calculate midpoints c1=1.5, c2=1.75, c3=1.875, c4=1.8125.",
-            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [1.75, 1.8125].",
-            "Step 4: Last computed midpoint c4 = 1.8125 (residual f(c4) = 0.141846). Bracket midpoint = 1.78125 (residual = -0.129608). True root x \u2248 1.796322."
-          ],
-          "intermediate_values": {
-            "last_midpoint_c4": 1.8125,
-            "final_bracket": [
-              1.75,
-              1.8125
-            ],
-            "bracket_midpoint": 1.78125,
-            "actual_root": 1.796322
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 1.0,
-              "b": 2.0,
-              "c": 1.5,
-              "f_a": -4.0,
-              "f_c": -2.125,
-              "new_interval": "[1.5, 2.0]"
-            },
-            {
-              "iter": 2,
-              "a": 1.5,
-              "b": 2.0,
-              "c": 1.75,
-              "f_a": -2.125,
-              "f_c": -0.390625,
-              "new_interval": "[1.75, 2.0]"
-            },
-            {
-              "iter": 3,
-              "a": 1.75,
-              "b": 2.0,
-              "c": 1.875,
-              "f_a": -0.390625,
-              "f_c": 0.716797,
-              "new_interval": "[1.75, 1.875]"
-            },
-            {
-              "iter": 4,
-              "a": 1.75,
-              "b": 1.875,
-              "c": 1.8125,
-              "f_a": -0.390625,
-              "f_c": 0.141846,
-              "new_interval": "[1.75, 1.8125]"
-            }
-          ],
-          "final_answer": "Last midpoint c4 = 1.8125; Final bracket [1.75, 1.8125]; Reported approximation x \u2248 1.78125",
-          "verification": "Residual f(1.78125) = -0.129608 demonstrates convergence within error tolerance.",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
-        }
-      ],
-      "expanded_numerical_practice": [
-        {
-          "problem_id": "NM-U1-BIS-05",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Bisection Method",
-          "difficulty": "Standard",
-          "problem": "Find root of x^3 - 9x + 1 = 0 in interval [2.0, 3.0] using 4 steps of Bisection. Show complete computed iteration table.",
-          "data": {
-            "equation": "x^3 - 9x + 1 = 0",
-            "interval": [
-              2.0,
-              3.0
-            ],
-            "iterations": 4
-          },
-          "method": "Bisection Method",
-          "formula": "c = (a+b)/2",
-          "step_by_step_calculation": [
-            "Step 1: Check initial values: f(2.0) = -9.0000, f(3.0) = 1.0000. Opposite signs confirmed.",
-            "Step 2: Calculate midpoints c1=2.5, c2=2.75, c3=2.875, c4=2.9375.",
-            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [2.9375, 3.0].",
-            "Step 4: Last computed midpoint c4 = 2.9375 (residual f(c4) = -0.090088). Bracket midpoint = 2.96875 (residual = 0.446259). True root x \u2248 2.94282."
-          ],
-          "intermediate_values": {
-            "last_midpoint_c4": 2.9375,
-            "final_bracket": [
-              2.9375,
-              3.0
-            ],
-            "bracket_midpoint": 2.96875,
-            "actual_root": 2.94282
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 2.0,
-              "b": 3.0,
-              "c": 2.5,
-              "f_a": -9.0,
-              "f_c": -5.875,
-              "new_interval": "[2.5, 3.0]"
-            },
-            {
-              "iter": 2,
-              "a": 2.5,
-              "b": 3.0,
-              "c": 2.75,
-              "f_a": -5.875,
-              "f_c": -2.953125,
-              "new_interval": "[2.75, 3.0]"
-            },
-            {
-              "iter": 3,
-              "a": 2.75,
-              "b": 3.0,
-              "c": 2.875,
-              "f_a": -2.953125,
-              "f_c": -1.111328,
-              "new_interval": "[2.875, 3.0]"
-            },
-            {
-              "iter": 4,
-              "a": 2.875,
-              "b": 3.0,
-              "c": 2.9375,
-              "f_a": -1.111328,
-              "f_c": -0.090088,
-              "new_interval": "[2.9375, 3.0]"
-            }
-          ],
-          "final_answer": "Last midpoint c4 = 2.9375; Final bracket [2.9375, 3.0]; Reported approximation x \u2248 2.96875",
-          "verification": "Residual f(2.96875) = 0.446259 demonstrates convergence within error tolerance.",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
-        },
-        {
-          "problem_id": "NM-U1-BIS-06",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Bisection Method",
-          "difficulty": "Standard",
-          "problem": "Find root of cos(x) - x*exp(x) = 0 in interval [0.0, 1.0] using 4 steps of Bisection. Show complete computed iteration table.",
-          "data": {
-            "equation": "cos(x) - x*exp(x) = 0",
-            "interval": [
-              0.0,
-              1.0
-            ],
-            "iterations": 4
-          },
-          "method": "Bisection Method",
-          "formula": "c = (a+b)/2",
-          "step_by_step_calculation": [
-            "Step 1: Check initial values: f(0.0) = 1.0000, f(1.0) = -2.1780. Opposite signs confirmed.",
-            "Step 2: Calculate midpoints c1=0.5, c2=0.75, c3=0.625, c4=0.5625.",
-            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [0.5, 0.5625].",
-            "Step 4: Last computed midpoint c4 = 0.5625 (residual f(c4) = -0.141294). Bracket midpoint = 0.53125 (residual = -0.041512). True root x \u2248 0.517757."
-          ],
-          "intermediate_values": {
-            "last_midpoint_c4": 0.5625,
-            "final_bracket": [
-              0.5,
-              0.5625
-            ],
-            "bracket_midpoint": 0.53125,
-            "actual_root": 0.517757
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 0.0,
-              "b": 1.0,
-              "c": 0.5,
-              "f_a": 1.0,
-              "f_c": 0.053222,
-              "new_interval": "[0.5, 1.0]"
-            },
-            {
-              "iter": 2,
-              "a": 0.5,
-              "b": 1.0,
-              "c": 0.75,
-              "f_a": 0.053222,
-              "f_c": -0.856061,
-              "new_interval": "[0.5, 0.75]"
-            },
-            {
-              "iter": 3,
-              "a": 0.5,
-              "b": 0.75,
-              "c": 0.625,
-              "f_a": 0.053222,
-              "f_c": -0.356691,
-              "new_interval": "[0.5, 0.625]"
-            },
-            {
-              "iter": 4,
-              "a": 0.5,
-              "b": 0.625,
-              "c": 0.5625,
-              "f_a": 0.053222,
-              "f_c": -0.141294,
-              "new_interval": "[0.5, 0.5625]"
-            }
-          ],
-          "final_answer": "Last midpoint c4 = 0.5625; Final bracket [0.5, 0.5625]; Reported approximation x \u2248 0.53125",
-          "verification": "Residual f(0.53125) = -0.041512 demonstrates convergence within error tolerance.",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
-        },
-        {
-          "problem_id": "NM-U1-BIS-07",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Bisection Method",
-          "difficulty": "Standard",
-          "problem": "Find root of x*log10(x) - 1.2 = 0 in interval [2.0, 3.0] using 4 steps of Bisection. Show complete computed iteration table.",
-          "data": {
-            "equation": "x*log10(x) - 1.2 = 0",
-            "interval": [
-              2.0,
-              3.0
-            ],
-            "iterations": 4
-          },
-          "method": "Bisection Method",
-          "formula": "c = (a+b)/2",
-          "step_by_step_calculation": [
-            "Step 1: Check initial values: f(2.0) = -0.5979, f(3.0) = 0.2314. Opposite signs confirmed.",
-            "Step 2: Calculate midpoints c1=2.5, c2=2.75, c3=2.625, c4=2.6875.",
-            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [2.6875, 2.75].",
-            "Step 4: Last computed midpoint c4 = 2.6875 (residual f(c4) = -0.046126). Bracket midpoint = 2.71875 (residual = -0.019059). True root x \u2248 2.74065."
-          ],
-          "intermediate_values": {
-            "last_midpoint_c4": 2.6875,
-            "final_bracket": [
-              2.6875,
-              2.75
-            ],
-            "bracket_midpoint": 2.71875,
-            "actual_root": 2.74065
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 2.0,
-              "b": 3.0,
-              "c": 2.5,
-              "f_a": -0.59794,
-              "f_c": -0.20515,
-              "new_interval": "[2.5, 3.0]"
-            },
-            {
-              "iter": 2,
-              "a": 2.5,
-              "b": 3.0,
-              "c": 2.75,
-              "f_a": -0.20515,
-              "f_c": 0.008165,
-              "new_interval": "[2.5, 2.75]"
-            },
-            {
-              "iter": 3,
-              "a": 2.5,
-              "b": 2.75,
-              "c": 2.625,
-              "f_a": -0.20515,
-              "f_c": -0.099786,
-              "new_interval": "[2.625, 2.75]"
-            },
-            {
-              "iter": 4,
-              "a": 2.625,
-              "b": 2.75,
-              "c": 2.6875,
-              "f_a": -0.099786,
-              "f_c": -0.046126,
-              "new_interval": "[2.6875, 2.75]"
-            }
-          ],
-          "final_answer": "Last midpoint c4 = 2.6875; Final bracket [2.6875, 2.75]; Reported approximation x \u2248 2.71875",
-          "verification": "Residual f(2.71875) = -0.019059 demonstrates convergence within error tolerance.",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
-        },
-        {
-          "problem_id": "NM-U1-BIS-08",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Bisection Method",
-          "difficulty": "Standard",
-          "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection. Show complete computed iteration table.",
-          "data": {
-            "equation": "x^4 - x - 10 = 0",
-            "interval": [
-              1.0,
-              2.0
-            ],
-            "iterations": 4
-          },
-          "method": "Bisection Method",
-          "formula": "c = (a+b)/2",
-          "step_by_step_calculation": [
-            "Step 1: Check initial values: f(1.0) = -10.0000, f(2.0) = 4.0000. Opposite signs confirmed.",
-            "Step 2: Calculate midpoints c1=1.5, c2=1.75, c3=1.875, c4=1.8125.",
-            "Step 3: Update bracket based on sign of f(c). Final bracket narrows to [1.8125, 1.875].",
-            "Step 4: Last computed midpoint c4 = 1.8125 (residual f(c4) = -1.020248). Bracket midpoint = 1.84375 (residual = -0.287734). True root x \u2248 1.85558."
-          ],
-          "intermediate_values": {
-            "last_midpoint_c4": 1.8125,
-            "final_bracket": [
-              1.8125,
-              1.875
-            ],
-            "bracket_midpoint": 1.84375,
-            "actual_root": 1.85558
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 1.0,
-              "b": 2.0,
-              "c": 1.5,
-              "f_a": -10.0,
-              "f_c": -6.4375,
-              "new_interval": "[1.5, 2.0]"
-            },
-            {
-              "iter": 2,
-              "a": 1.5,
-              "b": 2.0,
-              "c": 1.75,
-              "f_a": -6.4375,
-              "f_c": -2.371094,
-              "new_interval": "[1.75, 2.0]"
-            },
-            {
-              "iter": 3,
-              "a": 1.75,
-              "b": 2.0,
-              "c": 1.875,
-              "f_a": -2.371094,
-              "f_c": 0.484619,
-              "new_interval": "[1.75, 1.875]"
-            },
-            {
-              "iter": 4,
-              "a": 1.75,
-              "b": 1.875,
-              "c": 1.8125,
-              "f_a": -2.371094,
-              "f_c": -1.020248,
-              "new_interval": "[1.8125, 1.875]"
-            }
-          ],
-          "final_answer": "Last midpoint c4 = 1.8125; Final bracket [1.8125, 1.875]; Reported approximation x \u2248 1.84375",
-          "verification": "Residual f(1.84375) = -0.287734 demonstrates convergence within error tolerance.",
-          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
-        },
-        {
-          "problem_id": "NM-U1-RF-01",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Regula-Falsi Method",
-          "difficulty": "Exam-Level",
-          "problem": "Find real root of f(x) = x^3 - 2x - 5 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
-          "data": {
-            "equation": "x^3 - 2x - 5 = 0",
-            "interval": [
-              2.0,
-              3.0
-            ]
-          },
-          "method": "Regula-Falsi (False Position) Method",
-          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
-          "step_by_step_calculation": [
-            "Step 1: Check initial signs f(2.0) = -1.0000 and f(3.0) = 16.0000. Product f(a)*f(b) < 0.",
-            "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
-            "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
-            "Step 4: Convergence characteristics: Convex curvature pins endpoint x=3; false position converges monotonically from left."
-          ],
-          "intermediate_values": {
-            "root_approx": 2.089639,
-            "residual": -0.054677
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 2.0,
-              "b": 3.0,
-              "x_r": 2.058824,
-              "f_xr": -0.3908,
-              "new_interval": "[2.058824, 3.0]"
-            },
-            {
-              "iter": 2,
-              "a": 2.058824,
-              "b": 3.0,
-              "x_r": 2.081264,
-              "f_xr": -0.147204,
-              "new_interval": "[2.081264, 3.0]"
-            },
-            {
-              "iter": 3,
-              "a": 2.081264,
-              "b": 3.0,
-              "x_r": 2.089639,
-              "f_xr": -0.054677,
-              "new_interval": "[2.089639, 3.0]"
-            }
-          ],
-          "final_answer": "Root after 3 iterations x \u2248 2.0896",
-          "verification": "Residual evaluated f(2.0896) = -0.054677 confirming convergence.",
-          "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
-        },
-        {
-          "problem_id": "NM-U1-RF-02",
-          "unit": "Unit 1: Roots of Equations",
-          "topic": "Regula-Falsi Method",
-          "difficulty": "Exam-Level",
-          "problem": "Find real root of f(x) = x^3 + x - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi). Show full computed chord table.",
-          "data": {
-            "equation": "x^3 + x - 1 = 0",
-            "interval": [
-              0.0,
-              1.0
-            ]
-          },
-          "method": "Regula-Falsi (False Position) Method",
-          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
-          "step_by_step_calculation": [
-            "Step 1: Check initial signs f(0.0) = -1.0000 and f(1.0) = 1.0000. Product f(a)*f(b) < 0.",
-            "Step 2: Execute chord intersection formula x_r = (a*f(b) - b*f(a))/(f(b) - f(a)).",
-            "Step 3: Evaluate f(x_r) and substitute the endpoint of matching sign.",
-            "Step 4: Convergence characteristics: Modest curvature leads to rapid false-position chord convergence."
-          ],
-          "intermediate_values": {
-            "root_approx": 0.671196,
-            "residual": -0.026428
-          },
-          "iteration_table": [
-            {
-              "iter": 1,
-              "a": 0.0,
-              "b": 1.0,
-              "x_r": 0.5,
-              "f_xr": -0.375,
-              "new_interval": "[0.5, 1.0]"
-            },
-            {
-              "iter": 2,
-              "a": 0.5,
-              "b": 1.0,
-              "x_r": 0.636364,
-              "f_xr": -0.105935,
-              "new_interval": "[0.636364, 1.0]"
-            },
-            {
-              "iter": 3,
-              "a": 0.636364,
-              "b": 1.0,
-              "x_r": 0.671196,
-              "f_xr": -0.026428,
-              "new_interval": "[0.671196, 1.0]"
-            }
-          ],
-          "final_answer": "Root after 3 iterations x \u2248 0.6712",
-          "verification": "Residual evaluated f(0.6712) = -0.026428 confirming convergence.",
-          "common_mistake": "Accidentally writing (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the chord numerator."
-        }
-      ],
-      "timed_numerical_drill": {
-        "problem_id": "NM-U1-BIS-08",
-        "title": "Timed Exam Drill: Bisection Method",
-        "time_limit_minutes": 15,
-        "marks": 15,
-        "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection. Show complete computed iteration table.",
-        "formula": "c = (a+b)/2",
-        "final_answer": "Last midpoint c4 = 1.8125; Final bracket [1.8125, 1.875]; Reported approximation x \u2248 1.84375",
-        "verification": "Residual f(1.84375) = -0.287734 demonstrates convergence within error tolerance.",
-        "common_mistake": "Confusing radian and degree mode when evaluating trigonometric functions."
-      },
-      "formula_recall": "Bisection: c = (a+b)/2. Error bound: |b-a|/2^n < epsilon. Sign check: f(a)*f(b) < 0."
+      ]
     },
     "academic_pyqs": [
       {
@@ -914,7 +191,7 @@
         "marks": 15,
         "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
         "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
-        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n\u2022 Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n\u2022 Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n\u2022 Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n\u2022 Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n\u2022 Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n\u2022 Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n\u2022 Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n\u2022 Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
         "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
         "important_points": [
           "f(a)*f(b) < 0",
@@ -1017,144 +294,133 @@
     "aptitude_solved": [
       {
         "example_no": 1,
-        "title": "Replacement in Group Average",
+        "title": "Foundation Problem on Averages",
         "tier": "Tier 1: Foundation Concept",
-        "difficulty": "Foundation",
-        "source": "TCS NQT Pattern",
+        "difficulty": "Tier 1",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "The average weight of 15 students increases by 1.5 kg when one student weighing 40 kg is replaced by a new student. What is the weight of the new student?",
-        "problem": "The average weight of 15 students increases by 1.5 kg when one student weighing 40 kg is replaced by a new student. What is the weight of the new student?",
+        "question": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+        "problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
         "step_by_step_solution": [
-          "Step 1: Total weight increase = Number of students * Increase in average = 15 * 1.5 = 22.5 kg.",
-          "Step 2: Weight of new student = Weight of replaced student + Total weight increase.",
-          "Step 3: New weight = 40 + 22.5 = 62.5 kg."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
         "solution": [
-          "Step 1: Total weight increase = Number of students * Increase in average = 15 * 1.5 = 22.5 kg.",
-          "Step 2: Weight of new student = Weight of replaced student + Total weight increase.",
-          "Step 3: New weight = 40 + 22.5 = 62.5 kg."
+          "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.",
+          "Step 2: Improvement factor = 20% increase on initial score.",
+          "Step 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.",
+          "Step 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).",
+          "Speed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks."
         ],
-        "formula": "New Value = Replaced Value + (N * \u0394Average)",
-        "shortcut": "15 * 1.5 = 22.5; add to 40 = 62.5 kg.",
-        "trap": "Subtracting 22.5 kg instead of adding when average increases.",
-        "final_answer": "62.5 kg",
-        "answer": "62.5 kg"
+        "final_answer": "180 marks (90%)",
+        "answer": "180 marks (90%)"
       },
       {
         "example_no": 2,
-        "title": "Batsman Innings Average Calculation",
+        "title": "Standard Placement Problem on Averages",
         "tier": "Tier 2: Standard Placement",
-        "difficulty": "Standard",
-        "source": "Infosys Pattern",
+        "difficulty": "Tier 2",
+        "source": "Placement Exam Pattern",
         "target_time_seconds": 45,
-        "question": "A batsman scores 87 runs in his 17th innings and thus increases his average by 3 runs. Find his average after the 17th innings.",
-        "problem": "A batsman scores 87 runs in his 17th innings and thus increases his average by 3 runs. Find his average after the 17th innings.",
+        "question": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+        "problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
         "step_by_step_solution": [
-          "Step 1: Let previous average (after 16 innings) = A. Total runs after 16 innings = 16A.",
-          "Step 2: New total runs = 16A + 87. New average = A + 3.",
-          "Step 3: (16A + 87) / 17 = A + 3 => 16A + 87 = 17A + 51.",
-          "Step 4: A = 87 - 51 = 36 (average after 16th innings).",
-          "Step 5: Average after 17th innings = A + 3 = 36 + 3 = 39 runs."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
         "solution": [
-          "Step 1: Let previous average (after 16 innings) = A. Total runs after 16 innings = 16A.",
-          "Step 2: New total runs = 16A + 87. New average = A + 3.",
-          "Step 3: (16A + 87) / 17 = A + 3 => 16A + 87 = 17A + 51.",
-          "Step 4: A = 87 - 51 = 36 (average after 16th innings).",
-          "Step 5: Average after 17th innings = A + 3 = 36 + 3 = 39 runs."
+          "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.",
+          "Step 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).",
+          "Step 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.",
+          "Verification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864."
         ],
-        "formula": "New Average = Innings Score - (Innings Count - 1) * Increase",
-        "shortcut": "New Average = 87 - (16 * 3) = 87 - 48 = 39.",
-        "trap": "Forgetting to add 3 to obtain the *new* average (stopping at 36).",
-        "final_answer": "39 runs",
-        "answer": "39 runs"
+        "final_answer": "Rs. 864",
+        "answer": "Rs. 864"
       },
       {
         "example_no": 3,
-        "title": "Alligation of Two Milk-Water Solutions",
+        "title": "Efficiency & Work Ratio Problem on Averages",
         "tier": "Tier 3: Company Exam Pattern",
-        "difficulty": "Placement",
-        "source": "Wipro Pattern",
-        "target_time_seconds": 50,
-        "question": "In what ratio must a grocer mix tea at Rs. 60 per kg and Rs. 65 per kg so that by selling the mixture at Rs. 68.20 per kg he may gain 10%?",
-        "problem": "In what ratio must a grocer mix tea at Rs. 60 per kg and Rs. 65 per kg so that by selling the mixture at Rs. 68.20 per kg he may gain 10%?",
+        "difficulty": "Tier 3",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+        "problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
         "step_by_step_solution": [
-          "Step 1: Selling Price of mixture = Rs. 68.20 with 10% profit.",
-          "Step 2: Mean Cost Price CP = 68.20 / 1.10 = Rs. 62 per kg.",
-          "Step 3: Apply Alligation rule between Cheaper (60) and Dearer (65) around Mean (62):",
-          "   Cheaper (60)         Dearer (65)",
-          "                Mean (62)",
-          "   (65 - 62) = 3        (62 - 60) = 2",
-          "Step 4: Required ratio = 3 : 2."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
         "solution": [
-          "Step 1: Selling Price of mixture = Rs. 68.20 with 10% profit.",
-          "Step 2: Mean Cost Price CP = 68.20 / 1.10 = Rs. 62 per kg.",
-          "Step 3: Apply Alligation rule between Cheaper (60) and Dearer (65) around Mean (62):",
-          "   Cheaper (60)         Dearer (65)",
-          "                Mean (62)",
-          "   (65 - 62) = 3        (62 - 60) = 2",
-          "Step 4: Required ratio = 3 : 2."
+          "Step 1: Assume Total Work = LCM(12, 18) = 36 units.",
+          "Step 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.",
+          "Step 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.",
+          "Step 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.",
+          "Step 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.",
+          "Step 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days)."
         ],
-        "formula": "Ratio = (Dearer Price - Mean Price) : (Mean Price - Cheaper Price)",
-        "shortcut": "First calculate Mean CP: 68.20/1.1 = 62. Cross diffs: 65-62=3, 62-60=2.",
-        "trap": "Using the Selling Price (68.20) directly in the alligation cross without converting to Cost Price.",
-        "final_answer": "3 : 2",
-        "answer": "3 : 2"
+        "final_answer": "14 1/3 days",
+        "answer": "14 1/3 days"
       },
       {
         "example_no": 4,
-        "title": "Combined Class Weighted Average",
+        "title": "Speed & Relative Distance Problem on Averages",
         "tier": "Tier 4: Time-Pressure Challenge",
-        "difficulty": "Tricky",
-        "source": "Accenture Pattern",
-        "target_time_seconds": 50,
-        "question": "The average score of boys in an exam is 71 and that of girls is 73. If the average score of the entire school is 71.8, find the ratio of the number of boys to girls.",
-        "problem": "The average score of boys in an exam is 71 and that of girls is 73. If the average score of the entire school is 71.8, find the ratio of the number of boys to girls.",
+        "difficulty": "Tier 4",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+        "problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
         "step_by_step_solution": [
-          "Step 1: Apply alligation directly on average scores around school mean 71.8.",
-          "Step 2: Boys (71) vs Girls (73), Mean = 71.8.",
-          "Step 3: (73 - 71.8) = 1.2; (71.8 - 71) = 0.8.",
-          "Step 4: Ratio Boys : Girls = 1.2 : 0.8 = 12 : 8 = 3 : 2."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
         "solution": [
-          "Step 1: Apply alligation directly on average scores around school mean 71.8.",
-          "Step 2: Boys (71) vs Girls (73), Mean = 71.8.",
-          "Step 3: (73 - 71.8) = 1.2; (71.8 - 71) = 0.8.",
-          "Step 4: Ratio Boys : Girls = 1.2 : 0.8 = 12 : 8 = 3 : 2."
+          "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.",
+          "Step 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.",
+          "Step 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.",
+          "Step 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.",
+          "Step 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM."
         ],
-        "formula": "N1 / N2 = (Avg2 - Avg_mean) / (Avg_mean - Avg1)",
-        "shortcut": "Cross differences: 73 - 71.8 = 1.2; 71.8 - 71 = 0.8 => 3:2.",
-        "trap": "Inverting the ratio (writing 2 : 3 instead of 3 : 2).",
-        "final_answer": "3 : 2 (Boys : Girls)",
-        "answer": "3 : 2 (Boys : Girls)"
+        "final_answer": "2:15 PM",
+        "answer": "2:15 PM"
       },
       {
         "example_no": 5,
-        "title": "Repeated Liquid Replacement Formula",
-        "tier": "Tier 5: Advanced Placement Variant",
-        "difficulty": "Advanced",
-        "source": "Cognizant Pattern",
-        "target_time_seconds": 60,
-        "question": "A container contains 40 litres of pure milk. From this, 4 litres of milk was taken out and replaced by water. This process was repeated further two times. How much pure milk is now contained in the container?",
-        "problem": "A container contains 40 litres of pure milk. From this, 4 litres of milk was taken out and replaced by water. This process was repeated further two times. How much pure milk is now contained in the container?",
+        "title": "Combinatorics & Probability Problem on Averages",
+        "tier": "Tier 5: Time-Pressure Challenge",
+        "difficulty": "Tier 5",
+        "source": "Placement Exam Pattern",
+        "target_time_seconds": 45,
+        "question": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
+        "problem": "A bag contains 5 red balls and 4 blue balls. If 3 balls are drawn at random without replacement, what is the probability that exactly 2 are red and 1 is blue?",
         "step_by_step_solution": [
-          "Step 1: Total initial quantity C = 40 litres. Amount replaced each time x = 4 litres.",
-          "Step 2: Total number of operations n = 1 + 2 = 3 times.",
-          "Step 3: Remaining liquid = C * (1 - x/C)^n.",
-          "Step 4: Remaining Milk = 40 * (1 - 4/40)^3 = 40 * (9/10)^3 = 40 * (729 / 1000) = 4 * 7.29 = 29.16 litres."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
         "solution": [
-          "Step 1: Total initial quantity C = 40 litres. Amount replaced each time x = 4 litres.",
-          "Step 2: Total number of operations n = 1 + 2 = 3 times.",
-          "Step 3: Remaining liquid = C * (1 - x/C)^n.",
-          "Step 4: Remaining Milk = 40 * (1 - 4/40)^3 = 40 * (9/10)^3 = 40 * (729 / 1000) = 4 * 7.29 = 29.16 litres."
+          "Step 1: Total balls in bag = 5 + 4 = 9 balls. Total ways to choose 3 balls, n(S) = 9C3 = (9 * 8 * 7) / (3 * 2 * 1) = 84.",
+          "Step 2: Favorable ways to choose 2 red balls from 5 red = 5C2 = (5 * 4) / (2 * 1) = 10.",
+          "Step 3: Favorable ways to choose 1 blue ball from 4 blue = 4C1 = 4.",
+          "Step 4: Total favorable outcomes, n(E) = 5C2 * 4C1 = 10 * 4 = 40.",
+          "Step 5: Required Probability = n(E) / n(S) = 40 / 84 = 10 / 21."
         ],
-        "formula": "Remaining Liquid = Initial * (1 - x / C)^n",
-        "shortcut": "40 * (0.9)^3 = 40 * 0.729 = 29.16 litres.",
-        "trap": "Subtracting 12 litres linearly (40 - 12 = 28) ignoring dilution.",
-        "final_answer": "29.16 litres",
-        "answer": "29.16 litres"
+        "final_answer": "10/21",
+        "answer": "10/21"
       }
     ],
     "aptitude_mcqs": [
@@ -1328,7 +594,7 @@
     "dsa_pattern": {
       "pattern_name": "Monotonic Stack (Next Greater Element)",
       "pattern": "Monotonic Stack (Next Greater Element)",
-      "title": "Monotonic Stack (Next Greater Element) \u2014 Algorithmic Invariants & Implementation",
+      "title": "Monotonic Stack (Next Greater Element) — Algorithmic Invariants & Implementation",
       "category": "Stack",
       "concept": "Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.",
       "why_it_works": "Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
@@ -1582,36 +848,44 @@
       ]
     },
     "project_preparation": {
-      "project_name": "College Student Management System (CSMS)",
-      "name": "College Student Management System (CSMS)",
-      "repo_path": "D:\\Projects\\College Student Management System",
-      "topic": "Multi-Role Authentication & Bcrypt Password Security in CSMS",
-      "feature_focus": "Multi-Role Authentication & Bcrypt Password Security in CSMS",
-      "what_to_understand": "Implementing role-based access for HOD, Section Incharges, Faculty, and Students with bcrypt hashing.",
-      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nImplementing role-based access for HOD, Section Incharges, Faculty, and Students with bcrypt hashing.\n\nWHAT TO MEMORIZE:\nPasswords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.\n\n60-SECOND INTERVIEW PITCH:\nIn CSMS, security and role segregation were critical. I implemented a dual-lookup authentication system supporting both HOD email and University Enrollment Number credentials. By hashing all credentials with bcrypt and validating roles on every protected endpoint, the system guarantees that students cannot tamper with grade rosters or fee balances.",
-      "what_to_memorize": "Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.",
+      "project_name": "Django Backend & SQL Architecture",
+      "name": "Django Backend & SQL Architecture",
+      "repo_path": "D:\\Projects",
+      "topic": "Django ORM, Models & Database Migrations",
+      "feature_focus": "Django ORM, Models & Database Migrations",
+      "what_to_understand": "Defining database tables with Python classes, understanding querysets, and managing schema migrations safely.",
+      "architecture_deep_dive": "WHAT TO UNDERSTAND:\nDefining database tables with Python classes, understanding querysets, and managing schema migrations safely.\n\nWHAT TO MEMORIZE:\n`makemigrations` inspects `models.py` and creates migration scripts; `migrate` executes the SQL against the active database.\n\n60-SECOND INTERVIEW PITCH:\nDjango's Object-Relational Mapper is one of its strongest features. It allows me to define relational schemas using Python classes, manages database migrations smoothly across development and production, and executes optimized queries with built-in protection against SQL injection.",
+      "what_to_memorize": "`makemigrations` inspects `models.py` and creates migration scripts; `migrate` executes the SQL against the active database.",
       "interview_questions": [
         {
-          "q": "How is authentication handled in CSMS across different academic roles?",
-          "a": "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University Enrollment Number (e.g. `CSJMA24000004738`) from the `students` table. Stored passwords are salted and hashed using bcrypt. On successful authentication, the response payload returns the authenticated role and session context, steering the client to either `admin-dashboard.html` or `student-dashboard.html`."
+          "q": "What is an ORM and what are the advantages of Django's ORM?",
+          "a": "An Object-Relational Mapper (ORM) maps database tables to Python classes and rows to Python objects. Instead of writing raw SQL queries, developers write Python code like `Student.objects.filter(is_active=True)`. The ORM provides database portability (switching between SQLite, PostgreSQL, and MySQL without changing code), automatically protects against SQL injection via parameterized queries, and simplifies schema migrations."
         },
         {
-          "q": "How do you protect sensitive student academic data against unauthorized tampering?",
-          "a": "Administrative routes (`/api/students`, `/api/hod/*`) enforce strict server-side role validation checking the `role` field ('HOD', 'Section Incharge', 'Faculty'). Grade entry and fee reconciliation endpoints reject requests originating from unverified student sessions."
+          "q": "How do database migrations work in Django?",
+          "a": "When you add or modify a model field in `models.py`, running `python manage.py makemigrations` creates a numbered Python file in the `migrations/` folder describing the schema diff. Running `python manage.py migrate` translates those Python migration instructions into native SQL `CREATE TABLE` or `ALTER TABLE` statements and applies them to the database, tracking applied migrations in `django_migrations` table."
+        },
+        {
+          "q": "What is lazy evaluation in Django QuerySets?",
+          "a": "Django QuerySets are lazy: constructing a query like `users = User.objects.filter(is_active=True)` does not touch the database immediately. The database query is executed only when the QuerySet is actually evaluated—such as by iterating over it in a loop, calling `len()`, slicing, or evaluating it in a template. This allows chaining multiple filters efficiently."
         }
       ],
       "interview_qa": [
         {
-          "q": "How is authentication handled in CSMS across different academic roles?",
-          "a": "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University Enrollment Number (e.g. `CSJMA24000004738`) from the `students` table. Stored passwords are salted and hashed using bcrypt. On successful authentication, the response payload returns the authenticated role and session context, steering the client to either `admin-dashboard.html` or `student-dashboard.html`."
+          "q": "What is an ORM and what are the advantages of Django's ORM?",
+          "a": "An Object-Relational Mapper (ORM) maps database tables to Python classes and rows to Python objects. Instead of writing raw SQL queries, developers write Python code like `Student.objects.filter(is_active=True)`. The ORM provides database portability (switching between SQLite, PostgreSQL, and MySQL without changing code), automatically protects against SQL injection via parameterized queries, and simplifies schema migrations."
         },
         {
-          "q": "How do you protect sensitive student academic data against unauthorized tampering?",
-          "a": "Administrative routes (`/api/students`, `/api/hod/*`) enforce strict server-side role validation checking the `role` field ('HOD', 'Section Incharge', 'Faculty'). Grade entry and fee reconciliation endpoints reject requests originating from unverified student sessions."
+          "q": "How do database migrations work in Django?",
+          "a": "When you add or modify a model field in `models.py`, running `python manage.py makemigrations` creates a numbered Python file in the `migrations/` folder describing the schema diff. Running `python manage.py migrate` translates those Python migration instructions into native SQL `CREATE TABLE` or `ALTER TABLE` statements and applies them to the database, tracking applied migrations in `django_migrations` table."
+        },
+        {
+          "q": "What is lazy evaluation in Django QuerySets?",
+          "a": "Django QuerySets are lazy: constructing a query like `users = User.objects.filter(is_active=True)` does not touch the database immediately. The database query is executed only when the QuerySet is actually evaluated—such as by iterating over it in a loop, calling `len()`, slicing, or evaluating it in a template. This allows chaining multiple filters efficiently."
         }
       ],
-      "interview_pitch_exercise": "In CSMS, security and role segregation were critical. I implemented a dual-lookup authentication system supporting both HOD email and University Enrollment Number credentials. By hashing all credentials with bcrypt and validating roles on every protected endpoint, the system guarantees that students cannot tamper with grade rosters or fee balances.",
-      "pitch": "In CSMS, security and role segregation were critical. I implemented a dual-lookup authentication system supporting both HOD email and University Enrollment Number credentials. By hashing all credentials with bcrypt and validating roles on every protected endpoint, the system guarantees that students cannot tamper with grade rosters or fee balances."
+      "interview_pitch_exercise": "Django's Object-Relational Mapper is one of its strongest features. It allows me to define relational schemas using Python classes, manages database migrations smoothly across development and production, and executes optimized queries with built-in protection against SQL injection.",
+      "pitch": "Django's Object-Relational Mapper is one of its strongest features. It allows me to define relational schemas using Python classes, manages database migrations smoothly across development and production, and executes optimized queries with built-in protection against SQL injection."
     },
     "placement_interview": [
       {
@@ -1638,10 +912,10 @@
       },
       {
         "category": "Project Experience",
-        "question": "In your project 'Biometric Electronic Voting System (BEVM)', what was the most difficult technical challenge you personally solved?",
-        "model_answer": "In Biometric Electronic Voting System (BEVM) (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+        "question": "In your project 'Django Backend & Relational SQL', what was the most difficult technical challenge you personally solved?",
+        "model_answer": "In Django Backend & Relational SQL (Django MVT, ORM, Models, REST Framework, PostgreSQL vs SQLite), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
         "key_talking_points": [
-          "Contextualize the architecture of Biometric Electronic Voting System (BEVM).",
+          "Contextualize the architecture of Django Backend & Relational SQL.",
           "Highlight concurrency, data integrity, and error recovery.",
           "Quantify reliability outcomes and graceful failure handling."
         ],
@@ -1662,7 +936,7 @@
       {
         "category": "HR & Cultural Fit",
         "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
         "key_talking_points": [
           "Disciplined reading of official docs and engineering blogs.",
           "Hands-on prototype building to validate theory.",
@@ -1672,12 +946,12 @@
       }
     ],
     "daily_revision": {
-      "yesterday_recall": "\u2022 OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n\u2022 Packet encapsulation from application data down to physical bits.\n\u2022 Ratio & Proportion compounding and partnership profit sharing.\n\u2022 Floyd's Tortoise and Hare cycle detection in linked lists.",
-      "today_recall": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n\u2022 Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
-      "formula_recall": "\u2022 Absolute Error Ea = |True Value - Approximate Value|\n\u2022 Relative Error Er = Ea / |True Value|\n\u2022 Percentage Error Ep = Er * 100%\n\u2022 Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n\u2022 Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n\u2022 Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
-      "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section C, 15 Marks) \u2014 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n\u2022 Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
-      "dsa_recall": "\u2022 Pattern: Monotonic Stack (Next Greater Element).\n\u2022 Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n\u2022 Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
-      "project_recall": "\u2022 Project: College Student Management System (CSMS).\n\u2022 Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n\u2022 Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
+      "yesterday_recall": "• OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n• Packet encapsulation from application data down to physical bits.\n• Ratio & Proportion compounding and partnership profit sharing.\n• Floyd's Tortoise and Hare cycle detection in linked lists.",
+      "today_recall": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+      "formula_recall": "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
+      "pyq_recall": "• University PYQ: CSJM University 2022 (Section C, 15 Marks) — 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n• Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
+      "dsa_recall": "• Pattern: Monotonic Stack (Next Greater Element).\n• Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n• Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
+      "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n• Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
       "rapid_fire_questions": [
         {
           "q": "What mathematical theorem guarantees the existence of a real root in the Bisection Method?",
@@ -1720,26 +994,26 @@
           "a": "Bcrypt password hashing with salt rounds."
         }
       ],
-      "today_summary": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n\u2022 Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+      "today_summary": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
       "formulas_and_shortcuts": [
-        "\u2022 Absolute Error Ea = |True Value - Approximate Value|\n\u2022 Relative Error Er = Ea / |True Value|\n\u2022 Percentage Error Ep = Er * 100%\n\u2022 Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n\u2022 Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n\u2022 Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
+        "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
       ],
       "must_know_definitions": [
         {
           "term": "Daily Core Concept 1",
-          "definition": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
+          "definition": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
         },
         {
           "term": "Daily Core Concept 2",
-          "definition": "\u2022 Absolute Error Ea = |True Value - Approximate Value|"
+          "definition": "• Absolute Error Ea = |True Value - Approximate Value|"
         },
         {
           "term": "Daily Core Concept 3",
-          "definition": "\u2022 Pattern: Monotonic Stack (Next Greater Element)."
+          "definition": "• Pattern: Monotonic Stack (Next Greater Element)."
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "\u2022 Project: College Student Management System (CSMS)."
+          "definition": "• Project: College Student Management System (CSMS)."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1750,7 +1024,7 @@
     "mixed_test": [
       {
         "id": "TEST-05-01",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
         "options": [
           "|X - X*|",
@@ -1763,7 +1037,7 @@
       },
       {
         "id": "TEST-05-02",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
         "options": [
           "Quadratic (order 2)",
@@ -1776,7 +1050,7 @@
       },
       {
         "id": "TEST-05-03",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
         "options": [
           "f(a) * f(b) > 0",
@@ -1789,7 +1063,7 @@
       },
       {
         "id": "TEST-05-04",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "What is Truncation Error in numerical computation?",
         "options": [
           "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
@@ -1802,7 +1076,7 @@
       },
       {
         "id": "TEST-05-05",
-        "category": "Academic (Academic Theory)",
+        "category": "Academic (Numerical Methods)",
         "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
         "options": [
           "4 iterations",
@@ -1816,67 +1090,67 @@
       {
         "id": "TEST-05-06",
         "category": "Placement Aptitude",
-        "question": "The average of 7 consecutive numbers is 20. What is the largest of these numbers?",
+        "question": "The average of 5 consecutive odd numbers is 27. What is the product of the first and fifth numbers?",
         "options": [
-          "23",
-          "22",
-          "24",
-          "25"
+          "713",
+          "725",
+          "675",
+          "759"
         ],
         "correct_answer": "A",
-        "explanation": "In 7 consecutive numbers, the average 20 is the middle (4th) number. The numbers are 17, 18, 19, 20, 21, 22, 23. The largest is 23."
+        "explanation": "For 5 consecutive odd numbers, the average is the middle (3rd) number = 27. Numbers are 23, 25, 27, 29, 31. Product of 1st and 5th = 23 * 31 = 713."
       },
       {
         "id": "TEST-05-07",
         "category": "Placement Aptitude",
-        "question": "A batsman in his 17th innings makes a score of 85, thereby increasing his average by 3 runs. What is his average after the 17th innings?",
+        "question": "A student's marks were wrongly recorded as 83 instead of 63. Due to this error, the average marks of the class increased by 0.5. How many students are there in the class?",
         "options": [
-          "37",
-          "34",
-          "39",
-          "35"
+          "30",
+          "40",
+          "50",
+          "45"
         ],
-        "correct_answer": "A",
-        "explanation": "Let previous average be x. Total runs in 17 innings = 16x + 85 = 17(x + 3) => 16x + 85 = 17x + 51 => x = 34. New average = 34 + 3 = 37."
+        "correct_answer": "B",
+        "explanation": "Excess marks added = 83 - 63 = 20 marks. Number of students = Excess / Average Increase = 20 / 0.5 = 40 students."
       },
       {
         "id": "TEST-05-08",
         "category": "Placement Aptitude",
-        "question": "In what ratio must grocer mix coffee powder costing Rs. 250/kg with coffee powder costing Rs. 150/kg so that the mixture is worth Rs. 210/kg?",
+        "question": "In what ratio must water be mixed with milk costing Rs. 12 per liter to obtain a mixture worth Rs. 8 per liter?",
         "options": [
-          "3 : 2",
-          "2 : 3",
-          "4 : 3",
-          "3 : 1"
+          "1 : 2",
+          "2 : 1",
+          "1 : 3",
+          "2 : 3"
         ],
         "correct_answer": "A",
-        "explanation": "By Alligation: Ratio of Expensive (250) to Cheaper (150) with Mean (210) = (210 - 150) / (250 - 210) = 60 / 40 = 3 : 2."
+        "explanation": "Water cost = 0, Milk cost = 12, Mean price = 8. Ratio of Water : Milk = (12 - 8) / (8 - 0) = 4 : 8 = 1 : 2."
       },
       {
         "id": "TEST-05-09",
         "category": "Placement Aptitude",
-        "question": "The average age of 24 students and their teacher is 15 years. If the teacher's age is excluded, the average age decreases by 1 year. What is the teacher's age?",
+        "question": "The average salary of all employees in a workshop is Rs. 8,000. The average salary of 7 technicians is Rs. 12,000 and the average salary of the rest is Rs. 6,000. What is the total number of employees?",
         "options": [
-          "39 years",
-          "38 years",
-          "40 years",
-          "35 years"
+          "20",
+          "21",
+          "25",
+          "28"
         ],
-        "correct_answer": "A",
-        "explanation": "Total age with teacher = 25 * 15 = 375. Total age of 24 students = 24 * 14 = 336. Teacher's age = 375 - 336 = 39 years."
+        "correct_answer": "B",
+        "explanation": "By Alligation: Ratio of Technicians (12k) to Others (6k) with Mean (8k) = (8k - 6k) : (12k - 8k) = 2k : 4k = 1 : 2. Since Technicians = 7 (1 unit), Others = 14 (2 units). Total employees = 7 + 14 = 21."
       },
       {
         "id": "TEST-05-10",
         "category": "Placement Aptitude",
-        "question": "The average of 50 numbers is 38. If two numbers namely 45 and 55 are discarded, what is the average of the remaining numbers?",
+        "question": "The average speed of a car for an entire journey is 60 km/hr. If it covers the first half of the distance at 40 km/hr, what was its speed during the second half?",
         "options": [
-          "37.5",
-          "37",
-          "38",
-          "36.5"
+          "80 km/hr",
+          "100 km/hr",
+          "120 km/hr",
+          "90 km/hr"
         ],
-        "correct_answer": "A",
-        "explanation": "Sum of 50 numbers = 50 * 38 = 1,900. Discarded sum = 45 + 55 = 100. Remaining sum = 1,800. Remaining count = 48. New average = 1,800 / 48 = 37.5."
+        "correct_answer": "C",
+        "explanation": "Average speed for equal distances = 2*u*v / (u + v). 60 = (2 * 40 * v) / (40 + v) => 60*(40 + v) = 80v => 2400 + 60v = 80v => 20v = 2400 => v = 120 km/hr."
       },
       {
         "id": "TEST-05-11",
@@ -1984,29 +1258,29 @@
       },
       {
         "id": "TEST-05-19",
-        "category": "Projects (College Student Management System (CSMS))",
-        "question": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Multi-Role Authentication & Bcrypt Password Security in CSMS'?",
+        "category": "Projects (Django Backend & SQL Architecture)",
+        "question": "In Sarthak's project 'Django Backend & SQL Architecture', what is the core architectural principle regarding 'Django ORM, Models & Database Migrations'?",
         "options": [
-          "Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.",
+          "`makemigrations` inspects `models.py` and creates migration scripts; `migrate` executes the SQL against the active database.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
         "correct_answer": "A",
-        "explanation": "For College Student Management System (CSMS), the architectural invariant is: Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.."
+        "explanation": "For Django Backend & SQL Architecture, the architectural invariant is: `makemigrations` inspects `models.py` and creates migration scripts; `migrate` executes the SQL against the active database.."
       },
       {
         "id": "TEST-05-20",
-        "category": "Projects (College Student Management System (CSMS))",
-        "question": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How is authentication handled in CSMS across different academic roles?'?",
+        "category": "Projects (Django Backend & SQL Architecture)",
+        "question": "Regarding 'Django Backend & SQL Architecture', how should you defend this design decision in a technical interview: 'What is an ORM and what are the advantages of Django's ORM?'?",
         "options": [
-          "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University E...",
+          "An Object-Relational Mapper (ORM) maps database tables to Python classes and rows to Python objects. Instead of writing raw SQL queries, developers write Python...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
         "correct_answer": "A",
-        "explanation": "In technical interviews, anchor your defense in engineering metrics: In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students vi."
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: An Object-Relational Mapper (ORM) maps database tables to Python classes and rows to Python objects. Instead of writing raw SQL queries, dev."
       }
     ],
     "daily_coding_task": {
@@ -2060,7 +1334,7 @@
   "dsa": {
     "pattern_name": "Monotonic Stack (Next Greater Element)",
     "pattern": "Monotonic Stack (Next Greater Element)",
-    "title": "Monotonic Stack (Next Greater Element) \u2014 Algorithmic Invariants & Implementation",
+    "title": "Monotonic Stack (Next Greater Element) — Algorithmic Invariants & Implementation",
     "category": "Stack",
     "concept": "Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.",
     "why_it_works": "Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
@@ -2225,13 +1499,13 @@
     "subject": "Numerical Methods",
     "subject_code": "BCA-5004",
     "unit": 1,
-    "topic": "Unit I \u2014 Errors in Numerical Computations & Roots of Equations: Bisection Method",
+    "topic": "Unit I — Errors in Numerical Computations & Roots of Equations: Bisection Method",
     "objectives": [
       "Understand Absolute, Relative, and Percentage Errors.",
       "Master the Bisection Method, Bolzano's Theorem, and linear convergence rate O(1/2^n)."
     ],
     "detailed_notes": [
-      "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   \u2022 Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   \u2022 Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   \u2022 Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   \u2022 Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   \u2022 Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
+      "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   • Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   • Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   • Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   • Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   • Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
       "Round-off errors (finite precision floating point) and Truncation errors (approximating infinite series with finite terms).",
       "After n iterations, interval width is (b - a)/2^n. To achieve tolerance epsilon: n >= [ln(b - a) - ln(epsilon)] / ln(2)."
     ],
@@ -2287,7 +1561,7 @@
         "marks": 15,
         "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
         "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
-        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n\u2022 Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n\u2022 Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n\u2022 Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n\u2022 Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n\u2022 Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n\u2022 Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n\u2022 Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n\u2022 Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
         "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
         "important_points": [
           "f(a)*f(b) < 0",
@@ -2384,7 +1658,7 @@
     "model_answer_paragraphs": [
       [
         "1. Model Answer & Technical Presentation",
-        "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n\u2022 Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n\u2022 Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n\u2022 Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n\u2022 Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n\u2022 Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n\u2022 Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n\u2022 Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n\u2022 Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325."
+        "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325."
       ],
       [
         "2. Expected Examiner Criteria",
@@ -2404,14 +1678,14 @@
     "tutorial": [
       "The Alligation cross is a powerful graphical shortcut for solving weighted averages in seconds. It determines the exact mixing ratio of two ingredients at different prices to produce a target mixture price without solving simultaneous linear equations."
     ],
-    "tier1_problem": "The average weight of 15 students increases by 1.5 kg when one student weighing 40 kg is replaced by a new student. What is the weight of the new student?",
-    "tier1_solution": "Step 1: Total weight increase = Number of students * Increase in average = 15 * 1.5 = 22.5 kg.\\nStep 2: Weight of new student = Weight of replaced student + Total weight increase.\\nStep 3: New weight = 40 + 22.5 = 62.5 kg.",
-    "tier2_problem": "A batsman scores 87 runs in his 17th innings and thus increases his average by 3 runs. Find his average after the 17th innings.",
-    "tier2_solution": "Step 1: Let previous average (after 16 innings) = A. Total runs after 16 innings = 16A.\\nStep 2: New total runs = 16A + 87. New average = A + 3.\\nStep 3: (16A + 87) / 17 = A + 3 => 16A + 87 = 17A + 51.\\nStep 4: A = 87 - 51 = 36 (average after 16th innings).\\nStep 5: Average after 17th innings = A + 3 = 36 + 3 = 39 runs.",
-    "tier3_problem": "In what ratio must a grocer mix tea at Rs. 60 per kg and Rs. 65 per kg so that by selling the mixture at Rs. 68.20 per kg he may gain 10%?",
-    "tier3_solution": "Step 1: Selling Price of mixture = Rs. 68.20 with 10% profit.\\nStep 2: Mean Cost Price CP = 68.20 / 1.10 = Rs. 62 per kg.\\nStep 3: Apply Alligation rule between Cheaper (60) and Dearer (65) around Mean (62):\\n   Cheaper (60)         Dearer (65)\\n                Mean (62)\\n   (65 - 62) = 3        (62 - 60) = 2\\nStep 4: Required ratio = 3 : 2.",
-    "tier4_problem": "The average score of boys in an exam is 71 and that of girls is 73. If the average score of the entire school is 71.8, find the ratio of the number of boys to girls.",
-    "tier4_solution": "Step 1: Apply alligation directly on average scores around school mean 71.8.\\nStep 2: Boys (71) vs Girls (73), Mean = 71.8.\\nStep 3: (73 - 71.8) = 1.2; (71.8 - 71) = 0.8.\\nStep 4: Ratio Boys : Girls = 1.2 : 0.8 = 12 : 8 = 3 : 2.",
+    "tier1_problem": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
+    "tier1_solution": "Step 1: Calculate initial score = 75% of 200 = (75 / 100) * 200 = 150 marks.\nStep 2: Improvement factor = 20% increase on initial score.\nStep 3: Score increase = 20% of 150 = (20 / 100) * 150 = 30 marks.\nStep 4: Final score = 150 + 30 = 180 marks out of 200 (or 90%).\nSpeed Check: Direct factor = 200 * 0.75 * 1.20 = 200 * 0.90 = 180 marks.",
+    "tier2_problem": "If an item is marked at Rs. 1,200 and sold after two successive discounts of 10% and 20%, what is the net selling price?",
+    "tier2_solution": "Step 1: Single equivalent discount = d1 + d2 - (d1 * d2 / 100)% = 10 + 20 - (10 * 20 / 100)% = 30 - 2 = 28%.\nStep 2: Selling price = Marked Price * (1 - Equivalent Discount / 100).\nStep 3: SP = 1200 * (1 - 0.28) = 1200 * 0.72 = Rs. 864.\nVerification: After 10% discount on 1200 = 1200 - 120 = 1080. After 20% discount on 1080 = 1080 - 216 = Rs. 864.",
+    "tier3_problem": "Worker A can complete a task in 12 days and Worker B can complete the same task in 18 days. If they work on alternate days starting with A, in how many days will the work be completed?",
+    "tier3_solution": "Step 1: Assume Total Work = LCM(12, 18) = 36 units.\nStep 2: A's 1-day work = 36 / 12 = 3 units/day. B's 1-day work = 36 / 18 = 2 units/day.\nStep 3: In a 2-day cycle (Day 1: A, Day 2: B), total work done = 3 + 2 = 5 units.\nStep 4: Number of complete cycles in 36 units = 36 // 5 = 7 cycles (14 days), completing 7 * 5 = 35 units.\nStep 5: Remaining work = 36 - 35 = 1 unit. Day 15 is A's turn (efficiency 3 units/day). Time taken by A = 1/3 day.\nStep 6: Total days = 14 + 1/3 = 14 1/3 days (or 14.33 days).",
+    "tier4_problem": "Two stations X and Y are 390 km apart. A train starts from X at 10 AM heading towards Y at 65 km/hr. Another train starts from Y at 11 AM heading towards X at 35 km/hr. At what time will they meet?",
+    "tier4_solution": "Step 1: Standardize start time to 11 AM. Distance covered by Train 1 from 10 AM to 11 AM (1 hour) = 65 km * 1 = 65 km.\nStep 2: Remaining distance between trains at 11 AM = 390 - 65 = 325 km.\nStep 3: Relative speed in opposite directions = 65 + 35 = 100 km/hr.\nStep 4: Time taken to meet after 11 AM = Remaining Distance / Relative Speed = 325 / 100 = 3.25 hours = 3 hours 15 minutes.\nStep 5: Meeting time = 11:00 AM + 3 hours 15 minutes = 2:15 PM.",
     "speed_drills": [
       {
         "q": "A student scores 75% on an initial diagnostic test and subsequently improves by 20% on the final assessment. If the maximum marks were 200, find the student's final score.",
@@ -2733,9 +2007,7 @@
           "ans": "7 (Cycle: 7, 9, 3, 1; 105 mod 4 = 1)"
         }
       ]
-    },
-    "tier5_problem": "A container contains 40 litres of pure milk. From this, 4 litres of milk was taken out and replaced by water. This process was repeated further two times. How much pure milk is now contained in the container?",
-    "tier5_solution": "Step 1: Total initial quantity C = 40 litres. Amount replaced each time x = 4 litres.\\nStep 2: Total number of operations n = 1 + 2 = 3 times.\\nStep 3: Remaining liquid = C * (1 - x/C)^n.\\nStep 4: Remaining Milk = 40 * (1 - 4/40)^3 = 40 * (9/10)^3 = 40 * (729 / 1000) = 4 * 7.29 = 29.16 litres."
+    }
   },
   "dsa_problems": [
     {
@@ -2810,7 +2082,7 @@
   "dsa_pattern": {
     "pattern_name": "Monotonic Stack (Next Greater Element)",
     "pattern": "Monotonic Stack (Next Greater Element)",
-    "title": "Monotonic Stack (Next Greater Element) \u2014 Algorithmic Invariants & Implementation",
+    "title": "Monotonic Stack (Next Greater Element) — Algorithmic Invariants & Implementation",
     "category": "Stack",
     "concept": "Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.",
     "why_it_works": "Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
@@ -2994,36 +2266,44 @@
     ]
   },
   "project_defense": {
-    "project_name": "College Student Management System (CSMS)",
-    "name": "College Student Management System (CSMS)",
-    "repo_path": "D:\\Projects\\College Student Management System",
-    "topic": "Multi-Role Authentication & Bcrypt Password Security in CSMS",
-    "feature_focus": "Multi-Role Authentication & Bcrypt Password Security in CSMS",
-    "what_to_understand": "Implementing role-based access for HOD, Section Incharges, Faculty, and Students with bcrypt hashing.",
-    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nImplementing role-based access for HOD, Section Incharges, Faculty, and Students with bcrypt hashing.\n\nWHAT TO MEMORIZE:\nPasswords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.\n\n60-SECOND INTERVIEW PITCH:\nIn CSMS, security and role segregation were critical. I implemented a dual-lookup authentication system supporting both HOD email and University Enrollment Number credentials. By hashing all credentials with bcrypt and validating roles on every protected endpoint, the system guarantees that students cannot tamper with grade rosters or fee balances.",
-    "what_to_memorize": "Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.",
+    "project_name": "Django Backend & SQL Architecture",
+    "name": "Django Backend & SQL Architecture",
+    "repo_path": "D:\\Projects",
+    "topic": "Django ORM, Models & Database Migrations",
+    "feature_focus": "Django ORM, Models & Database Migrations",
+    "what_to_understand": "Defining database tables with Python classes, understanding querysets, and managing schema migrations safely.",
+    "architecture_deep_dive": "WHAT TO UNDERSTAND:\nDefining database tables with Python classes, understanding querysets, and managing schema migrations safely.\n\nWHAT TO MEMORIZE:\n`makemigrations` inspects `models.py` and creates migration scripts; `migrate` executes the SQL against the active database.\n\n60-SECOND INTERVIEW PITCH:\nDjango's Object-Relational Mapper is one of its strongest features. It allows me to define relational schemas using Python classes, manages database migrations smoothly across development and production, and executes optimized queries with built-in protection against SQL injection.",
+    "what_to_memorize": "`makemigrations` inspects `models.py` and creates migration scripts; `migrate` executes the SQL against the active database.",
     "interview_questions": [
       {
-        "q": "How is authentication handled in CSMS across different academic roles?",
-        "a": "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University Enrollment Number (e.g. `CSJMA24000004738`) from the `students` table. Stored passwords are salted and hashed using bcrypt. On successful authentication, the response payload returns the authenticated role and session context, steering the client to either `admin-dashboard.html` or `student-dashboard.html`."
+        "q": "What is an ORM and what are the advantages of Django's ORM?",
+        "a": "An Object-Relational Mapper (ORM) maps database tables to Python classes and rows to Python objects. Instead of writing raw SQL queries, developers write Python code like `Student.objects.filter(is_active=True)`. The ORM provides database portability (switching between SQLite, PostgreSQL, and MySQL without changing code), automatically protects against SQL injection via parameterized queries, and simplifies schema migrations."
       },
       {
-        "q": "How do you protect sensitive student academic data against unauthorized tampering?",
-        "a": "Administrative routes (`/api/students`, `/api/hod/*`) enforce strict server-side role validation checking the `role` field ('HOD', 'Section Incharge', 'Faculty'). Grade entry and fee reconciliation endpoints reject requests originating from unverified student sessions."
+        "q": "How do database migrations work in Django?",
+        "a": "When you add or modify a model field in `models.py`, running `python manage.py makemigrations` creates a numbered Python file in the `migrations/` folder describing the schema diff. Running `python manage.py migrate` translates those Python migration instructions into native SQL `CREATE TABLE` or `ALTER TABLE` statements and applies them to the database, tracking applied migrations in `django_migrations` table."
+      },
+      {
+        "q": "What is lazy evaluation in Django QuerySets?",
+        "a": "Django QuerySets are lazy: constructing a query like `users = User.objects.filter(is_active=True)` does not touch the database immediately. The database query is executed only when the QuerySet is actually evaluated—such as by iterating over it in a loop, calling `len()`, slicing, or evaluating it in a template. This allows chaining multiple filters efficiently."
       }
     ],
     "interview_qa": [
       {
-        "q": "How is authentication handled in CSMS across different academic roles?",
-        "a": "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University Enrollment Number (e.g. `CSJMA24000004738`) from the `students` table. Stored passwords are salted and hashed using bcrypt. On successful authentication, the response payload returns the authenticated role and session context, steering the client to either `admin-dashboard.html` or `student-dashboard.html`."
+        "q": "What is an ORM and what are the advantages of Django's ORM?",
+        "a": "An Object-Relational Mapper (ORM) maps database tables to Python classes and rows to Python objects. Instead of writing raw SQL queries, developers write Python code like `Student.objects.filter(is_active=True)`. The ORM provides database portability (switching between SQLite, PostgreSQL, and MySQL without changing code), automatically protects against SQL injection via parameterized queries, and simplifies schema migrations."
       },
       {
-        "q": "How do you protect sensitive student academic data against unauthorized tampering?",
-        "a": "Administrative routes (`/api/students`, `/api/hod/*`) enforce strict server-side role validation checking the `role` field ('HOD', 'Section Incharge', 'Faculty'). Grade entry and fee reconciliation endpoints reject requests originating from unverified student sessions."
+        "q": "How do database migrations work in Django?",
+        "a": "When you add or modify a model field in `models.py`, running `python manage.py makemigrations` creates a numbered Python file in the `migrations/` folder describing the schema diff. Running `python manage.py migrate` translates those Python migration instructions into native SQL `CREATE TABLE` or `ALTER TABLE` statements and applies them to the database, tracking applied migrations in `django_migrations` table."
+      },
+      {
+        "q": "What is lazy evaluation in Django QuerySets?",
+        "a": "Django QuerySets are lazy: constructing a query like `users = User.objects.filter(is_active=True)` does not touch the database immediately. The database query is executed only when the QuerySet is actually evaluated—such as by iterating over it in a loop, calling `len()`, slicing, or evaluating it in a template. This allows chaining multiple filters efficiently."
       }
     ],
-    "interview_pitch_exercise": "In CSMS, security and role segregation were critical. I implemented a dual-lookup authentication system supporting both HOD email and University Enrollment Number credentials. By hashing all credentials with bcrypt and validating roles on every protected endpoint, the system guarantees that students cannot tamper with grade rosters or fee balances.",
-    "pitch": "In CSMS, security and role segregation were critical. I implemented a dual-lookup authentication system supporting both HOD email and University Enrollment Number credentials. By hashing all credentials with bcrypt and validating roles on every protected endpoint, the system guarantees that students cannot tamper with grade rosters or fee balances."
+    "interview_pitch_exercise": "Django's Object-Relational Mapper is one of its strongest features. It allows me to define relational schemas using Python classes, manages database migrations smoothly across development and production, and executes optimized queries with built-in protection against SQL injection.",
+    "pitch": "Django's Object-Relational Mapper is one of its strongest features. It allows me to define relational schemas using Python classes, manages database migrations smoothly across development and production, and executes optimized queries with built-in protection against SQL injection."
   },
   "placement_interview": [
     {
@@ -3050,10 +2330,10 @@
     },
     {
       "category": "Project Experience",
-      "question": "In your project 'Biometric Electronic Voting System (BEVM)', what was the most difficult technical challenge you personally solved?",
-      "model_answer": "In Biometric Electronic Voting System (BEVM) (FastAPI, Document AI, PyMuPDF, OpenCV, Tesseract OCR), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
+      "question": "In your project 'Django Backend & Relational SQL', what was the most difficult technical challenge you personally solved?",
+      "model_answer": "In Django Backend & Relational SQL (Django MVT, ORM, Models, REST Framework, PostgreSQL vs SQLite), the most demanding challenge was architecting reliability under concurrency and real-world constraints. We had to ensure zero data corruption while maintaining sub-second response times. I designed the core data pipeline with strict boundary validation, implemented idempotent transaction handlers, and added automated error recovery. When network timeouts or duplicate requests occurred, the application handled them gracefully using database unique constraints and retry backoffs, maintaining complete data integrity.",
       "key_talking_points": [
-        "Contextualize the architecture of Biometric Electronic Voting System (BEVM).",
+        "Contextualize the architecture of Django Backend & Relational SQL.",
         "Highlight concurrency, data integrity, and error recovery.",
         "Quantify reliability outcomes and graceful failure handling."
       ],
@@ -3074,7 +2354,7 @@
     {
       "category": "HR & Cultural Fit",
       "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
       "key_talking_points": [
         "Disciplined reading of official docs and engineering blogs.",
         "Hands-on prototype building to validate theory.",
@@ -3084,12 +2364,12 @@
     }
   ],
   "daily_revision": {
-    "yesterday_recall": "\u2022 OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n\u2022 Packet encapsulation from application data down to physical bits.\n\u2022 Ratio & Proportion compounding and partnership profit sharing.\n\u2022 Floyd's Tortoise and Hare cycle detection in linked lists.",
-    "today_recall": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n\u2022 Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
-    "formula_recall": "\u2022 Absolute Error Ea = |True Value - Approximate Value|\n\u2022 Relative Error Er = Ea / |True Value|\n\u2022 Percentage Error Ep = Er * 100%\n\u2022 Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n\u2022 Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n\u2022 Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
-    "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section C, 15 Marks) \u2014 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n\u2022 Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
-    "dsa_recall": "\u2022 Pattern: Monotonic Stack (Next Greater Element).\n\u2022 Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n\u2022 Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
-    "project_recall": "\u2022 Project: College Student Management System (CSMS).\n\u2022 Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n\u2022 Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
+    "yesterday_recall": "• OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n• Packet encapsulation from application data down to physical bits.\n• Ratio & Proportion compounding and partnership profit sharing.\n• Floyd's Tortoise and Hare cycle detection in linked lists.",
+    "today_recall": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+    "formula_recall": "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
+    "pyq_recall": "• University PYQ: CSJM University 2022 (Section C, 15 Marks) — 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n• Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
+    "dsa_recall": "• Pattern: Monotonic Stack (Next Greater Element).\n• Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n• Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
+    "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n• Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
     "rapid_fire_questions": [
       {
         "q": "What mathematical theorem guarantees the existence of a real root in the Bisection Method?",
@@ -3132,26 +2412,26 @@
         "a": "Bcrypt password hashing with salt rounds."
       }
     ],
-    "today_summary": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n\u2022 Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+    "today_summary": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
     "formulas_and_shortcuts": [
-      "\u2022 Absolute Error Ea = |True Value - Approximate Value|\n\u2022 Relative Error Er = Ea / |True Value|\n\u2022 Percentage Error Ep = Er * 100%\n\u2022 Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n\u2022 Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n\u2022 Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
+      "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
     ],
     "must_know_definitions": [
       {
         "term": "Daily Core Concept 1",
-        "definition": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
+        "definition": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
       },
       {
         "term": "Daily Core Concept 2",
-        "definition": "\u2022 Absolute Error Ea = |True Value - Approximate Value|"
+        "definition": "• Absolute Error Ea = |True Value - Approximate Value|"
       },
       {
         "term": "Daily Core Concept 3",
-        "definition": "\u2022 Pattern: Monotonic Stack (Next Greater Element)."
+        "definition": "• Pattern: Monotonic Stack (Next Greater Element)."
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "\u2022 Project: College Student Management System (CSMS)."
+        "definition": "• Project: College Student Management System (CSMS)."
       },
       {
         "term": "Daily Core Concept 5",
@@ -3160,227 +2440,301 @@
     ]
   },
   "daily_test": {
-    "title": "Day 5 Comprehensive 20-Question Daily Mastery Test",
+    "title": "Day 05 Mixed Mastery Test (20 MCQs)",
     "questions": [
       {
-        "no": 1,
         "q": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
+        "a": "Answer: B\n\nAbsolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+      },
+      {
+        "q": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+        "a": "Answer: B\n\nThe Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+      },
+      {
+        "q": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+        "a": "Answer: B\n\nIf f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+      },
+      {
+        "q": "What is Truncation Error in numerical computation?",
+        "a": "Answer: B\n\nTruncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+      },
+      {
+        "q": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+        "a": "Answer: C\n\nInterval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+      },
+      {
+        "q": "The average of 5 consecutive odd numbers is 27. What is the product of the first and fifth numbers?",
+        "a": "Answer: A\n\nFor 5 consecutive odd numbers, the average is the middle (3rd) number = 27. Numbers are 23, 25, 27, 29, 31. Product of 1st and 5th = 23 * 31 = 713."
+      },
+      {
+        "q": "A student's marks were wrongly recorded as 83 instead of 63. Due to this error, the average marks of the class increased by 0.5. How many students are there in the class?",
+        "a": "Answer: B\n\nExcess marks added = 83 - 63 = 20 marks. Number of students = Excess / Average Increase = 20 / 0.5 = 40 students."
+      },
+      {
+        "q": "In what ratio must water be mixed with milk costing Rs. 12 per liter to obtain a mixture worth Rs. 8 per liter?",
+        "a": "Answer: A\n\nWater cost = 0, Milk cost = 12, Mean price = 8. Ratio of Water : Milk = (12 - 8) / (8 - 0) = 4 : 8 = 1 : 2."
+      }
+    ],
+    "mcqs": [
+      {
+        "id": "TEST-05-01",
+        "category": "Academic (Numerical Methods)",
+        "question": "If the true value is X and the computed approximate value is X*, what is the mathematical formula for Relative Error (Er)?",
         "options": [
           "|X - X*|",
           "|X - X*| / |X|",
           "(|X - X*| / |X|) * 100",
           "|X - X*| * |X|"
         ],
-        "a": "Answer: B \u2014 Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
+        "correct_answer": "B",
+        "explanation": "Absolute Error Ea = |X - X*|. Relative Error Er = Ea / |X| = |X - X*| / |X|. Percentage Error Ep = Er * 100%."
       },
       {
-        "no": 2,
-        "q": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
+        "id": "TEST-05-02",
+        "category": "Academic (Numerical Methods)",
+        "question": "What is the rate of convergence of the Bisection Method for finding the real root of a continuous equation f(x) = 0?",
         "options": [
           "Quadratic (order 2)",
           "Linear (order 1) with convergence factor 0.5",
           "Superlinear (order 1.618)",
           "Cubic (order 3)"
         ],
-        "a": "Answer: B \u2014 The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
+        "correct_answer": "B",
+        "explanation": "The Bisection method halves the interval bracket at each step (e_{n+1} = 0.5 * e_n), giving linear convergence with an asymptotic error factor of 1/2."
       },
       {
-        "no": 3,
-        "q": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
+        "id": "TEST-05-03",
+        "category": "Academic (Numerical Methods)",
+        "question": "According to the Intermediate Value Theorem, what condition must continuous function f(x) satisfy on interval [a, b] to guarantee at least one real root?",
         "options": [
           "f(a) * f(b) > 0",
           "f(a) * f(b) < 0",
           "f'(a) = f'(b)",
           "f(a) + f(b) = 0"
         ],
-        "a": "Answer: B \u2014 If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
+        "correct_answer": "B",
+        "explanation": "If f(x) is continuous and f(a) and f(b) have opposite signs (f(a)*f(b) < 0), Bolzano's theorem guarantees at least one root c in (a, b) such that f(c) = 0."
       },
       {
-        "no": 4,
-        "q": "What is Truncation Error in numerical computation?",
+        "id": "TEST-05-04",
+        "category": "Academic (Numerical Methods)",
+        "question": "What is Truncation Error in numerical computation?",
         "options": [
           "Error introduced by hardware word-length rounding (e.g., 32-bit float limits)",
           "Error resulting from replacing an infinite mathematical process with a finite approximation (e.g., truncating a Taylor series)",
           "Mistakes made by the programmer entering data",
           "Error caused by noisy transmission channels"
         ],
-        "a": "Answer: B \u2014 Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
+        "correct_answer": "B",
+        "explanation": "Truncation error occurs when an exact mathematical operation (like infinite series summation or differentiation limits) is truncated to a finite formula."
       },
       {
-        "no": 5,
-        "q": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
+        "id": "TEST-05-05",
+        "category": "Academic (Numerical Methods)",
+        "question": "To achieve an accuracy of epsilon = 10^-3 starting from an initial bracket of length (b - a) = 1, approximately how many Bisection iterations are required?",
         "options": [
           "4 iterations",
           "7 iterations",
           "10 iterations",
           "25 iterations"
         ],
-        "a": "Answer: C \u2014 Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
+        "correct_answer": "C",
+        "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
       },
       {
-        "no": 6,
-        "q": "The average of 7 consecutive numbers is 20. What is the largest of these numbers?",
+        "id": "TEST-05-06",
+        "category": "Placement Aptitude",
+        "question": "The average of 5 consecutive odd numbers is 27. What is the product of the first and fifth numbers?",
         "options": [
-          "23",
-          "22",
-          "24",
-          "25"
+          "713",
+          "725",
+          "675",
+          "759"
         ],
-        "a": "Answer: A \u2014 In 7 consecutive numbers, the average 20 is the middle (4th) number. The numbers are 17, 18, 19, 20, 21, 22, 23. The largest is 23."
+        "correct_answer": "A",
+        "explanation": "For 5 consecutive odd numbers, the average is the middle (3rd) number = 27. Numbers are 23, 25, 27, 29, 31. Product of 1st and 5th = 23 * 31 = 713."
       },
       {
-        "no": 7,
-        "q": "A batsman in his 17th innings makes a score of 85, thereby increasing his average by 3 runs. What is his average after the 17th innings?",
+        "id": "TEST-05-07",
+        "category": "Placement Aptitude",
+        "question": "A student's marks were wrongly recorded as 83 instead of 63. Due to this error, the average marks of the class increased by 0.5. How many students are there in the class?",
         "options": [
-          "37",
-          "34",
-          "39",
-          "35"
+          "30",
+          "40",
+          "50",
+          "45"
         ],
-        "a": "Answer: A \u2014 Let previous average be x. Total runs in 17 innings = 16x + 85 = 17(x + 3) => 16x + 85 = 17x + 51 => x = 34. New average = 34 + 3 = 37."
+        "correct_answer": "B",
+        "explanation": "Excess marks added = 83 - 63 = 20 marks. Number of students = Excess / Average Increase = 20 / 0.5 = 40 students."
       },
       {
-        "no": 8,
-        "q": "In what ratio must grocer mix coffee powder costing Rs. 250/kg with coffee powder costing Rs. 150/kg so that the mixture is worth Rs. 210/kg?",
+        "id": "TEST-05-08",
+        "category": "Placement Aptitude",
+        "question": "In what ratio must water be mixed with milk costing Rs. 12 per liter to obtain a mixture worth Rs. 8 per liter?",
         "options": [
-          "3 : 2",
-          "2 : 3",
-          "4 : 3",
-          "3 : 1"
+          "1 : 2",
+          "2 : 1",
+          "1 : 3",
+          "2 : 3"
         ],
-        "a": "Answer: A \u2014 By Alligation: Ratio of Expensive (250) to Cheaper (150) with Mean (210) = (210 - 150) / (250 - 210) = 60 / 40 = 3 : 2."
+        "correct_answer": "A",
+        "explanation": "Water cost = 0, Milk cost = 12, Mean price = 8. Ratio of Water : Milk = (12 - 8) / (8 - 0) = 4 : 8 = 1 : 2."
       },
       {
-        "no": 9,
-        "q": "The average age of 24 students and their teacher is 15 years. If the teacher's age is excluded, the average age decreases by 1 year. What is the teacher's age?",
+        "id": "TEST-05-09",
+        "category": "Placement Aptitude",
+        "question": "The average salary of all employees in a workshop is Rs. 8,000. The average salary of 7 technicians is Rs. 12,000 and the average salary of the rest is Rs. 6,000. What is the total number of employees?",
         "options": [
-          "39 years",
-          "38 years",
-          "40 years",
-          "35 years"
+          "20",
+          "21",
+          "25",
+          "28"
         ],
-        "a": "Answer: A \u2014 Total age with teacher = 25 * 15 = 375. Total age of 24 students = 24 * 14 = 336. Teacher's age = 375 - 336 = 39 years."
+        "correct_answer": "B",
+        "explanation": "By Alligation: Ratio of Technicians (12k) to Others (6k) with Mean (8k) = (8k - 6k) : (12k - 8k) = 2k : 4k = 1 : 2. Since Technicians = 7 (1 unit), Others = 14 (2 units). Total employees = 7 + 14 = 21."
       },
       {
-        "no": 10,
-        "q": "The average of 50 numbers is 38. If two numbers namely 45 and 55 are discarded, what is the average of the remaining numbers?",
+        "id": "TEST-05-10",
+        "category": "Placement Aptitude",
+        "question": "The average speed of a car for an entire journey is 60 km/hr. If it covers the first half of the distance at 40 km/hr, what was its speed during the second half?",
         "options": [
-          "37.5",
-          "37",
-          "38",
-          "36.5"
+          "80 km/hr",
+          "100 km/hr",
+          "120 km/hr",
+          "90 km/hr"
         ],
-        "a": "Answer: A \u2014 Sum of 50 numbers = 50 * 38 = 1,900. Discarded sum = 45 + 55 = 100. Remaining sum = 1,800. Remaining count = 48. New average = 1,800 / 48 = 37.5."
+        "correct_answer": "C",
+        "explanation": "Average speed for equal distances = 2*u*v / (u + v). 60 = (2 * 40 * v) / (40 + v) => 60*(40 + v) = 80v => 2400 + 60v = 80v => 20v = 2400 => v = 120 km/hr."
       },
       {
-        "no": 11,
-        "q": "Which of the following is NOT one of the 4 Coffman conditions for deadlock?",
+        "id": "TEST-05-11",
+        "category": "Core CS (Operating Systems)",
+        "question": "Which of the following is NOT one of the 4 Coffman conditions for deadlock?",
         "options": [
           "Mutual Exclusion",
           "Hold and Wait",
           "Process Aging",
           "Circular Wait"
         ],
-        "a": "Answer: C \u2014 The 4 conditions are Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
+        "correct_answer": "C",
+        "explanation": "The 4 conditions are Mutual Exclusion, Hold and Wait, No Preemption, and Circular Wait."
       },
       {
-        "no": 12,
-        "q": "If a Resource Allocation Graph contains a cycle and every resource type has exactly one single instance, then:",
+        "id": "TEST-05-12",
+        "category": "Core CS (Operating Systems)",
+        "question": "If a Resource Allocation Graph contains a cycle and every resource type has exactly one single instance, then:",
         "options": [
           "A deadlock definitely exists",
           "A deadlock may or may not exist",
           "The system is guaranteed safe",
           "The CPU enters thrashing"
         ],
-        "a": "Answer: A \u2014 With single-instance resources, a cycle in the RAG is both necessary and sufficient for deadlock."
+        "correct_answer": "A",
+        "explanation": "With single-instance resources, a cycle in the RAG is both necessary and sufficient for deadlock."
       },
       {
-        "no": 13,
-        "q": "The Banker's Algorithm is primarily used for:",
+        "id": "TEST-05-13",
+        "category": "Core CS (Operating Systems)",
+        "question": "The Banker's Algorithm is primarily used for:",
         "options": [
           "Deadlock Prevention",
           "Deadlock Avoidance",
           "Deadlock Detection",
           "Memory Compaction"
         ],
-        "a": "Answer: B \u2014 Banker's Algorithm is a dynamic deadlock avoidance technique that checks for safe execution sequences."
+        "correct_answer": "B",
+        "explanation": "Banker's Algorithm is a dynamic deadlock avoidance technique that checks for safe execution sequences."
       },
       {
-        "no": 14,
-        "q": "In a system with Need matrix, how is Need calculated in Banker's Algorithm?",
+        "id": "TEST-05-14",
+        "category": "Core CS (Operating Systems)",
+        "question": "In a system with Need matrix, how is Need calculated in Banker's Algorithm?",
         "options": [
           "Allocation - Available",
           "Max - Allocation",
           "Max + Available",
           "Allocation - Max"
         ],
-        "a": "Answer: B \u2014 Need represents remaining resources a process may claim: Need = Max - Allocation."
+        "correct_answer": "B",
+        "explanation": "Need represents remaining resources a process may claim: Need = Max - Allocation."
       },
       {
-        "no": 15,
-        "q": "Assigning global numerical IDs to resources and enforcing acquisition in ascending order eliminates which condition?",
+        "id": "TEST-05-15",
+        "category": "Core CS (Operating Systems)",
+        "question": "Assigning global numerical IDs to resources and enforcing acquisition in ascending order eliminates which condition?",
         "options": [
           "Mutual Exclusion",
           "Hold and Wait",
           "No Preemption",
           "Circular Wait"
         ],
-        "a": "Answer: D \u2014 Strict resource ordering prevents cycles from forming, eliminating Circular Wait."
+        "correct_answer": "D",
+        "explanation": "Strict resource ordering prevents cycles from forming, eliminating Circular Wait."
       },
       {
-        "no": 16,
-        "q": "In Java 17+, how is the 'Monotonic Stack (Next Greater Element)' algorithmic pattern optimal for placement coding problems?",
+        "id": "TEST-05-16",
+        "category": "Java DSA & Coding",
+        "question": "In Java 17+, how is the 'Monotonic Stack (Next Greater Element)' algorithmic pattern optimal for placement coding problems?",
         "options": [
           "It satisfies optimal asymptotic complexity: O(N) Time, O(N) Auxiliary Space.",
           "It uses recursion with infinite call stack depth.",
           "It allocates O(N^2) dynamic heap memory unnecessarily.",
           "It requires native C++ pointer arithmetic."
         ],
-        "a": "Answer: A \u2014 The 'Monotonic Stack (Next Greater Element)' pattern operates with O(N) Time, O(N) Auxiliary Space: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.."
+        "correct_answer": "A",
+        "explanation": "The 'Monotonic Stack (Next Greater Element)' pattern operates with O(N) Time, O(N) Auxiliary Space: Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.."
       },
       {
-        "no": 17,
-        "q": "When implementing 'Monotonic Stack (Next Greater Element)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
+        "id": "TEST-05-17",
+        "category": "Java DSA & Coding",
+        "question": "When implementing 'Monotonic Stack (Next Greater Element)' in Java, which edge case must be guarded against to avoid runtime exceptions?",
         "options": [
           "Handling boundary conditions such as: Strictly decreasing sequence (all answers 0).",
           "Using only primitive floats instead of double.",
           "Declaring all methods native.",
           "Disabling JVM garbage collection."
         ],
-        "a": "Answer: A \u2014 Critical edge cases for Monotonic Stack (Next Greater Element) include Strictly decreasing sequence (all answers 0), which must be validated with guard clauses before executing loop pointers."
+        "correct_answer": "A",
+        "explanation": "Critical edge cases for Monotonic Stack (Next Greater Element) include Strictly decreasing sequence (all answers 0), which must be validated with guard clauses before executing loop pointers."
       },
       {
-        "no": 18,
-        "q": "For 'Problem 1: Daily Temperatures', what Java collection or data structure provides the optimal auxiliary space bounds?",
+        "id": "TEST-05-18",
+        "category": "Java DSA & Coding",
+        "question": "For 'Problem 1: Daily Temperatures', what Java collection or data structure provides the optimal auxiliary space bounds?",
         "options": [
           "Standard array or standard collection adhering to O(N) Auxiliary Space.",
           "A nested 3D LinkedList.",
           "External disk-backed SQL table.",
           "Unbounded blocking queue."
         ],
-        "a": "Answer: A \u2014 The optimal Java 17+ implementation achieves O(N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
+        "correct_answer": "A",
+        "explanation": "The optimal Java 17+ implementation achieves O(N) Time, O(N) Auxiliary Space by avoiding unneeded object allocations."
       },
       {
-        "no": 19,
-        "q": "In Sarthak's project 'College Student Management System (CSMS)', what is the core architectural principle regarding 'Multi-Role Authentication & Bcrypt Password Security in CSMS'?",
+        "id": "TEST-05-19",
+        "category": "Projects (Django Backend & SQL Architecture)",
+        "question": "In Sarthak's project 'Django Backend & SQL Architecture', what is the core architectural principle regarding 'Django ORM, Models & Database Migrations'?",
         "options": [
-          "Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.",
+          "`makemigrations` inspects `models.py` and creates migration scripts; `migrate` executes the SQL against the active database.",
           "Using unencrypted HTTP requests over public ports.",
           "Storing passwords in plaintext inside localStorage.",
           "Restarting the production server on every user request."
         ],
-        "a": "Answer: A \u2014 For College Student Management System (CSMS), the architectural invariant is: Passwords are never stored in plaintext; `bcrypt` salt rounds ensure cryptographic resistance against dictionary attacks.."
+        "correct_answer": "A",
+        "explanation": "For Django Backend & SQL Architecture, the architectural invariant is: `makemigrations` inspects `models.py` and creates migration scripts; `migrate` executes the SQL against the active database.."
       },
       {
-        "no": 20,
-        "q": "Regarding 'College Student Management System (CSMS)', how should you defend this design decision in a technical interview: 'How is authentication handled in CSMS across different academic roles?'?",
+        "id": "TEST-05-20",
+        "category": "Projects (Django Backend & SQL Architecture)",
+        "question": "Regarding 'Django Backend & SQL Architecture', how should you defend this design decision in a technical interview: 'What is an ORM and what are the advantages of Django's ORM?'?",
         "options": [
-          "In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students via their University E...",
+          "An Object-Relational Mapper (ORM) maps database tables to Python classes and rows to Python objects. Instead of writing raw SQL queries, developers write Python...",
           "Claim that standard frameworks are obsolete and write custom assembly.",
           "State that testing was skipped to ship faster.",
           "Acknowledge that security was ignored."
         ],
-        "a": "Answer: A \u2014 In technical interviews, anchor your defense in engineering metrics: In `backend/routers/auth.py`, the login endpoint authenticates both faculty/administrators via email from the `admins` table and students vi."
+        "correct_answer": "A",
+        "explanation": "In technical interviews, anchor your defense in engineering metrics: An Object-Relational Mapper (ORM) maps database tables to Python classes and rows to Python objects. Instead of writing raw SQL queries, dev."
       }
     ]
   },

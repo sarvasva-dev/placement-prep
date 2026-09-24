@@ -90,7 +90,7 @@ export function renderInterviewView(container, daysIndex) {
         },
         {
           q: 'Why should we hire you over candidates from traditional engineering (B.Tech) colleges?',
-          framework: 'Demonstrate bias for action: "While academic pedigrees focus heavily on theoretical exams, I have spent the last two years actively building, deploying, and maintaining live backend services with real users, handling production concurrency, writing clean APIs, and achieving academic excellence (Target SGPA 9.0+)."',
+          framework: 'Demonstrate bias for action: "While academic pedigrees focus heavily on theoretical exams, I have spent the last two years actively building, deploying, and maintaining live backend services with real users, handling production concurrency, writing clean APIs, and achieving strong academic standing (CGPA 8.0 / 10)."',
           key_points: 'Confidence without arrogance. Emphasize self-driven initiative and verified production projects.'
         }
       ]

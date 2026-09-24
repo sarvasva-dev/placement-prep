@@ -101,14 +101,13 @@ def get_placement_for_day(day: int) -> list:
                 "category": "HR & Cultural Fit",
                 "question": "Walk me through your background and introduce yourself. ('Tell me about yourself')",
                 "model_answer": (
-                    "Good morning/afternoon. My name is Sarthak Srivastava, and I am currently in my final year of Bachelor of Computer Applications (BCA) at Dr. Virendra Swarup Institute of Computer Studies, affiliated with CSJM University, Kanpur.\n\n"
-                    "Over the past three years, I have built a solid foundation in core Computer Science fundamentals—operating systems, relational database architecture, computer networking, and algorithms. Beyond academics, I am an active software developer who believes in building production-grade software. I have architected and deployed full-stack systems including a cloud-native College Student Management System using FastAPI and Supabase, an event-driven stock data pipeline with SQLite WAL concurrency and Telegram webhooks, and modern web applications with Next.js.\n\n"
-                    "I have also gained hands-on engineering experience through technical roles at DevQBX and Sitekraft, where I learned the importance of robust error handling, API performance, and clean code. I am excited to bring my technical skills, fast learning ability, and dedication to your engineering team."
+                    "Over the past three years, I have built a solid foundation in core Computer Science fundamentals—operating systems, relational database architecture, computer networking, and algorithms. Beyond academics, I am an active backend developer who believes in building production-grade software. I have architected and deployed real-world systems including a cloud-native College Student Management System using FastAPI and PostgreSQL, a commercial financial alert platform (BulkBeat TV) with Python AsyncIO, SQLite WAL concurrency, and Telegram webhooks, and scalable web services with Django.\n\n"
+                    "I have also gained hands-on engineering experience through technical roles at DevQBX and Sitekraft, where I learned the importance of robust error handling, database performance, and clean code. I am excited to bring my technical skills, fast learning ability, and dedication to your engineering team."
                 ),
                 "key_talking_points": [
                     "Clear academic credentials (BCA 3rd Year at VSICS CSJMU).",
                     "Strong balance between CS fundamentals and hands-on software development.",
-                    "Concrete mention of real systems (FastAPI, Next.js, real-time pipelines).",
+                    "Concrete mention of real systems (FastAPI, Django, Python AsyncIO pipelines).",
                     "Enthusiasm for contributing to high-standard engineering teams."
                 ],
                 "what_interviewer_evaluates": "Communication clarity, confidence, structural coherence, and authentic self-presentation."
@@ -229,12 +228,12 @@ def get_placement_for_day(day: int) -> list:
 
     # Real project rotating references
     projects = [
-        ("College Student Management System (CSMS)", "FastAPI, Supabase PostgreSQL, Vanilla JS", "D:\\Projects\\College Student Management System"),
-        ("SmartGalla", "Next.js 16, React 19, Supabase RLS, Razorpay, PWA", "D:\\Projects\\smartgalla"),
-        ("NSE2 / BulkBeat TV", "Python aiohttp, SQLite WAL Concurrency, Telegram Webhooks, Dhan API", "D:\\Projects\\NSE2"),
-        ("Caloriv", "React Native Expo, Nutrition Analytics, Offline Sync, Android Toolchain", "D:\\Projects\\Caloriv"),
-        ("Biometric Electronic Voting System (BEVM)", "Python, SQLite, Fernet AES-256, Chained SHA-256 Audit Ledger, Biometric Auth", "D:\\Projects\\FINGERPINT VOTING SYSTEM"),
-        ("DevQBX & Sitekraft Engineering", "Project Management, Client Web Architecture, Microservices", "Career Experience")
+        ("BulkBeat TV", "Python AsyncIO, SQLite WAL, Telegram Bot, 20+ Rule Engine", "D:\\Projects\\nse2"),
+        ("College Student Management System (CSMS)", "FastAPI, PostgreSQL, Vanilla HTML/CSS/JS", "D:\\Projects\\College Student Management System"),
+        ("SmartGalla", "Python, PostgreSQL, HTML5/CSS3/JavaScript, Kirana Store Portal", "D:\\Projects\\SmartGalla"),
+        ("DocRoute", "Python, PyMuPDF Vector Text, Tesseract OCR Fallback", "D:\\Projects\\DocRoute"),
+        ("Django Backend & Relational SQL", "Django MVT, ORM, Models, REST Framework, PostgreSQL vs SQLite", "D:\\Projects"),
+        ("DevQBX Technical Operations", "Python & SQL Mentorship, Web Development Coordination", "Career Experience")
     ]
     curr_proj = projects[(day - 1) % len(projects)]
 

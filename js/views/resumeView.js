@@ -94,12 +94,16 @@ function buildResumePage(container, resumesData, daysIndex) {
           <h1 class="resume-name">${r.contact.name}</h1>
           ${r.contact.tagline ? `<div class="resume-tagline">${r.contact.tagline}</div>` : ''}
           <div class="resume-contact-line">
-            <span>📍 ${r.contact.location}</span>
-            <span>✉️ <a href="mailto:${r.contact.email}">${r.contact.email}</a></span>
-            <span>📞 ${r.contact.phone}</span>
-            ${r.contact.website ? `<span>🌐 <a href="${r.contact.website}" target="_blank">${r.contact.website.replace('https://', '')}</a></span>` : ''}
-            <span>🔗 <a href="${r.contact.github}" target="_blank">${r.contact.github.replace('https://', '')}</a></span>
-            <span>🔗 <a href="${r.contact.linkedin}" target="_blank">${r.contact.linkedin.replace('https://', '')}</a></span>
+            <span>${r.contact.location}</span>
+            <span class="contact-sep">|</span>
+            <span><a href="mailto:${r.contact.email}">${r.contact.email}</a></span>
+            <span class="contact-sep">|</span>
+            <span>${r.contact.phone}</span>
+            ${r.contact.website ? `<span class="contact-sep">|</span><span><a href="${r.contact.website}" target="_blank">${r.contact.website.replace('https://', '')}</a></span>` : ''}
+            <span class="contact-sep">|</span>
+            <span><a href="${r.contact.github}" target="_blank">${r.contact.github.replace('https://', '')}</a></span>
+            <span class="contact-sep">|</span>
+            <span><a href="${r.contact.linkedin}" target="_blank">${r.contact.linkedin.replace('https://', '')}</a></span>
           </div>
         </div>
 

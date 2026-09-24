@@ -1,5 +1,5 @@
 /**
- * SVG Diagram Generators for Verified Engineering Projects (SmartGalla, BulkBeat TV, Caloriv, BEVM, CSMS)
+ * SVG Diagram Generators for Verified Engineering Projects (SmartGalla, BulkBeat TV, CSMS, DocRoute, Django, BEVM)
  */
 
 export function renderProjectDefenseSvg(projectName = '', topic = '') {
@@ -35,6 +35,17 @@ export function renderProjectDefenseSvg(projectName = '', topic = '') {
     return createBulkBeatConcurrencySvg();
   }
 
+  if (p.includes('docroute') || p.includes('document')) {
+    if (p.includes('ocr') || p.includes('tesseract') || p.includes('fallback')) {
+      return createDocRouteOcrFallbackSvg();
+    }
+    return createDocRoutePipelineSvg();
+  }
+
+  if (p.includes('django') || p.includes('orm') || p.includes('mvt')) {
+    return createDjangoMvtSvg();
+  }
+
   if (p.includes('bevm') || p.includes('voting') || p.includes('fingerprint') || p.includes('cryptographic')) {
     if (p.includes('fernet') || p.includes('encryption') || p.includes('key')) {
       return createBevmEncryptionSvg();
@@ -43,16 +54,6 @@ export function renderProjectDefenseSvg(projectName = '', topic = '') {
       return createBevmBiometricAuthSvg();
     }
     return createBevmCryptographicLedgerSvg();
-  }
-
-  if (p.includes('caloriv')) {
-    if (p.includes('offline') || p.includes('sqlite') || p.includes('sync')) {
-      return createCalorivOfflineSyncSvg();
-    }
-    if (p.includes('nutrition') || p.includes('algorithm') || p.includes('macronutrient')) {
-      return createCalorivNutritionEngineSvg();
-    }
-    return createCalorivArchitectureSvg();
   }
 
   // Fallback
@@ -156,9 +157,9 @@ function createCsmsArchitectureSvg() {
     <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
       <g transform="translate(40, 50)">
         <rect width="180" height="100" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-        <text x="90" y="35" text-anchor="middle" fill="#38bdf8" font-weight="800">FRONTEND ERP</text>
-        <text x="90" y="60" text-anchor="middle" fill="#f8fafc" font-size="11">React + Vite SPA</text>
-        <text x="90" y="80" text-anchor="middle" fill="#94a3b8" font-size="10">Tailwind + Dashboard</text>
+        <text x="90" y="35" text-anchor="middle" fill="#38bdf8" font-weight="800">WEB ERP FRONTEND</text>
+        <text x="90" y="60" text-anchor="middle" fill="#f8fafc" font-size="11">HTML5 + CSS3 + JS</text>
+        <text x="90" y="80" text-anchor="middle" fill="#94a3b8" font-size="10">Responsive Dashboards</text>
       </g>
 
       <line x1="220" y1="100" x2="310" y2="100" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
@@ -196,8 +197,8 @@ function createSmartGallaTenantSvg() {
     <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
       <g transform="translate(40, 50)">
         <rect width="180" height="90" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-        <text x="90" y="35" text-anchor="middle" fill="#38bdf8" font-weight="800">NEXT.js 16 EDGE</text>
-        <text x="90" y="60" text-anchor="middle" fill="#fff" font-size="11">Middleware Rewrites</text>
+        <text x="90" y="35" text-anchor="middle" fill="#38bdf8" font-weight="800">PYTHON BACKEND</text>
+        <text x="90" y="60" text-anchor="middle" fill="#fff" font-size="11">WSGI / Middleware</text>
         <text x="90" y="78" text-anchor="middle" fill="#94a3b8" font-size="10">store1.smartgalla.com</text>
       </g>
 
@@ -289,7 +290,7 @@ function createSmartGallaLogisticsSvg() {
       <g transform="translate(630, 50)">
         <rect width="190" height="90" rx="8" fill="#047857" stroke="#34d399" stroke-width="2"/>
         <text x="95" y="35" text-anchor="middle" fill="#fff" font-weight="800">DISPATCH TO RIDER</text>
-        <text x="95" y="60" text-anchor="middle" fill="#ecfdf5" font-size="11">WebSocket notification</text>
+        <text x="95" y="60" text-anchor="middle" fill="#ecfdf5" font-size="11">Push / SMS Alert</text>
         <text x="95" y="78" text-anchor="middle" fill="#a7f3d0" font-size="10">Accept/Reject 30s timer</text>
       </g>
     </svg>
@@ -546,105 +547,126 @@ function createBevmBiometricAuthSvg() {
   `;
 }
 
-function createCalorivArchitectureSvg() {
+function createDocRoutePipelineSvg() {
   return `
   <div class="svg-diagram-wrapper">
     <div class="svg-diagram-header">
-      <span class="svg-tag">CALORIV DEFENSE</span>
-      <span class="svg-title">Caloriv: React Native Mobile Client & Nutrition State Pipeline</span>
+      <span class="svg-tag">DOCROUTE DEFENSE</span>
+      <span class="svg-title">DocRoute: Adaptive Document Intelligence Pipeline (PyMuPDF vs Tesseract OCR)</span>
     </div>
     <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
-      <g transform="translate(40, 50)">
-        <rect width="180" height="90" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-        <text x="90" y="35" text-anchor="middle" fill="#38bdf8" font-weight="800">REACT NATIVE CLIENT</text>
-        <text x="90" y="60" text-anchor="middle" fill="#fff" font-size="11">Expo Bare Workflow</text>
-        <text x="90" y="78" text-anchor="middle" fill="#94a3b8" font-size="10">Camera + Image Picker</text>
+      <g transform="translate(30, 45)">
+        <rect width="170" height="100" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+        <text x="85" y="32" text-anchor="middle" fill="#38bdf8" font-weight="800">DOCUMENT INGEST</text>
+        <text x="85" y="55" text-anchor="middle" fill="#fff" font-size="11">PDF / Invoices / Forms</text>
+        <text x="85" y="75" text-anchor="middle" fill="#94a3b8" font-size="10">Binary Stream / File</text>
       </g>
-      <line x1="220" y1="95" x2="300" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <line x1="200" y1="95" x2="260" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(310, 45)">
-        <rect width="230" height="100" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="2"/>
-        <text x="115" y="32" text-anchor="middle" fill="#c084fc" font-weight="800">ZUSTAND OFFLINE STORE</text>
-        <text x="115" y="55" text-anchor="middle" fill="#fff" font-size="11">AsyncStorage / SQLite</text>
-        <text x="115" y="75" text-anchor="middle" fill="#e9d5ff" font-size="11">Daily Calorie Target State</text>
-        <text x="115" y="95" text-anchor="middle" fill="#34d399" font-size="10">Immediate local render</text>
+      <g transform="translate(270, 45)">
+        <rect width="190" height="100" rx="8" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+        <text x="95" y="32" text-anchor="middle" fill="#c7d2fe" font-weight="800">PyMuPDF EXTRACT</text>
+        <text x="95" y="55" text-anchor="middle" fill="#fff" font-size="11">Direct Vector Text Parse</text>
+        <text x="95" y="75" text-anchor="middle" fill="#a7f3d0" font-size="10">Confidence & Density Check</text>
       </g>
-      <line x1="540" y1="95" x2="620" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(630, 50)">
-        <rect width="190" height="90" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
-        <text x="95" y="35" text-anchor="middle" fill="#a7f3d0" font-weight="800">CLOUDINARY & API</text>
-        <text x="95" y="60" text-anchor="middle" fill="#fff" font-size="11">Image Optimization</text>
-        <text x="95" y="78" text-anchor="middle" fill="#6ee7b7" font-size="10">Macro breakdown lookup</text>
+      <line x1="460" y1="95" x2="520" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+
+      <g transform="translate(530, 40)">
+        <polygon points="55,0 110,55 55,110 0,55" fill="#1e1b4b" stroke="#f59e0b" stroke-width="2"/>
+        <text x="55" y="50" text-anchor="middle" fill="#fbbf24" font-weight="700" font-size="10">Vector</text>
+        <text x="55" y="66" text-anchor="middle" fill="#fbbf24" font-weight="700" font-size="10">Text OK?</text>
+      </g>
+
+      <line x1="640" y1="95" x2="690" y2="95" stroke="#34d399" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <text x="665" y="85" fill="#34d399" font-weight="700" font-size="10">YES</text>
+
+      <g transform="translate(700, 45)">
+        <rect width="140" height="100" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
+        <text x="70" y="32" text-anchor="middle" fill="#a7f3d0" font-weight="800">STRUCTURED</text>
+        <text x="70" y="55" text-anchor="middle" fill="#fff" font-size="11">Clean JSON</text>
+        <text x="70" y="75" text-anchor="middle" fill="#6ee7b7" font-size="10">Sub-50ms Output</text>
       </g>
     </svg>
   </div>
   `;
 }
 
-function createCalorivOfflineSyncSvg() {
+function createDocRouteOcrFallbackSvg() {
   return `
   <div class="svg-diagram-wrapper">
     <div class="svg-diagram-header">
-      <span class="svg-tag">CALORIV DEFENSE</span>
-      <span class="svg-title">Caloriv: Offline-First SQLite Cache & Cloud Synchronization</span>
+      <span class="svg-tag">DOCROUTE OCR DEFENSE</span>
+      <span class="svg-title">DocRoute: Image Preprocessing & Tesseract OCR Fallback Route</span>
     </div>
-    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
-      <g transform="translate(40, 50)">
-        <rect width="170" height="90" rx="8" fill="#1e293b" stroke="#38bdf8"/>
-        <text x="85" y="35" text-anchor="middle" fill="#38bdf8" font-weight="700">User Logs Food Offline</text>
-        <text x="85" y="60" text-anchor="middle" fill="#fff" font-size="11">No Internet Connection</text>
+    <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
+      <g transform="translate(30, 45)">
+        <rect width="180" height="100" rx="8" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
+        <text x="90" y="32" text-anchor="middle" fill="#fca5a5" font-weight="800">SCANNED / RASTER PDF</text>
+        <text x="90" y="55" text-anchor="middle" fill="#fff" font-size="11">Zero Native Embedded Text</text>
+        <text x="90" y="75" text-anchor="middle" fill="#fecaca" font-size="10">Density &lt; Threshold</text>
       </g>
-      <line x1="210" y1="95" x2="280" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <line x1="210" y1="95" x2="280" y2="95" stroke="#ef4444" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
       <g transform="translate(290, 45)">
-        <rect width="240" height="100" rx="8" fill="#1e1b4b" stroke="#34d399" stroke-width="2"/>
-        <text x="120" y="32" text-anchor="middle" fill="#34d399" font-weight="800">LOCAL SQLITE LOG</text>
-        <text x="120" y="55" text-anchor="middle" fill="#fff" font-size="11">synced = 0 flag stored</text>
-        <text x="120" y="75" text-anchor="middle" fill="#a7f3d0" font-size="10">NetInfo detects connection</text>
+        <rect width="230" height="100" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="2"/>
+        <text x="115" y="32" text-anchor="middle" fill="#c084fc" font-weight="800">IMAGE PREPROCESSING</text>
+        <text x="115" y="55" text-anchor="middle" fill="#fff" font-size="11">Grayscale + Otsu Binarization</text>
+        <text x="115" y="75" text-anchor="middle" fill="#a7f3d0" font-size="10">Deskew & Noise Removal (PIL)</text>
       </g>
-      <line x1="530" y1="95" x2="610" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(620, 50)">
-        <rect width="200" height="90" rx="8" fill="#064e3b" stroke="#34d399"/>
-        <text x="100" y="35" text-anchor="middle" fill="#a7f3d0" font-weight="800">BATCH BACKGROUND SYNC</text>
-        <text x="100" y="60" text-anchor="middle" fill="#fff" font-size="11">POST /api/meals/batch</text>
-        <text x="100" y="78" text-anchor="middle" fill="#6ee7b7" font-size="10">Marks synced = 1</text>
+      <line x1="520" y1="95" x2="590" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+
+      <g transform="translate(600, 45)">
+        <rect width="230" height="100" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="2"/>
+        <text x="115" y="32" text-anchor="middle" fill="#a7f3d0" font-weight="800">TESSERACT OCR ENGINE</text>
+        <text x="115" y="55" text-anchor="middle" fill="#fff" font-size="11">Bounding Box & Text Recognition</text>
+        <text x="115" y="75" text-anchor="middle" fill="#6ee7b7" font-size="10">Confidence-Weighted Extraction</text>
       </g>
     </svg>
   </div>
   `;
 }
 
-function createCalorivNutritionEngineSvg() {
+function createDjangoMvtSvg() {
   return `
   <div class="svg-diagram-wrapper">
     <div class="svg-diagram-header">
-      <span class="svg-tag">CALORIV DEFENSE</span>
-      <span class="svg-title">Caloriv: BMR (Mifflin-St Jeor) & Macronutrient Split Engine</span>
+      <span class="svg-tag">DJANGO DEFENSE</span>
+      <span class="svg-title">Django Architecture: MVT Request-Response Cycle & ORM Relational Guard</span>
     </div>
-    <svg viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
-      <g transform="translate(40, 50)">
-        <rect width="180" height="90" rx="8" fill="#1e293b" stroke="#38bdf8"/>
-        <text x="90" y="35" text-anchor="middle" fill="#38bdf8" font-weight="700">Bio Inputs</text>
-        <text x="90" y="60" text-anchor="middle" fill="#fff" font-size="11">Weight, Height, Age, Sex</text>
-        <text x="90" y="78" text-anchor="middle" fill="#94a3b8" font-size="10">Activity Multiplier</text>
+    <svg viewBox="0 0 860 210" xmlns="http://www.w3.org/2000/svg" class="interactive-study-svg">
+      <g transform="translate(30, 45)">
+        <rect width="160" height="100" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+        <text x="80" y="32" text-anchor="middle" fill="#38bdf8" font-weight="800">HTTP REQUEST</text>
+        <text x="80" y="55" text-anchor="middle" fill="#fff" font-size="11">urls.py Regex Route</text>
+        <text x="80" y="75" text-anchor="middle" fill="#94a3b8" font-size="10">CSRF & Session Guard</text>
       </g>
-      <line x1="220" y1="95" x2="300" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+      <line x1="190" y1="95" x2="250" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(310, 45)">
-        <rect width="240" height="100" rx="8" fill="#1e1b4b" stroke="#f59e0b" stroke-width="2"/>
-        <text x="120" y="32" text-anchor="middle" fill="#fbbf24" font-weight="800">MIFFLIN-ST JEOR FORMULA</text>
-        <text x="120" y="55" text-anchor="middle" fill="#fff" font-size="11">BMR = 10W + 6.25H - 5A + 5</text>
-        <text x="120" y="75" text-anchor="middle" fill="#fde68a" font-size="10">TDEE = BMR * Activity Level</text>
+      <g transform="translate(260, 45)">
+        <rect width="200" height="100" rx="8" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+        <text x="100" y="32" text-anchor="middle" fill="#c7d2fe" font-weight="800">VIEW (views.py)</text>
+        <text x="100" y="55" text-anchor="middle" fill="#fff" font-size="11">Business Logic Layer</text>
+        <text x="100" y="75" text-anchor="middle" fill="#a7f3d0" font-size="10">QuerySet Evaluation</text>
       </g>
-      <line x1="550" y1="95" x2="630" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
 
-      <g transform="translate(640, 50)">
-        <rect width="180" height="90" rx="8" fill="#047857" stroke="#34d399"/>
-        <text x="90" y="35" text-anchor="middle" fill="#a7f3d0" font-weight="800">TARGET MACROS</text>
-        <text x="90" y="58" text-anchor="middle" fill="#fff" font-size="11">Protein (30%)</text>
-        <text x="90" y="75" text-anchor="middle" fill="#fff" font-size="11">Carbs (45%) | Fat (25%)</text>
+      <line x1="460" y1="95" x2="520" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+
+      <g transform="translate(530, 45)">
+        <rect width="170" height="100" rx="8" fill="#047857" stroke="#34d399" stroke-width="2"/>
+        <text x="85" y="32" text-anchor="middle" fill="#a7f3d0" font-weight="800">MODEL (ORM)</text>
+        <text x="85" y="55" text-anchor="middle" fill="#fff" font-size="11">models.py 3NF Tables</text>
+        <text x="85" y="75" text-anchor="middle" fill="#ecfdf5" font-size="10">Postgres / SQLite WAL</text>
+      </g>
+
+      <line x1="700" y1="95" x2="740" y2="95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#projArrow)"/>
+
+      <g transform="translate(750, 45)">
+        <rect width="100" height="100" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+        <text x="50" y="35" text-anchor="middle" fill="#fbbf24" font-weight="800">TEMPLATE</text>
+        <text x="50" y="55" text-anchor="middle" fill="#fff" font-size="10">HTML5 /</text>
+        <text x="50" y="72" text-anchor="middle" fill="#fff" font-size="10">DRF JSON</text>
       </g>
     </svg>
   </div>
