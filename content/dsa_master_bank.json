@@ -1,0 +1,76 @@
+{
+  "title": "High-Frequency DSA Master Bank",
+  "disclaimer": "These problems are commonly encountered in placement interviews and categorized as high-frequency based on public interview experiences (e.g., LeetCode, GeeksforGeeks, company specific archives). They are NOT guaranteed to be 'the most asked' globally without contextual proof.",
+  "patterns": [
+    {
+      "pattern_name": "Two Pointers",
+      "problems": [
+        {
+          "problem": "Two Sum II - Input Array Is Sorted",
+          "recognition_clue": "Sorted array, finding a pair that sums to target",
+          "constraints": "O(N) time, O(1) space required",
+          "brute_force": "Nested loops checking every pair",
+          "brute_complexity": "O(N^2) Time, O(1) Space",
+          "optimal_approach": "Two Pointers starting from left=0, right=n-1",
+          "why_optimal_works": "Because the array is sorted, we can safely eliminate the smallest or largest remaining element if the sum is too small or too large.",
+          "algorithm": "1. Set L=0, R=n-1. 2. Calculate sum=arr[L]+arr[R]. 3. If sum==target, return. 4. If sum < target, L++. 5. If sum > target, R--.",
+          "java_17_code": "class Solution {\n    public int[] twoSum(int[] numbers, int target) {\n        int left = 0, right = numbers.length - 1;\n        while (left < right) {\n            int sum = numbers[left] + numbers[right];\n            if (sum == target) return new int[]{left + 1, right + 1};\n            else if (sum < target) left++;\n            else right--;\n        }\n        return new int[]{-1, -1};\n    }\n}",
+          "complexity": "O(N) Time, O(1) Space",
+          "edge_cases": "Negative numbers, duplicates that don't sum to target",
+          "common_mistakes": "Returning 0-indexed instead of 1-indexed (if required by problem variant)",
+          "interview_follow_ups": "What if the array is not sorted? (Use HashMap)",
+          "related_problems": ["3Sum", "Container With Most Water"],
+          "source_classification": "Commonly Encountered Placement-Style",
+          "source_url": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+          "source_type": "Publicly Reported Interview Question",
+          "evidence_note": "A highly frequent foundational problem reported across Amazon, Microsoft, and generic campus recruitment drives."
+        },
+        {
+          "problem": "Container With Most Water",
+          "recognition_clue": "Finding two lines that form a container to hold maximum area",
+          "constraints": "O(N) time, O(1) space",
+          "brute_force": "Check all pairs of lines",
+          "brute_complexity": "O(N^2) Time",
+          "optimal_approach": "Two Pointers at both ends, moving the shorter line inward",
+          "why_optimal_works": "Area is constrained by the shorter line. Moving the taller line inward can only decrease width without increasing height, so we must move the shorter line to potentially find a taller one.",
+          "algorithm": "1. L=0, R=n-1, maxArea=0. 2. maxArea = max(maxArea, (R-L)*min(height[L], height[R])). 3. If height[L] < height[R], L++; else R--.",
+          "java_17_code": "class Solution {\n    public int maxArea(int[] height) {\n        int left = 0, right = height.length - 1;\n        int maxArea = 0;\n        while (left < right) {\n            int currentArea = Math.min(height[left], height[right]) * (right - left);\n            maxArea = Math.max(maxArea, currentArea);\n            if (height[left] < height[right]) left++;\n            else right--;\n        }\n        return maxArea;\n    }\n}",
+          "complexity": "O(N) Time, O(1) Space",
+          "edge_cases": "All heights are the same, minimum required inputs (n=2)",
+          "common_mistakes": "Moving the taller line inward instead of the shorter one",
+          "interview_follow_ups": "Can you do this if lines are dynamically added?",
+          "related_problems": ["Trapping Rain Water"],
+          "source_classification": "High-Frequency Pattern",
+          "source_url": "https://leetcode.com/problems/container-with-most-water/",
+          "source_type": "Publicly Reported Interview Question",
+          "evidence_note": "Standard visual logic puzzle heavily asked in initial tech screening rounds."
+        }
+      ]
+    },
+    {
+      "pattern_name": "Sliding Window",
+      "problems": [
+        {
+          "problem": "Longest Substring Without Repeating Characters",
+          "recognition_clue": "Finding a 'longest' contiguous substring based on a condition (no repeats)",
+          "constraints": "O(N) time",
+          "brute_force": "Check all possible substrings",
+          "brute_complexity": "O(N^3) Time",
+          "optimal_approach": "Variable-size Sliding Window using a HashSet or frequency array",
+          "why_optimal_works": "By keeping track of characters in the current window, we can expand right until a duplicate is found, then shrink from left until the duplicate is removed.",
+          "algorithm": "1. Use L=0, R=0, maxLen=0, set. 2. If char at R is in set, remove char at L and L++. 3. Else add char at R to set, update maxLen, R++.",
+          "java_17_code": "class Solution {\n    public int lengthOfLongestSubstring(String s) {\n        Set<Character> set = new HashSet<>();\n        int left = 0, right = 0, maxLen = 0;\n        while (right < s.length()) {\n            if (!set.contains(s.charAt(right))) {\n                set.add(s.charAt(right++));\n                maxLen = Math.max(maxLen, set.size());\n            } else {\n                set.remove(s.charAt(left++));\n            }\n        }\n        return maxLen;\n    }\n}",
+          "complexity": "O(N) Time, O(min(N, M)) Space",
+          "edge_cases": "Empty string, string with all identical characters",
+          "common_mistakes": "Forgetting to shrink the window until the *specific* duplicate is removed",
+          "interview_follow_ups": "Can you optimize this to exactly O(N) by jumping the left pointer using a HashMap?",
+          "related_problems": ["Minimum Window Substring"],
+          "source_classification": "Company-Attributed",
+          "source_url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+          "source_type": "Top Tier Tech Interviews",
+          "evidence_note": "Consistently ranked in the top 5 most asked string questions globally."
+        }
+      ]
+    }
+  ]
+}

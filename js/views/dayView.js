@@ -1073,7 +1073,7 @@ function attachDayInteractivity(d) {
   }
 
   // Initialize DSA visualizer
-  attachVisualizerInteractivity(container);
+  attachVisualizerInteractivity(document);
 
   // Checkbox bindings & persistence
   const syncChecklist = () => {
