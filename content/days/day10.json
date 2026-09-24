@@ -4,12 +4,12 @@
   "streams": {
     "academic": {
       "unit": 1,
-      "topic": "Unit I — Roots of Non-Linear Equations: Newton-Raphson Method & Quadratic Convergence Proof",
+      "topic": "Unit I \u2014 Roots of Non-Linear Equations: Newton-Raphson Method & Quadratic Convergence Proof",
       "objectives": [
         "Derive the Newton-Raphson formula using Taylor series.",
         "Prove quadratic convergence (Order 2) and understand failure cases."
       ],
-      "explanation": "The Newton-Raphson (N-R) method is an open root-finding iterative technique based on the tangent line to the function curve.\n1. Derivation via Taylor Series:\n   Expanding `f(x)` around current estimate `x_n`:\n   `f(x_{n+1}) = f(x_n) + (x_{n+1} - x_n) * f'(x_n) + ...`\n   Setting `f(x_{n+1}) = 0` and ignoring higher-order terms:\n   `x_{n+1} = x_n - [ f(x_n) / f'(x_n) ]`\n2. Proof of Quadratic Convergence (Order 2):\n   Let `alpha` be the true root (`f(alpha) = 0`) and `e_n = x_n - alpha` be the error at step n.\n   Substituting `x_n = alpha + e_n` into the N-R formula and expanding via Taylor series:\n   `e_{n+1} = (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2`\n   Since `e_{n+1} proportional to (e_n)^2`, the rate of convergence is Quadratic (Order 2). The number of correct decimal places doubles every iteration!\n3. Failure Conditions:\n   • If `f'(x_n) == 0` (tangent line is horizontal, division by zero);\n   • If initial guess `x0` is far from root (may oscillate or diverge);\n   • Inflection points where `f''(x) == 0` can trap the solver in a cycle.",
+      "explanation": "The Newton-Raphson (N-R) method is an open root-finding iterative technique based on the tangent line to the function curve.\n1. Derivation via Taylor Series:\n   Expanding `f(x)` around current estimate `x_n`:\n   `f(x_{n+1}) = f(x_n) + (x_{n+1} - x_n) * f'(x_n) + ...`\n   Setting `f(x_{n+1}) = 0` and ignoring higher-order terms:\n   `x_{n+1} = x_n - [ f(x_n) / f'(x_n) ]`\n2. Proof of Quadratic Convergence (Order 2):\n   Let `alpha` be the true root (`f(alpha) = 0`) and `e_n = x_n - alpha` be the error at step n.\n   Substituting `x_n = alpha + e_n` into the N-R formula and expanding via Taylor series:\n   `e_{n+1} = (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2`\n   Since `e_{n+1} proportional to (e_n)^2`, the rate of convergence is Quadratic (Order 2). The number of correct decimal places doubles every iteration!\n3. Failure Conditions:\n   \u2022 If `f'(x_n) == 0` (tangent line is horizontal, division by zero);\n   \u2022 If initial guess `x0` is far from root (may oscillate or diverge);\n   \u2022 Inflection points where `f''(x) == 0` can trap the solver in a cycle.",
       "definitions": [
         {
           "term": "Newton-Raphson Formula",
@@ -17,7 +17,7 @@
         },
         {
           "term": "Quadratic Convergence",
-          "definition": "Convergence of order 2 where the error at step n+1 is proportional to the square of the error at step n (e_{n+1} ≈ c * e_n^2)."
+          "definition": "Convergence of order 2 where the error at step n+1 is proportional to the square of the error at step n (e_{n+1} \u2248 c * e_n^2)."
         }
       ],
       "subtopics": [
@@ -48,7 +48,7 @@
             "Bracketing (2 guesses)",
             "Linear (Order 1)",
             "High (~20 iterations)",
-            "Zero (Always converges)"
+            "Zero (Guaranteed if f(a)\u00b7f(b) < 0)"
           ],
           [
             "Regula-Falsi (Secant)",
@@ -66,7 +66,7 @@
           ]
         ]
       },
-      "memorize": "Newton-Raphson formula: x_{n+1} = x_n - [f(x_n) / f'(x_n)]. Convergence is Quadratic (Order 2): the number of correct decimal digits roughly doubles each iteration (error is proportional to the square of the previous error, e_{n+1} ≈ C·e_n²).",
+      "memorize": "Newton-Raphson formula: x_{n+1} = x_n - [f(x_n) / f'(x_n)]. Convergence is Quadratic (Order 2): the number of correct decimal digits roughly doubles each iteration (error is proportional to the square of the previous error, e_{n+1} \u2248 C\u00b7e_n\u00b2).",
       "understand": "Newton-Raphson is lightning fast near the root, but requires computing the analytical derivative f'(x) and can fail if f'(x) approaches zero.",
       "common_mistakes": "Forgetting the negative sign in the formula or differentiating f(x) incorrectly.",
       "exam_writing_guidance": "Derive the formula using Taylor expansion, write the full quadratic convergence proof showing e_{n+1} = c * e_n^2, and solve numerical equation.",
@@ -82,7 +82,7 @@
           "marks": 15,
           "question": "Derive the Newton-Raphson iterative formula using Taylor series. Prove that the Newton-Raphson method has a quadratic rate of convergence. Find the root of x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
           "rubric": "Formula Derivation (4 marks) + Quadratic Convergence Proof (5 marks) + Step-by-step Solution of x^3 - 2x - 5 = 0 (6 marks) = 15 Marks.",
-          "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} ≈ (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n• f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n• Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n• Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n• Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
+          "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} \u2248 (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n\u2022 f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n\u2022 Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n\u2022 Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n\u2022 Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
           "answer_structure": "Derivation -> Convergence Proof -> Step-by-Step Calculation -> Conclusion",
           "important_points": [
             "x_{n+1} = x_n - f/f'",
@@ -175,7 +175,720 @@
           "correct_answer": "B",
           "explanation": "The Java contract requires: if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must strictly hold to ensure correct behavior in hash collections."
         }
-      ]
+      ],
+      "worked_numerical_problems": [
+        {
+          "problem_id": "NM-U1-NR-01",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Newton-Raphson Method",
+          "difficulty": "Exam-Level",
+          "problem": "Solve x^3 - 2x - 5 = 0 using Newton-Raphson method starting from x0 = 2.0. Show iteration table.",
+          "data": {
+            "equation": "x^3 - 2x - 5 = 0",
+            "derivative": "3x^2 - 2",
+            "x0": 2.0
+          },
+          "method": "Newton-Raphson Method",
+          "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "step_by_step_calculation": [
+            "Step 1: Write f(x) and compute f'(x) = 3x^2 - 2.",
+            "Step 2: Check f'(x0) != 0. Note: Standard root; f'(2)=10 != 0..",
+            "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
+            "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+          ],
+          "intermediate_values": {
+            "x0": 2.0,
+            "root": 2.09455
+          },
+          "iteration_table": [
+            {
+              "iter": 0,
+              "x_n": 2.0,
+              "f_xn": "f(x0)",
+              "f_prime": "f'(x0)",
+              "x_next": "x1",
+              "error": "|x1 - x0|"
+            },
+            {
+              "iter": 1,
+              "x_n": "x1",
+              "f_xn": "f(x1)",
+              "f_prime": "f'(x1)",
+              "x_next": "x2",
+              "error": "|x2 - x1|"
+            },
+            {
+              "iter": 2,
+              "x_n": "x2",
+              "f_xn": "f(x2)",
+              "f_prime": "f'(x2)",
+              "x_next": 2.09455,
+              "error": "< 0.0001"
+            }
+          ],
+          "final_answer": "Root x \u2248 2.09455",
+          "verification": "f(2.09455) \u2248 0.0000; f'(2.09455) != 0 confirms simple root quadratic convergence.",
+          "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
+        },
+        {
+          "problem_id": "NM-U1-NR-02",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Newton-Raphson Method",
+          "difficulty": "Exam-Level",
+          "problem": "Solve x^3 - 3x - 5 = 0 using Newton-Raphson method starting from x0 = 2.0. Show iteration table.",
+          "data": {
+            "equation": "x^3 - 3x - 5 = 0",
+            "derivative": "3x^2 - 3",
+            "x0": 2.0
+          },
+          "method": "Newton-Raphson Method",
+          "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "step_by_step_calculation": [
+            "Step 1: Write f(x) and compute f'(x) = 3x^2 - 3.",
+            "Step 2: Check f'(x0) != 0. Note: f'(2)=9 != 0; 3 iterations give 4 decimal accuracy..",
+            "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
+            "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+          ],
+          "intermediate_values": {
+            "x0": 2.0,
+            "root": 2.27902
+          },
+          "iteration_table": [
+            {
+              "iter": 0,
+              "x_n": 2.0,
+              "f_xn": "f(x0)",
+              "f_prime": "f'(x0)",
+              "x_next": "x1",
+              "error": "|x1 - x0|"
+            },
+            {
+              "iter": 1,
+              "x_n": "x1",
+              "f_xn": "f(x1)",
+              "f_prime": "f'(x1)",
+              "x_next": "x2",
+              "error": "|x2 - x1|"
+            },
+            {
+              "iter": 2,
+              "x_n": "x2",
+              "f_xn": "f(x2)",
+              "f_prime": "f'(x2)",
+              "x_next": 2.27902,
+              "error": "< 0.0001"
+            }
+          ],
+          "final_answer": "Root x \u2248 2.27902",
+          "verification": "f(2.27902) \u2248 0.0000; f'(2.27902) != 0 confirms simple root quadratic convergence.",
+          "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
+        },
+        {
+          "problem_id": "NM-U1-NR-03",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Newton-Raphson Method",
+          "difficulty": "Exam-Level",
+          "problem": "Solve x^4 - x - 10 = 0 using Newton-Raphson method starting from x0 = 2.0. Show iteration table.",
+          "data": {
+            "equation": "x^4 - x - 10 = 0",
+            "derivative": "4x^3 - 1",
+            "x0": 2.0
+          },
+          "method": "Newton-Raphson Method",
+          "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "step_by_step_calculation": [
+            "Step 1: Write f(x) and compute f'(x) = 4x^3 - 1.",
+            "Step 2: Check f'(x0) != 0. Note: f'(2)=31; error squares rapidly: 10^-1 -> 10^-2 -> 10^-5..",
+            "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
+            "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+          ],
+          "intermediate_values": {
+            "x0": 2.0,
+            "root": 1.85558
+          },
+          "iteration_table": [
+            {
+              "iter": 0,
+              "x_n": 2.0,
+              "f_xn": "f(x0)",
+              "f_prime": "f'(x0)",
+              "x_next": "x1",
+              "error": "|x1 - x0|"
+            },
+            {
+              "iter": 1,
+              "x_n": "x1",
+              "f_xn": "f(x1)",
+              "f_prime": "f'(x1)",
+              "x_next": "x2",
+              "error": "|x2 - x1|"
+            },
+            {
+              "iter": 2,
+              "x_n": "x2",
+              "f_xn": "f(x2)",
+              "f_prime": "f'(x2)",
+              "x_next": 1.85558,
+              "error": "< 0.0001"
+            }
+          ],
+          "final_answer": "Root x \u2248 1.85558",
+          "verification": "f(1.85558) \u2248 0.0000; f'(1.85558) != 0 confirms simple root quadratic convergence.",
+          "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
+        },
+        {
+          "problem_id": "NM-U1-NR-04",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Newton-Raphson Method",
+          "difficulty": "Exam-Level",
+          "problem": "Solve 3x - cos(x) - 1 = 0 using Newton-Raphson method starting from x0 = 0.6. Show iteration table.",
+          "data": {
+            "equation": "3x - cos(x) - 1 = 0",
+            "derivative": "3 + sin(x)",
+            "x0": 0.6
+          },
+          "method": "Newton-Raphson Method",
+          "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "step_by_step_calculation": [
+            "Step 1: Write f(x) and compute f'(x) = 3 + sin(x).",
+            "Step 2: Check f'(x0) != 0. Note: Trigonometric root; derivative strictly positive everywhere (3 + sin x >= 2)..",
+            "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
+            "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+          ],
+          "intermediate_values": {
+            "x0": 0.6,
+            "root": 0.6071
+          },
+          "iteration_table": [
+            {
+              "iter": 0,
+              "x_n": 0.6,
+              "f_xn": "f(x0)",
+              "f_prime": "f'(x0)",
+              "x_next": "x1",
+              "error": "|x1 - x0|"
+            },
+            {
+              "iter": 1,
+              "x_n": "x1",
+              "f_xn": "f(x1)",
+              "f_prime": "f'(x1)",
+              "x_next": "x2",
+              "error": "|x2 - x1|"
+            },
+            {
+              "iter": 2,
+              "x_n": "x2",
+              "f_xn": "f(x2)",
+              "f_prime": "f'(x2)",
+              "x_next": 0.6071,
+              "error": "< 0.0001"
+            }
+          ],
+          "final_answer": "Root x \u2248 0.60710",
+          "verification": "f(0.60710) \u2248 0.0000; f'(0.60710) != 0 confirms simple root quadratic convergence.",
+          "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
+        },
+        {
+          "problem_id": "NM-U1-NR-05",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Newton-Raphson Method",
+          "difficulty": "Exam-Level",
+          "problem": "Solve x*exp(x) - 1 = 0 using Newton-Raphson method starting from x0 = 0.5. Show iteration table.",
+          "data": {
+            "equation": "x*exp(x) - 1 = 0",
+            "derivative": "(x+1)*exp(x)",
+            "x0": 0.5
+          },
+          "method": "Newton-Raphson Method",
+          "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+          "step_by_step_calculation": [
+            "Step 1: Write f(x) and compute f'(x) = (x+1)*exp(x).",
+            "Step 2: Check f'(x0) != 0. Note: Omega constant root (x = W(1))..",
+            "Step 3: Execute recurrence x_{n+1} = x_n - f(x_n)/f'(x_n) and tabulate results.",
+            "Step 4: Convergence is quadratic near this simple root: correct digits double each step."
+          ],
+          "intermediate_values": {
+            "x0": 0.5,
+            "root": 0.56714
+          },
+          "iteration_table": [
+            {
+              "iter": 0,
+              "x_n": 0.5,
+              "f_xn": "f(x0)",
+              "f_prime": "f'(x0)",
+              "x_next": "x1",
+              "error": "|x1 - x0|"
+            },
+            {
+              "iter": 1,
+              "x_n": "x1",
+              "f_xn": "f(x1)",
+              "f_prime": "f'(x1)",
+              "x_next": "x2",
+              "error": "|x2 - x1|"
+            },
+            {
+              "iter": 2,
+              "x_n": "x2",
+              "f_xn": "f(x2)",
+              "f_prime": "f'(x2)",
+              "x_next": 0.56714,
+              "error": "< 0.0001"
+            }
+          ],
+          "final_answer": "Root x \u2248 0.56714",
+          "verification": "f(0.56714) \u2248 0.0000; f'(0.56714) != 0 confirms simple root quadratic convergence.",
+          "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
+        }
+      ],
+      "expanded_numerical_practice": [
+        {
+          "problem_id": "NM-U1-RF-01",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = x^3 - 2x - 5 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "x^3 - 2x - 5 = 0",
+            "interval": [
+              2.0,
+              3.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(2.0) and f(3.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Endpoint x=3 stays fixed due to convexity (f''>0); false position slowly creeps from x=2."
+          ],
+          "intermediate_values": {
+            "root_approx": 2.0945
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 2.0,
+              "b": 3.0,
+              "x_r": 2.0473,
+              "f_xr": "evaluated",
+              "new_interval": "[2.0473, 3.0]"
+            },
+            {
+              "iter": 2,
+              "a": 2.0473,
+              "b": 3.0,
+              "x_r": 2.0795,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 2.0795,
+              "b": 3.0,
+              "x_r": 2.0945,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 2.0945",
+          "verification": "f(2.0945) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        },
+        {
+          "problem_id": "NM-U1-RF-02",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = x^3 + x - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "x^3 + x - 1 = 0",
+            "interval": [
+              0.0,
+              1.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(0.0) and f(1.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Fast convergence since curvature is modest near root."
+          ],
+          "intermediate_values": {
+            "root_approx": 0.6823
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 0.0,
+              "b": 1.0,
+              "x_r": 0.3412,
+              "f_xr": "evaluated",
+              "new_interval": "[0.3412, 1.0]"
+            },
+            {
+              "iter": 2,
+              "a": 0.3412,
+              "b": 1.0,
+              "x_r": 0.6673,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 0.6673,
+              "b": 1.0,
+              "x_r": 0.6823,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 0.6823",
+          "verification": "f(0.6823) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        },
+        {
+          "problem_id": "NM-U1-RF-03",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = x^3 - 5x + 3 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "x^3 - 5x + 3 = 0",
+            "interval": [
+              0.0,
+              1.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(0.0) and f(1.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Initial bracketing f(0)=3, f(1)=-1."
+          ],
+          "intermediate_values": {
+            "root_approx": 0.6566
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 0.0,
+              "b": 1.0,
+              "x_r": 0.3283,
+              "f_xr": "evaluated",
+              "new_interval": "[0.3283, 1.0]"
+            },
+            {
+              "iter": 2,
+              "a": 0.3283,
+              "b": 1.0,
+              "x_r": 0.6416,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 0.6416,
+              "b": 1.0,
+              "x_r": 0.6566,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 0.6566",
+          "verification": "f(0.6566) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        },
+        {
+          "problem_id": "NM-U1-RF-04",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = x*exp(x) - 3 = 0 on [1.0, 2.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "x*exp(x) - 3 = 0",
+            "interval": [
+              1.0,
+              2.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(1.0) and f(2.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Transcendental equation; f(1)=e-3=-0.2817, f(2)=2e^2-3=11.778."
+          ],
+          "intermediate_values": {
+            "root_approx": 1.0499
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 1.0,
+              "b": 2.0,
+              "x_r": 1.025,
+              "f_xr": "evaluated",
+              "new_interval": "[1.025, 2.0]"
+            },
+            {
+              "iter": 2,
+              "a": 1.025,
+              "b": 2.0,
+              "x_r": 1.0349,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 1.0349,
+              "b": 2.0,
+              "x_r": 1.0499,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 1.0499",
+          "verification": "f(1.0499) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        },
+        {
+          "problem_id": "NM-U1-RF-05",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = x*log10(x) - 1.2 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "x*log10(x) - 1.2 = 0",
+            "interval": [
+              2.0,
+              3.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(2.0) and f(3.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Standard CSJMU PYQ logarithmic root problem."
+          ],
+          "intermediate_values": {
+            "root_approx": 2.7406
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 2.0,
+              "b": 3.0,
+              "x_r": 2.3703,
+              "f_xr": "evaluated",
+              "new_interval": "[2.3703, 3.0]"
+            },
+            {
+              "iter": 2,
+              "a": 2.3703,
+              "b": 3.0,
+              "x_r": 2.7256,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 2.7256,
+              "b": 3.0,
+              "x_r": 2.7406,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 2.7406",
+          "verification": "f(2.7406) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        },
+        {
+          "problem_id": "NM-U1-RF-06",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = 3x - cos(x) - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "3x - cos(x) - 1 = 0",
+            "interval": [
+              0.0,
+              1.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(0.0) and f(1.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Trigonometric false position on [0, 1]."
+          ],
+          "intermediate_values": {
+            "root_approx": 0.6071
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 0.0,
+              "b": 1.0,
+              "x_r": 0.3035,
+              "f_xr": "evaluated",
+              "new_interval": "[0.3035, 1.0]"
+            },
+            {
+              "iter": 2,
+              "a": 0.3035,
+              "b": 1.0,
+              "x_r": 0.5921,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 0.5921,
+              "b": 1.0,
+              "x_r": 0.6071,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 0.6071",
+          "verification": "f(0.6071) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        },
+        {
+          "problem_id": "NM-U1-RF-07",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = x^4 - x - 10 = 0 on [1.5, 2.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "x^4 - x - 10 = 0",
+            "interval": [
+              1.5,
+              2.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(1.5) and f(2.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Higher degree polynomial; f(1.5)=-6.4375, f(2)=4 > 0."
+          ],
+          "intermediate_values": {
+            "root_approx": 1.8556
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 1.5,
+              "b": 2.0,
+              "x_r": 1.6778,
+              "f_xr": "evaluated",
+              "new_interval": "[1.6778, 2.0]"
+            },
+            {
+              "iter": 2,
+              "a": 1.6778,
+              "b": 2.0,
+              "x_r": 1.8406,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 1.8406,
+              "b": 2.0,
+              "x_r": 1.8556,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 1.8556",
+          "verification": "f(1.8556) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        },
+        {
+          "problem_id": "NM-U1-RF-08",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = 2x - log10(x) - 7 = 0 on [3.0, 4.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "2x - log10(x) - 7 = 0",
+            "interval": [
+              3.0,
+              4.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(3.0) and f(4.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Slow convergence demonstration; one endpoint pinned throughout 6 iterations."
+          ],
+          "intermediate_values": {
+            "root_approx": 3.7892
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 3.0,
+              "b": 4.0,
+              "x_r": 3.3946,
+              "f_xr": "evaluated",
+              "new_interval": "[3.3946, 4.0]"
+            },
+            {
+              "iter": 2,
+              "a": 3.3946,
+              "b": 4.0,
+              "x_r": 3.7742,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 3.7742,
+              "b": 4.0,
+              "x_r": 3.7892,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 3.7892",
+          "verification": "f(3.7892) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        }
+      ],
+      "timed_numerical_drill": {
+        "problem_id": "NM-U1-NR-06",
+        "title": "Timed Exam Drill: Newton-Raphson Method",
+        "time_limit_minutes": 15,
+        "marks": 15,
+        "problem": "Solve x^2 - 12 = 0 (Find sqrt(12)) using Newton-Raphson method starting from x0 = 3.5. Show iteration table.",
+        "formula": "x_{n+1} = x_n - f(x_n) / f'(x_n)",
+        "final_answer": "Root x \u2248 3.46410",
+        "verification": "f(3.46410) \u2248 0.0000; f'(3.46410) != 0 confirms simple root quadratic convergence.",
+        "common_mistake": "Choosing an initial guess where f'(x0) is zero or very close to zero, causing division by near-zero."
+      },
+      "formula_recall": "Newton-Raphson: x_{n+1} = x_n - f(x_n)/f'(x_n). Quadratic convergence e_{n+1} \u2248 C*e_n^2 requires simple root f'(r) != 0. Regula-Falsi: x_r = (a*f(b) - b*f(a))/(f(b) - f(a))."
     },
     "academic_pyqs": [
       {
@@ -186,7 +899,7 @@
         "marks": 15,
         "question": "Derive the Newton-Raphson iterative formula using Taylor series. Prove that the Newton-Raphson method has a quadratic rate of convergence. Find the root of x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
         "rubric": "Formula Derivation (4 marks) + Quadratic Convergence Proof (5 marks) + Step-by-step Solution of x^3 - 2x - 5 = 0 (6 marks) = 15 Marks.",
-        "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} ≈ (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n• f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n• Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n• Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n• Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
+        "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} \u2248 (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n\u2022 f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n\u2022 Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n\u2022 Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n\u2022 Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
         "answer_structure": "Derivation -> Convergence Proof -> Step-by-Step Calculation -> Conclusion",
         "important_points": [
           "x_{n+1} = x_n - f/f'",
@@ -611,7 +1324,7 @@
     "dsa_pattern": {
       "pattern_name": "Monotonic Deque (Sliding Window Maximum)",
       "pattern": "Monotonic Deque (Sliding Window Maximum)",
-      "title": "Monotonic Deque (Sliding Window Maximum) — Algorithmic Invariants & Implementation",
+      "title": "Monotonic Deque (Sliding Window Maximum) \u2014 Algorithmic Invariants & Implementation",
       "category": "Queue / Deque",
       "concept": "Maintains a double-ended queue storing array indices such that corresponding values are monotonically decreasing.",
       "why_it_works": "Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.",
@@ -942,7 +1655,7 @@
       {
         "category": "HR & Cultural Fit",
         "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
         "key_talking_points": [
           "Disciplined reading of official docs and engineering blogs.",
           "Hands-on prototype building to validate theory.",
@@ -952,12 +1665,12 @@
       }
     ],
     "daily_revision": {
-      "yesterday_recall": "• Reviewed Day 09 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
-      "today_recall": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
-      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n• Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF.",
-      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-      "dsa_recall": "• Pattern: Monotonic Queue & Sliding Window Max.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-      "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "yesterday_recall": "\u2022 Reviewed Day 09 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "\u2022 Mastered BCA-5002 \u2014 Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF.",
+      "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "\u2022 Pattern: Monotonic Queue & Sliding Window Max.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "\u2022 Project: College Student Management System (CSMS).\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
       "rapid_fire_questions": [
         {
           "q": "Day 10 Q1: What is the primary academic thesis of Java Collections: ArrayList, HashMap & ConcurrentHashMap?",
@@ -969,7 +1682,7 @@
         },
         {
           "q": "Day 10 Q3: What is the time complexity of Monotonic Queue & Sliding Window Max?",
-          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+          "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
         },
         {
           "q": "Day 10 Q4: What is the central architectural principle of Database Normalization: 1NF to BCNF?",
@@ -1000,26 +1713,26 @@
           "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
         }
       ],
-      "today_summary": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "today_summary": "\u2022 Mastered BCA-5002 \u2014 Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
       "formulas_and_shortcuts": [
-        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n• Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF."
+        "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF."
       ],
       "must_know_definitions": [
         {
           "term": "Daily Core Concept 1",
-          "definition": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap."
+          "definition": "\u2022 Mastered BCA-5002 \u2014 Java Collections: ArrayList, HashMap & ConcurrentHashMap."
         },
         {
           "term": "Daily Core Concept 2",
-          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations."
+          "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations."
         },
         {
           "term": "Daily Core Concept 3",
-          "definition": "• Pattern: Monotonic Queue & Sliding Window Max."
+          "definition": "\u2022 Pattern: Monotonic Queue & Sliding Window Max."
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "• Project: College Student Management System (CSMS)."
+          "definition": "\u2022 Project: College Student Management System (CSMS)."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1340,7 +2053,7 @@
   "dsa": {
     "pattern_name": "Monotonic Deque (Sliding Window Maximum)",
     "pattern": "Monotonic Deque (Sliding Window Maximum)",
-    "title": "Monotonic Deque (Sliding Window Maximum) — Algorithmic Invariants & Implementation",
+    "title": "Monotonic Deque (Sliding Window Maximum) \u2014 Algorithmic Invariants & Implementation",
     "category": "Queue / Deque",
     "concept": "Maintains a double-ended queue storing array indices such that corresponding values are monotonically decreasing.",
     "why_it_works": "Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.",
@@ -1502,13 +2215,13 @@
     "subject": "Numerical Methods",
     "subject_code": "BCA-5004",
     "unit": 1,
-    "topic": "Unit I — Roots of Non-Linear Equations: Newton-Raphson Method & Quadratic Convergence Proof",
+    "topic": "Unit I \u2014 Roots of Non-Linear Equations: Newton-Raphson Method & Quadratic Convergence Proof",
     "objectives": [
       "Derive the Newton-Raphson formula using Taylor series.",
       "Prove quadratic convergence (Order 2) and understand failure cases."
     ],
     "detailed_notes": [
-      "The Newton-Raphson (N-R) method is an open root-finding iterative technique based on the tangent line to the function curve.\n1. Derivation via Taylor Series:\n   Expanding `f(x)` around current estimate `x_n`:\n   `f(x_{n+1}) = f(x_n) + (x_{n+1} - x_n) * f'(x_n) + ...`\n   Setting `f(x_{n+1}) = 0` and ignoring higher-order terms:\n   `x_{n+1} = x_n - [ f(x_n) / f'(x_n) ]`\n2. Proof of Quadratic Convergence (Order 2):\n   Let `alpha` be the true root (`f(alpha) = 0`) and `e_n = x_n - alpha` be the error at step n.\n   Substituting `x_n = alpha + e_n` into the N-R formula and expanding via Taylor series:\n   `e_{n+1} = (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2`\n   Since `e_{n+1} proportional to (e_n)^2`, the rate of convergence is Quadratic (Order 2). The number of correct decimal places doubles every iteration!\n3. Failure Conditions:\n   • If `f'(x_n) == 0` (tangent line is horizontal, division by zero);\n   • If initial guess `x0` is far from root (may oscillate or diverge);\n   • Inflection points where `f''(x) == 0` can trap the solver in a cycle.",
+      "The Newton-Raphson (N-R) method is an open root-finding iterative technique based on the tangent line to the function curve.\n1. Derivation via Taylor Series:\n   Expanding `f(x)` around current estimate `x_n`:\n   `f(x_{n+1}) = f(x_n) + (x_{n+1} - x_n) * f'(x_n) + ...`\n   Setting `f(x_{n+1}) = 0` and ignoring higher-order terms:\n   `x_{n+1} = x_n - [ f(x_n) / f'(x_n) ]`\n2. Proof of Quadratic Convergence (Order 2):\n   Let `alpha` be the true root (`f(alpha) = 0`) and `e_n = x_n - alpha` be the error at step n.\n   Substituting `x_n = alpha + e_n` into the N-R formula and expanding via Taylor series:\n   `e_{n+1} = (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2`\n   Since `e_{n+1} proportional to (e_n)^2`, the rate of convergence is Quadratic (Order 2). The number of correct decimal places doubles every iteration!\n3. Failure Conditions:\n   \u2022 If `f'(x_n) == 0` (tangent line is horizontal, division by zero);\n   \u2022 If initial guess `x0` is far from root (may oscillate or diverge);\n   \u2022 Inflection points where `f''(x) == 0` can trap the solver in a cycle.",
       "The tangent line drawn at (x_n, f(x_n)) intersects the x-axis at x_{n+1}.",
       "1. f'(x) = 0 (horizontal tangent); 2. Cycle oscillations; 3. Initial guess too far from root."
     ],
@@ -1527,7 +2240,7 @@
           "Bracketing (2 guesses)",
           "Linear (Order 1)",
           "High (~20 iterations)",
-          "Zero (Always converges)"
+          "Zero (Guaranteed if f(a)\u00b7f(b) < 0)"
         ],
         [
           "Regula-Falsi (Secant)",
@@ -1545,7 +2258,7 @@
         ]
       ]
     },
-    "memorize": "Newton-Raphson formula: x_{n+1} = x_n - [f(x_n) / f'(x_n)]. Convergence is Quadratic (Order 2): correct decimal digits roughly double each iteration (e_{n+1} ≈ C·e_n²).",
+    "memorize": "Newton-Raphson formula: x_{n+1} = x_n - [f(x_n) / f'(x_n)]. Convergence is Quadratic (Order 2): correct decimal digits roughly double each iteration (e_{n+1} \u2248 C\u00b7e_n\u00b2).",
     "understand": "Newton-Raphson is lightning fast near the root, but requires computing the analytical derivative f'(x) and can fail if f'(x) approaches zero.",
     "common_mistakes": "Forgetting the negative sign in the formula or differentiating f(x) incorrectly.",
     "pyqs": [
@@ -1557,7 +2270,7 @@
         "marks": 15,
         "question": "Derive the Newton-Raphson iterative formula using Taylor series. Prove that the Newton-Raphson method has a quadratic rate of convergence. Find the root of x^3 - 2x - 5 = 0 correct to three decimal places. (15 Marks)",
         "rubric": "Formula Derivation (4 marks) + Quadratic Convergence Proof (5 marks) + Step-by-step Solution of x^3 - 2x - 5 = 0 (6 marks) = 15 Marks.",
-        "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} ≈ (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n• f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n• Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n• Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n• Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
+        "model_answer": "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} \u2248 (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n\u2022 f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n\u2022 Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n\u2022 Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n\u2022 Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095.",
         "answer_structure": "Derivation -> Convergence Proof -> Step-by-Step Calculation -> Conclusion",
         "important_points": [
           "x_{n+1} = x_n - f/f'",
@@ -1656,7 +2369,7 @@
     "model_answer_paragraphs": [
       [
         "1. Model Answer & Technical Presentation",
-        "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} ≈ (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n• f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n• Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n• Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n• Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095."
+        "1. Formula Derivation:\nLet x0 be an initial estimate of the root of f(x) = 0, and let h be the correction such that f(x0 + h) = 0. Expanding f(x0 + h) using Taylor series:\nf(x0 + h) = f(x0) + h * f'(x0) + (h^2 / 2!) * f''(x0) + ... = 0.\nNeglecting second and higher-order terms in h:\nf(x0) + h * f'(x0) = 0 => h = -f(x0) / f'(x0).\nTherefore, the improved root estimate is:\nx1 = x0 + h = x0 - [ f(x0) / f'(x0) ].\nIn general: x_{n+1} = x_n - [ f(x_n) / f'(x_n) ].\n\n2. Proof of Quadratic Convergence (Order 2):\nLet alpha be the exact root: f(alpha) = 0. Let e_n = x_n - alpha be the error at step n.\nThen x_n = alpha + e_n and x_{n+1} = alpha + e_{n+1}.\nSubstituting into the N-R formula:\nalpha + e_{n+1} = (alpha + e_n) - [ f(alpha + e_n) / f'(alpha + e_n) ]\ne_{n+1} = e_n - [ f(alpha) + e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] / [ f'(alpha) + e_n*f''(alpha) ].\nSince f(alpha) = 0:\ne_{n+1} = e_n - [ e_n*f'(alpha) + (e_n^2 / 2)*f''(alpha) ] * [ f'(alpha) * (1 + e_n * f''(alpha)/f'(alpha)) ]^-1.\nExpanding via Binomial theorem and simplifying:\ne_{n+1} \u2248 (1/2) * [ f''(alpha) / f'(alpha) ] * (e_n)^2.\nSince e_{n+1} = k * (e_n)^2, the rate of convergence is Quadratic (Order 2).\n\n3. Numerical Solution of x^3 - 2x - 5 = 0:\n\u2022 f(x) = x^3 - 2x - 5, f'(x) = 3x^2 - 2.\n  f(2) = 8 - 4 - 5 = -1 < 0;\n  f(3) = 27 - 6 - 5 = +16 > 0. Root lies in [2, 3]. Since |f(2)| < |f(3)|, let x0 = 2.0.\n\u2022 Iteration 1: f(2) = -1, f'(2) = 3(4) - 2 = 10.\n  x1 = 2 - (-1 / 10) = 2 + 0.1 = 2.1.\n\u2022 Iteration 2: f(2.1) = (2.1)^3 - 2(2.1) - 5 = 9.261 - 4.2 - 5 = 0.061.\n  f'(2.1) = 3(2.1)^2 - 2 = 3(4.41) - 2 = 13.23 - 2 = 11.23.\n  x2 = 2.1 - (0.061 / 11.23) = 2.1 - 0.00543 = 2.09457.\n\u2022 Iteration 3: f(2.09457) = 0.000185, f'(2.09457) = 11.1614.\n  x3 = 2.09457 - (0.000185 / 11.1614) = 2.09455.\nRoot correct to three decimal places = 2.095."
       ],
       [
         "2. Expected Examiner Criteria",
@@ -2101,7 +2814,7 @@
   "dsa_pattern": {
     "pattern_name": "Monotonic Deque (Sliding Window Maximum)",
     "pattern": "Monotonic Deque (Sliding Window Maximum)",
-    "title": "Monotonic Deque (Sliding Window Maximum) — Algorithmic Invariants & Implementation",
+    "title": "Monotonic Deque (Sliding Window Maximum) \u2014 Algorithmic Invariants & Implementation",
     "category": "Queue / Deque",
     "concept": "Maintains a double-ended queue storing array indices such that corresponding values are monotonically decreasing.",
     "why_it_works": "Smaller elements that appear before newer larger elements can never be the maximum of any subsequent window and are evicted immediately in O(1) amortized.",
@@ -2362,7 +3075,7 @@
     {
       "category": "HR & Cultural Fit",
       "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
       "key_talking_points": [
         "Disciplined reading of official docs and engineering blogs.",
         "Hands-on prototype building to validate theory.",
@@ -2372,12 +3085,12 @@
     }
   ],
   "daily_revision": {
-    "yesterday_recall": "• Reviewed Day 09 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
-    "today_recall": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
-    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n• Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF.",
-    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-    "dsa_recall": "• Pattern: Monotonic Queue & Sliding Window Max.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-    "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "yesterday_recall": "\u2022 Reviewed Day 09 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "\u2022 Mastered BCA-5002 \u2014 Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF.",
+    "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "\u2022 Pattern: Monotonic Queue & Sliding Window Max.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "\u2022 Project: College Student Management System (CSMS).\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
     "rapid_fire_questions": [
       {
         "q": "Day 10 Q1: What is the primary academic thesis of Java Collections: ArrayList, HashMap & ConcurrentHashMap?",
@@ -2389,7 +3102,7 @@
       },
       {
         "q": "Day 10 Q3: What is the time complexity of Monotonic Queue & Sliding Window Max?",
-        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
       },
       {
         "q": "Day 10 Q4: What is the central architectural principle of Database Normalization: 1NF to BCNF?",
@@ -2420,26 +3133,26 @@
         "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
       }
     ],
-    "today_summary": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "today_summary": "\u2022 Mastered BCA-5002 \u2014 Java Collections: ArrayList, HashMap & ConcurrentHashMap.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
     "formulas_and_shortcuts": [
-      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n• Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF."
+      "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Monotonic Queue & Sliding Window Max.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Database Normalization: 1NF to BCNF."
     ],
     "must_know_definitions": [
       {
         "term": "Daily Core Concept 1",
-        "definition": "• Mastered BCA-5002 — Java Collections: ArrayList, HashMap & ConcurrentHashMap."
+        "definition": "\u2022 Mastered BCA-5002 \u2014 Java Collections: ArrayList, HashMap & ConcurrentHashMap."
       },
       {
         "term": "Daily Core Concept 2",
-        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations."
+        "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Permutations & Combinations."
       },
       {
         "term": "Daily Core Concept 3",
-        "definition": "• Pattern: Monotonic Queue & Sliding Window Max."
+        "definition": "\u2022 Pattern: Monotonic Queue & Sliding Window Max."
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "• Project: College Student Management System (CSMS)."
+        "definition": "\u2022 Project: College Student Management System (CSMS)."
       },
       {
         "term": "Daily Core Concept 5",

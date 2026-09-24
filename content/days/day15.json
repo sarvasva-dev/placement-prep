@@ -4,12 +4,12 @@
   "streams": {
     "academic": {
       "unit": 2,
-      "topic": "Unit II — Solutions of Linear Systems: Gauss Elimination with Partial Pivoting & Gauss-Jordan Method",
+      "topic": "Unit II \u2014 Solutions of Linear Systems: Gauss Elimination with Partial Pivoting & Gauss-Jordan Method",
       "objectives": [
         "Master Gauss Elimination with Partial Pivoting.",
         "Understand Upper Triangular Matrix conversion and back substitution."
       ],
-      "explanation": "Solving systems of simultaneous linear equations `A * X = B` is fundamental in numerical linear algebra. Direct methods include:\n1. Gauss Elimination:\n   • Forward Elimination: System `[A | B]` is transformed into an equivalent Upper Triangular Matrix `[U | B']` using elementary row operations: `R_i -> R_i - (a_{ik} / a_{kk}) * R_k`.\n   • Partial Pivoting: In each step k, search column k from row k to n for the element with the maximum absolute value `|a_{ik}|`, and swap row k with that row. This prevents division by near-zero pivot elements and eliminates catastrophic round-off error!\n   • Back Substitution: Solve for unknowns starting from the bottom equation `x_n = b'_n / u_{nn}`, substituting back upwards to find `x_{n-1} ... x_1`.\n2. Gauss-Jordan Method:\n   Extends forward elimination to transform matrix A completely into the Identity Matrix `I`. The solution vector is obtained directly without requiring back substitution.",
+      "explanation": "Solving systems of simultaneous linear equations `A * X = B` is fundamental in numerical linear algebra. Direct methods include:\n1. Gauss Elimination:\n   \u2022 Forward Elimination: System `[A | B]` is transformed into an equivalent Upper Triangular Matrix `[U | B']` using elementary row operations: `R_i -> R_i - (a_{ik} / a_{kk}) * R_k`.\n   \u2022 Partial Pivoting: In each step k, search column k from row k to n for the element with the maximum absolute value `|a_{ik}|`, and swap row k with that row. This prevents division by near-zero pivot elements and eliminates catastrophic round-off error!\n   \u2022 Back Substitution: Solve for unknowns starting from the bottom equation `x_n = b'_n / u_{nn}`, substituting back upwards to find `x_{n-1} ... x_1`.\n2. Gauss-Jordan Method:\n   Extends forward elimination to transform matrix A completely into the Identity Matrix `I`. The solution vector is obtained directly without requiring back substitution.",
       "definitions": [
         {
           "term": "Partial Pivoting",
@@ -79,7 +79,7 @@
           "marks": 15,
           "question": "Solve the following system of linear equations using Gauss Elimination with partial pivoting:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\nExplain why partial pivoting is essential. (15 Marks)",
           "rubric": "Why partial pivoting is essential (3 marks) + Augmented matrix & Pivot swap (4 marks) + Forward elimination to Upper Triangular (5 marks) + Back substitution & Final answer (3 marks) = 15 Marks.",
-          "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n• R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n• R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n• R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n• From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n• From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n• From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
+          "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n\u2022 R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n\u2022 R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n\u2022 R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n\u2022 From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n\u2022 From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n\u2022 From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
           "answer_structure": "Pivoting Rationale -> Augmented Matrix -> Pivoting Steps -> Upper Triangular Form -> Back Substitution -> Verification",
           "important_points": [
             "Partial pivoting swaps rows",
@@ -171,7 +171,319 @@
           "correct_answer": "B",
           "explanation": "A /27 subnet has block size 2^(32-27) = 32. Subnet starts at .32 and ends at .63 (broadcast address is .63)."
         }
-      ]
+      ],
+      "worked_numerical_problems": [
+        {
+          "problem_id": "NM-U4-GE-01",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss Elimination",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the linear system using Gauss Elimination: 3x + 2y + z = 10; 2x + 3y + 2z = 14; x + 2y + 3z = 14.",
+          "data": {
+            "augmented_matrix": "[[3,2,1,10],[2,3,2,14],[1,2,3,14]]"
+          },
+          "method": "Gauss Elimination with Back Substitution",
+          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+          "step_by_step_calculation": [
+            "Step 1: Set up augmented matrix [A | b]. Check pivot element; apply partial pivoting if pivot is small/zero.",
+            "Step 2: Eliminate x from row 2 and row 3 using row operations R2 <- R2 - m21*R1, R3 <- R3 - m31*R1.",
+            "Step 3: Eliminate y from row 3 using R3 <- R3 - m32*R2 to obtain upper triangular form.",
+            "Step 4: Perform back-substitution starting from z, then y, then x.",
+            "Step 5: Verify solution: {'x': 1.0, 'y': 2.0, 'z': 3.0}."
+          ],
+          "intermediate_values": {
+            "solution": {
+              "x": 1.0,
+              "y": 2.0,
+              "z": 3.0
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Solution: {'x': 1.0, 'y': 2.0, 'z': 3.0}",
+          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+        },
+        {
+          "problem_id": "NM-U4-GE-02",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss Elimination",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the linear system using Gauss Elimination: 2x + y + z = 10; 3x + 2y + 3z = 18; x + 4y + 9z = 16.",
+          "data": {
+            "augmented_matrix": "[[2,1,1,10],[3,2,3,18],[1,4,9,16]]"
+          },
+          "method": "Gauss Elimination with Back Substitution",
+          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+          "step_by_step_calculation": [
+            "Step 1: Set up augmented matrix [A | b]. Check pivot element; apply partial pivoting if pivot is small/zero.",
+            "Step 2: Eliminate x from row 2 and row 3 using row operations R2 <- R2 - m21*R1, R3 <- R3 - m31*R1.",
+            "Step 3: Eliminate y from row 3 using R3 <- R3 - m32*R2 to obtain upper triangular form.",
+            "Step 4: Perform back-substitution starting from z, then y, then x.",
+            "Step 5: Verify solution: {'x': 7.0, 'y': -9.0, 'z': 5.0}."
+          ],
+          "intermediate_values": {
+            "solution": {
+              "x": 7.0,
+              "y": -9.0,
+              "z": 5.0
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Solution: {'x': 7.0, 'y': -9.0, 'z': 5.0}",
+          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+        },
+        {
+          "problem_id": "NM-U4-GE-03",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss Elimination",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the linear system using Gauss Elimination: x + y + z = 6; 3x + 3y + 4z = 20; 2x + y + 3z = 13.",
+          "data": {
+            "augmented_matrix": "[[1,1,1,6],[3,3,4,20],[2,1,3,13]]"
+          },
+          "method": "Gauss Elimination with Back Substitution",
+          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+          "step_by_step_calculation": [
+            "Step 1: Set up augmented matrix [A | b]. Check pivot element; apply partial pivoting if pivot is small/zero.",
+            "Step 2: Eliminate x from row 2 and row 3 using row operations R2 <- R2 - m21*R1, R3 <- R3 - m31*R1.",
+            "Step 3: Eliminate y from row 3 using R3 <- R3 - m32*R2 to obtain upper triangular form.",
+            "Step 4: Perform back-substitution starting from z, then y, then x.",
+            "Step 5: Verify solution: {'x': 3.0, 'y': 1.0, 'z': 2.0}."
+          ],
+          "intermediate_values": {
+            "solution": {
+              "x": 3.0,
+              "y": 1.0,
+              "z": 2.0
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Solution: {'x': 3.0, 'y': 1.0, 'z': 2.0}",
+          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+        },
+        {
+          "problem_id": "NM-U4-GE-04",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss Elimination",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the linear system using Gauss Elimination: 0.0003x + 1.566y = 1.569; 0.3454x - 2.436y = 1.018 (Partial Pivoting).",
+          "data": {
+            "augmented_matrix": "[[0.0003, 1.566, 1.569],[0.3454, -2.436, 1.018]]"
+          },
+          "method": "Gauss Elimination with Back Substitution",
+          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+          "step_by_step_calculation": [
+            "Step 1: Set up augmented matrix [A | b]. Check pivot element; apply partial pivoting if pivot is small/zero.",
+            "Step 2: Eliminate x from row 2 and row 3 using row operations R2 <- R2 - m21*R1, R3 <- R3 - m31*R1.",
+            "Step 3: Eliminate y from row 3 using R3 <- R3 - m32*R2 to obtain upper triangular form.",
+            "Step 4: Perform back-substitution starting from z, then y, then x.",
+            "Step 5: Verify solution: {'x': 10.0, 'y': 1.0}."
+          ],
+          "intermediate_values": {
+            "solution": {
+              "x": 10.0,
+              "y": 1.0
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Solution: {'x': 10.0, 'y': 1.0}",
+          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+        }
+      ],
+      "expanded_numerical_practice": [
+        {
+          "problem_id": "NM-U4-GE-05",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss Elimination",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the linear system using Gauss Elimination: 4x - y + z = 8; -x + 4y - 2z = -1; x - 2y + 4z = 5.",
+          "data": {
+            "augmented_matrix": "[[4,-1,1,8],[-1,4,-2,-1],[1,-2,4,5]]"
+          },
+          "method": "Gauss Elimination with Back Substitution",
+          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+          "step_by_step_calculation": [
+            "Step 1: Set up augmented matrix [A | b]. Check pivot element; apply partial pivoting if pivot is small/zero.",
+            "Step 2: Eliminate x from row 2 and row 3 using row operations R2 <- R2 - m21*R1, R3 <- R3 - m31*R1.",
+            "Step 3: Eliminate y from row 3 using R3 <- R3 - m32*R2 to obtain upper triangular form.",
+            "Step 4: Perform back-substitution starting from z, then y, then x.",
+            "Step 5: Verify solution: {'x': 2.0, 'y': 1.0, 'z': 1.0}."
+          ],
+          "intermediate_values": {
+            "solution": {
+              "x": 2.0,
+              "y": 1.0,
+              "z": 1.0
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Solution: {'x': 2.0, 'y': 1.0, 'z': 1.0}",
+          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+        },
+        {
+          "problem_id": "NM-U4-GE-06",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss Elimination",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the linear system using Gauss Elimination: 2x - 3y + 4z = 8; 5x - 2y + z = 7; x + 6y + 3z = 6.",
+          "data": {
+            "augmented_matrix": "Pivoted: row swap with max pivot"
+          },
+          "method": "Gauss Elimination with Back Substitution",
+          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+          "step_by_step_calculation": [
+            "Step 1: Set up augmented matrix [A | b]. Check pivot element; apply partial pivoting if pivot is small/zero.",
+            "Step 2: Eliminate x from row 2 and row 3 using row operations R2 <- R2 - m21*R1, R3 <- R3 - m31*R1.",
+            "Step 3: Eliminate y from row 3 using R3 <- R3 - m32*R2 to obtain upper triangular form.",
+            "Step 4: Perform back-substitution starting from z, then y, then x.",
+            "Step 5: Verify solution: {'x': 1.0, 'y': 0.0, 'z': 1.5}."
+          ],
+          "intermediate_values": {
+            "solution": {
+              "x": 1.0,
+              "y": 0.0,
+              "z": 1.5
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Solution: {'x': 1.0, 'y': 0.0, 'z': 1.5}",
+          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+        },
+        {
+          "problem_id": "NM-U4-GE-07",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss Elimination",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the linear system using Gauss Elimination: 2x + 3y = 8; 5x + 4y = 13.",
+          "data": {
+            "augmented_matrix": "[[2,3,8],[5,4,13]]"
+          },
+          "method": "Gauss Elimination with Back Substitution",
+          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+          "step_by_step_calculation": [
+            "Step 1: Set up augmented matrix [A | b]. Check pivot element; apply partial pivoting if pivot is small/zero.",
+            "Step 2: Eliminate x from row 2 and row 3 using row operations R2 <- R2 - m21*R1, R3 <- R3 - m31*R1.",
+            "Step 3: Eliminate y from row 3 using R3 <- R3 - m32*R2 to obtain upper triangular form.",
+            "Step 4: Perform back-substitution starting from z, then y, then x.",
+            "Step 5: Verify solution: {'x': 1.0, 'y': 2.0}."
+          ],
+          "intermediate_values": {
+            "solution": {
+              "x": 1.0,
+              "y": 2.0
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Solution: {'x': 1.0, 'y': 2.0}",
+          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+        },
+        {
+          "problem_id": "NM-U4-GE-08",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss Elimination",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the linear system using Gauss Elimination: Flops Operation Count for n x n Gauss Elimination.",
+          "data": {
+            "augmented_matrix": "Forward: 2n^3/3 flops; Back-sub: n^2 flops"
+          },
+          "method": "Gauss Elimination with Back Substitution",
+          "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+          "step_by_step_calculation": [
+            "Step 1: Set up augmented matrix [A | b]. Check pivot element; apply partial pivoting if pivot is small/zero.",
+            "Step 2: Eliminate x from row 2 and row 3 using row operations R2 <- R2 - m21*R1, R3 <- R3 - m31*R1.",
+            "Step 3: Eliminate y from row 3 using R3 <- R3 - m32*R2 to obtain upper triangular form.",
+            "Step 4: Perform back-substitution starting from z, then y, then x.",
+            "Step 5: Verify solution: {'complexity': 'O(n^3/3) multiplications'}."
+          ],
+          "intermediate_values": {
+            "solution": {
+              "complexity": "O(n^3/3) multiplications"
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Solution: {'complexity': 'O(n^3/3) multiplications'}",
+          "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+          "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+        },
+        {
+          "problem_id": "NM-U4-GJ-01",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss-Jordan Method",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the system completely to reduced row echelon form using Gauss-Jordan: x + 2y + z = 8; 2x + 3y + 4z = 20; 4x + 3y + 2z = 16.",
+          "data": {
+            "system": "x + 2y + z = 8; 2x + 3y + 4z = 20; 4x + 3y + 2z = 16"
+          },
+          "method": "Gauss-Jordan Method",
+          "formula": "[A | b] -> row operations -> [I | x*]",
+          "step_by_step_calculation": [
+            "Step 1: Write augmented matrix [A | b].",
+            "Step 2: Normalize pivot row (divide row by pivot).",
+            "Step 3: Eliminate pivot variable from ALL other rows (both above and below).",
+            "Step 4: Continue for all columns until left matrix becomes Identity matrix I.",
+            "Step 5: Right column directly contains the solution vector."
+          ],
+          "intermediate_values": {
+            "final_vector": {
+              "x": 1.0,
+              "y": 2.0,
+              "z": 3.0
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Direct solution: {'x': 1.0, 'y': 2.0, 'z': 3.0}",
+          "verification": "Direct multiplication A * x matches vector b exactly.",
+          "common_mistake": "Eliminating only below the diagonal (that is Gauss elimination, not Gauss-Jordan)."
+        },
+        {
+          "problem_id": "NM-U4-GJ-02",
+          "unit": "Unit 4: Systems of Linear Equations",
+          "topic": "Gauss-Jordan Method",
+          "difficulty": "Exam-Level",
+          "problem": "Solve the system completely to reduced row echelon form using Gauss-Jordan: 2x + 4y - 6z = -8; x + 3y + z = 10; 2x - 4y - 2z = -12.",
+          "data": {
+            "system": "2x + 4y - 6z = -8; x + 3y + z = 10; 2x - 4y - 2z = -12"
+          },
+          "method": "Gauss-Jordan Method",
+          "formula": "[A | b] -> row operations -> [I | x*]",
+          "step_by_step_calculation": [
+            "Step 1: Write augmented matrix [A | b].",
+            "Step 2: Normalize pivot row (divide row by pivot).",
+            "Step 3: Eliminate pivot variable from ALL other rows (both above and below).",
+            "Step 4: Continue for all columns until left matrix becomes Identity matrix I.",
+            "Step 5: Right column directly contains the solution vector."
+          ],
+          "intermediate_values": {
+            "final_vector": {
+              "x": 2.0,
+              "y": 3.0,
+              "z": 4.0
+            }
+          },
+          "iteration_table": [],
+          "final_answer": "Direct solution: {'x': 2.0, 'y': 3.0, 'z': 4.0}",
+          "verification": "Direct multiplication A * x matches vector b exactly.",
+          "common_mistake": "Eliminating only below the diagonal (that is Gauss elimination, not Gauss-Jordan)."
+        }
+      ],
+      "timed_numerical_drill": {
+        "problem_id": "NM-U4-GE-04",
+        "title": "Timed Exam Drill: Gauss Elimination",
+        "time_limit_minutes": 15,
+        "marks": 15,
+        "problem": "Solve the linear system using Gauss Elimination: 0.0003x + 1.566y = 1.569; 0.3454x - 2.436y = 1.018 (Partial Pivoting).",
+        "formula": "Forward elimination to upper triangular matrix U, then backward substitution for x_i",
+        "final_answer": "Solution: {'x': 10.0, 'y': 1.0}",
+        "verification": "Substituting x, y, z back into original system equations yields LHS = RHS exactly.",
+        "common_mistake": "Dividing by zero or near-zero pivot without performing partial pivoting row swap."
+      },
+      "formula_recall": "Gauss Elimination: Forward elimination to upper triangular matrix U, then backward substitution. Partial pivoting swaps row with max |a_ik| to avoid division by small pivots."
     },
     "academic_pyqs": [
       {
@@ -182,7 +494,7 @@
         "marks": 15,
         "question": "Solve the following system of linear equations using Gauss Elimination with partial pivoting:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\nExplain why partial pivoting is essential. (15 Marks)",
         "rubric": "Why partial pivoting is essential (3 marks) + Augmented matrix & Pivot swap (4 marks) + Forward elimination to Upper Triangular (5 marks) + Back substitution & Final answer (3 marks) = 15 Marks.",
-        "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n• R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n• R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n• R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n• From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n• From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n• From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
+        "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n\u2022 R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n\u2022 R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n\u2022 R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n\u2022 From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n\u2022 From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n\u2022 From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
         "answer_structure": "Pivoting Rationale -> Augmented Matrix -> Pivoting Steps -> Upper Triangular Form -> Back Substitution -> Verification",
         "important_points": [
           "Partial pivoting swaps rows",
@@ -606,7 +918,7 @@
     "dsa_pattern": {
       "pattern_name": "Tree Traversals: BFS Level-Order",
       "pattern": "Tree Traversals: BFS Level-Order",
-      "title": "Tree Traversals: BFS Level-Order — Algorithmic Invariants & Implementation",
+      "title": "Tree Traversals: BFS Level-Order \u2014 Algorithmic Invariants & Implementation",
       "category": "Tree / BFS",
       "concept": "Explores tree nodes level by level using a FIFO Queue. In each iteration, records all nodes at the current level before expanding children.",
       "why_it_works": "The queue size at the start of each level loop reflects exactly the count of nodes present on that level.",
@@ -936,7 +1248,7 @@
       {
         "category": "HR & Cultural Fit",
         "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
         "key_talking_points": [
           "Disciplined reading of official docs and engineering blogs.",
           "Hands-on prototype building to validate theory.",
@@ -946,12 +1258,12 @@
       }
     ],
     "daily_revision": {
-      "yesterday_recall": "• Reviewed Day 14 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
-      "today_recall": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
-      "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
-      "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-      "dsa_recall": "• Pattern: Tree Traversals: BFS Level-Order.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-      "project_recall": "• Project: Caloriv.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+      "yesterday_recall": "\u2022 Reviewed Day 14 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
+      "today_recall": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+      "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
+      "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+      "dsa_recall": "\u2022 Pattern: Tree Traversals: BFS Level-Order.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+      "project_recall": "\u2022 Project: Caloriv.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
       "rapid_fire_questions": [
         {
           "q": "Day 15 Q1: What is the primary academic thesis of Network Layer: IPv4 Addressing, Subnetting & CIDR?",
@@ -963,7 +1275,7 @@
         },
         {
           "q": "Day 15 Q3: What is the time complexity of Tree Traversals: BFS Level-Order?",
-          "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+          "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
         },
         {
           "q": "Day 15 Q4: What is the central architectural principle of Physical & Data Link Layers: Nyquist/Shannon?",
@@ -994,26 +1306,26 @@
           "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
         }
       ],
-      "today_summary": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+      "today_summary": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
       "formulas_and_shortcuts": [
-        "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon."
+        "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon."
       ],
       "must_know_definitions": [
         {
           "term": "Daily Core Concept 1",
-          "definition": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR."
+          "definition": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR."
         },
         {
           "term": "Daily Core Concept 2",
-          "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement."
+          "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement."
         },
         {
           "term": "Daily Core Concept 3",
-          "definition": "• Pattern: Tree Traversals: BFS Level-Order."
+          "definition": "\u2022 Pattern: Tree Traversals: BFS Level-Order."
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "• Project: Caloriv."
+          "definition": "\u2022 Project: Caloriv."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1334,7 +1646,7 @@
   "dsa": {
     "pattern_name": "Tree Traversals: BFS Level-Order",
     "pattern": "Tree Traversals: BFS Level-Order",
-    "title": "Tree Traversals: BFS Level-Order — Algorithmic Invariants & Implementation",
+    "title": "Tree Traversals: BFS Level-Order \u2014 Algorithmic Invariants & Implementation",
     "category": "Tree / BFS",
     "concept": "Explores tree nodes level by level using a FIFO Queue. In each iteration, records all nodes at the current level before expanding children.",
     "why_it_works": "The queue size at the start of each level loop reflects exactly the count of nodes present on that level.",
@@ -1495,13 +1807,13 @@
     "subject": "Numerical Methods",
     "subject_code": "BCA-5004",
     "unit": 2,
-    "topic": "Unit II — Solutions of Linear Systems: Gauss Elimination with Partial Pivoting & Gauss-Jordan Method",
+    "topic": "Unit II \u2014 Solutions of Linear Systems: Gauss Elimination with Partial Pivoting & Gauss-Jordan Method",
     "objectives": [
       "Master Gauss Elimination with Partial Pivoting.",
       "Understand Upper Triangular Matrix conversion and back substitution."
     ],
     "detailed_notes": [
-      "Solving systems of simultaneous linear equations `A * X = B` is fundamental in numerical linear algebra. Direct methods include:\n1. Gauss Elimination:\n   • Forward Elimination: System `[A | B]` is transformed into an equivalent Upper Triangular Matrix `[U | B']` using elementary row operations: `R_i -> R_i - (a_{ik} / a_{kk}) * R_k`.\n   • Partial Pivoting: In each step k, search column k from row k to n for the element with the maximum absolute value `|a_{ik}|`, and swap row k with that row. This prevents division by near-zero pivot elements and eliminates catastrophic round-off error!\n   • Back Substitution: Solve for unknowns starting from the bottom equation `x_n = b'_n / u_{nn}`, substituting back upwards to find `x_{n-1} ... x_1`.\n2. Gauss-Jordan Method:\n   Extends forward elimination to transform matrix A completely into the Identity Matrix `I`. The solution vector is obtained directly without requiring back substitution.",
+      "Solving systems of simultaneous linear equations `A * X = B` is fundamental in numerical linear algebra. Direct methods include:\n1. Gauss Elimination:\n   \u2022 Forward Elimination: System `[A | B]` is transformed into an equivalent Upper Triangular Matrix `[U | B']` using elementary row operations: `R_i -> R_i - (a_{ik} / a_{kk}) * R_k`.\n   \u2022 Partial Pivoting: In each step k, search column k from row k to n for the element with the maximum absolute value `|a_{ik}|`, and swap row k with that row. This prevents division by near-zero pivot elements and eliminates catastrophic round-off error!\n   \u2022 Back Substitution: Solve for unknowns starting from the bottom equation `x_n = b'_n / u_{nn}`, substituting back upwards to find `x_{n-1} ... x_1`.\n2. Gauss-Jordan Method:\n   Extends forward elimination to transform matrix A completely into the Identity Matrix `I`. The solution vector is obtained directly without requiring back substitution.",
       "If a pivot a_kk is near zero, dividing by it magnifies round-off errors exponentially, producing completely erroneous solutions.",
       "Gauss elimination requires O(n^3 / 3) arithmetic operations; Gauss-Jordan requires O(n^3 / 2) operations (50% more calculations)."
     ],
@@ -1547,7 +1859,7 @@
         "marks": 15,
         "question": "Solve the following system of linear equations using Gauss Elimination with partial pivoting:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\nExplain why partial pivoting is essential. (15 Marks)",
         "rubric": "Why partial pivoting is essential (3 marks) + Augmented matrix & Pivot swap (4 marks) + Forward elimination to Upper Triangular (5 marks) + Back substitution & Final answer (3 marks) = 15 Marks.",
-        "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n• R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n• R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n• R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n• From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n• From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n• From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
+        "model_answer": "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n\u2022 R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n\u2022 R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n\u2022 R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n\u2022 From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n\u2022 From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n\u2022 From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5.",
         "answer_structure": "Pivoting Rationale -> Augmented Matrix -> Pivoting Steps -> Upper Triangular Form -> Back Substitution -> Verification",
         "important_points": [
           "Partial pivoting swaps rows",
@@ -1645,7 +1957,7 @@
     "model_answer_paragraphs": [
       [
         "1. Model Answer & Technical Presentation",
-        "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n• R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n• R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n• R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n• From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n• From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n• From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5."
+        "1. Why Partial Pivoting is Essential:\nDuring forward elimination, row multipliers are computed as m_ik = a_ik / a_kk. If pivot a_kk is zero, division by zero halts execution. If a_kk is near zero, dividing by it magnifies small round-off errors exponentially, contaminating all subsequent rows. Partial pivoting searches the active column for the element with maximum absolute magnitude |a_ik| and swaps rows, ensuring |m_ik| <= 1 and preserving numerical stability.\n\n2. Numerical Solution:\nGiven system:\n2x + y + z = 10\n3x + 2y + 3z = 18\nx + 4y + 9z = 16\n\nAugmented Matrix [A | B]:\n[ 2  1  1 | 10 ]\n[ 3  2  3 | 18 ]\n[ 1  4  9 | 16 ]\n\nStep 1: Partial Pivoting in Column 1:\nMax element in col 1 is 3 in Row 2. Swap R1 <-> R2:\n[ 3  2  3 | 18 ]\n[ 2  1  1 | 10 ]\n[ 1  4  9 | 16 ]\n\nStep 2: Eliminate x from R2 and R3:\n\u2022 R2 -> R2 - (2/3)*R1:\n  R2 = [ 2 - 2, 1 - 4/3, 1 - 2 | 10 - 12 ] = [ 0, -1/3, -1 | -2 ]\n\u2022 R3 -> R3 - (1/3)*R1:\n  R3 = [ 1 - 1, 4 - 2/3, 9 - 1 | 16 - 6 ] = [ 0, 10/3, 8 | 10 ]\n\nMatrix becomes:\n[ 3    2    3 | 18 ]\n[ 0  -1/3  -1 | -2 ]\n[ 0  10/3   8 | 10 ]\n\nStep 3: Partial Pivoting in Column 2:\nCompare |-1/3| and |10/3|. Max is 10/3 in R3. Swap R2 <-> R3:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0  -1/3  -1 | -2 ]\n\nStep 4: Eliminate y from R3:\n\u2022 R3 -> R3 - (-1/3 / 10/3)*R2 = R3 + (1/10)*R2:\n  R3 = [ 0, 0, -1 + 8/10 | -2 + 10/10 ] = [ 0, 0, -0.2 | -1.0 ]\n\nUpper Triangular Matrix:\n[ 3    2    3 | 18 ]\n[ 0  10/3   8 | 10 ]\n[ 0    0  -0.2 | -1 ]\n\nStep 5: Back Substitution:\n\u2022 From R3: -0.2 * z = -1.0 => z = -1.0 / -0.2 = 5.\n\u2022 From R2: (10/3)*y + 8(5) = 10 => (10/3)*y = 10 - 40 = -30 => y = -30 * 3 / 10 = -9.\n\u2022 From R1: 3x + 2(-9) + 3(5) = 18 => 3x - 18 + 15 = 18 => 3x - 3 = 18 => 3x = 21 => x = 7.\n\nVerification: 2(7) + (-9) + 5 = 14 - 9 + 5 = 10. Matches perfectly!\nSolution: x = 7, y = -9, z = 5."
       ],
       [
         "2. Expected Examiner Criteria",
@@ -2090,7 +2402,7 @@
   "dsa_pattern": {
     "pattern_name": "Tree Traversals: BFS Level-Order",
     "pattern": "Tree Traversals: BFS Level-Order",
-    "title": "Tree Traversals: BFS Level-Order — Algorithmic Invariants & Implementation",
+    "title": "Tree Traversals: BFS Level-Order \u2014 Algorithmic Invariants & Implementation",
     "category": "Tree / BFS",
     "concept": "Explores tree nodes level by level using a FIFO Queue. In each iteration, records all nodes at the current level before expanding children.",
     "why_it_works": "The queue size at the start of each level loop reflects exactly the count of nodes present on that level.",
@@ -2350,7 +2662,7 @@
     {
       "category": "HR & Cultural Fit",
       "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
       "key_talking_points": [
         "Disciplined reading of official docs and engineering blogs.",
         "Hands-on prototype building to validate theory.",
@@ -2360,12 +2672,12 @@
     }
   ],
   "daily_revision": {
-    "yesterday_recall": "• Reviewed Day 14 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n• Validated code implementations and active recall flashcards from previous day session.",
-    "today_recall": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
-    "formula_recall": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
-    "pyq_recall": "• University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
-    "dsa_recall": "• Pattern: Tree Traversals: BFS Level-Order.\n• Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n• Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
-    "project_recall": "• Project: Caloriv.\n• Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n• Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
+    "yesterday_recall": "\u2022 Reviewed Day 14 concepts: Solidified academic theorems, aptitude formulas, and algorithmic patterns.\n\u2022 Validated code implementations and active recall flashcards from previous day session.",
+    "today_recall": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
+    "formula_recall": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon.",
+    "pyq_recall": "\u2022 University PYQ: CSJM University 15-Mark Exam Question on Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 15-Mark Presentation Blueprint: 1. Definition (2m) -> 2. Technical Diagram (4m) -> 3. Step-by-Step Analysis (5m) -> 4. Comparison Table (2m) -> 5. Real-World Summary (2m).",
+    "dsa_recall": "\u2022 Pattern: Tree Traversals: BFS Level-Order.\n\u2022 Invariant: Pointer movements, boundary termination conditions, and stack/heap memory maintenance.\n\u2022 Time Complexity: Optimal algorithmic execution time with minimal auxiliary memory overhead.",
+    "project_recall": "\u2022 Project: Caloriv.\n\u2022 Architecture: Core production design, concurrency management, database indexing, and performance guarantees.\n\u2022 Technical Defense Pitch: Articulated 60-second elevator pitch highlighting business problem, engineering trade-offs, and verified production metrics.",
     "rapid_fire_questions": [
       {
         "q": "Day 15 Q1: What is the primary academic thesis of Network Layer: IPv4 Addressing, Subnetting & CIDR?",
@@ -2377,7 +2689,7 @@
       },
       {
         "q": "Day 15 Q3: What is the time complexity of Tree Traversals: BFS Level-Order?",
-        "a": "Optimal execution runtime — O(N) or O(log N) depending on problem space constraints."
+        "a": "Optimal execution runtime \u2014 O(N) or O(log N) depending on problem space constraints."
       },
       {
         "q": "Day 15 Q4: What is the central architectural principle of Physical & Data Link Layers: Nyquist/Shannon?",
@@ -2408,26 +2720,26 @@
         "a": "Daily active recall, 15-mark structured answer practice, and disciplined hands-on Python/SQL problem solving."
       }
     ],
-    "today_summary": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR.\n• Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n• Synthesized practical engineering implications in enterprise application development.",
+    "today_summary": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR.\n\u2022 Analyzed core definitions, theoretical foundations, architectural blueprints, and university exam writing requirements.\n\u2022 Synthesized practical engineering implications in enterprise application development.",
     "formulas_and_shortcuts": [
-      "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n• Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n• Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon."
+      "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement.\n\u2022 Algorithmic Invariant: Optimal time and space complexity rules for Tree Traversals: BFS Level-Order.\n\u2022 Systems Law: Architectural equations, protocols, and complexity bounds for Physical & Data Link Layers: Nyquist/Shannon."
     ],
     "must_know_definitions": [
       {
         "term": "Daily Core Concept 1",
-        "definition": "• Mastered BCA-5003 — Network Layer: IPv4 Addressing, Subnetting & CIDR."
+        "definition": "\u2022 Mastered BCA-5003 \u2014 Network Layer: IPv4 Addressing, Subnetting & CIDR."
       },
       {
         "term": "Daily Core Concept 2",
-        "definition": "• Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement."
+        "definition": "\u2022 Aptitude Formula: Core mathematical derivations and high-speed shortcuts for Direction Sense & Vector Displacement."
       },
       {
         "term": "Daily Core Concept 3",
-        "definition": "• Pattern: Tree Traversals: BFS Level-Order."
+        "definition": "\u2022 Pattern: Tree Traversals: BFS Level-Order."
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "• Project: Caloriv."
+        "definition": "\u2022 Project: Caloriv."
       },
       {
         "term": "Daily Core Concept 5",

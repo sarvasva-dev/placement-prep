@@ -254,6 +254,79 @@ function buildDayPage(container, d, daysIndex) {
         </div>
       ` : ''}
 
+      <!-- High-Yield Worked Numerical Problems (5004 Numerical Methods Expansion) -->
+      ${(acad.worked_numerical_problems && acad.worked_numerical_problems.length) ? `
+        <div style="margin: var(--space-5) 0;">
+          <h4 style="margin-bottom: var(--space-3); color: var(--color-primary); display: flex; align-items: center; justify-content: space-between;">
+            <span>🔢 High-Yield Worked Numerical Problems (${acad.worked_numerical_problems.length} Fully Solved)</span>
+            <span class="badge badge-success">CSJMU Exam Standard</span>
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+            ${acad.worked_numerical_problems.map((wp, widx) => `
+              <div class="card" style="background: var(--bg-surface-2); border: 1px solid var(--border-color); padding: var(--space-4); border-radius: var(--radius-md);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+                  <strong style="color: var(--color-primary); font-size: var(--font-size-base);">Problem ${widx + 1}: ${wp.topic}</strong>
+                  <span class="badge badge-primary">${wp.difficulty || 'Exam-Level'}</span>
+                </div>
+                <p style="font-size: var(--font-size-sm); color: var(--text-primary); font-weight: 500; margin-bottom: var(--space-2);">${wp.problem}</p>
+                <div style="background: var(--bg-surface); padding: var(--space-2); border-left: 3px solid var(--color-primary); font-size: var(--font-size-xs); font-family: monospace; margin-bottom: var(--space-3);">
+                  <strong>Formula:</strong> ${wp.formula}
+                </div>
+                <div style="font-size: var(--font-size-sm); line-height: 1.6; color: var(--text-secondary); margin-bottom: var(--space-3);">
+                  <strong style="color: var(--text-primary);">Step-by-Step Calculation:</strong>
+                  <ul style="margin: 4px 0 0 20px; padding: 0;">
+                    ${wp.step_by_step_calculation.map(st => `<li>${st}</li>`).join('')}
+                  </ul>
+                </div>
+                ${(wp.iteration_table && wp.iteration_table.length) ? `
+                  <div class="table-responsive" style="margin: var(--space-2) 0;">
+                    <table class="study-table" style="font-size: var(--font-size-xs);">
+                      <thead>
+                        <tr>${Object.keys(wp.iteration_table[0]).map(k => `<th>${k.toUpperCase()}</th>`).join('')}</tr>
+                      </thead>
+                      <tbody>
+                        ${wp.iteration_table.map(r => `<tr>${Object.values(r).map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+                ` : ''}
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); font-size: var(--font-size-xs); background: var(--bg-surface); padding: var(--space-2); border-radius: var(--radius-sm);">
+                  <div><strong style="color: var(--color-success);">Final Answer:</strong> ${wp.final_answer}</div>
+                  <div><strong style="color: var(--color-primary);">Verification:</strong> ${wp.verification}</div>
+                </div>
+                ${wp.common_mistake ? `
+                  <div style="margin-top: var(--space-2); font-size: var(--font-size-xs); color: var(--color-danger);">
+                    <strong>⚠️ Common Mistake:</strong> ${wp.common_mistake}
+                  </div>
+                ` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Timed Numerical Exam Drill -->
+      ${acad.timed_numerical_drill ? `
+        <div class="callout callout-exam-tip" style="margin: var(--space-4) 0; border-left: 4px solid #f59e0b;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2);">
+            <strong style="color: #f59e0b; font-size: var(--font-size-base);">⏱️ ${acad.timed_numerical_drill.title}</strong>
+            <span class="badge badge-warning">${acad.timed_numerical_drill.time_limit_minutes} Mins | ${acad.timed_numerical_drill.marks} Marks</span>
+          </div>
+          <p style="font-size: var(--font-size-sm); color: var(--text-primary); font-weight: 600; margin-bottom: var(--space-2);">${acad.timed_numerical_drill.problem}</p>
+          <div style="font-size: var(--font-size-xs); color: var(--text-muted); margin-bottom: var(--space-2);">
+            <strong>Formula:</strong> ${acad.timed_numerical_drill.formula}
+          </div>
+          <details style="margin-top: var(--space-2); font-size: var(--font-size-xs);">
+            <summary style="cursor: pointer; color: var(--color-primary); font-weight: 600;">Show Model Solution & Verification</summary>
+            <div style="margin-top: var(--space-2); padding: var(--space-2); background: var(--bg-surface); border-radius: var(--radius-sm);">
+              <div><strong>Answer:</strong> ${acad.timed_numerical_drill.final_answer}</div>
+              <div style="margin-top: 4px;"><strong>Verification:</strong> ${acad.timed_numerical_drill.verification}</div>
+              <div style="margin-top: 4px; color: var(--color-danger);"><strong>Watch out:</strong> ${acad.timed_numerical_drill.common_mistake}</div>
+            </div>
+          </details>
+        </div>
+      ` : ''}
+
       <!-- Callouts: Memorize / Understand / Mistakes -->
       ${acad.memorize ? `
         <div class="callout callout-memorize" style="margin-top: var(--space-3);">

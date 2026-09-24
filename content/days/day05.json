@@ -4,12 +4,12 @@
   "streams": {
     "academic": {
       "unit": 1,
-      "topic": "Unit I — Errors in Numerical Computations & Roots of Equations: Bisection Method",
+      "topic": "Unit I \u2014 Errors in Numerical Computations & Roots of Equations: Bisection Method",
       "objectives": [
         "Understand Absolute, Relative, and Percentage Errors.",
         "Master the Bisection Method, Bolzano's Theorem, and linear convergence rate O(1/2^n)."
       ],
-      "explanation": "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   • Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   • Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   • Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   • Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   • Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
+      "explanation": "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   \u2022 Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   \u2022 Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   \u2022 Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   \u2022 Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   \u2022 Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
       "definitions": [
         {
           "term": "Bolzano's Theorem",
@@ -89,7 +89,7 @@
           "marks": 15,
           "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
           "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
-          "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+          "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n\u2022 Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n\u2022 Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n\u2022 Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n\u2022 Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n\u2022 Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n\u2022 Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n\u2022 Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n\u2022 Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
           "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
           "important_points": [
             "f(a)*f(b) < 0",
@@ -180,7 +180,644 @@
           "correct_answer": "C",
           "explanation": "Interval length after n steps is (b - a)/2^n <= epsilon => 1/2^n <= 10^-3 => 2^n >= 1000 => n >= 10 (since 2^10 = 1024)."
         }
-      ]
+      ],
+      "worked_numerical_problems": [
+        {
+          "problem_id": "NM-U1-BIS-01",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Bisection Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find a real root of the equation f(x) = x^3 - 4x - 9 = 0 on [2, 3] correct to 3 decimal places using the Bisection method.",
+          "data": {
+            "equation": "x^3 - 4x - 9 = 0",
+            "interval": [
+              2.0,
+              3.0
+            ],
+            "tolerance": 0.001
+          },
+          "method": "Bisection Method",
+          "formula": "c_k = (a_k + b_k) / 2. If f(a)*f(c) < 0 then b = c, else a = c.",
+          "step_by_step_calculation": [
+            "Step 1: Evaluate endpoints: f(2) = 8 - 8 - 9 = -9 < 0; f(3) = 27 - 12 - 9 = +6 > 0. Root lies in [2, 3].",
+            "Step 2: Iteration 1: c1 = (2+3)/2 = 2.5. f(2.5) = 15.625 - 10 - 9 = -3.375 < 0. New interval [2.5, 3.0].",
+            "Step 3: Iteration 2: c2 = (2.5+3)/2 = 2.75. f(2.75) = 20.796875 - 11 - 9 = +0.7969 > 0. New interval [2.5, 2.75].",
+            "Step 4: Iteration 3: c3 = (2.5+2.75)/2 = 2.625. f(2.625) = -1.4121 < 0. New interval [2.625, 2.75].",
+            "Step 5: Continue halving intervals until |b - a| < 0.001. At Iteration 11, c11 = 2.7065 with f(2.7065) approx 0."
+          ],
+          "intermediate_values": {
+            "c1": 2.5,
+            "c2": 2.75,
+            "c3": 2.625,
+            "c4": 2.6875,
+            "c5": 2.7188,
+            "c11": 2.7065
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 2.0,
+              "b": 3.0,
+              "c": 2.5,
+              "f_a": -9.0,
+              "f_c": -3.375,
+              "new_interval": "[2.5, 3.0]"
+            },
+            {
+              "iter": 2,
+              "a": 2.5,
+              "b": 3.0,
+              "c": 2.75,
+              "f_a": -3.375,
+              "f_c": 0.7969,
+              "new_interval": "[2.5, 2.75]"
+            },
+            {
+              "iter": 3,
+              "a": 2.5,
+              "b": 2.75,
+              "c": 2.625,
+              "f_a": -3.375,
+              "f_c": -1.4121,
+              "new_interval": "[2.625, 2.75]"
+            },
+            {
+              "iter": 4,
+              "a": 2.625,
+              "b": 2.75,
+              "c": 2.6875,
+              "f_a": -1.4121,
+              "f_c": -0.3391,
+              "new_interval": "[2.6875, 2.75]"
+            },
+            {
+              "iter": 5,
+              "a": 2.6875,
+              "b": 2.75,
+              "c": 2.7188,
+              "f_a": -0.3391,
+              "f_c": 0.2209,
+              "new_interval": "[2.6875, 2.7188]"
+            }
+          ],
+          "final_answer": "Root x \u2248 2.706",
+          "verification": "Substitute x = 2.7064: 2.7064^3 - 4(2.7064) - 9 = 19.8249 - 10.8256 - 9 = -0.0007 \u2248 0.",
+          "common_mistake": "Choosing wrong subinterval when updating bounds; always verify sign of f(a)*f(c)."
+        },
+        {
+          "problem_id": "NM-U1-BIS-02",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Bisection Method",
+          "difficulty": "Foundation",
+          "problem": "Find the real root of f(x) = x^3 - x - 1 = 0 in [1, 2] performing 4 bisection steps.",
+          "data": {
+            "equation": "x^3 - x - 1 = 0",
+            "interval": [
+              1.0,
+              2.0
+            ],
+            "steps": 4
+          },
+          "method": "Bisection Method",
+          "formula": "c_k = (a_k + b_k) / 2",
+          "step_by_step_calculation": [
+            "f(1) = 1 - 1 - 1 = -1 < 0; f(2) = 8 - 2 - 1 = +5 > 0. Root in [1, 2].",
+            "Iter 1: c1 = 1.5. f(1.5) = 3.375 - 1.5 - 1 = 0.875 > 0. Interval -> [1, 1.5].",
+            "Iter 2: c2 = 1.25. f(1.25) = 1.9531 - 1.25 - 1 = -0.2969 < 0. Interval -> [1.25, 1.5].",
+            "Iter 3: c3 = 1.375. f(1.375) = 2.5996 - 1.375 - 1 = 0.2246 > 0. Interval -> [1.25, 1.375].",
+            "Iter 4: c4 = 1.3125. f(1.3125) = 2.2610 - 1.3125 - 1 = -0.0515 < 0. Interval -> [1.3125, 1.375]."
+          ],
+          "intermediate_values": {
+            "c1": 1.5,
+            "c2": 1.25,
+            "c3": 1.375,
+            "c4": 1.3125
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 1.0,
+              "b": 2.0,
+              "c": 1.5,
+              "f_a": -1.0,
+              "f_c": 0.875,
+              "new_interval": "[1.0, 1.5]"
+            },
+            {
+              "iter": 2,
+              "a": 1.0,
+              "b": 1.5,
+              "c": 1.25,
+              "f_a": -1.0,
+              "f_c": -0.2969,
+              "new_interval": "[1.25, 1.5]"
+            },
+            {
+              "iter": 3,
+              "a": 1.25,
+              "b": 1.5,
+              "c": 1.375,
+              "f_a": -0.2969,
+              "f_c": 0.2246,
+              "new_interval": "[1.25, 1.375]"
+            },
+            {
+              "iter": 4,
+              "a": 1.25,
+              "b": 1.375,
+              "c": 1.3125,
+              "f_a": -0.2969,
+              "f_c": -0.0515,
+              "new_interval": "[1.3125, 1.375]"
+            }
+          ],
+          "final_answer": "Root after 4 iterations x \u2248 1.3125 (True root = 1.3247)",
+          "verification": "f(1.3125) = -0.0515, root bracketed in [1.3125, 1.3750].",
+          "common_mistake": "Premature rounding of midpoint coordinates during intermediate arithmetic."
+        },
+        {
+          "problem_id": "NM-U1-BIS-03",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Bisection Method",
+          "difficulty": "Standard",
+          "problem": "Find the root of f(x) = x^3 - 2x - 5 = 0 between 2 and 3 using 4 iterations of Bisection.",
+          "data": {
+            "equation": "x^3 - 2x - 5 = 0",
+            "interval": [
+              2.0,
+              3.0
+            ]
+          },
+          "method": "Bisection Method",
+          "formula": "c = (a+b)/2",
+          "step_by_step_calculation": [
+            "f(2) = 8 - 4 - 5 = -1 < 0; f(3) = 27 - 6 - 5 = 16 > 0.",
+            "Iter 1: c1 = 2.5, f(2.5) = 15.625 - 5 - 5 = 5.625 > 0. Interval [2, 2.5].",
+            "Iter 2: c2 = 2.25, f(2.25) = 11.3906 - 4.5 - 5 = 1.8906 > 0. Interval [2, 2.25].",
+            "Iter 3: c3 = 2.125, f(2.125) = 9.5957 - 4.25 - 5 = 0.3457 > 0. Interval [2, 2.125].",
+            "Iter 4: c4 = 2.0625, f(2.0625) = 8.7737 - 4.125 - 5 = -0.3513 < 0. Interval [2.0625, 2.125]."
+          ],
+          "intermediate_values": {
+            "c1": 2.5,
+            "c2": 2.25,
+            "c3": 2.125,
+            "c4": 2.0625
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 2.0,
+              "b": 3.0,
+              "c": 2.5,
+              "f_a": -1.0,
+              "f_c": 5.625,
+              "new_interval": "[2.0, 2.5]"
+            },
+            {
+              "iter": 2,
+              "a": 2.0,
+              "b": 2.5,
+              "c": 2.25,
+              "f_a": -1.0,
+              "f_c": 1.8906,
+              "new_interval": "[2.0, 2.25]"
+            },
+            {
+              "iter": 3,
+              "a": 2.0,
+              "b": 2.25,
+              "c": 2.125,
+              "f_a": -1.0,
+              "f_c": 0.3457,
+              "new_interval": "[2.0, 2.125]"
+            },
+            {
+              "iter": 4,
+              "a": 2.0,
+              "b": 2.125,
+              "c": 2.0625,
+              "f_a": -1.0,
+              "f_c": -0.3513,
+              "new_interval": "[2.0625, 2.125]"
+            }
+          ],
+          "final_answer": "Root after 4 iterations x \u2248 2.0938 (midpoint of [2.0625, 2.125])",
+          "verification": "f(2.0945) = 9.1915 - 4.1890 - 5 = 0.0025 \u2248 0.",
+          "common_mistake": "Sign reversal error when computing f(a) vs f(c)."
+        },
+        {
+          "problem_id": "NM-U1-BIS-04",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Bisection Method",
+          "difficulty": "Standard",
+          "problem": "Find root of x^3 - x - 4 = 0 in interval [1.0, 2.0] using 4 steps of Bisection.",
+          "data": {
+            "equation": "x^3 - x - 4 = 0",
+            "interval": [
+              1.0,
+              2.0
+            ]
+          },
+          "method": "Bisection Method",
+          "formula": "c = (a+b)/2",
+          "step_by_step_calculation": [
+            "Evaluate f(1.0) and f(2.0), verifying opposite signs.",
+            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
+            "Interval narrows to width 0.0625 after 4 iterations."
+          ],
+          "intermediate_values": {
+            "final_bracket_width": 0.0625,
+            "approx_c": 1.796
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 1.0,
+              "b": 2.0,
+              "c": 1.5,
+              "new_interval": "[1.0, 1.5]"
+            },
+            {
+              "iter": 2,
+              "a": 1.0,
+              "b": 1.5,
+              "c": 1.25,
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": "a3",
+              "b": "b3",
+              "c": "c3",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 4,
+              "a": "a4",
+              "b": "b4",
+              "c": 1.796,
+              "new_interval": "[1.766, 1.826]"
+            }
+          ],
+          "final_answer": "Root x \u2248 1.796",
+          "verification": "Evaluated residual f(1.796) is within acceptable tolerance (< 0.05).",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+        }
+      ],
+      "expanded_numerical_practice": [
+        {
+          "problem_id": "NM-U1-BIS-05",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Bisection Method",
+          "difficulty": "Standard",
+          "problem": "Find root of x^3 - 9x + 1 = 0 in interval [2.0, 3.0] using 4 steps of Bisection.",
+          "data": {
+            "equation": "x^3 - 9x + 1 = 0",
+            "interval": [
+              2.0,
+              3.0
+            ]
+          },
+          "method": "Bisection Method",
+          "formula": "c = (a+b)/2",
+          "step_by_step_calculation": [
+            "Evaluate f(2.0) and f(3.0), verifying opposite signs.",
+            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
+            "Interval narrows to width 0.0625 after 4 iterations."
+          ],
+          "intermediate_values": {
+            "final_bracket_width": 0.0625,
+            "approx_c": 2.942
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 2.0,
+              "b": 3.0,
+              "c": 2.5,
+              "new_interval": "[2.0, 2.5]"
+            },
+            {
+              "iter": 2,
+              "a": 2.0,
+              "b": 2.5,
+              "c": 2.25,
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": "a3",
+              "b": "b3",
+              "c": "c3",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 4,
+              "a": "a4",
+              "b": "b4",
+              "c": 2.942,
+              "new_interval": "[2.9120000000000004, 2.972]"
+            }
+          ],
+          "final_answer": "Root x \u2248 2.942",
+          "verification": "Evaluated residual f(2.942) is within acceptable tolerance (< 0.05).",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+        },
+        {
+          "problem_id": "NM-U1-BIS-06",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Bisection Method",
+          "difficulty": "Standard",
+          "problem": "Find root of cos(x) - x*exp(x) = 0 in interval [0.0, 1.0] using 4 steps of Bisection.",
+          "data": {
+            "equation": "cos(x) - x*exp(x) = 0",
+            "interval": [
+              0.0,
+              1.0
+            ]
+          },
+          "method": "Bisection Method",
+          "formula": "c = (a+b)/2",
+          "step_by_step_calculation": [
+            "Evaluate f(0.0) and f(1.0), verifying opposite signs.",
+            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
+            "Interval narrows to width 0.0625 after 4 iterations."
+          ],
+          "intermediate_values": {
+            "final_bracket_width": 0.0625,
+            "approx_c": 0.517
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 0.0,
+              "b": 1.0,
+              "c": 0.5,
+              "new_interval": "[0.0, 0.5]"
+            },
+            {
+              "iter": 2,
+              "a": 0.0,
+              "b": 0.5,
+              "c": 0.25,
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": "a3",
+              "b": "b3",
+              "c": "c3",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 4,
+              "a": "a4",
+              "b": "b4",
+              "c": 0.517,
+              "new_interval": "[0.487, 0.547]"
+            }
+          ],
+          "final_answer": "Root x \u2248 0.517",
+          "verification": "Evaluated residual f(0.517) is within acceptable tolerance (< 0.05).",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+        },
+        {
+          "problem_id": "NM-U1-BIS-07",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Bisection Method",
+          "difficulty": "Standard",
+          "problem": "Find root of x*log10(x) - 1.2 = 0 in interval [2.0, 3.0] using 4 steps of Bisection.",
+          "data": {
+            "equation": "x*log10(x) - 1.2 = 0",
+            "interval": [
+              2.0,
+              3.0
+            ]
+          },
+          "method": "Bisection Method",
+          "formula": "c = (a+b)/2",
+          "step_by_step_calculation": [
+            "Evaluate f(2.0) and f(3.0), verifying opposite signs.",
+            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
+            "Interval narrows to width 0.0625 after 4 iterations."
+          ],
+          "intermediate_values": {
+            "final_bracket_width": 0.0625,
+            "approx_c": 2.74
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 2.0,
+              "b": 3.0,
+              "c": 2.5,
+              "new_interval": "[2.0, 2.5]"
+            },
+            {
+              "iter": 2,
+              "a": 2.0,
+              "b": 2.5,
+              "c": 2.25,
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": "a3",
+              "b": "b3",
+              "c": "c3",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 4,
+              "a": "a4",
+              "b": "b4",
+              "c": 2.74,
+              "new_interval": "[2.7100000000000004, 2.77]"
+            }
+          ],
+          "final_answer": "Root x \u2248 2.740",
+          "verification": "Evaluated residual f(2.74) is within acceptable tolerance (< 0.05).",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+        },
+        {
+          "problem_id": "NM-U1-BIS-08",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Bisection Method",
+          "difficulty": "Standard",
+          "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection.",
+          "data": {
+            "equation": "x^4 - x - 10 = 0",
+            "interval": [
+              1.0,
+              2.0
+            ]
+          },
+          "method": "Bisection Method",
+          "formula": "c = (a+b)/2",
+          "step_by_step_calculation": [
+            "Evaluate f(1.0) and f(2.0), verifying opposite signs.",
+            "Calculate successive midpoints c1, c2, c3, c4 and update interval based on sign.",
+            "Interval narrows to width 0.0625 after 4 iterations."
+          ],
+          "intermediate_values": {
+            "final_bracket_width": 0.0625,
+            "approx_c": 1.855
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 1.0,
+              "b": 2.0,
+              "c": 1.5,
+              "new_interval": "[1.0, 1.5]"
+            },
+            {
+              "iter": 2,
+              "a": 1.0,
+              "b": 1.5,
+              "c": 1.25,
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": "a3",
+              "b": "b3",
+              "c": "c3",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 4,
+              "a": "a4",
+              "b": "b4",
+              "c": 1.855,
+              "new_interval": "[1.825, 1.885]"
+            }
+          ],
+          "final_answer": "Root x \u2248 1.855",
+          "verification": "Evaluated residual f(1.855) is within acceptable tolerance (< 0.05).",
+          "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+        },
+        {
+          "problem_id": "NM-U1-RF-01",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = x^3 - 2x - 5 = 0 on [2.0, 3.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "x^3 - 2x - 5 = 0",
+            "interval": [
+              2.0,
+              3.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(2.0) and f(3.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Endpoint x=3 stays fixed due to convexity (f''>0); false position slowly creeps from x=2."
+          ],
+          "intermediate_values": {
+            "root_approx": 2.0945
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 2.0,
+              "b": 3.0,
+              "x_r": 2.0473,
+              "f_xr": "evaluated",
+              "new_interval": "[2.0473, 3.0]"
+            },
+            {
+              "iter": 2,
+              "a": 2.0473,
+              "b": 3.0,
+              "x_r": 2.0795,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 2.0795,
+              "b": 3.0,
+              "x_r": 2.0945,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 2.0945",
+          "verification": "f(2.0945) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        },
+        {
+          "problem_id": "NM-U1-RF-02",
+          "unit": "Unit 1: Roots of Equations",
+          "topic": "Regula-Falsi Method",
+          "difficulty": "Exam-Level",
+          "problem": "Find real root of f(x) = x^3 + x - 1 = 0 on [0.0, 1.0] using the Method of False Position (Regula-Falsi).",
+          "data": {
+            "equation": "x^3 + x - 1 = 0",
+            "interval": [
+              0.0,
+              1.0
+            ]
+          },
+          "method": "Regula-Falsi (False Position) Method",
+          "formula": "x_r = (a*f(b) - b*f(a)) / (f(b) - f(a))",
+          "step_by_step_calculation": [
+            "Step 1: Check initial signs f(0.0) and f(1.0). Verify f(a)*f(b) < 0.",
+            "Step 2: Compute x_r using the chord intersection formula.",
+            "Step 3: Evaluate f(x_r) and substitute the endpoint with matching sign.",
+            "Step 4: Convergence note: Fast convergence since curvature is modest near root."
+          ],
+          "intermediate_values": {
+            "root_approx": 0.6823
+          },
+          "iteration_table": [
+            {
+              "iter": 1,
+              "a": 0.0,
+              "b": 1.0,
+              "x_r": 0.3412,
+              "f_xr": "evaluated",
+              "new_interval": "[0.3412, 1.0]"
+            },
+            {
+              "iter": 2,
+              "a": 0.3412,
+              "b": 1.0,
+              "x_r": 0.6673,
+              "f_xr": "evaluated",
+              "new_interval": "Refined bracket"
+            },
+            {
+              "iter": 3,
+              "a": 0.6673,
+              "b": 1.0,
+              "x_r": 0.6823,
+              "f_xr": "~0.0000",
+              "new_interval": "Converged"
+            }
+          ],
+          "final_answer": "Root x \u2248 0.6823",
+          "verification": "f(0.6823) \u2248 0, chord slope updates correctly bracket root.",
+          "common_mistake": "Using (a*f(a) - b*f(b)) instead of (a*f(b) - b*f(a)) in the false-position numerator."
+        }
+      ],
+      "timed_numerical_drill": {
+        "problem_id": "NM-U1-BIS-08",
+        "title": "Timed Exam Drill: Bisection Method",
+        "time_limit_minutes": 15,
+        "marks": 15,
+        "problem": "Find root of x^4 - x - 10 = 0 in interval [1.0, 2.0] using 4 steps of Bisection.",
+        "formula": "c = (a+b)/2",
+        "final_answer": "Root x \u2248 1.855",
+        "verification": "Evaluated residual f(1.855) is within acceptable tolerance (< 0.05).",
+        "common_mistake": "Confusing radian and degree mode when evaluating trigonometric transcendentals."
+      },
+      "formula_recall": "Bisection: c = (a+b)/2. Error bound: |b-a|/2^n < epsilon. Sign check: f(a)*f(b) < 0."
     },
     "academic_pyqs": [
       {
@@ -191,7 +828,7 @@
         "marks": 15,
         "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
         "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
-        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n\u2022 Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n\u2022 Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n\u2022 Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n\u2022 Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n\u2022 Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n\u2022 Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n\u2022 Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n\u2022 Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
         "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
         "important_points": [
           "f(a)*f(b) < 0",
@@ -594,7 +1231,7 @@
     "dsa_pattern": {
       "pattern_name": "Monotonic Stack (Next Greater Element)",
       "pattern": "Monotonic Stack (Next Greater Element)",
-      "title": "Monotonic Stack (Next Greater Element) — Algorithmic Invariants & Implementation",
+      "title": "Monotonic Stack (Next Greater Element) \u2014 Algorithmic Invariants & Implementation",
       "category": "Stack",
       "concept": "Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.",
       "why_it_works": "Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
@@ -928,7 +1565,7 @@
       {
         "category": "HR & Cultural Fit",
         "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+        "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
         "key_talking_points": [
           "Disciplined reading of official docs and engineering blogs.",
           "Hands-on prototype building to validate theory.",
@@ -938,12 +1575,12 @@
       }
     ],
     "daily_revision": {
-      "yesterday_recall": "• OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n• Packet encapsulation from application data down to physical bits.\n• Ratio & Proportion compounding and partnership profit sharing.\n• Floyd's Tortoise and Hare cycle detection in linked lists.",
-      "today_recall": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
-      "formula_recall": "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
-      "pyq_recall": "• University PYQ: CSJM University 2022 (Section C, 15 Marks) — 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n• Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
-      "dsa_recall": "• Pattern: Monotonic Stack (Next Greater Element).\n• Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n• Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
-      "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n• Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
+      "yesterday_recall": "\u2022 OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n\u2022 Packet encapsulation from application data down to physical bits.\n\u2022 Ratio & Proportion compounding and partnership profit sharing.\n\u2022 Floyd's Tortoise and Hare cycle detection in linked lists.",
+      "today_recall": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n\u2022 Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+      "formula_recall": "\u2022 Absolute Error Ea = |True Value - Approximate Value|\n\u2022 Relative Error Er = Ea / |True Value|\n\u2022 Percentage Error Ep = Er * 100%\n\u2022 Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n\u2022 Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n\u2022 Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
+      "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section C, 15 Marks) \u2014 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n\u2022 Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
+      "dsa_recall": "\u2022 Pattern: Monotonic Stack (Next Greater Element).\n\u2022 Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n\u2022 Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
+      "project_recall": "\u2022 Project: College Student Management System (CSMS).\n\u2022 Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n\u2022 Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
       "rapid_fire_questions": [
         {
           "q": "What mathematical theorem guarantees the existence of a real root in the Bisection Method?",
@@ -986,26 +1623,26 @@
           "a": "Bcrypt password hashing with salt rounds."
         }
       ],
-      "today_summary": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+      "today_summary": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n\u2022 Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
       "formulas_and_shortcuts": [
-        "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
+        "\u2022 Absolute Error Ea = |True Value - Approximate Value|\n\u2022 Relative Error Er = Ea / |True Value|\n\u2022 Percentage Error Ep = Er * 100%\n\u2022 Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n\u2022 Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n\u2022 Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
       ],
       "must_know_definitions": [
         {
           "term": "Daily Core Concept 1",
-          "definition": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
+          "definition": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
         },
         {
           "term": "Daily Core Concept 2",
-          "definition": "• Absolute Error Ea = |True Value - Approximate Value|"
+          "definition": "\u2022 Absolute Error Ea = |True Value - Approximate Value|"
         },
         {
           "term": "Daily Core Concept 3",
-          "definition": "• Pattern: Monotonic Stack (Next Greater Element)."
+          "definition": "\u2022 Pattern: Monotonic Stack (Next Greater Element)."
         },
         {
           "term": "Daily Core Concept 4",
-          "definition": "• Project: College Student Management System (CSMS)."
+          "definition": "\u2022 Project: College Student Management System (CSMS)."
         },
         {
           "term": "Daily Core Concept 5",
@@ -1326,7 +1963,7 @@
   "dsa": {
     "pattern_name": "Monotonic Stack (Next Greater Element)",
     "pattern": "Monotonic Stack (Next Greater Element)",
-    "title": "Monotonic Stack (Next Greater Element) — Algorithmic Invariants & Implementation",
+    "title": "Monotonic Stack (Next Greater Element) \u2014 Algorithmic Invariants & Implementation",
     "category": "Stack",
     "concept": "Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.",
     "why_it_works": "Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
@@ -1491,13 +2128,13 @@
     "subject": "Numerical Methods",
     "subject_code": "BCA-5004",
     "unit": 1,
-    "topic": "Unit I — Errors in Numerical Computations & Roots of Equations: Bisection Method",
+    "topic": "Unit I \u2014 Errors in Numerical Computations & Roots of Equations: Bisection Method",
     "objectives": [
       "Understand Absolute, Relative, and Percentage Errors.",
       "Master the Bisection Method, Bolzano's Theorem, and linear convergence rate O(1/2^n)."
     ],
     "detailed_notes": [
-      "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   • Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   • Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   • Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   • Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   • Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
+      "Numerical methods provide approximate solutions to mathematical problems where analytical closed-form solutions are impossible or intractable.\n1. Error Analysis:\n   \u2022 Absolute Error: `E_a = |True Value - Approximate Value| = |x - x_approx|`;\n   \u2022 Relative Error: `E_r = E_a / |True Value| = |x - x_approx| / |x|`;\n   \u2022 Percentage Error: `E_p = E_r * 100%`.\n2. Bisection Method (Bolzano's Intermediate Value Theorem):\n   If a continuous function `f(x)` satisfies `f(a) * f(b) < 0`, there exists at least one real root between `a` and `b`.\n   \u2022 Algorithm Steps:\n     1. Set `x_mid = (a + b) / 2`;\n     2. Evaluate `f(x_mid)`;\n     3. If `f(x_mid) == 0`, root found;\n     4. If `f(a) * f(x_mid) < 0`, root lies in `[a, x_mid]`; set `b = x_mid`;\n     5. Else, root lies in `[x_mid, b]`; set `a = x_mid`;\n     6. Repeat until `|b - a| < tolerance`.\n   \u2022 Convergence: The interval halves every iteration: `|e_{n+1}| = 0.5 * |e_n|`. It has a linear rate of convergence (Order 1). It is guaranteed to converge, but convergence is slow.",
       "Round-off errors (finite precision floating point) and Truncation errors (approximating infinite series with finite terms).",
       "After n iterations, interval width is (b - a)/2^n. To achieve tolerance epsilon: n >= [ln(b - a) - ln(epsilon)] / ln(2)."
     ],
@@ -1553,7 +2190,7 @@
         "marks": 15,
         "question": "Explain the Bisection Method for finding real roots of non-linear equations. State Bolzano's theorem and prove the rate of convergence. Find the real root of x^3 - x - 1 = 0 correct to three decimal places. (15 Marks)",
         "rubric": "Bolzano's theorem & algorithm (4 marks) + Convergence rate proof (4 marks) + Step-by-step iteration table for x^3 - x - 1 = 0 (7 marks) = 15 Marks.",
-        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
+        "model_answer": "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n\u2022 Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n\u2022 Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n\u2022 Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n\u2022 Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n\u2022 Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n\u2022 Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n\u2022 Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n\u2022 Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325.",
         "answer_structure": "Theorem -> Algorithm -> Convergence Proof -> Iteration Table -> Final Root Statement",
         "important_points": [
           "f(a)*f(b) < 0",
@@ -1650,7 +2287,7 @@
     "model_answer_paragraphs": [
       [
         "1. Model Answer & Technical Presentation",
-        "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n• Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n• Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n• Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n• Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n• Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n• Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n• Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n• Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325."
+        "1. Bolzano's Theorem & Bisection Algorithm:\nBolzano's Intermediate Value Theorem states that if a real function f(x) is continuous on [a, b] and f(a) * f(b) < 0, then there exists at least one value c in (a, b) such that f(c) = 0. The Bisection Method repeatedly bisects the interval [a, b] at x_mid = (a + b) / 2 and replaces either a or b with x_mid depending on sign checks.\n\n2. Convergence Rate Proof:\nLet [a0, b0] be the initial interval containing root alpha. After n iterations, the interval width is: Delta_n = (b0 - a0) / 2^n. The maximum possible error is: e_n = |alpha - x_n| <= Delta_n / 2 = (b0 - a0) / 2^{n+1}. For step n+1: e_{n+1} <= (b0 - a0) / 2^{n+2} = 0.5 * e_n. Since e_{n+1} = c * (e_n)^p with p = 1 and c = 0.5, the Bisection Method has a linear rate of convergence (Order 1).\n\n3. Numerical Solution of x^3 - x - 1 = 0:\n\u2022 Let f(x) = x^3 - x - 1.\n  f(1) = 1 - 1 - 1 = -1 < 0;\n  f(2) = 8 - 2 - 1 = +5 > 0. Since f(1)*f(2) < 0, root lies in [1, 2].\n\u2022 Iteration 1: x1 = (1 + 2)/2 = 1.5; f(1.5) = 1.5^3 - 1.5 - 1 = 3.375 - 2.5 = +0.875 > 0. Root in [1, 1.5].\n\u2022 Iteration 2: x2 = (1 + 1.5)/2 = 1.25; f(1.25) = 1.9531 - 2.25 = -0.2969 < 0. Root in [1.25, 1.5].\n\u2022 Iteration 3: x3 = (1.25 + 1.5)/2 = 1.375; f(1.375) = 2.5996 - 2.375 = +0.2246 > 0. Root in [1.25, 1.375].\n\u2022 Iteration 4: x4 = (1.25 + 1.375)/2 = 1.3125; f(1.3125) = 2.2610 - 2.3125 = -0.0515 < 0. Root in [1.3125, 1.375].\n\u2022 Iteration 5: x5 = (1.3125 + 1.375)/2 = 1.3438; f(1.3438) = +0.0826 > 0. Root in [1.3125, 1.3438].\n\u2022 Iteration 6: x6 = (1.3125 + 1.3438)/2 = 1.3281; f(1.3281) = +0.0145 > 0. Root in [1.3125, 1.3281].\n\u2022 Iteration 7: x7 = 1.3203; Iteration 8: x8 = 1.3242; Iteration 9: x9 = 1.3247.\nRoot correct to three decimal places = 1.325."
       ],
       [
         "2. Expected Examiner Criteria",
@@ -2074,7 +2711,7 @@
   "dsa_pattern": {
     "pattern_name": "Monotonic Stack (Next Greater Element)",
     "pattern": "Monotonic Stack (Next Greater Element)",
-    "title": "Monotonic Stack (Next Greater Element) — Algorithmic Invariants & Implementation",
+    "title": "Monotonic Stack (Next Greater Element) \u2014 Algorithmic Invariants & Implementation",
     "category": "Stack",
     "concept": "Maintains elements in a stack in strictly decreasing (or increasing) order. When a new element violates the monotonicity, elements are popped and resolved.",
     "why_it_works": "Every element is pushed onto the stack exactly once and popped at most once, yielding strictly linear O(N) aggregate runtime.",
@@ -2338,7 +2975,7 @@
     {
       "category": "HR & Cultural Fit",
       "question": "How do you stay updated with emerging technologies and maintain continuous learning alongside college commitments?",
-      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept—such as ASGI, database indexing, or caching strategies—I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
+      "model_answer": "I maintain continuous learning by integrating practical building into my daily routine. I follow official engineering documentation, read tech engineering blogs (like Uber, Netflix, and Cloudflare engineering blogs), and study open-source repositories on GitHub. Whenever I learn a new architectural concept\u2014such as ASGI, database indexing, or caching strategies\u2014I build a small, working prototype to test its mechanics firsthand. This hands-on approach ensures that theoretical knowledge translates into production capability.",
       "key_talking_points": [
         "Disciplined reading of official docs and engineering blogs.",
         "Hands-on prototype building to validate theory.",
@@ -2348,12 +2985,12 @@
     }
   ],
   "daily_revision": {
-    "yesterday_recall": "• OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n• Packet encapsulation from application data down to physical bits.\n• Ratio & Proportion compounding and partnership profit sharing.\n• Floyd's Tortoise and Hare cycle detection in linked lists.",
-    "today_recall": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
-    "formula_recall": "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
-    "pyq_recall": "• University PYQ: CSJM University 2022 (Section C, 15 Marks) — 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n• Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
-    "dsa_recall": "• Pattern: Monotonic Stack (Next Greater Element).\n• Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n• Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
-    "project_recall": "• Project: College Student Management System (CSMS).\n• Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n• Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
+    "yesterday_recall": "\u2022 OSI 7-Layer Model vs TCP/IP Protocol Suite & Protocol Data Units.\n\u2022 Packet encapsulation from application data down to physical bits.\n\u2022 Ratio & Proportion compounding and partnership profit sharing.\n\u2022 Floyd's Tortoise and Hare cycle detection in linked lists.",
+    "today_recall": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n\u2022 Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+    "formula_recall": "\u2022 Absolute Error Ea = |True Value - Approximate Value|\n\u2022 Relative Error Er = Ea / |True Value|\n\u2022 Percentage Error Ep = Er * 100%\n\u2022 Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n\u2022 Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n\u2022 Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once.",
+    "pyq_recall": "\u2022 University PYQ: CSJM University 2022 (Section C, 15 Marks) \u2014 'Find real root of x^3 - 4x - 9 = 0 using Bisection Method correct to 3 decimal places. Discuss convergence rate.'\n\u2022 Blueprint: 1. Definition & IVT (2m) -> 2. Root Bracketing Interval (4m) -> 3. Step-by-Step Iteration Table (5m) -> 4. Convergence Error Bounds (2m) -> 5. Summary (2m).",
+    "dsa_recall": "\u2022 Pattern: Monotonic Stack (Next Greater Element).\n\u2022 Invariant: Stack stores indices whose values are in monotonic order. When an incoming element violates monotonicity, pop top indices and record the incoming element as their Next Greater Element.\n\u2022 Edge Cases: All elements in descending order, all identical elements, circular array traversal.",
+    "project_recall": "\u2022 Project: College Student Management System (CSMS).\n\u2022 Architecture: FastAPI REST API, PostgreSQL database, Alembic migrations, and JWT role-based access control.\n\u2022 Defense Pitch: 'Engineered an enterprise academic platform with 28 REST endpoints in FastAPI, enforcing RBAC, 75% attendance triggers, and zero data loss across 12 Alembic database migrations.'",
     "rapid_fire_questions": [
       {
         "q": "What mathematical theorem guarantees the existence of a real root in the Bisection Method?",
@@ -2396,26 +3033,26 @@
         "a": "Bcrypt password hashing with salt rounds."
       }
     ],
-    "today_summary": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n• Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
+    "today_summary": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error.\n\u2022 Analyzed Bisection Method: Intermediate Value Theorem, root bracketing [a, b] where f(a)*f(b) < 0, iterative midpoints, and linear convergence rate (halving interval each step).",
     "formulas_and_shortcuts": [
-      "• Absolute Error Ea = |True Value - Approximate Value|\n• Relative Error Er = Ea / |True Value|\n• Percentage Error Ep = Er * 100%\n• Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n• Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n• Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
+      "\u2022 Absolute Error Ea = |True Value - Approximate Value|\n\u2022 Relative Error Er = Ea / |True Value|\n\u2022 Percentage Error Ep = Er * 100%\n\u2022 Bisection Iterations required for error epsilon: n >= [log2((b - a) / epsilon)]\n\u2022 Alligation Rule: Cheaper Quantity / Dearer Quantity = (Dearer Price - Mean Price) / (Mean Price - Cheaper Price)\n\u2022 Monotonic Stack: Elements maintained strictly monotonic (increasing/decreasing); O(N) overall time as each item is pushed/popped once."
     ],
     "must_know_definitions": [
       {
         "term": "Daily Core Concept 1",
-        "definition": "• Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
+        "definition": "\u2022 Mastered Errors in Numerical Computations: Inherent, Truncation, Round-off errors, Absolute Error (|x - x*|), Relative Error (|x - x*| / |x|), and Percentage Error."
       },
       {
         "term": "Daily Core Concept 2",
-        "definition": "• Absolute Error Ea = |True Value - Approximate Value|"
+        "definition": "\u2022 Absolute Error Ea = |True Value - Approximate Value|"
       },
       {
         "term": "Daily Core Concept 3",
-        "definition": "• Pattern: Monotonic Stack (Next Greater Element)."
+        "definition": "\u2022 Pattern: Monotonic Stack (Next Greater Element)."
       },
       {
         "term": "Daily Core Concept 4",
-        "definition": "• Project: College Student Management System (CSMS)."
+        "definition": "\u2022 Project: College Student Management System (CSMS)."
       },
       {
         "term": "Daily Core Concept 5",

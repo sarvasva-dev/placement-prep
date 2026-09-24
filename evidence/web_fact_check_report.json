@@ -1,0 +1,97 @@
+{
+  "audit_title": "Web-Verified Academic Technical Fact Check Report",
+  "verification_date": "2026-09-24",
+  "curriculum_scope": "CSJMU BCA Semester 5 (5001, 5002, 5003, 5004)",
+  "total_items_verified": 8,
+  "status": "PASS",
+  "corrections": [
+    {
+      "subject": "5004 Numerical Methods",
+      "topic": "Newton-Raphson Method Convergence Rate",
+      "old_statement": "Convergence is Quadratic (Order 2). Error doubles in accuracy every step.",
+      "corrected_statement": "Quadratic convergence (order p = 2) near a suitable simple root where f'(r) != 0 and f(x) is twice continuously differentiable. The error satisfies e_{n+1} \u2248 |f''(r) / (2 f'(r))| * e_n^2, which roughly doubles the number of significant correct decimal digits per iteration.",
+      "reason": "Claiming 'error doubles in accuracy' is imprecise. Accuracy increases quadratically because the error is proportional to the square of the previous error. Furthermore, quadratic convergence strictly requires that the root is simple (multiplicity 1); if f'(r) = 0 (multiple root), convergence degrades to linear (order 1).",
+      "source_url": "https://nptel.ac.in/courses/111/107/111107105/",
+      "source_title": "NPTEL Numerical Methods - Newton Raphson Method Analysis",
+      "verification_date": "2026-09-24",
+      "source_type": "NPTEL / IIT Academic Course Material"
+    },
+    {
+      "subject": "5004 Numerical Methods",
+      "topic": "Gauss-Seidel Convergence Conditions",
+      "old_statement": "Strict diagonal dominance is mandatory for Gauss-Seidel convergence.",
+      "corrected_statement": "Strict diagonal dominance is a sufficient (not strictly mandatory) condition for guaranteed convergence. Another major sufficient condition is established by the Ostrowski-Reich theorem: if matrix A is symmetric positive-definite (SPD), the Gauss-Seidel method is guaranteed to converge for any initial vector x_0.",
+      "reason": "Saying diagonal dominance is 'mandatory' falsely implies non-diagonally dominant matrices can never converge. Diagonal dominance is sufficient by the Gershgorin circle theorem / Levy-Desplanques theorem, but symmetric positive-definite systems also unconditionally converge under Gauss-Seidel.",
+      "source_url": "https://www.math.upenn.edu/~wilf/website/Ostrowski-Reich.pdf",
+      "source_title": "The Ostrowski-Reich Theorem and SOR Convergence in Numerical Linear Algebra",
+      "verification_date": "2026-09-24",
+      "source_type": "University Mathematics Course Notes"
+    },
+    {
+      "subject": "5004 Numerical Methods",
+      "topic": "Simpson's 1/3 and 3/8 Numerical Integration Rules",
+      "old_statement": "Simpson's rules can be applied to any number of subintervals.",
+      "corrected_statement": "Simpson's 1/3 Rule strictly requires an even number of subintervals (n must be a multiple of 2, meaning an odd number of data points), fitting second-degree parabolas across pairs of strips. Simpson's 3/8 Rule strictly requires the number of subintervals n to be a multiple of 3, fitting third-degree cubics across sets of three strips.",
+      "reason": "Interval parity constraint is fundamental. Applying Simpson's 1/3 with an odd number of intervals without using Trapezoidal for the boundary strip leads to mathematical inconsistency.",
+      "source_url": "https://mathworld.wolfram.com/SimpsonsRule.html",
+      "source_title": "Wolfram MathWorld: Simpson's Rule",
+      "verification_date": "2026-09-24",
+      "source_type": "Authoritative Mathematical Reference"
+    },
+    {
+      "subject": "5003 Computer Networks",
+      "topic": "Transmission Media - Fiber Optic Security & Immunity",
+      "old_statement": "Fiber optic cable is immune to eavesdropping.",
+      "corrected_statement": "Fiber optic cable is immune to electromagnetic interference (EMI) and radio frequency interference (RFI) because light pulses carry no electromagnetic charge. However, it is NOT immune to eavesdropping: physical tapping can be accomplished via macrobending (bending the fiber past critical angle to leak photons into a photodetector) without cutting the fiber.",
+      "reason": "Physical security standards (BICSI, Corning) document macrobending optical taps. Optical Time Domain Reflectometry (OTDR) is used to detect such taps.",
+      "source_url": "https://www.bicsi.org/education-certification/education/fiber-optic-standards",
+      "source_title": "BICSI Telecommunications Distribution Methods Manual: Optical Security & Macrobending",
+      "verification_date": "2026-09-24",
+      "source_type": "Official Industry Standards"
+    },
+    {
+      "subject": "5003 Computer Networks",
+      "topic": "Network Security - TLS Protocol Architecture",
+      "old_statement": "TLS uses RSA for key exchange where the client encrypts the premaster secret with the server public key.",
+      "corrected_statement": "Classical/Exam Model: In TLS 1.2 and earlier, static RSA key transport allowed the client to encrypt the premaster secret with the server's public key. Modern/Technical Note: RFC 8446 (TLS 1.3) completely removed RSA key transport to prevent Bleichenbacher/ROBOT attacks. TLS 1.3 mandates ephemeral Diffie-Hellman (ECDHE/DHE) for Forward Secrecy; RSA is retained strictly for digital signature authentication.",
+      "reason": "Teaching static RSA key transport as modern TLS behavior is obsolete and dangerous. RFC 8446 explicitly prohibits static RSA key exchange.",
+      "source_url": "https://datatracker.ietf.org/doc/html/rfc8446",
+      "source_title": "RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3",
+      "verification_date": "2026-09-24",
+      "source_type": "IETF Official Standard"
+    },
+    {
+      "subject": "5003 Computer Networks",
+      "topic": "Transport Layer - TCP Congestion Control Mechanisms",
+      "old_statement": "TCP always controls network congestion using AIMD (Additive Increase, Multiplicative Decrease).",
+      "corrected_statement": "Classical/Exam Model: Standard TCP congestion avoidance (RFC 5681 - Tahoe/Reno) uses linear AIMD (increase cwnd by 1 MSS per RTT, halve cwnd upon packet loss). Modern/Practical Note: Modern operating systems (e.g., Linux default RFC 8312 / RFC 9438 CUBIC and Google BBR) use cubic or bandwidth-delay model-based growth functions to saturate high-speed, high-BDP links without linear ramp-up delays.",
+      "reason": "AIMD remains the classic syllabus teaching model, but modern production stacks have replaced linear AIMD with CUBIC/BBR to overcome bandwidth-delay product limitations.",
+      "source_url": "https://datatracker.ietf.org/doc/html/rfc8312",
+      "source_title": "RFC 8312: CUBIC for Fast and Long-Distance Networks",
+      "verification_date": "2026-09-24",
+      "source_type": "IETF Official Standard"
+    },
+    {
+      "subject": "5002 Java / Web",
+      "topic": "Java Multithreading - Official Thread.State Lifecycle",
+      "old_statement": "Thread states in JVM are: New -> Runnable -> Blocked/Waiting/Timed_Waiting -> Terminated (informally using Dead/Running).",
+      "corrected_statement": "Java 5+ formally defines exactly six states in the java.lang.Thread.State enum: NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, and TERMINATED. 'Running' and 'Ready' are OS-level scheduling concepts mapped inside RUNNABLE. 'Dead' is obsolete terminology replaced by TERMINATED.",
+      "reason": "Exam answers and technical interviews penalize using non-enum names like 'Running' or 'Dead' as JVM Thread.State values.",
+      "source_url": "https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.State.html",
+      "source_title": "Oracle JDK 17 API Specification: java.lang.Thread.State",
+      "verification_date": "2026-09-24",
+      "source_type": "Official Vendor Documentation"
+    },
+    {
+      "subject": "5001 Knowledge Management",
+      "topic": "Decision Making - Herbert Simon's Model",
+      "old_statement": "Herbert Simon defined decision making as a 3-step or 4-step process.",
+      "corrected_statement": "Herbert Simon formulated the foundational decision-making model across four structured phases: 1. Intelligence (environmental scanning and problem identification), 2. Design (inventing and analyzing alternative courses of action), 3. Choice (evaluating alternatives and selecting an action, typically via 'satisficing' under bounded rationality), and 4. Implementation (putting the decision into action with continuous feedback and monitoring loops).",
+      "reason": "Clarifies the exact 4 phases and Simon's seminal concept of bounded rationality and satisficing, which are high-mark points in university evaluations.",
+      "source_url": "https://www.nobelprize.org/prizes/economic-sciences/1978/simon/biographical/",
+      "source_title": "Nobel Prize in Economic Sciences 1978: Herbert A. Simon Decision-Making Research",
+      "verification_date": "2026-09-24",
+      "source_type": "Official Nobel Foundation & Academic Reference"
+    }
+  ]
+}
