@@ -58,7 +58,8 @@ def validate_resume_claims():
         (r"\bnext\.js\b", "Forbidden unlearned framework: Next.js"),
         (r"\bzustand\b", "Forbidden unlearned library: Zustand"),
         (r"\bwebsockets?\b", "Forbidden unlearned technology: WebSocket"),
-        (r"target\s*sgpa", "Forbidden unprofessional target phrasing: Target SGPA")
+        (r"target\s*sgpa", "Forbidden unprofessional target phrasing: Target SGPA"),
+        (r"\bdevqbx\b", "Forbidden removed organization: DevQBX")
     ]
 
     REQUIRED_VARIANTS = ["python_backend", "software_engineer", "data_ai"]

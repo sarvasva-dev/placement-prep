@@ -182,8 +182,12 @@ function buildResumePage(container, resumesData, daysIndex) {
         ${r.certifications && r.certifications.length > 0 ? `
         <div class="resume-section">
           <div class="resume-section-heading">CERTIFICATIONS & HONORS</div>
-          <div class="resume-certs-line">
-            ${r.certifications.join('  •  ')}
+          <div class="resume-certs-grid">
+            ${r.certifications.map(c => `
+              <div class="resume-cert-item">
+                <span class="cert-bullet">•</span> <span>${c}</span>
+              </div>
+            `).join('')}
           </div>
         </div>
         ` : ''}

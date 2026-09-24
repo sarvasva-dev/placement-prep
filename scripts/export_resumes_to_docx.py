@@ -240,13 +240,51 @@ def build_docx_for_profile(profile_key, filename):
     # 7. Certifications & Honors
     if r.get("certifications"):
         add_heading_with_border(doc, "CERTIFICATIONS & HONORS")
-        p_cert = doc.add_paragraph()
-        p_cert.paragraph_format.space_before = Pt(1)
-        p_cert.paragraph_format.space_after = Pt(0)
-        r_cert = p_cert.add_run("   •   ".join(r["certifications"]))
-        r_cert.font.name = "Arial"
-        r_cert.font.size = Pt(8.1)
-        r_cert.font.color.rgb = RGBColor(51, 65, 85)
+        certs = r["certifications"]
+        mid = (len(certs) + 1) // 2
+        col1 = certs[:mid]
+        col2 = certs[mid:]
+        
+        table = doc.add_table(rows=0, cols=2)
+        table.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        table.autofit = False
+        
+        for i in range(max(len(col1), len(col2))):
+            row = table.add_row()
+            cell_left = row.cells[0]
+            cell_right = row.cells[1]
+            cell_left.width = Inches(3.68)
+            cell_right.width = Inches(3.68)
+            set_cell_margins(cell_left, top=10, bottom=10, left=0, right=10)
+            set_cell_margins(cell_right, top=10, bottom=10, left=0, right=10)
+            
+            p_l = cell_left.paragraphs[0]
+            p_l.paragraph_format.space_before = Pt(0)
+            p_l.paragraph_format.space_after = Pt(1)
+            if i < len(col1):
+                r_b = p_l.add_run("• ")
+                r_b.font.name = "Arial"
+                r_b.font.size = Pt(8.1)
+                r_b.font.bold = True
+                r_b.font.color.rgb = RGBColor(15, 23, 42)
+                r_t = p_l.add_run(col1[i])
+                r_t.font.name = "Arial"
+                r_t.font.size = Pt(8.1)
+                r_t.font.color.rgb = RGBColor(51, 65, 85)
+                
+            p_r = cell_right.paragraphs[0]
+            p_r.paragraph_format.space_before = Pt(0)
+            p_r.paragraph_format.space_after = Pt(1)
+            if i < len(col2):
+                r_b = p_r.add_run("• ")
+                r_b.font.name = "Arial"
+                r_b.font.size = Pt(8.1)
+                r_b.font.bold = True
+                r_b.font.color.rgb = RGBColor(15, 23, 42)
+                r_t = p_r.add_run(col2[i])
+                r_t.font.name = "Arial"
+                r_t.font.size = Pt(8.1)
+                r_t.font.color.rgb = RGBColor(51, 65, 85)
 
     out_path = os.path.join(EXPORTS_DIR, filename)
     doc.save(out_path)
